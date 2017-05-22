@@ -4,6 +4,7 @@ import fr.cnes.sonar.report.exceptions.MalformedParameterException;
 import fr.cnes.sonar.report.exceptions.MissingParameterException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 
+import java.util.Date;
 import java.util.logging.Logger;
 
 /**
@@ -12,13 +13,13 @@ import java.util.logging.Logger;
  */
 public class ParamsFactory {
 
-    private static final Logger LOGGER = Logger.getLogger(ParamsFactory.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ParamsFactory.class.getCanonicalName());
     private static final String PARAMETER_START = "--";
 
     /**
      * Generates a full parameters object from user cli
-     * @param args
-     * @return
+     * @param args arguments to process
+     * @return handled parameters
      * @throws UnknownParameterException
      * @throws MalformedParameterException
      */
@@ -58,8 +59,8 @@ public class ParamsFactory {
 
     /**
      * Check validity of parameter
-     * @param param
-     * @return
+     * @param param parameter to check
+     * @return true if param is correct
      */
     private boolean checkParameter(String param) {
         return param.startsWith(PARAMETER_START) && param.length() > PARAMETER_START.length();
@@ -67,8 +68,8 @@ public class ParamsFactory {
 
     /**
      * Extract correct name of a parameter
-     * @param param
-     * @return
+     * @param param name to check
+     * @return the correct name
      */
     private String extractParameterName(String param) {
         return param.substring(PARAMETER_START.length());
@@ -81,8 +82,12 @@ public class ParamsFactory {
     private void loadDefault(Params params) {
         params.put("sonar.url", "");
         params.put("sonar.project.id", "");
+        params.put("sonar.project.quality.profile", "");
+        params.put("sonar.project.quality.gate", "");
         params.put("project.name", "default");
         params.put("report.author", "default");
-        params.put("report.date", "default");
+        params.put("report.date", new Date().toString());
+        params.put("report.path", "reports");
+        params.put("report.template", "code-analysis-template.docx");
     }
 }

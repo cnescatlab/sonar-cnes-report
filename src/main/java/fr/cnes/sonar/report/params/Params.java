@@ -21,13 +21,10 @@ public class Params {
     }
 
     public String get(String key) throws UnknownParameterException {
-        String result;
-        if(contains(key)) {
-            result = this.params.get(key);
-        } else {
+        if(!contains(key)) {
             throw new UnknownParameterException(key);
         }
-        return contains(key)?params.get(key):"";
+        return params.get(key);
     }
 
     public void put(String key, String value) {
@@ -39,7 +36,7 @@ public class Params {
             String key = entry.getKey();
             String value = entry.getValue();
 
-            if(value=="") {
+            if("".equals(value)) {
                 throw new MissingParameterException(key);
             }
         }
