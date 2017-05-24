@@ -46,6 +46,7 @@ public class QualityProfile {
 
         Iterator<Rule> iterator = data.getRules().iterator();
 
+        // naive search
         while(iterator.hasNext() && rule==null) {
             Rule r = iterator.next();
             rule = r.getKey().equals(key) ? r : null;

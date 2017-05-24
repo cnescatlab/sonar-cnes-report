@@ -60,8 +60,8 @@ public class QualityProfileProvider implements IDataProvider {
             int page = 1;
             List<Rule> rules = new ArrayList<>();
             while(goon) {
-                request = String.format("%s/api/rules/search?qprofile=%s&f=htmlDesc,name,repo,severity&ps=%d",
-                        url, profileMetaData.getKey().replaceAll(" ", "%20"), IDataProvider.MAX_PER_PAGE_SONARQUBE);
+                request = String.format("%s/api/rules/search?qprofile=%s&f=htmlDesc,name,repo,severity&ps=%d&p=%d",
+                        url, profileMetaData.getKey().replaceAll(" ", "%20"), IDataProvider.MAX_PER_PAGE_SONARQUBE, page);
                 raw = RequestManager.getInstance().get(request);
                 json = gson.fromJson(raw, JsonElement.class);
                 jo = json.getAsJsonObject();
@@ -99,9 +99,9 @@ public class QualityProfileProvider implements IDataProvider {
     /**
      * Return the quality gate corresponding to the project
      * @return The Quality Gate
-     * @throws IOException
-     * @throws UnknownParameterException
-     * @throws UnknownQualityProfileException
+     * @throws IOException A stream exception
+     * @throws UnknownParameterException A parameter is not known
+     * @throws UnknownQualityProfileException A quality profile is not known
      */
     @Nullable
     public QualityProfile getProjectQualityProfile() throws IOException, UnknownParameterException, UnknownQualityProfileException {

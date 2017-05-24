@@ -4,7 +4,10 @@ import fr.cnes.sonar.report.exceptions.MalformedParameterException;
 import fr.cnes.sonar.report.exceptions.MissingParameterException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -20,8 +23,8 @@ public class ParamsFactory {
      * Generates a full parameters object from user cli
      * @param args arguments to process
      * @return handled parameters
-     * @throws UnknownParameterException
-     * @throws MalformedParameterException
+     * @throws UnknownParameterException A parameter is not known
+     * @throws MalformedParameterException A parameter is not correct
      */
     public Params create(String[] args) throws UnknownParameterException, MalformedParameterException, MissingParameterException {
         Params params = new Params();
@@ -29,7 +32,9 @@ public class ParamsFactory {
 
         loadDefault(params);
 
-        for (String arg : args) {
+        List<String> preProcessedArgs = checkBlank(args);
+
+        for (String arg : preProcessedArgs) {
             if(parameter==null) {
                 if(checkParameter(arg)) {
                     parameter = extractParameterName(arg);
@@ -58,6 +63,39 @@ public class ParamsFactory {
     }
 
     /**
+     * Handle blanks in parameters
+     * @param args list of arguments
+     * @return the new arg array
+     */
+    private List<String> checkBlank(String[] args) {
+        List<String> checked = new ArrayList<>();
+        List<String> raw = new ArrayList<>();
+
+        // fill out raw
+        for (String s : args) {
+            raw.add(s);
+        }
+
+        // construction of new params
+        Iterator it = raw.iterator();
+        while(it.hasNext()) {
+
+            // construction of blank separated params
+            StringBuilder param = new StringBuilder((String) it.next());
+            if(param.toString().startsWith("\"") && !(param.toString().endsWith("\""))) {
+                while (it.hasNext() && !(param.toString().endsWith("\""))) {
+                    param.append(" ").append(it.next());
+                }
+            }
+
+            // add the param
+            checked.add(param.toString().replaceAll("\"",""));
+        }
+
+        return checked;
+    }
+
+    /**
      * Check validity of parameter
      * @param param parameter to check
      * @return true if param is correct
@@ -77,7 +115,7 @@ public class ParamsFactory {
 
     /**
      * Load default configuration
-     * @param params
+     * @param params parameters to set
      */
     private void loadDefault(Params params) {
         params.put("sonar.url", "");

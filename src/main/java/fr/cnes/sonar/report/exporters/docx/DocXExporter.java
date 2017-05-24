@@ -72,8 +72,8 @@ public class DocXExporter implements IExporter {
 
     /**
      * Fill the chart "camembert"
-     * @param wordMLPackage
-     * @param facets
+     * @param wordMLPackage word document
+     * @param facets data as facets
      */
     private void fillCharts(WordprocessingMLPackage wordMLPackage, List<Facet> facets) throws InvalidFormatException, JAXBException {
         // get charts
@@ -157,8 +157,8 @@ public class DocXExporter implements IExporter {
 
     /**
      * Get formatted issues summary
-     * @param report
-     * @return
+     * @param report report from which to export data
+     * @return issues list
      */
     private List<List<String>> getIssues(Report report) {
         List<List<String>> issues = new ArrayList<>();  // result to return
@@ -169,17 +169,29 @@ public class DocXExporter implements IExporter {
         for (Value v : items) { // construct each issues
             List<String> issue = new ArrayList<>();
             Rule rule = report.getQualityProfile().find(v.getVal());
-
-            // add name
-            issue.add(rule.getName());
-            // add description
-            issue.add(rule.getHtmlDesc().replaceAll("<[^>]*>", ""));
-            // add type
-            issue.add(rule.getType());
-            // add severity
-            issue.add(rule.getSeverity());
-            // add number
-            issue.add(Integer.toString(v.getCount()));
+            if(rule!=null) { // if the rule is found, fill information
+                // add name
+                issue.add(rule.getName());
+                // add description
+                issue.add(rule.getHtmlDesc().replaceAll("<[^>]*>", ""));
+                // add type
+                issue.add(rule.getType());
+                // add severity
+                issue.add(rule.getSeverity());
+                // add number
+                issue.add(Integer.toString(v.getCount()));
+            } else { // else set just known information
+                // add name
+                issue.add(v.getVal());
+                // add description
+                issue.add("?");
+                // add type
+                issue.add("?");
+                // add severity
+                issue.add("?");
+                // add number
+                issue.add(Integer.toString(v.getCount()));
+            }
 
             issues.add(issue);
         }
@@ -208,8 +220,8 @@ public class DocXExporter implements IExporter {
 
     /**
      * Give the corresponding placeholder
-     * @param metric
-     * @return
+     * @param metric value whose it have to find the placeholder
+     * @return value of the place holder
      */
     private String getPlaceHolderName(String metric) {
         String res;
