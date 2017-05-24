@@ -72,10 +72,10 @@ public class MasterTest {
         profileMetaData.setName("BG");
         profileMetaData.setKey("BG");
         QualityProfile qualityProfile = new QualityProfile(profileData, profileMetaData);
-        qualityProfile.setProjects((new Project[]{new Project("mr-propre", "mr-propre")}));
+        qualityProfile.setProjects((new Project[]{new Project("sonar-cnes-plugin", "sonar-cnes-plugin")}));
         report.setQualityProfile(qualityProfile);
         QualityGate qualityGate = new QualityGate();
-        qualityGate.setName("BG");
+        qualityGate.setName("CNES");
         report.setQualityGate(qualityGate);
 
         List<Measure> measures = new ArrayList<>();
@@ -88,14 +88,14 @@ public class MasterTest {
         measures.add(new Measure("security_rating", "1.0"));
         report.setMeasures(measures);
 
-        params.put("sonar.url", "https://sonar.garcon.ovh"/*"http://sonarqube:9000"*/);
-        params.put("sonar.project.id", "mr-propre");
-        params.put("sonar.project.quality.profile", "BG");
-        params.put("sonar.project.quality.gate", "BG");
-        params.put("project.name", "Monsieur Propre");
+        params.put("sonar.url", "http://sonarqube:9000");
+        params.put("sonar.project.id", "sonar-cnes-plugin");
+        params.put("sonar.project.quality.profile", "CNES_JAVA_B");
+        params.put("sonar.project.quality.gate", "CNES");
+        params.put("project.name", "sonar-cnes-plugin");
         params.put("report.author", "Benoît Garçon");
         params.put("report.date", new Date().toString());
-        params.put("report.path", "reports");
+        params.put("report.path", "report");
         params.put("report.template", "src/main/resources/template/code-analysis-template.docx");
     }
 }

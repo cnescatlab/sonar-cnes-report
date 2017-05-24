@@ -121,7 +121,7 @@ public class QualityProfileProvider implements IDataProvider {
             }
         }
 
-        if(!find || checkProfileProjectBinding(res, projectName)) {
+        if(!find || !checkProfileProjectBinding(res, projectName)) {
             throw new UnknownQualityProfileException(profileName);
         }
 
