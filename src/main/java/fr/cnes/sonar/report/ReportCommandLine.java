@@ -43,6 +43,9 @@ public class ReportCommandLine {
         }
     }
 
+    /**
+     * Provide help on bad command line
+     */
     private static void help() {
         LOGGER.info("Bienvenue dans Sonar Report CNES\n" +
                 "Voici l'aide pour exécuter correctement cette commande :\n" +

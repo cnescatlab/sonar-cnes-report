@@ -4,10 +4,7 @@ import fr.cnes.sonar.report.exceptions.MalformedParameterException;
 import fr.cnes.sonar.report.exceptions.MissingParameterException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -72,9 +69,7 @@ public class ParamsFactory {
         List<String> raw = new ArrayList<>();
 
         // fill out raw
-        for (String s : args) {
-            raw.add(s);
-        }
+        raw.addAll(Arrays.asList(args));
 
         // construction of new params
         Iterator it = raw.iterator();
@@ -125,7 +120,7 @@ public class ParamsFactory {
         params.put("project.name", "default");
         params.put("report.author", "default");
         params.put("report.date", new Date().toString());
-        params.put("report.path", "reports");
+        params.put("report.path", ".");
         params.put("report.template", "code-analysis-template.docx");
     }
 }

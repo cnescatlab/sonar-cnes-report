@@ -12,6 +12,7 @@ import fr.cnes.sonar.report.params.ParamsFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -50,7 +51,7 @@ public class IssuesProvider implements IDataProvider {
             JsonElement json = gson.fromJson(raw, JsonElement.class);
             JsonObject jo = json.getAsJsonObject();
             Issue [] tmp = (gson.fromJson(jo.get("issues"), Issue[].class));
-            for (Issue i : tmp) { res.add(i); }
+            res.addAll(Arrays.asList(tmp));
             int number = (json.getAsJsonObject().get("total").getAsInt());
             goon = page*IDataProvider.MAX_PER_PAGE_SONARQUBE < number;
             page++;
@@ -59,6 +60,12 @@ public class IssuesProvider implements IDataProvider {
         return res;
     }
 
+    /**
+     * Get all the stats on a project
+     * @return A list of facets
+     * @throws IOException on data processing error
+     * @throws UnknownParameterException on bad parameter
+     */
     public List<Facet> getFacets() throws IOException, UnknownParameterException {
         ArrayList<Facet> res = new ArrayList<>();
 
@@ -72,7 +79,7 @@ public class IssuesProvider implements IDataProvider {
         JsonElement json = gson.fromJson(raw, JsonElement.class);
         JsonObject jo = json.getAsJsonObject();
         Facet [] tmp = (gson.fromJson(jo.get("facets"), Facet[].class));
-        for (Facet i : tmp) { res.add(i); }
+        res.addAll(Arrays.asList(tmp));
 
         return res;
     }
