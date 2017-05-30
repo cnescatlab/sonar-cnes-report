@@ -1,10 +1,7 @@
 package fr.cnes.sonar.report.providers;
 
-import com.google.gson.JsonObject;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -30,6 +27,12 @@ public class RequestManager {
     private RequestManager() {
     }
 
+    /**
+     * Execute a get http request
+     * @param url url to request
+     * @return response as string
+     * @throws IOException error on response
+     */
     public String get(String url) throws IOException {
 
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
@@ -40,6 +43,13 @@ public class RequestManager {
         return EntityUtils.toString(result.getEntity(), "UTF-8");
     }
 
+    /**
+     * Execute a get http request
+     * @param url url to request
+     * @param data list of pairs containing data to post
+     * @return response as string
+     * @throws IOException error on response
+     */
     public String post(String url, List<NameValuePair> data) throws IOException {
 
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();

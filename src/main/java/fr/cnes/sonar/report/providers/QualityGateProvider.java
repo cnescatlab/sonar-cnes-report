@@ -3,7 +3,6 @@ package fr.cnes.sonar.report.providers;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.sun.istack.internal.Nullable;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
 import fr.cnes.sonar.report.model.QualityGate;
@@ -50,7 +49,7 @@ public class QualityGateProvider implements IDataProvider {
             request = String.format("%s/api/qualitygates/show?name=%s", url, i.getName().replaceAll(" ", "%20"));
             raw = RequestManager.getInstance().get(request);
             i.setConf(raw);
-            if(i.getId()==defaultQG) {
+            if(i.getId().equals(defaultQG)) {
                 i.setDefault(true);
             } else {
                 i.setDefault(false);
@@ -72,11 +71,10 @@ public class QualityGateProvider implements IDataProvider {
     /**
      * Return the quality gate corresponding to the project
      * @return The Quality Gate
-     * @throws IOException
-     * @throws UnknownParameterException
-     * @throws UnknownQualityGateException
+     * @throws IOException when there are problem reading json
+     * @throws UnknownParameterException when a parameter is incorrect
+     * @throws UnknownQualityGateException when there is an error on a quality gate
      */
-    @Nullable
     public QualityGate getProjectQualityGate() throws IOException, UnknownParameterException, UnknownQualityGateException {
         QualityGate res = null;
         QualityGate tmp;

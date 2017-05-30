@@ -10,6 +10,7 @@ import fr.cnes.sonar.report.params.Params;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -43,7 +44,7 @@ public class MeasureProvider implements IDataProvider {
         JsonElement json = gson.fromJson(raw, JsonElement.class);
         JsonObject jo = json.getAsJsonObject();
         Measure [] tmp = (gson.fromJson(jo.get("component").getAsJsonObject().get("measures"), Measure[].class));
-        for (Measure i : tmp) { res.add(i); }
+        res.addAll(Arrays.asList(tmp));
 
         return res;
     }

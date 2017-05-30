@@ -1,30 +1,25 @@
 package fr.cnes.sonar.report.exporters.docx;
 
-import com.topologi.diffx.xml.XMLUtils;
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exporters.IExporter;
 import fr.cnes.sonar.report.model.*;
 import fr.cnes.sonar.report.params.Params;
-import javafx.util.Pair;
 import org.docx4j.Docx4J;
 import org.docx4j.XmlUtils;
 import org.docx4j.dml.chart.CTChartSpace;
-import org.docx4j.model.structure.HeaderFooterPolicy;
-import org.docx4j.model.structure.SectionWrapper;
 import org.docx4j.openpackaging.exceptions.InvalidFormatException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.DrawingML.Chart;
-import org.docx4j.openpackaging.parts.Part;
 import org.docx4j.openpackaging.parts.PartName;
-import org.docx4j.openpackaging.parts.Parts;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.docx4j.openpackaging.parts.relationships.RelationshipsPart;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.util.JAXBResult;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Exports the report in .docx format
@@ -127,8 +122,8 @@ public class DocXExporter implements IExporter {
 
     /**
      * Convert the numeric note to a letter
-     * @param value
-     * @return
+     * @param value numeric note
+     * @return a letter
      */
     private String numberToLetter(String value) {
         String res;

@@ -1,22 +1,9 @@
-import fr.cnes.sonar.report.model.*;
-import fr.cnes.sonar.report.params.Params;
-import fr.cnes.sonar.report.providers.IssuesProvider;
-import fr.cnes.sonar.report.providers.MeasureProvider;
-import fr.cnes.sonar.report.providers.QualityGateProvider;
-import fr.cnes.sonar.report.providers.QualityProfileProvider;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 /**
  * Test the creation of a docx file from a template
  * @author garconb
  */
 public class DataProviderTest extends MasterTest {
-
+/*
     @Test
     public void getAllQualityGateTest() throws Exception {
         QualityGateProvider qgp = new QualityGateProvider(params);
@@ -75,5 +62,5 @@ public class DataProviderTest extends MasterTest {
             System.out.println(facet.toString());
         }
     }
-
+*/
 }

@@ -3,7 +3,6 @@ package fr.cnes.sonar.report.factory;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
 import fr.cnes.sonar.report.exceptions.UnknownQualityProfileException;
-import fr.cnes.sonar.report.model.Measure;
 import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.params.Params;
 import fr.cnes.sonar.report.providers.IssuesProvider;
@@ -25,6 +24,14 @@ public class ReportFactory {
         this.params = params;
     }
 
+    /**
+     *
+     * @return A complete report data model
+     * @throws UnknownParameterException a specified parameter does not exist
+     * @throws IOException on json problem
+     * @throws UnknownQualityProfileException a quality profile is not correct
+     * @throws UnknownQualityGateException a quality gate is not correct
+     */
     public Report create() throws UnknownParameterException, IOException, UnknownQualityProfileException, UnknownQualityGateException {
         Report report = new Report();
 

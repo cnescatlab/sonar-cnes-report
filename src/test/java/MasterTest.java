@@ -3,7 +3,6 @@ import fr.cnes.sonar.report.params.Params;
 import org.junit.Before;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 

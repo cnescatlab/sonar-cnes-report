@@ -40,9 +40,8 @@ public class DocXTools {
     static void replacePlaceholder(WordprocessingMLPackage template, String name, String placeholder ) {
         // All interesting Text zones
         List<Object> texts = getAllElementsFromObject(template.getMainDocumentPart(), Text.class);
-        /**
-         * Get headers
-         */
+
+        // Get headers
         List<SectionWrapper> sectionWrappers = template.getDocumentModel().getSections();
         for (SectionWrapper sw : sectionWrappers) {
             HeaderFooterPolicy hfp = sw.getHeaderFooterPolicy();
@@ -54,9 +53,7 @@ public class DocXTools {
             }
         }
 
-        /**
-         * replace in all Text zones
-         */
+        // replace in all Text zones
         for (Object text : texts) {
             Text textElement = (Text) text;
             if (textElement.getValue().contains(placeholder)) {
@@ -102,12 +99,12 @@ public class DocXTools {
 
     /**
      * Add a row to a table
-     * @param reviewTable
-     * @param templateRow
+     * @param reviewTable table to fill out
+     * @param templateRow template of a row
      * @param cells elements of the row
      */
     static void addRowToTable(Tbl reviewTable, Tr templateRow, List<String> cells) {
-        Tr workingRow = (Tr) XmlUtils.deepCopy(templateRow);
+        Tr workingRow = XmlUtils.deepCopy(templateRow);
 
         // find all text (cells)
         List<?> textElements = getAllElementsFromObject(workingRow, Text.class);

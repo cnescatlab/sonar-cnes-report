@@ -1,28 +1,17 @@
 package fr.cnes.sonar.report.exporters;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
-import fr.cnes.sonar.report.exporters.docx.DocXTools;
-import fr.cnes.sonar.report.model.*;
+import fr.cnes.sonar.report.model.Issue;
+import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.params.Params;
-import org.docx4j.Docx4J;
-import org.docx4j.XmlUtils;
-import org.docx4j.dml.chart.CTChartSpace;
-import org.docx4j.openpackaging.exceptions.InvalidFormatException;
 import org.docx4j.openpackaging.packages.SpreadsheetMLPackage;
-import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
-import org.docx4j.openpackaging.parts.DrawingML.Chart;
 import org.docx4j.openpackaging.parts.PartName;
 import org.docx4j.openpackaging.parts.SpreadsheetML.WorksheetPart;
-import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
-import org.docx4j.openpackaging.parts.relationships.RelationshipsPart;
 import org.xlsx4j.jaxb.Context;
 import org.xlsx4j.sml.*;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**

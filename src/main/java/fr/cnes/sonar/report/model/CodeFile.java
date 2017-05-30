@@ -1,6 +1,7 @@
 package fr.cnes.sonar.report.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Represents a source code file
@@ -38,9 +39,7 @@ public class CodeFile {
     }
 
     public void setContent(String[] content) {
-        for (String s : content) {
-            this.content.add(s);
-        }
+        this.content.addAll(Arrays.asList(content));
     }
 
     public String[] getLines(int start, int end) {

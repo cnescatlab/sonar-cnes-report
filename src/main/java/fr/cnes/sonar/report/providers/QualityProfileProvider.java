@@ -3,9 +3,7 @@ package fr.cnes.sonar.report.providers;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.sun.istack.internal.Nullable;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
-import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
 import fr.cnes.sonar.report.exceptions.UnknownQualityProfileException;
 import fr.cnes.sonar.report.model.*;
 import fr.cnes.sonar.report.params.Params;
@@ -66,7 +64,7 @@ public class QualityProfileProvider implements IDataProvider {
                 json = gson.fromJson(raw, JsonElement.class);
                 jo = json.getAsJsonObject();
                 Rule [] tmp = (gson.fromJson(jo.get("rules"), Rule[].class));
-                for (Rule i : tmp) { rules.add(i); }
+                rules.addAll(Arrays.asList(tmp));
                 int number = (json.getAsJsonObject().get("total").getAsInt());
                 goon = page*IDataProvider.MAX_PER_PAGE_SONARQUBE < number;
                 page++;
@@ -103,7 +101,6 @@ public class QualityProfileProvider implements IDataProvider {
      * @throws UnknownParameterException A parameter is not known
      * @throws UnknownQualityProfileException A quality profile is not known
      */
-    @Nullable
     public QualityProfile getProjectQualityProfile() throws IOException, UnknownParameterException, UnknownQualityProfileException {
         QualityProfile res = null;
         QualityProfile tmp;

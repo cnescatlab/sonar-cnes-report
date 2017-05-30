@@ -6,9 +6,7 @@ import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.model.Facet;
 import fr.cnes.sonar.report.model.Issue;
-import fr.cnes.sonar.report.model.Measure;
 import fr.cnes.sonar.report.params.Params;
-import fr.cnes.sonar.report.params.ParamsFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +33,6 @@ public class IssuesProvider implements IDataProvider {
      */
     public List<Issue> getIssues() throws IOException, UnknownParameterException {
         ArrayList<Issue> res = new ArrayList<>();
-
 
         boolean goon = true;
         int page = 1;

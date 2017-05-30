@@ -24,6 +24,10 @@ public class Issue {
         return key + "\t" + project + "\t" + component + "\t" + type + "\t" + severity + "\t" + message + "\t" + line + "\t" + status + "\t" + "\t";
     }
 
+    /**
+     * Get a list of String containing details of each issue
+     * @return list of strings
+     */
     public List<String> getAll() {
         List<String> list = new ArrayList<>();
         list.add(getKey());

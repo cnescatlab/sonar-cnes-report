@@ -19,8 +19,14 @@ public class ReportCommandLine {
 
     private static final Logger LOGGER = Logger.getLogger(ReportCommandLine.class.getName());
 
+    /**
+     * Main method
+     * @param args arguments that will be preprocessed
+     */
     public static void main(String[] args) {
+
         try {
+            // preparing args
             Params params = new ParamsFactory().create(args);
 
             // Files exporters
