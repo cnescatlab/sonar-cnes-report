@@ -25,10 +25,20 @@ public class JsonExporter implements IExporter {
         // set relevant variables
         String filePath = params.get("report.path") + "/" + filename + ".json";
 
-        File jsonFile = new File(filePath);
-        FileWriter fileWriter = new FileWriter(jsonFile, false); // true to append
-        // false to overwrite.
-        fileWriter.write(string);
-        fileWriter.close();
+        // writer used to write the file
+        FileWriter fileWriter = null;
+
+        // preventing leaks
+        try {
+            File jsonFile = new File(filePath);
+            fileWriter = new FileWriter(jsonFile, false); // true to append
+            // false to overwrite.
+            fileWriter.write(string);
+        } finally {
+            // close the writer if it is still open
+            if (fileWriter != null) {
+                fileWriter.close();
+            }
+        }
     }
 }

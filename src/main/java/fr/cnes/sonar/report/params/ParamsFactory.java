@@ -115,8 +115,8 @@ public class ParamsFactory {
     private void loadDefault(Params params) {
         params.put("sonar.url", "");
         params.put("sonar.project.id", "");
-        params.put("sonar.project.quality.profile", "");
-        params.put("sonar.project.quality.gate", "");
+        params.put("sonar.project.quality.profile", "Sonar way");
+        params.put("sonar.project.quality.gate", "CNES");
         params.put("project.name", "default");
         params.put("report.author", "default");
         params.put("report.date", new Date().toString());

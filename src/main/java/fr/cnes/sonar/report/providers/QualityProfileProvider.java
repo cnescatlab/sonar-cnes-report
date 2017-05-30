@@ -21,8 +21,15 @@ import java.util.logging.Logger;
  */
 public class QualityProfileProvider implements IDataProvider {
 
-    private Params params;
+    /**
+     * Logger for the class
+     */
     private static final Logger LOGGER = Logger.getLogger(QualityProfileProvider.class.getCanonicalName());
+
+    /**
+     * Params of the program itself
+     */
+    private Params params;
 
     public QualityProfileProvider(Params params) {
         this.setParams(params);
@@ -30,15 +37,19 @@ public class QualityProfileProvider implements IDataProvider {
 
     /**
      * Get all the quality profiles
-     * @return Array containing all the issues
+     * @return Array containing all the quality profiles of a project
      */
     public List<QualityProfile> getQualityProfiles() throws IOException, UnknownParameterException {
+        // initializing returned list
         ArrayList<QualityProfile> res = new ArrayList<>();
+        // used to parse json
         Gson gson = new Gson();
+        // get parameters
         String url = getParams().get("sonar.url");
+        String projectKey = getParams().get("sonar.project.id");
 
         // Get all quality profiles (metadata)
-        String request = String.format("%s/api/qualityprofiles/search", url);
+        String request = String.format("%s/api/qualityprofiles/search?projectKey=%s", url, projectKey);
         String raw = RequestManager.getInstance().get(request);
         JsonElement json = gson.fromJson(raw, JsonElement.class);
         JsonObject jo = json.getAsJsonObject();
@@ -53,10 +64,14 @@ public class QualityProfileProvider implements IDataProvider {
             raw = RequestManager.getInstance().get(request);
             profileData.setConf(raw);
 
-            // get rules
+            // get the rules of the profile
+            // stop condition
             boolean goon = true;
+            // page result index
             int page = 1;
+            // contain the resulted rules
             List<Rule> rules = new ArrayList<>();
+            // continue until there are no more results
             while(goon) {
                 request = String.format("%s/api/rules/search?qprofile=%s&f=htmlDesc,name,repo,severity&ps=%d&p=%d",
                         url, profileMetaData.getKey().replaceAll(" ", "%20"), IDataProvider.MAX_PER_PAGE_SONARQUBE, page);
@@ -65,19 +80,22 @@ public class QualityProfileProvider implements IDataProvider {
                 jo = json.getAsJsonObject();
                 Rule [] tmp = (gson.fromJson(jo.get("rules"), Rule[].class));
                 rules.addAll(Arrays.asList(tmp));
+
+                // check if there are other pages
                 int number = (json.getAsJsonObject().get("total").getAsInt());
                 goon = page*IDataProvider.MAX_PER_PAGE_SONARQUBE < number;
                 page++;
             }
             profileData.setRules(rules);
 
-            // get projects
+            // get projects linked to the profile
             request = String.format("%s/api/qualityprofiles/projects?key=%s", url, profileMetaData.getKey());
             raw = RequestManager.getInstance().get(request);
             json = gson.fromJson(raw, JsonElement.class);
             jo = json.getAsJsonObject();
             Project[] projects = (gson.fromJson(jo.get("results"), Project[].class));
 
+            // create and add the new quality profile
             QualityProfile qualityProfile = new QualityProfile(profileData, profileMetaData);
             qualityProfile.setProjects(projects);
             res.add(qualityProfile);
@@ -95,29 +113,37 @@ public class QualityProfileProvider implements IDataProvider {
     }
 
     /**
-     * Return the quality gate corresponding to the project
-     * @return The Quality Gate
+     * Return the quality profile corresponding to the project
+     * @return The Quality Profile
      * @throws IOException A stream exception
      * @throws UnknownParameterException A parameter is not known
      * @throws UnknownQualityProfileException A quality profile is not known
      */
     public QualityProfile getProjectQualityProfile() throws IOException, UnknownParameterException, UnknownQualityProfileException {
+        // final result
         QualityProfile res = null;
-        QualityProfile tmp;
+        // true if the quality profile is found
         Boolean find = false;
+        // get the quality profiles list
         List<QualityProfile> qualityProfileList = getQualityProfiles();
+        // get data from parameters
         String profileName = getParams().get("sonar.project.quality.profile");
         String projectName = getParams().get("sonar.project.id");
 
+        // look for a quality profile whose name is profileName
         Iterator<QualityProfile> iterator = qualityProfileList.iterator();
         while (iterator.hasNext() && !find) {
-            tmp = iterator.next();
+            QualityProfile tmp = iterator.next();
             if(tmp.getName().equals(profileName)) {
                 res = tmp;
                 find = true;
             }
         }
 
+        boolean bool1 = !find;
+        boolean bool2 = !checkProfileProjectBinding(res, projectName);
+
+        // check if the result is correct
         if(!find || !checkProfileProjectBinding(res, projectName)) {
             throw new UnknownQualityProfileException(profileName);
         }
@@ -126,20 +152,23 @@ public class QualityProfileProvider implements IDataProvider {
     }
 
     /**
-     * CHeck that the quality profile is bound to the project
+     * Check that the quality profile is bound to the project
      * @param qualityProfile QualityProfile
      * @param projectName String
      * @return true if the project is bound
      */
     private boolean checkProfileProjectBinding(QualityProfile qualityProfile, String projectName) {
+        // result initialized to false
         boolean res = false;
 
+        // get the profiles
         Project[] list = qualityProfile.getProjects();
         int i = 0;
         while(!res && i < list.length) {
-            res = list[i++].getName().equals(projectName);
+            // check if each project has the good key
+            res = list[i++].getKey().equals(projectName);
         }
-
+        // res == true if we go out of the while before the end
         return res;
     }
 }

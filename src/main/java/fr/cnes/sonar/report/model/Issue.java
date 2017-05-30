@@ -19,6 +19,13 @@ public class Issue {
     private String type;
     private String message;
 
+    /**
+     * Default constructor
+     */
+    public Issue() {
+
+    }
+
     @Override
     public String toString() {
         return key + "\t" + project + "\t" + component + "\t" + type + "\t" + severity + "\t" + message + "\t" + line + "\t" + status + "\t" + "\t";

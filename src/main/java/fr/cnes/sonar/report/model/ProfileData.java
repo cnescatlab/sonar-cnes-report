@@ -11,6 +11,13 @@ public class ProfileData {
     private List<Rule> rules;
     private String conf;
 
+    /**
+     * Default constructor
+     */
+    public ProfileData() {
+
+    }
+
     public List<Rule> getRules() {
         return rules;
     }

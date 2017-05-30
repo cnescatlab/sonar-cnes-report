@@ -8,6 +8,18 @@ public class Measure {
     private String metric;
     private String value;
 
+    /**
+     * Default constructor
+     */
+    public Measure() {
+
+    }
+
+    /**
+     * Complete constructor
+     * @param metric value for metric
+     * @param value value for value
+     */
     public Measure(String metric, String value) {
         setMetric(metric);
         setValue(value);

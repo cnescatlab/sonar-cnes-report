@@ -11,6 +11,13 @@ public class Facet {
     private String property;
 
     /**
+     * Default constructor
+     */
+    public Facet() {
+
+    }
+
+    /**
      * Return the values of the facet
      * @return  list of values
      */

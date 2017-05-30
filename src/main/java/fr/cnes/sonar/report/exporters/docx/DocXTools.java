@@ -21,12 +21,21 @@ import java.util.List;
  */
 public class DocXTools {
 
+    /**
+     * Utils to get all the elements inside a specific element
+     * @param obj object to explore
+     * @param toSearch class to search
+     * @return list of contained objects
+     */
     static List<Object> getAllElementsFromObject(Object obj, Class<?> toSearch) {
         List<Object> result = new ArrayList<>();
-        if (obj instanceof JAXBElement) obj = ((JAXBElement<?>) obj).getValue();
+        if (obj instanceof JAXBElement) {
+            obj = ((JAXBElement<?>) obj).getValue();
+        }
 
-        if (obj.getClass().equals(toSearch))
+        if (obj.getClass().equals(toSearch)) {
             result.add(obj);
+        }
         else if (obj instanceof ContentAccessor) {
             List<?> children = ((ContentAccessor) obj).getContent();
             for (Object child : children) {
@@ -37,6 +46,12 @@ public class DocXTools {
         return result;
     }
 
+    /**
+     * Replace all placeholder in a word file
+     * @param template word file
+     * @param name value to put
+     * @param placeholder placeholder to replace
+     */
     static void replacePlaceholder(WordprocessingMLPackage template, String name, String placeholder ) {
         // All interesting Text zones
         List<Object> texts = getAllElementsFromObject(template.getMainDocumentPart(), Text.class);
@@ -62,6 +77,13 @@ public class DocXTools {
         }
     }
 
+    /**
+     * Fill out a table
+     * @param numTable index of the table
+     * @param textToAdd list of lines to add
+     * @param template template to fill out
+     * @throws Exception ...
+     */
     static void replaceTable(int numTable, List<List<String>> textToAdd,
                               WordprocessingMLPackage template) throws Exception {
         List<Object> tables = getAllElementsFromObject(template.getMainDocumentPart(), Tbl.class);
@@ -85,13 +107,22 @@ public class DocXTools {
         }
     }
 
+    /**
+     * Return a wanted table
+     * @param tables list of table to explore
+     * @param templateKey key contained in the template
+     * @return wanted table
+     * @throws Docx4JException docx4j exception
+     * @throws JAXBException jaxb exception
+     */
     static Tbl getTemplateTable(List<Object> tables, String templateKey) throws Docx4JException, JAXBException {
         for (Object tbl : tables) {
             List<?> textElements = getAllElementsFromObject(tbl, Text.class);
             for (Object text : textElements) {
                 Text textElement = (Text) text;
-                if (textElement.getValue() != null && textElement.getValue().equals(templateKey))
+                if (textElement.getValue() != null && textElement.getValue().equals(templateKey)) {
                     return (Tbl) tbl;
+                }
             }
         }
         return null;
@@ -114,8 +145,9 @@ public class DocXTools {
         for (Object object : textElements) {
             Text text = (Text) object;
             String replacementValue = cells.get(it++);
-            if (replacementValue != null)
+            if (replacementValue != null) {
                 text.setValue(replacementValue);
+            }
         }
 
         // adds the row in the table

@@ -18,12 +18,22 @@ import java.util.List;
  */
 public class RequestManager {
 
+    /**
+     * Instance of the singleton
+     */
     private static RequestManager ourInstance = new RequestManager();
 
+    /**
+     * Return the unique instance
+     * @return the singleton
+     */
     public static RequestManager getInstance() {
         return ourInstance;
     }
 
+    /**
+     * Use of private constructor to singletonize this class
+     */
     private RequestManager() {
     }
 

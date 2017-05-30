@@ -54,7 +54,7 @@ public class ReportFactory {
         // facets's setting
         report.setFacets(ip.getFacets());
         // quality profile's setting
-        report.setQualityProfile(pp.getProjectQualityProfile());
+        report.setQualityProfiles(pp.getQualityProfiles());
         // quality gate's setting
         report.setQualityGate(gp.getProjectQualityGate());
 

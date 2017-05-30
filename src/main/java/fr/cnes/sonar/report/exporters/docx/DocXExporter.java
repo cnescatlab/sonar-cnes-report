@@ -50,10 +50,10 @@ public class DocXExporter implements IExporter {
         DocXTools.replacePlaceholder(wordMLPackage, report.getProjectDate(), "XX-DATE-XX");
         DocXTools.replacePlaceholder(wordMLPackage, report.getProjectName(), "XX-PROJECTNAME-XX");
         // configuration placeholders
-        DocXTools.replacePlaceholder(wordMLPackage, report.getProjectName(), "XX-QUALITYGATENAME-XX");
-        DocXTools.replacePlaceholder(wordMLPackage, params.get("report.path") + "/" + report.getQualityProfile().getKey() + ".xml", "XX-QUALITYGATEFILE-XX");
-        DocXTools.replacePlaceholder(wordMLPackage, report.getQualityGate().getName(), "XX-QUALITYPROFILENAME-XX");
-        DocXTools.replacePlaceholder(wordMLPackage, params.get("report.path") + "/" + report.getQualityGate().getName() + ".json", "XX-QUALITYPROFILEFILE-XX");
+        DocXTools.replacePlaceholder(wordMLPackage, report.getQualityGate().getName(), "XX-QUALITYGATENAME-XX");
+        DocXTools.replacePlaceholder(wordMLPackage, report.getQualityGate().getName() + ".xml", "XX-QUALITYGATEFILE-XX");
+        DocXTools.replacePlaceholder(wordMLPackage, report.getQualityProfilesName(), "XX-QUALITYPROFILENAME-XX");
+        DocXTools.replacePlaceholder(wordMLPackage, report.getQualityProfilesFilename(), "XX-QUALITYPROFILEFILE-XX");
         // Synthese placeholders
         for (Measure m : report.getMeasures()) {
             DocXTools.replacePlaceholder(wordMLPackage,
@@ -163,7 +163,7 @@ public class DocXExporter implements IExporter {
 
         for (Value v : items) { // construct each issues
             List<String> issue = new ArrayList<>();
-            Rule rule = report.getQualityProfile().find(v.getVal());
+            Rule rule = report.getRule(v.getVal());
             if(rule!=null) { // if the rule is found, fill information
                 // add name
                 issue.add(rule.getName());

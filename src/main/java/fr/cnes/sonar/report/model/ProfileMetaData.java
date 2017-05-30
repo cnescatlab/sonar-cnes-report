@@ -8,12 +8,19 @@ import com.google.gson.annotations.SerializedName;
  * @author begarco
  */
 public class ProfileMetaData {
+    // sonarqube key of the profile
     private String key;
+    // profile's name in sonarqube
     private String name;
+    // related language's id
     private String language;
+    // language full name
     private String languageName;
+    // is this profile inherited from another one
     private Boolean isInherited;
+    // is this profile the default one
     private Boolean isDefault;
+    // how many deprecated rules it contains
     @SerializedName("activeDeprecatedRuleCount")
     private int deprecatedRules;
 

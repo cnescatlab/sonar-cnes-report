@@ -20,8 +20,15 @@ import java.util.logging.Logger;
  */
 public class IssuesProvider implements IDataProvider {
 
-    private Params params;
+    /**
+     * Logger for the class
+     */
     private static final Logger LOGGER = Logger.getLogger(IssuesProvider.class.getCanonicalName());
+
+    /**
+     * Params of the program itself
+     */
+    private Params params;
 
     public IssuesProvider(Params params) {
         this.setParams(params);

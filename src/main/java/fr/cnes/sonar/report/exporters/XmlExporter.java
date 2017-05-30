@@ -25,11 +25,19 @@ public class XmlExporter implements IExporter {
         // set relevant variables
         String filePath = params.get("report.path") + "/" + filename + ".xml";
 
-        File xmlFile = new File(filePath);
-        FileWriter fileWriter = new FileWriter(xmlFile, false); // true to append
-        // false to overwrite.
-        fileWriter.write(string);
-        fileWriter.close();
+        // writer used
+        FileWriter fileWriter = null;
+
+        try { // prevent file's allocation leaks
+            File xmlFile = new File(filePath);
+            fileWriter = new FileWriter(xmlFile, false); // true to append
+            // false to overwrite.
+            fileWriter.write(string);
+        } finally {
+            if (fileWriter != null) {
+                fileWriter.close();
+            }
+        }
 
     }
 }

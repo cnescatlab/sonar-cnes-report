@@ -20,8 +20,15 @@ import java.util.logging.Logger;
  */
 public class QualityGateProvider implements IDataProvider {
 
-    private Params params;
+    /**
+     * Logger for the class
+     */
     private static final Logger LOGGER = Logger.getLogger(QualityGateProvider.class.getCanonicalName());
+
+    /**
+     * Params of the program itself
+     */
+    private Params params;
 
     public QualityGateProvider(Params params) {
         this.setParams(params);

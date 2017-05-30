@@ -42,11 +42,13 @@ public class QualityProfile {
      * @return the rule or null if not found
      */
     public Rule find(String key) {
+        // initialization of the result
         Rule rule = null;
 
+        // iterator on profile's rules
         Iterator<Rule> iterator = data.getRules().iterator();
 
-        // naive search
+        // search for the rule with the asking key
         while(iterator.hasNext() && rule==null) {
             Rule r = iterator.next();
             rule = r.getKey().equals(key) ? r : null;
