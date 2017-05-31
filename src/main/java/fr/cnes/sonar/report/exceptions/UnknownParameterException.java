@@ -6,6 +6,10 @@ package fr.cnes.sonar.report.exceptions;
  */
 public class UnknownParameterException extends ParameterException {
 
+    /**
+     * Constructor
+     * @param key key of the unknown parameter
+     */
     public UnknownParameterException(String key) {
         super(key);
         this.setMessageStarting("Le paramètre ");

@@ -39,20 +39,30 @@ public class MeasureProvider implements IDataProvider {
      * @return Array containing all the measures
      */
     public List<Measure> getMeasures() throws IOException, UnknownParameterException {
+        // results list
         ArrayList<Measure> res = new ArrayList<>();
 
+        // json tool
         Gson gson = new Gson();
+        // get sonar url
         String url = getParams().get("sonar.url");
+        // get project key
         String projectKey = getParams().get("sonar.project.id");
 
-        String request = String.format("%s/api/measures/component?componentKey=%s&metricKeys=ncloc,duplicated_lines_density,coverage,sqale_rating,reliability_rating,security_rating,alert_status",
+        // prepare request
+        String request =
+                String.format("%s/api/measures/component?componentKey=%s&metricKeys=ncloc,duplicated_lines_density,coverage,sqale_rating,reliability_rating,security_rating,alert_status",
                 url, projectKey);
+        // apply request
         String raw = RequestManager.getInstance().get(request);
+        // prepare json
         JsonElement json = gson.fromJson(raw, JsonElement.class);
         JsonObject jo = json.getAsJsonObject();
+        // put json in a list of measures
         Measure [] tmp = (gson.fromJson(jo.get("component").getAsJsonObject().get("measures"), Measure[].class));
         res.addAll(Arrays.asList(tmp));
 
+        // return the list
         return res;
     }
 

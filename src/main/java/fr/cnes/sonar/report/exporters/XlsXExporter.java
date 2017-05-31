@@ -20,22 +20,36 @@ import java.util.List;
  */
 public class XlsXExporter implements IExporter {
 
+    /**
+     * Overridden export for XlsX
+     * @param data Data to export as Report
+     * @param params Program's parameters
+     * @param filename Name of the file to export
+     * @throws Exception ...
+     */
     @Override
     public void export(Object data, Params params, String filename) throws Exception {
+        // check data type
         if(!(data instanceof Report)) {
             throw new BadExportationDataTypeException();
         }
+        // data casting
         Report report = (Report) data;
 
-        String outputfilepath = params.get("report.path")+"/"+filename;
+        // set output filename
+        String outputFilePath = params.get("report.path")+"/"+filename;
 
+        // create an xlsX document
         SpreadsheetMLPackage pkg = SpreadsheetMLPackage.createPackage();
 
+        // create a worksheet
         WorksheetPart sheet = pkg.createWorksheetPart(new PartName("/xl/worksheets/sheet1.xml"), "Issues", 1);
 
+        // add content to the sheet
         addContent(sheet, report);
 
-        pkg.save(new File(outputfilepath));
+        // save the file
+        pkg.save(new File(outputFilePath));
     }
 
     /**
@@ -89,17 +103,20 @@ public class XlsXExporter implements IExporter {
      * @return a new cell
      */
     private static Cell createCell(String content) {
-
+        // create a new cell
         Cell cell = Context.getsmlObjectFactory().createCell();
 
+        // add a string
         CTXstringWhitespace ctx = Context.getsmlObjectFactory().createCTXstringWhitespace();
+        // set string content
         ctx.setValue(content);
 
         CTRst ctrst = new CTRst();
         ctrst.setT(ctx);
 
         cell.setT(STCellType.INLINE_STR);
-        cell.setIs(ctrst); // add ctrst as inline string
+        // add ctrst as inline string
+        cell.setIs(ctrst);
 
         return cell;
 

@@ -18,14 +18,21 @@ import java.io.IOException;
  */
 public class ReportFactory {
 
+    /**
+     * Program's parameters
+     */
     private Params params;
 
+    /**
+     * Complete constructor
+     * @param params Program's parameters
+     */
     public ReportFactory(Params params) {
         this.params = params;
     }
 
     /**
-     *
+     * Create a report from program data
      * @return A complete report data model
      * @throws UnknownParameterException a specified parameter does not exist
      * @throws IOException on json problem
@@ -33,6 +40,7 @@ public class ReportFactory {
      * @throws UnknownQualityGateException a quality gate is not correct
      */
     public Report create() throws UnknownParameterException, IOException, UnknownQualityProfileException, UnknownQualityGateException {
+        // the new report to return
         Report report = new Report();
 
         // instantiation of providers

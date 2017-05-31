@@ -6,6 +6,10 @@ package fr.cnes.sonar.report.exceptions;
  */
 public class UnknownQualityProfileException extends ParameterException {
 
+    /**
+     * Constructor
+     * @param key Name of the unknown quality profile
+     */
     public UnknownQualityProfileException(String key) {
         super(key);
         this.setMessageStarting("Le profil qualité ");

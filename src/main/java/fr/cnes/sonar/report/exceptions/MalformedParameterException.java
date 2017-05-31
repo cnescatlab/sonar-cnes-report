@@ -6,6 +6,10 @@ package fr.cnes.sonar.report.exceptions;
  */
 public class MalformedParameterException extends ParameterException {
 
+    /**
+     * Constructor
+     * @param key Key of the malformed parameter
+     */
     public MalformedParameterException(String key) {
         super(key);
         this.setMessageStarting("Le paramètre ");

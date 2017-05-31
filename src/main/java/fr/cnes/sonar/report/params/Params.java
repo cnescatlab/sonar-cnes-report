@@ -51,14 +51,19 @@ public class Params {
      * @throws MissingParameterException when a parameter is not given
      */
     public boolean isReliable() throws MissingParameterException {
+        // review all pairs
         for(HashMap.Entry<String, String> entry : params.entrySet()) {
+            // get current key
             String key = entry.getKey();
+            // get current value
             String value = entry.getValue();
 
+            // check if one of them contains an empty string
             if("".equals(value)) {
                 throw new MissingParameterException(key);
             }
         }
+        // if all is ok always return true
         return true;
     }
 }

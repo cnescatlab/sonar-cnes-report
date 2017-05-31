@@ -5,12 +5,18 @@ package fr.cnes.sonar.report.model;
  * @author begarco
  */
 public class Value {
+    /**
+     * Value to count
+     */
     private String val;
+    /**
+     * Number of occurrences
+     */
     private int count;
 
     public Value(String val, int count) {
-        setVal(val);
-        setCount(count);
+        this.val = val;
+        this.count = count;
     }
 
     public String getVal() {

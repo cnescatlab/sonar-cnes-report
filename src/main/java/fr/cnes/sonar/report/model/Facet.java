@@ -1,5 +1,6 @@
 package fr.cnes.sonar.report.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,14 +8,21 @@ import java.util.List;
  * @author garconb
  */
 public class Facet {
+    /**
+     * List of values as list of pairs
+     */
     private List<Value> values;
+    /**
+     * Name of the facet
+     */
     private String property;
 
     /**
      * Default constructor
      */
     public Facet() {
-
+        values = new ArrayList<>();
+        property = "";
     }
 
     /**

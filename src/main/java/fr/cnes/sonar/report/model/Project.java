@@ -5,12 +5,23 @@ package fr.cnes.sonar.report.model;
  * @author begarco
  */
 public class Project {
+    /**
+     * Key used by sonarqube
+     */
     private String key;
+    /**
+     * Name of the project
+     */
     private String name;
 
-    public Project(String key, String value) {
-        setKey(key);
-        setName(value);
+    /**
+     * Constructor to set basics
+     * @param key SonarQube key
+     * @param name Name of the project
+     */
+    public Project(String key, String name) {
+        this.key = key;
+        this.name = name;
     }
 
     public String getKey() {

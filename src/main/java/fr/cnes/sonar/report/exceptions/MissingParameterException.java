@@ -6,6 +6,10 @@ package fr.cnes.sonar.report.exceptions;
  */
 public class MissingParameterException extends ParameterException {
 
+    /**
+     * Constructor
+     * @param key Key of the missing parameter
+     */
     public MissingParameterException(String key) {
         super(key);
         this.setMessageStarting("Le paramètre ");

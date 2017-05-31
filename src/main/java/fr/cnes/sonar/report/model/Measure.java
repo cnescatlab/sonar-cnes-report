@@ -5,14 +5,21 @@ package fr.cnes.sonar.report.model;
  * @author begarco
  */
 public class Measure {
+    /**
+     * Name of the metric
+     */
     private String metric;
+    /**
+     * Value of the metric
+     */
     private String value;
 
     /**
      * Default constructor
      */
     public Measure() {
-
+        this.metric = "";
+        this.value = "";
     }
 
     /**

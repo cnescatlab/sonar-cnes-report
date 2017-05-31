@@ -2,10 +2,7 @@ import fr.cnes.sonar.report.model.*;
 import fr.cnes.sonar.report.params.Params;
 import org.junit.Before;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Contains common code for tests
@@ -73,7 +70,7 @@ public class MasterTest {
         profileMetaData.setKey("BG");
         QualityProfile qualityProfile = new QualityProfile(profileData, profileMetaData);
         qualityProfile.setProjects((new Project[]{new Project("sonar-cnes-plugin", "sonar-cnes-plugin")}));
-        report.setQualityProfiles(Arrays.asList(qualityProfile));
+        report.setQualityProfiles(Collections.singletonList(qualityProfile));
         QualityGate qualityGate = new QualityGate();
         qualityGate.setName("CNES");
         report.setQualityGate(qualityGate);

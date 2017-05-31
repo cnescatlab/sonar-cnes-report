@@ -8,10 +8,22 @@ import com.google.gson.annotations.SerializedName;
  * @author begarco
  */
 public class QualityGate {
-    private Integer id;
+    /**
+     * ID in SonarQube
+     */
+    private String id;
+    /**
+     * Name in SonarQube
+     */
     private String name;
+    /**
+     * True if it is the default Quality gate in SonarQube
+     */
     @SerializedName("default")
     private Boolean defaultQG;
+    /**
+     * Raw string containing xml configuration
+     */
     private String conf;
 
     public String getName() {
@@ -38,14 +50,18 @@ public class QualityGate {
         this.conf = conf;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
+    /**
+     * Overridden toString
+     * @return a string containing all data separated by blanks
+     */
     @Override
     public String toString() {
         return getId() + " " + getName() + " " + isDefault() + " " + getConf();

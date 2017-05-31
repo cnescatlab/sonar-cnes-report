@@ -28,14 +28,18 @@ public class DocXTools {
      * @return list of contained objects
      */
     static List<Object> getAllElementsFromObject(Object obj, Class<?> toSearch) {
+        // create a list of results
         List<Object> result = new ArrayList<>();
+        // get the value of the JAXBElement if it is
         if (obj instanceof JAXBElement) {
             obj = ((JAXBElement<?>) obj).getValue();
         }
 
+        // add current object if it is wanted
         if (obj.getClass().equals(toSearch)) {
             result.add(obj);
         }
+        // check children
         else if (obj instanceof ContentAccessor) {
             List<?> children = ((ContentAccessor) obj).getContent();
             for (Object child : children) {

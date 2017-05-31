@@ -24,38 +24,55 @@ public class ParamsFactory {
      * @throws MalformedParameterException A parameter is not correct
      */
     public Params create(String[] args) throws UnknownParameterException, MalformedParameterException, MissingParameterException {
+        // output params
         Params params = new Params();
+
+        // currently handled parameter
         String parameter = null;
 
+        // load default value for parameters
         loadDefault(params);
 
+        // check reliability of arguments (blanks)
         List<String> preProcessedArgs = checkBlank(args);
 
+        // handle each raw args
         for (String arg : preProcessedArgs) {
+            // if there are no currently handled parameter
             if(parameter==null) {
                 if(checkParameter(arg)) {
                     parameter = extractParameterName(arg);
                 } else {
                     throw new MalformedParameterException(arg);
                 }
+                // continue handling current parameter
             } else {
+                // add the value if the parameter exist
                 if(params.contains(parameter)) {
-                    params.put(parameter, arg);
+                    // check if the parameter is not empty
+                    if(!arg.equals("")) {
+                        params.put(parameter, arg);
+                    }
+                    // the current parameter's processing is terminated
                     parameter = null;
                 } else {
+                    // if it does not exist throw exception
                     throw new UnknownParameterException(parameter);
                 }
             }
         }
 
+        // check if we were handling a parameter when exiting the for
         if(parameter!=null) {
             throw new UnknownParameterException(parameter);
         }
 
+        // if all parameters are ok log success
         if(params.isReliable()) {
             LOGGER.info("Paramètres traités avec succès.");
         }
 
+        // return the final parameters
         return params;
     }
 
@@ -65,7 +82,9 @@ public class ParamsFactory {
      * @return the new arg array
      */
     private List<String> checkBlank(String[] args) {
+        // contain the final result with correct input
         List<String> checked = new ArrayList<>();
+        // contain raw data to process
         List<String> raw = new ArrayList<>();
 
         // fill out raw
@@ -96,6 +115,7 @@ public class ParamsFactory {
      * @return true if param is correct
      */
     private boolean checkParameter(String param) {
+        // check that the parameter begins with PARAMETER_START and is not empty
         return param.startsWith(PARAMETER_START) && param.length() > PARAMETER_START.length();
     }
 
@@ -113,6 +133,7 @@ public class ParamsFactory {
      * @param params parameters to set
      */
     private void loadDefault(Params params) {
+        // append all default configuration
         params.put("sonar.url", "");
         params.put("sonar.project.id", "");
         params.put("sonar.project.quality.profile", "Sonar way");

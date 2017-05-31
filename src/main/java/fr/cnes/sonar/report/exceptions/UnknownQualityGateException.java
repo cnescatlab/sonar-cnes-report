@@ -6,6 +6,10 @@ package fr.cnes.sonar.report.exceptions;
  */
 public class UnknownQualityGateException extends ParameterException {
 
+    /**
+     * Constructor
+     * @param key name of the unknown quality gate
+     */
     public UnknownQualityGateException(String key) {
         super(key);
         this.setMessageStarting("Le quality gate ");

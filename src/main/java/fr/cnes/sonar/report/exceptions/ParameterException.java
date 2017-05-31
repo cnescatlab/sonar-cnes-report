@@ -6,10 +6,23 @@ package fr.cnes.sonar.report.exceptions;
  */
 public class ParameterException extends Exception {
 
+    /**
+     * Start of the message
+     */
     private String start;
+    /**
+     * Key of the message
+     */
     private String key;
+    /**
+     * End of the message
+     */
     private String end;
 
+    /**
+     * Constructor
+     * @param key Key to print
+     */
     public ParameterException(String key) {
         this.key = key;
     }

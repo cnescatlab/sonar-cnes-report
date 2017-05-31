@@ -73,8 +73,10 @@ public class QualityProfileProvider implements IDataProvider {
             List<Rule> rules = new ArrayList<>();
             // continue until there are no more results
             while(goon) {
+                // prepare the request
                 request = String.format("%s/api/rules/search?qprofile=%s&f=htmlDesc,name,repo,severity&ps=%d&p=%d",
                         url, profileMetaData.getKey().replaceAll(" ", "%20"), IDataProvider.MAX_PER_PAGE_SONARQUBE, page);
+                // put raw json string in a list of rules
                 raw = RequestManager.getInstance().get(request);
                 json = gson.fromJson(raw, JsonElement.class);
                 jo = json.getAsJsonObject();
@@ -90,6 +92,7 @@ public class QualityProfileProvider implements IDataProvider {
 
             // get projects linked to the profile
             request = String.format("%s/api/qualityprofiles/projects?key=%s", url, profileMetaData.getKey());
+            // process th raw json string as a Project array
             raw = RequestManager.getInstance().get(request);
             json = gson.fromJson(raw, JsonElement.class);
             jo = json.getAsJsonObject();
@@ -140,11 +143,8 @@ public class QualityProfileProvider implements IDataProvider {
             }
         }
 
-        boolean bool1 = !find;
-        boolean bool2 = !checkProfileProjectBinding(res, projectName);
-
         // check if the result is correct
-        if(!find || !checkProfileProjectBinding(res, projectName)) {
+        if(!(find && checkProfileProjectBinding(res, projectName))) {
             throw new UnknownQualityProfileException(profileName);
         }
 

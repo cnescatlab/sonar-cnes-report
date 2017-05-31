@@ -27,11 +27,20 @@ import java.util.List;
  */
 public class DocXExporter implements IExporter {
 
+    /**
+     * Overridden export for docX
+     * @param data Data to export as Report
+     * @param params Program's parameters
+     * @param filename Name of the file to export
+     * @throws Exception ...
+     */
     @Override
     public void export(Object data, Params params, String filename) throws Exception {
+        // check data type
         if(!(data instanceof Report)) {
             throw new BadExportationDataTypeException();
         }
+        // data casting
         Report report = (Report) data;
 
         // Get the template file
@@ -127,6 +136,7 @@ public class DocXExporter implements IExporter {
      */
     private String numberToLetter(String value) {
         String res;
+        // make the link between numbers and letters
         switch (value) {
             case "1.0":
                 res = "A";
@@ -201,10 +211,14 @@ public class DocXExporter implements IExporter {
      */
     private List<Value> getFacetValues(List<Facet> facets, String facetName) {
 
+        // iterate on facets' list
         Iterator iterator = facets.iterator();
+        // list of results
         List<Value> items = null;
         while(iterator.hasNext() && items==null) {
+            // get current facet
             Facet facet = (Facet) iterator.next();
+            // check if current facet is the wanted one
             if(facet.getProperty().equals(facetName)) {
                 items = facet.getValues();
             }

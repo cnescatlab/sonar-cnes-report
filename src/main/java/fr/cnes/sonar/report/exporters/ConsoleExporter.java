@@ -15,21 +15,36 @@ import java.util.logging.Logger;
  */
 public class ConsoleExporter implements IExporter {
 
+    /**
+     * logger
+     */
     private static final Logger LOGGER = Logger.getLogger(ParamsFactory.class.getCanonicalName());
 
+    /**
+     * Overridden export for console
+     * @param data Data to export as report
+     * @param params Program's parameters
+     * @param filename Name of the file to export
+     * @throws BadExportationDataTypeException data is not a Report
+     */
     @Override
     public void export(Object data, Params params, String filename) throws BadExportationDataTypeException {
+        // check data type
         if(!(data instanceof Report)) {
             throw new BadExportationDataTypeException();
         }
+        // data casting
         Report report = (Report) data;
 
-
+        // get issues
         List<Issue> issues = report.getIssues();
         LOGGER.info("key\t" + "project\t" + "component\t" + "type\t" + "severity\t" +
                 "message\t" + "line\t" + "status\t" + "\t");
-        for(Issue issue : issues)
+        // log all issues
+        for(Issue issue : issues) {
             LOGGER.info(issue.toString());
+        }
+        // log number of issues
         LOGGER.info("Nombre total de violations : " + String.valueOf(issues.size()));
     }
 }

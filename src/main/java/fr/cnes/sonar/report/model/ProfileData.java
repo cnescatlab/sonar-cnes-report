@@ -1,6 +1,7 @@
 package fr.cnes.sonar.report.model;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,14 +9,21 @@ import java.util.List;
  * @author begarco
  */
 public class ProfileData {
+    /**
+     * List of rules activated in the profile
+     */
     private List<Rule> rules;
+    /**
+     * Configuration file as string
+     */
     private String conf;
 
     /**
      * Default constructor
      */
     public ProfileData() {
-
+        this.rules = new ArrayList<>();
+        this.conf = "";
     }
 
     public List<Rule> getRules() {

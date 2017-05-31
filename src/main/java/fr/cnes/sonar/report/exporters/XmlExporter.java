@@ -13,6 +13,15 @@ import java.io.IOException;
  * @author begarco
  */
 public class XmlExporter implements IExporter {
+    /**
+     * Overridden export for xml
+     * @param data Data to export as String
+     * @param params Program's parameters
+     * @param filename Name of the file to export
+     * @throws BadExportationDataTypeException ...
+     * @throws UnknownParameterException report.path is not set
+     * @throws IOException ...
+     */
     @Override
     public void export(Object data, Params params, String filename) throws BadExportationDataTypeException, UnknownParameterException, IOException {
 
@@ -20,6 +29,7 @@ public class XmlExporter implements IExporter {
         if(!(data instanceof String)) {
             throw new BadExportationDataTypeException();
         }
+        // data casting
         String string = (String) data;
 
         // set relevant variables
@@ -28,7 +38,8 @@ public class XmlExporter implements IExporter {
         // writer used
         FileWriter fileWriter = null;
 
-        try { // prevent file's allocation leaks
+        // prevent file's allocation leaks
+        try {
             File xmlFile = new File(filePath);
             fileWriter = new FileWriter(xmlFile, false); // true to append
             // false to overwrite.

@@ -30,6 +30,10 @@ public class QualityGateProvider implements IDataProvider {
      */
     private Params params;
 
+    /**
+     * Complet constructor
+     * @param params Program's parameters
+     */
     public QualityGateProvider(Params params) {
         this.setParams(params);
     }
@@ -39,8 +43,11 @@ public class QualityGateProvider implements IDataProvider {
      * @return Array containing all the issues
      */
     public List<QualityGate> getQualityGates() throws IOException, UnknownParameterException {
+        // result list
         ArrayList<QualityGate> res = new ArrayList<>();
+        // json tool
         Gson gson = new Gson();
+        // get sonarqube url
         String url = getParams().get("sonar.url");
 
         // Get all quality gates
@@ -52,10 +59,14 @@ public class QualityGateProvider implements IDataProvider {
         // Get quality gates criteria
         Integer defaultQG = (gson.fromJson(jo.get("default"), Integer.class));
         QualityGate [] tmp = (gson.fromJson(jo.get("qualitygates"), QualityGate[].class));
+        // for each quality gate
         for (QualityGate i : tmp) {
+            // request the criteria
             request = String.format("%s/api/qualitygates/show?name=%s", url, i.getName().replaceAll(" ", "%20"));
             raw = RequestManager.getInstance().get(request);
+            // put it in configuration field
             i.setConf(raw);
+            // check if it is the default quality gate
             if(i.getId().equals(defaultQG)) {
                 i.setDefault(true);
             } else {
@@ -86,9 +97,12 @@ public class QualityGateProvider implements IDataProvider {
         QualityGate res = null;
         QualityGate tmp;
         Boolean find = false;
+        // get all the quality gates
         List<QualityGate> qualityGates = getQualityGates();
+        // get quality gate's name
         String qgName = getParams().get("sonar.project.quality.gate");
 
+        // search for the good quality gate
         Iterator<QualityGate> iterator = qualityGates.iterator();
         while (iterator.hasNext() && !find) {
             tmp = iterator.next();
@@ -98,6 +112,7 @@ public class QualityGateProvider implements IDataProvider {
             }
         }
 
+        // check if it was found
         if(!find) {
             throw new UnknownQualityGateException(qgName);
         }

@@ -13,6 +13,15 @@ import java.io.IOException;
  * @author begarco
  */
 public class JsonExporter implements IExporter {
+    /**
+     * Overridden export for json
+     * @param data Data to export as String
+     * @param params Program's parameters
+     * @param filename Name of the file to export
+     * @throws BadExportationDataTypeException data is not a String
+     * @throws UnknownParameterException When report path is not set
+     * @throws IOException ...
+     */
     @Override
     public void export(Object data, Params params, String filename) throws BadExportationDataTypeException, UnknownParameterException, IOException {
 
@@ -20,6 +29,7 @@ public class JsonExporter implements IExporter {
         if(!(data instanceof String)) {
             throw new BadExportationDataTypeException();
         }
+        // data casting
         String string = (String) data;
 
         // set relevant variables

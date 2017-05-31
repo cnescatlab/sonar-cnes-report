@@ -9,23 +9,62 @@ import java.util.List;
  */
 public class Issue {
 
+    /**
+     * Severity of the corresponding rule
+     */
     private String severity;
+    /**
+     * Key in SonarQube
+     */
     private String key;
+    /**
+     * Name of the corresponding rule
+     */
     private String rule;
+    /**
+     * Name of the affected file
+     */
     private String component;
+    /**
+     * Name of the affected project
+     */
     private String project;
+    /**
+     * Line of the issue
+     */
     private String line;
+    /**
+     * Issue's status
+     */
     private String status;
+    /**
+     * Issue's type
+     */
     private String type;
+    /**
+     * Issue's message
+     */
     private String message;
 
     /**
      * Default constructor
      */
     public Issue() {
-
+        this.key = "";
+        this.line = "";
+        this.message = "";
+        this.component = "";
+        this.rule = "";
+        this.severity = "";
+        this.project = "";
+        this.status = "";
+        this.type = "";
     }
 
+    /**
+     * Overridden toString
+     * @return all data separated with tabulation
+     */
     @Override
     public String toString() {
         return key + "\t" + project + "\t" + component + "\t" + type + "\t" + severity + "\t" + message + "\t" + line + "\t" + status + "\t" + "\t";

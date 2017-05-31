@@ -44,12 +44,15 @@ public class RequestManager {
      * @throws IOException error on response
      */
     public String get(String url) throws IOException {
-
+        // create a client
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        // set the request
         HttpGet request = new HttpGet(url);
         request.addHeader("content-type", "application/json");
+        // execute the request
         HttpResponse result = httpClient.execute(request);
 
+        // return string result
         return EntityUtils.toString(result.getEntity(), "UTF-8");
     }
 
@@ -61,14 +64,16 @@ public class RequestManager {
      * @throws IOException error on response
      */
     public String post(String url, List<NameValuePair> data) throws IOException {
-
+        // create a client
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        // set the request
         HttpPost request = new HttpPost(url);
         request.addHeader("content-type", "application/json");
         request.setEntity(new UrlEncodedFormEntity(data));
-
+        // execute the request
         HttpResponse result = httpClient.execute(request);
 
+        // return string result
         return EntityUtils.toString(result.getEntity(), "UTF-8");
     }
 }

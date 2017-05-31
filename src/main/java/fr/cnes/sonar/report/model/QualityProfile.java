@@ -7,8 +7,17 @@ import java.util.Iterator;
  * @author begarco
  */
 public class QualityProfile {
+    /**
+     * Contains data like rules and configuration files
+     */
     private ProfileData data;
+    /**
+     * Contains metadata of the profile
+     */
     private ProfileMetaData metaData;
+    /**
+     * List of linked projects
+     */
     private Project[] projects;
 
     public QualityProfile(ProfileData data, ProfileMetaData metaData) {
@@ -50,7 +59,9 @@ public class QualityProfile {
 
         // search for the rule with the asking key
         while(iterator.hasNext() && rule==null) {
+            // get current rule
             Rule r = iterator.next();
+            // check the current rule's key equals to wanted key
             rule = r.getKey().equals(key) ? r : null;
         }
 

@@ -8,13 +8,37 @@ import java.util.List;
  * @author begarco
  */
 public class Report {
+    /**
+     * Name of the project/report
+     */
     private String projectName;
+    /**
+     * Name of the author
+     */
     private String projectAuthor;
+    /**
+     * Date to write in the project
+     */
     private String projectDate;
+    /**
+     * List of quality profiles used in the project
+     */
     private List<QualityProfile> qualityProfiles;
+    /**
+     * Quality gate used in the project
+     */
     private QualityGate qualityGate;
+    /**
+     * List of issues detected in the project
+     */
     private List<Issue> issues;
+    /**
+     * List of facets of the project
+     */
     private List<Facet> facets;
+    /**
+     * List of measures on the project
+     */
     private List<Measure> measures;
 
     public List<Issue> getIssues() {

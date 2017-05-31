@@ -39,15 +39,22 @@ public class IssuesProvider implements IDataProvider {
      * @return Array containing all the issues
      */
     public List<Issue> getIssues() throws IOException, UnknownParameterException {
+        // results variable
         ArrayList<Issue> res = new ArrayList<>();
 
+        // stop condition
         boolean goon = true;
+        // current page
         int page = 1;
 
+        // json tool
         Gson gson = new Gson();
+        // get sonar url
         String url = getParams().get("sonar.url");
+        // get project key
         String projectKey = getParams().get("sonar.project.id");
 
+        // search all issues of the project
         while(goon) {
             String request = String.format("%s/api/issues/search?projectKeys=%s&resolved=false&facets=types,rules,severities,directories,fileUuids,tags&ps=%d&p=%d&additionalFields=rules",
                     url, projectKey, IDataProvider.MAX_PER_PAGE_SONARQUBE, page);
@@ -61,6 +68,7 @@ public class IssuesProvider implements IDataProvider {
             page++;
         }
 
+        // return the issues
         return res;
     }
 
@@ -71,20 +79,30 @@ public class IssuesProvider implements IDataProvider {
      * @throws UnknownParameterException on bad parameter
      */
     public List<Facet> getFacets() throws IOException, UnknownParameterException {
+        // results variable
         ArrayList<Facet> res = new ArrayList<>();
 
+        // json tool
         Gson gson = new Gson();
+        // get sonar url
         String url = getParams().get("sonar.url");
+        // get project key
         String projectKey = getParams().get("sonar.project.id");
 
-        String request = String.format("%s/api/issues/search?projectKeys=%s&resolved=false&facets=rules,severities,types&ps=1&p=1",
+        // prepare the request
+        String request =
+                String.format("%s/api/issues/search?projectKeys=%s&resolved=false&facets=rules,severities,types&ps=1&p=1",
                 url, projectKey);
+        // apply the request
         String raw = RequestManager.getInstance().get(request);
+        // prepare json
         JsonElement json = gson.fromJson(raw, JsonElement.class);
         JsonObject jo = json.getAsJsonObject();
+        // put wanted data in facets array and list
         Facet [] tmp = (gson.fromJson(jo.get("facets"), Facet[].class));
         res.addAll(Arrays.asList(tmp));
 
+        // return list of facets
         return res;
     }
 
