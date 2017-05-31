@@ -18,6 +18,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -53,6 +54,10 @@ public class DocXExporter implements IExporter {
         List<List<String>> issues = getIssues(report);
         DocXTools.replaceTable(4, issues, wordMLPackage);
 
+        // Add metrics
+        List<List<String>> metrics = getMetrics(report);
+        DocXTools.replaceTable(5, metrics, wordMLPackage);
+
         // Replacement of placeholder
         // report meta data placeholders
         DocXTools.replacePlaceholder(wordMLPackage, report.getProjectAuthor(), "XX-AUTHOR-XX");
@@ -72,6 +77,23 @@ public class DocXExporter implements IExporter {
 
         // Save the result
         wordMLPackage.save(new File(params.get("report.path")+"/"+filename));
+    }
+
+    /**
+     * Get formatted metrics to be printed
+     * @param report Report from which to extract data
+     * @return list of list of string (metric,measure)
+     */
+    private List<List<String>> getMetrics(Report report) {
+        // result to return
+        List<List<String>> metrics = new ArrayList<>();
+
+        // construct each metric
+        for (Measure m : report.getMeasures()) {
+            metrics.add(Arrays.asList(m.getMetric(),m.getValue()));
+        }
+
+        return metrics;
     }
 
     /**

@@ -51,7 +51,7 @@ public class MeasureProvider implements IDataProvider {
 
         // prepare request
         String request =
-                String.format("%s/api/measures/component?componentKey=%s&metricKeys=ncloc,duplicated_lines_density,coverage,sqale_rating,reliability_rating,security_rating,alert_status",
+                String.format("%s/api/measures/component?componentKey=%s&metricKeys=ncloc,duplicated_lines_density,coverage,sqale_rating,reliability_rating,security_rating,alert_status,complexity,function_complexity,file_complexity,class_complexity,blocker_violations,critical_violations,major_violations,minor_violations,info_violations,new_violations,bugs,vulnerabilities,code_smells",
                 url, projectKey);
         // apply request
         String raw = RequestManager.getInstance().get(request);
