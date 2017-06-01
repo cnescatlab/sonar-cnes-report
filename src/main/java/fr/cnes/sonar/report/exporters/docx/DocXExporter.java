@@ -1,12 +1,14 @@
 package fr.cnes.sonar.report.exporters.docx;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
+import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.exporters.IExporter;
 import fr.cnes.sonar.report.model.*;
 import fr.cnes.sonar.report.params.Params;
 import org.docx4j.Docx4J;
 import org.docx4j.XmlUtils;
 import org.docx4j.dml.chart.CTChartSpace;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.exceptions.InvalidFormatException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.DrawingML.Chart;
@@ -29,14 +31,23 @@ import java.util.List;
 public class DocXExporter implements IExporter {
 
     /**
+     * Place holder for charts values
+     */
+    private static final String CCTOCHANGECC = "CCTOCHANGECC";
+
+    /**
      * Overridden export for docX
      * @param data Data to export as Report
      * @param params Program's parameters
      * @param filename Name of the file to export
-     * @throws Exception ...
+     * @throws BadExportationDataTypeException Data has not the good type
+     * @throws UnknownParameterException report.path is not set
+     * @throws Docx4JException when an error occurred in docx4j
+     * @throws JAXBException when there is a problem with a jaxb element
      */
     @Override
-    public void export(Object data, Params params, String filename) throws Exception {
+    public void export(Object data, Params params, String filename)
+            throws BadExportationDataTypeException, UnknownParameterException, Docx4JException, JAXBException {
         // check data type
         if(!(data instanceof Report)) {
             throw new BadExportationDataTypeException();
@@ -119,29 +130,36 @@ public class DocXExporter implements IExporter {
 
         // modify charts
         // search cells
-        String ss1 = chart1String.replaceAll("<c:v>.*?</c:v>", "CCTOCHANGECC");
-        String[] splitted1 = ss1.split("CCTOCHANGECC");
-        String ss2 = chart2String.replaceAll("<c:v>.*?</c:v>", "CCTOCHANGECC");
-        String[] splitted2 = ss2.split("CCTOCHANGECC");
+        String ss1 = chart1String.replaceAll("<c:v>.*?</c:v>", CCTOCHANGECC);
+        String[] splitted1 = ss1.split(CCTOCHANGECC);
+        String ss2 = chart2String.replaceAll("<c:v>.*?</c:v>", CCTOCHANGECC);
+        String[] splitted2 = ss2.split(CCTOCHANGECC);
 
         // rebuild open xml with values
         // chart1
-        StringBuilder sb = new StringBuilder(splitted1[0]);
-        for (int part = 0 ; part < splitted1.length-1 ; ++part) {
-            Value v = dataPerSeverity.get(part%dataPerSeverity.size());
-            sb.append("<c:v>").append(part < splitted1.length / 2 ? v.getVal() : v.getCount()).append("</c:v>");
-            sb.append(splitted1[part+1]);
+        StringBuilder sb;
+        // if there are data in dataPerSeverity
+        if(dataPerSeverity!=null) {
+            sb = new StringBuilder(splitted1[0]);
+            for (int part = 0; part < splitted1.length - 1; ++part) {
+                Value v = dataPerSeverity.get(part % dataPerSeverity.size());
+                sb.append("<c:v>").append(part < splitted1.length / 2 ? v.getVal() : v.getCount()).append("</c:v>");
+                sb.append(splitted1[part + 1]);
+            }
+            chart1String = sb.toString();
         }
-        chart1String = sb.toString();
 
         // chart 2
-        sb = new StringBuilder(splitted2[0]);
-        for (int part = 0 ; part < splitted2.length-1 ; ++part) {
-            Value v = dataPerType.get(part%dataPerType.size());
-            sb.append("<c:v>").append(part < splitted2.length / 2 ? v.getVal() : v.getCount()).append("</c:v>");
-            sb.append(splitted2[part+1]);
+        // if there are data in dataPerSeverity
+        if(dataPerType!=null) {
+            sb = new StringBuilder(splitted2[0]);
+            for (int part = 0; part < splitted2.length - 1; ++part) {
+                Value v = dataPerType.get(part % dataPerType.size());
+                sb.append("<c:v>").append(part < splitted2.length / 2 ? v.getVal() : v.getCount()).append("</c:v>");
+                sb.append(splitted2[part + 1]);
+            }
+            chart2String = sb.toString();
         }
-        chart2String = sb.toString();
 
         // save charts
         chart1.setJaxbElement((CTChartSpace) ((JAXBElement) XmlUtils.unmarshalString(( chart1String ))).getValue());
@@ -229,7 +247,7 @@ public class DocXExporter implements IExporter {
     /**
      * Return values of a given facet
      * @param facetName name of th facet to get
-     * @return a list or null
+     * @return a list (can be empty)
      */
     private List<Value> getFacetValues(List<Facet> facets, String facetName) {
 

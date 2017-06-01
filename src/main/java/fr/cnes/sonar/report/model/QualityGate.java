@@ -20,11 +20,21 @@ public class QualityGate {
      * True if it is the default Quality gate in SonarQube
      */
     @SerializedName("default")
-    private Boolean defaultQG;
+    private boolean defaultQG;
     /**
      * Raw string containing xml configuration
      */
     private String conf;
+
+    /**
+     * Default constructor
+     */
+    public QualityGate() {
+        this.id = "";
+        this.name = "";
+        this.defaultQG = false;
+        this.conf = "";
+    }
 
     public String getName() {
         return name;
@@ -34,11 +44,19 @@ public class QualityGate {
         this.name = name;
     }
 
-    public Boolean isDefault() {
+    /**
+     * Return true if it is the default quality gate
+     * @return boolean
+     */
+    public boolean isDefault() {
         return defaultQG;
     }
 
-    public void setDefault(Boolean defaultQG) {
+    /**
+     * Set the default field
+     * @param defaultQG true if it is the default gate
+     */
+    public void setDefault(boolean defaultQG) {
         this.defaultQG = defaultQG;
     }
 

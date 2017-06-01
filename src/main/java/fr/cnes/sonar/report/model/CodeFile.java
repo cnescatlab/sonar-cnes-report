@@ -2,6 +2,7 @@ package fr.cnes.sonar.report.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Represents a source code file
@@ -28,7 +29,7 @@ public class CodeFile {
      * @param content Content of the file
      */
     public CodeFile(String name, String path, String[] content) {
-        this.setName(name);
+        this.name = name;
         this.path = path;
         this.content = new ArrayList<>();
         this.content.addAll(Arrays.asList(content));
@@ -50,10 +51,20 @@ public class CodeFile {
         this.path = path;
     }
 
+    /**
+     * Get content as an array and not a list
+     * @return an array of strings
+     */
     public String[] getContent() {
-        return (String[]) content.toArray();
+        String[] res = new String[content.size()];
+        content.toArray(res);
+        return res;
     }
 
+    /**
+     * Set the list of content from an array
+     * @param content array for setting the list
+     */
     public void setContent(String[] content) {
         this.content.addAll(Arrays.asList(content));
     }
@@ -65,6 +76,13 @@ public class CodeFile {
      * @return Array of strings containing wanted lines
      */
     public String[] getLines(int start, int end) {
-        return (String[]) content.subList(start, end).toArray();
+        // get the wanted sub list
+        List<String> subList = content.subList(start, end);
+        // create a new array to conatain the result
+        String[] res = new String[subList.size()];
+        // convert list to array
+        subList.toArray(res);
+
+        return res;
     }
 }

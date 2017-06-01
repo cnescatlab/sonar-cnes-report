@@ -23,7 +23,8 @@ public class JsonExporter implements IExporter {
      * @throws IOException ...
      */
     @Override
-    public void export(Object data, Params params, String filename) throws BadExportationDataTypeException, UnknownParameterException, IOException {
+    public void export(Object data, Params params, String filename)
+            throws BadExportationDataTypeException, UnknownParameterException, IOException {
 
         // check if the data format is correct
         if(!(data instanceof String)) {

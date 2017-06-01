@@ -28,8 +28,8 @@ public class Measure {
      * @param value value for value
      */
     public Measure(String metric, String value) {
-        setMetric(metric);
-        setValue(value);
+        this.metric = metric;
+        this.value = value;
     }
 
     public String getMetric() {

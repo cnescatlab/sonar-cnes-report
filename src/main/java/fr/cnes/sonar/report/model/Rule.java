@@ -30,50 +30,109 @@ public class Rule {
      */
     private String htmlDesc;
 
+    /**
+     * Default constructor
+     */
+    public Rule() {
+        this.key = "";
+        this.repo = "";
+        this.name = "";
+        this.severity = "";
+        this.htmlDesc = "";
+    }
+
+    /**
+     * Getter for key
+     * @return key
+     */
     public String getKey() {
         return key;
     }
 
+    /**
+     * Setter for key
+     * @param key value
+     */
     public void setKey(String key) {
         this.key = key;
     }
 
+    /**
+     * Getter for repo
+     * @return repo
+     */
     public String getRepo() {
         return repo;
     }
 
+    /**
+     * Setter for repo
+     * @param repo value
+     */
     public void setRepo(String repo) {
         this.repo = repo;
     }
 
+    /**
+     * Getter for name
+     * @return name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Setter for name
+     * @param name value
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Getter for severity
+     * @return severity
+     */
     public String getSeverity() {
         return severity;
     }
 
+    /**
+     * Setter for severity
+     * @param severity value
+     */
     public void setSeverity(String severity) {
         this.severity = severity;
     }
 
+    /**
+     * Getter for type
+     * @return type
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * Setter for type
+     * @param type value
+     */
     public void setType(String type) {
         this.type = type;
     }
 
+    /**
+     * Getter for htmlDesc
+     * @return htmlDesc
+     */
     public String getHtmlDesc() {
         return htmlDesc;
     }
 
+    /**
+     * Setter for htmlDesc
+     * @param htmlDesc value
+     */
     public void setHtmlDesc(String htmlDesc) {
         this.htmlDesc = htmlDesc;
     }

@@ -1,15 +1,19 @@
 package fr.cnes.sonar.report.exporters;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
+import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.model.Issue;
 import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.params.Params;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
+import org.docx4j.openpackaging.exceptions.InvalidFormatException;
 import org.docx4j.openpackaging.packages.SpreadsheetMLPackage;
 import org.docx4j.openpackaging.parts.PartName;
 import org.docx4j.openpackaging.parts.SpreadsheetML.WorksheetPart;
 import org.xlsx4j.jaxb.Context;
 import org.xlsx4j.sml.*;
 
+import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +29,14 @@ public class XlsXExporter implements IExporter {
      * @param data Data to export as Report
      * @param params Program's parameters
      * @param filename Name of the file to export
-     * @throws Exception ...
+     * @throws BadExportationDataTypeException ...
+     * @throws UnknownParameterException report.path is not set
+     * @throws Docx4JException when an error occurred in docx4j
+     * @throws JAXBException when there is a problem with a jaxb element
      */
     @Override
-    public void export(Object data, Params params, String filename) throws Exception {
+    public void export(Object data, Params params, String filename)
+            throws BadExportationDataTypeException, UnknownParameterException, Docx4JException, JAXBException {
         // check data type
         if(!(data instanceof Report)) {
             throw new BadExportationDataTypeException();

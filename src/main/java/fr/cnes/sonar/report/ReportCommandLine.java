@@ -25,6 +25,7 @@ public class ReportCommandLine {
 
     /**
      * Main method
+     * Entry point of the program
      * @param args arguments that will be preprocessed
      */
     public static void main(String[] args) {
@@ -33,7 +34,7 @@ public class ReportCommandLine {
             // preparing args
             Params params = new ParamsFactory().create(args);
 
-            // Files exporters
+            // Files exporters : export the data in the correct file type
             DocXExporter docXExporter = new DocXExporter();
             XmlExporter profileExporter = new XmlExporter();
             JsonExporter gateExporter = new JsonExporter();

@@ -20,27 +20,52 @@ public class QualityProfile {
      */
     private Project[] projects;
 
+    /**
+     * Complete constructor
+     * @param data all the rules and configuration
+     * @param metaData data like name, size, default, etc.
+     */
     public QualityProfile(ProfileData data, ProfileMetaData metaData) {
         this.data = data;
         this.metaData = metaData;
     }
 
+    /**
+     * Getter for projects
+     * @return projects
+     */
     public Project[] getProjects() {
         return projects;
     }
 
+    /**
+     * Setter for projects
+     * @param projects value
+     */
     public void setProjects(Project[] projects) {
         this.projects = projects;
     }
 
+    /**
+     * Getter for project's name
+     * @return project's name
+     */
     public String getName() {
         return this.metaData.getName();
     }
 
+    /**
+     * Getter for configuration
+     * @return configuration
+     */
     public String getConf() {
         return data.getConf();
     }
 
+    /**
+     * Getter for key
+     * @return key
+     */
     public String getKey() {
         return metaData.getKey();
     }
@@ -62,7 +87,9 @@ public class QualityProfile {
             // get current rule
             Rule r = iterator.next();
             // check the current rule's key equals to wanted key
-            rule = r.getKey().equals(key) ? r : null;
+            if(r.getKey().equals(key)) {
+                rule = r;
+            }
         }
 
         return rule;

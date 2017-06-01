@@ -10,8 +10,14 @@ import java.util.HashMap;
  * @author begarco
  */
 public class Params {
+    /**
+     * Map of all parameters
+     */
     private HashMap<String,String> params;
 
+    /**
+     * Default constructor
+     */
     public Params() {
         params = new HashMap<>();
     }

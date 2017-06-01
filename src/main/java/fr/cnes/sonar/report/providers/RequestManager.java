@@ -48,10 +48,17 @@ public class RequestManager {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         // set the request
         HttpGet request = new HttpGet(url);
+        // set content type to json
         request.addHeader("content-type", "application/json");
-        // execute the request
-        HttpResponse result = httpClient.execute(request);
-
+        // future result of the request
+        HttpResponse result;
+        try {
+            // execute the request
+            result = httpClient.execute(request);
+        } finally {
+            // always close the connexion
+            request.reset();
+        }
         // return string result
         return EntityUtils.toString(result.getEntity(), "UTF-8");
     }
@@ -70,8 +77,15 @@ public class RequestManager {
         HttpPost request = new HttpPost(url);
         request.addHeader("content-type", "application/json");
         request.setEntity(new UrlEncodedFormEntity(data));
-        // execute the request
-        HttpResponse result = httpClient.execute(request);
+        // future result of the request
+        HttpResponse result;
+        try {
+            // execute the request
+            result = httpClient.execute(request);
+        } finally {
+            // always close the connexion
+            request.reset();
+        }
 
         // return string result
         return EntityUtils.toString(result.getEntity(), "UTF-8");

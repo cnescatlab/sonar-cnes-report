@@ -89,7 +89,7 @@ public class DocXTools {
      * @throws Exception ...
      */
     static void replaceTable(int numTable, List<List<String>> textToAdd,
-                              WordprocessingMLPackage template) throws Exception {
+                              WordprocessingMLPackage template) {
         List<Object> tables = getAllElementsFromObject(template.getMainDocumentPart(), Tbl.class);
 
         // 1. find the table

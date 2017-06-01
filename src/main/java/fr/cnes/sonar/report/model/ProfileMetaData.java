@@ -27,16 +27,23 @@ public class ProfileMetaData {
     /**
      * is this profile inherited from another one
      */
-    private Boolean isInherited;
+    private boolean isInherited;
     /**
      * is this profile the default one
      */
-    private Boolean isDefault;
+    private boolean isDefault;
     /**
      * how many deprecated rules it contains
      */
     @SerializedName("activeDeprecatedRuleCount")
     private int deprecatedRules;
+
+    /**
+     * Default constructor
+     */
+    public ProfileMetaData() {
+        super();
+    }
 
     public String getKey() {
         return key;

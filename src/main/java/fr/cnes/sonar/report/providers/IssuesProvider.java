@@ -1,8 +1,7 @@
 package fr.cnes.sonar.report.providers;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.model.Facet;
 import fr.cnes.sonar.report.model.Issue;
@@ -12,33 +11,30 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Provides issue items
  * @author begarco
  */
-public class IssuesProvider implements IDataProvider {
+public class IssuesProvider extends AbstractDataProvider {
 
     /**
-     * Logger for the class
+     * Complete constructor
+     * @param params Program's parameters
+     * @throws UnknownParameterException The program does not recognize the parameter
      */
-    private static final Logger LOGGER = Logger.getLogger(IssuesProvider.class.getCanonicalName());
-
-    /**
-     * Params of the program itself
-     */
-    private Params params;
-
-    public IssuesProvider(Params params) {
-        this.setParams(params);
+    public IssuesProvider(Params params) throws UnknownParameterException {
+        super(params);
     }
 
     /**
      * Get all the issues of a project
      * @return Array containing all the issues
+     * @throws IOException when connecting the server
+     * @throws BadSonarQubeRequestException A request is not recognized by the server
      */
-    public List<Issue> getIssues() throws IOException, UnknownParameterException {
+    public List<Issue> getIssues()
+            throws IOException, BadSonarQubeRequestException {
         // results variable
         ArrayList<Issue> res = new ArrayList<>();
 
@@ -47,24 +43,20 @@ public class IssuesProvider implements IDataProvider {
         // current page
         int page = 1;
 
-        // json tool
-        Gson gson = new Gson();
-        // get sonar url
-        String url = getParams().get("sonar.url");
-        // get project key
-        String projectKey = getParams().get("sonar.project.id");
-
         // search all issues of the project
         while(goon) {
-            String request = String.format("%s/api/issues/search?projectKeys=%s&resolved=false&facets=types,rules,severities,directories,fileUuids,tags&ps=%d&p=%d&additionalFields=rules",
-                    url, projectKey, IDataProvider.MAX_PER_PAGE_SONARQUBE, page);
-            String raw = RequestManager.getInstance().get(request);
-            JsonElement json = gson.fromJson(raw, JsonElement.class);
-            JsonObject jo = json.getAsJsonObject();
-            Issue [] tmp = (gson.fromJson(jo.get("issues"), Issue[].class));
+            // prepare the url to get all the issues
+            String request = String.format(GET_ISSUES_REQUEST,
+                    getUrl(), getProjectKey(), AbstractDataProvider.MAX_PER_PAGE_SONARQUBE, page);
+            // perform the request to the server
+            JsonObject jo = request(request);
+            // transform json to Issue objects
+            Issue [] tmp = (getGson().fromJson(jo.get("issues"), Issue[].class));
+            // add them to the final result
             res.addAll(Arrays.asList(tmp));
-            int number = (json.getAsJsonObject().get("total").getAsInt());
-            goon = page*IDataProvider.MAX_PER_PAGE_SONARQUBE < number;
+            // check next results' pages
+            int number = (jo.get("total").getAsInt());
+            goon = page* AbstractDataProvider.MAX_PER_PAGE_SONARQUBE < number;
             page++;
         }
 
@@ -76,41 +68,21 @@ public class IssuesProvider implements IDataProvider {
      * Get all the stats on a project
      * @return A list of facets
      * @throws IOException on data processing error
-     * @throws UnknownParameterException on bad parameter
+     * @throws BadSonarQubeRequestException A request is not recognized by the server
      */
-    public List<Facet> getFacets() throws IOException, UnknownParameterException {
+    public List<Facet> getFacets() throws IOException, BadSonarQubeRequestException {
         // results variable
         ArrayList<Facet> res = new ArrayList<>();
 
-        // json tool
-        Gson gson = new Gson();
-        // get sonar url
-        String url = getParams().get("sonar.url");
-        // get project key
-        String projectKey = getParams().get("sonar.project.id");
-
         // prepare the request
-        String request =
-                String.format("%s/api/issues/search?projectKeys=%s&resolved=false&facets=rules,severities,types&ps=1&p=1",
-                url, projectKey);
-        // apply the request
-        String raw = RequestManager.getInstance().get(request);
-        // prepare json
-        JsonElement json = gson.fromJson(raw, JsonElement.class);
-        JsonObject jo = json.getAsJsonObject();
+        String request = String.format(GET_FACETS_REQUEST, getUrl(), getProjectKey());
+        // contact the server to request the data as json
+        JsonObject jo = request(request);
         // put wanted data in facets array and list
-        Facet [] tmp = (gson.fromJson(jo.get("facets"), Facet[].class));
+        Facet [] tmp = (getGson().fromJson(jo.get("facets"), Facet[].class));
         res.addAll(Arrays.asList(tmp));
 
         // return list of facets
         return res;
-    }
-
-    public Params getParams() {
-        return params;
-    }
-
-    public void setParams(Params params) {
-        this.params = params;
     }
 }

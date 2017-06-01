@@ -34,12 +34,13 @@ public class ReportFactory {
     /**
      * Create a report from program data
      * @return A complete report data model
+     * @throws Exception ...
      * @throws UnknownParameterException a specified parameter does not exist
      * @throws IOException on json problem
      * @throws UnknownQualityProfileException a quality profile is not correct
      * @throws UnknownQualityGateException a quality gate is not correct
      */
-    public Report create() throws UnknownParameterException, IOException, UnknownQualityProfileException, UnknownQualityGateException {
+    public Report create() throws Exception {
         // the new report to return
         Report report = new Report();
 

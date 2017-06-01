@@ -18,12 +18,13 @@ public class XmlExporter implements IExporter {
      * @param data Data to export as String
      * @param params Program's parameters
      * @param filename Name of the file to export
-     * @throws BadExportationDataTypeException ...
+     * @throws BadExportationDataTypeException data format is incorrect
      * @throws UnknownParameterException report.path is not set
      * @throws IOException ...
      */
     @Override
-    public void export(Object data, Params params, String filename) throws BadExportationDataTypeException, UnknownParameterException, IOException {
+    public void export(Object data, Params params, String filename)
+            throws BadExportationDataTypeException, UnknownParameterException, IOException {
 
         // check if the data format is correct
         if(!(data instanceof String)) {

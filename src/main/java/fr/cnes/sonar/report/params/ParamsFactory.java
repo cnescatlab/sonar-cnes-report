@@ -13,7 +13,13 @@ import java.util.logging.Logger;
  */
 public class ParamsFactory {
 
+    /**
+     * Logger for ParamFactory
+     */
     private static final Logger LOGGER = Logger.getLogger(ParamsFactory.class.getCanonicalName());
+    /**
+     * Prefix of all parameters
+     */
     private static final String PARAMETER_START = "--";
 
     /**
@@ -50,7 +56,7 @@ public class ParamsFactory {
                 // add the value if the parameter exist
                 if(params.contains(parameter)) {
                     // check if the parameter is not empty
-                    if(!arg.equals("")) {
+                    if(!"".equals(arg)) {
                         params.put(parameter, arg);
                     }
                     // the current parameter's processing is terminated
@@ -98,7 +104,7 @@ public class ParamsFactory {
             StringBuilder param = new StringBuilder((String) it.next());
             if(param.toString().startsWith("\"") && !(param.toString().endsWith("\""))) {
                 while (it.hasNext() && !(param.toString().endsWith("\""))) {
-                    param.append(" ").append(it.next());
+                    param.append(' ').append(it.next());
                 }
             }
 

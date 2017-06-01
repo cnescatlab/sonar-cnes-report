@@ -28,7 +28,8 @@ public class ConsoleExporter implements IExporter {
      * @throws BadExportationDataTypeException data is not a Report
      */
     @Override
-    public void export(Object data, Params params, String filename) throws BadExportationDataTypeException {
+    public void export(Object data, Params params, String filename)
+            throws BadExportationDataTypeException {
         // check data type
         if(!(data instanceof Report)) {
             throw new BadExportationDataTypeException();
