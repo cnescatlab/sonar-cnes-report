@@ -88,74 +88,146 @@ public class Issue {
         return list;
     }
 
+    /**
+     * Getter for severity
+     * @return severity
+     */
     public String getSeverity() {
         return severity;
     }
 
+    /**
+     * Setter for severity
+     * @param severity value
+     */
     public void setSeverity(String severity) {
         this.severity = severity;
     }
 
+    /**
+     * Getter for key
+     * @return key
+     */
     public String getKey() {
         return key;
     }
 
+    /**
+     * Setter for key
+     * @param key value
+     */
     public void setKey(String key) {
         this.key = key;
     }
 
+    /**
+     * Getter for component (often a file)
+     * @return component
+     */
     public String getComponent() {
         return component;
     }
 
+    /**
+     * Setter for component
+     * @param component value
+     */
     public void setComponent(String component) {
         this.component = component;
     }
 
+    /**
+     * Getter for project
+     * @return project
+     */
     public String getProject() {
         return project;
     }
 
+    /**
+     * Setter for project
+     * @param project value
+     */
     public void setProject(String project) {
         this.project = project;
     }
 
+    /**
+     * Getter for line
+     * @return line
+     */
     public String getLine() {
         return line;
     }
 
+    /**
+     * Setter for line
+     * @param line value
+     */
     public void setLine(String line) {
         this.line = line;
     }
 
+    /**
+     * Getter for status
+     * @return status
+     */
     public String getStatus() {
         return status;
     }
 
+    /**
+     * Setter for status
+     * @param status value
+     */
     public void setStatus(String status) {
         this.status = status;
     }
 
+    /**
+     * Getter for type
+     * @return type
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * Setter for type
+     * @param type value
+     */
     public void setType(String type) {
         this.type = type;
     }
 
+    /**
+     * Getter for message
+     * @return message
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     * Setter for message
+     * @param message value
+     */
     public void setMessage(String message) {
         this.message = message;
     }
 
+    /**
+     * Getter for rule
+     * @return rule
+     */
     public String getRule() {
         return rule;
     }
 
+    /**
+     * Setter for rule
+     * @param rule value
+     */
     public void setRule(String rule) {
         this.rule = rule;
     }
