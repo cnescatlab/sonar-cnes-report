@@ -10,6 +10,8 @@ import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.params.Params;
 import fr.cnes.sonar.report.params.ParamsFactory;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Logger;
 
 /**
@@ -50,10 +52,14 @@ public class ReportCommandLine {
             }
             // export the quality gate
             gateExporter.export(superReport.getQualityGate().getConf(),params,superReport.getQualityGate().getName());
+            String docXFilename = formatFilename("REPORT_FILENAME", superReport.getProjectName());
+
             // export the full docx report
-            docXExporter.export(superReport, params, "analysis-report.docx");
+            docXExporter.export(superReport, params, docXFilename);
+            // construct the docx file name by replacing date and name
+            String xlsXFilename = formatFilename("ISSUES_FILENAME", superReport.getProjectName());
             // export the xlsx issues' list
-            issuesExporter.export(superReport, params, "issues-report.xlsx");
+            issuesExporter.export(superReport, params, xlsXFilename);
         } catch (Exception e) { // on each exception
             // it logs all the stack trace
             for (StackTraceElement ste: e.getStackTrace()) {
@@ -62,6 +68,20 @@ public class ReportCommandLine {
             // prints the help
             help();
         }
+    }
+
+    /**
+     * Format a given filename pattern
+     * Add the date and the project's name
+     * @param propertyName Name of pattern's property
+     * @param projectName Name of the current project
+     * @return a formatted filename
+     */
+    public static String formatFilename(String propertyName, String projectName) {
+        // construct the filename by replacing date and name
+        return ParamsFactory.getProperty(propertyName)
+                .replaceAll("DATE", new SimpleDateFormat("yyyy-MM-dd").format(new Date()))
+                .replaceAll("NAME", projectName);
     }
 
     /**

@@ -3,7 +3,11 @@ package fr.cnes.sonar.report.params;
 import fr.cnes.sonar.report.exceptions.MalformedParameterException;
 import fr.cnes.sonar.report.exceptions.MissingParameterException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
+import fr.cnes.sonar.report.providers.AbstractDataProvider;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -23,13 +27,64 @@ public class ParamsFactory {
     private static final String PARAMETER_START = "--";
 
     /**
+     * Name for properties' file about report
+     */
+    private static final String REPORT_PROPERTIES = "report.properties";
+
+    /**
+     * Contain all the properties related to the report
+     */
+    private static Properties properties;
+
+    /**
+     * Static initialization block for reading .properties
+     */
+    static {
+        // store properties
+        properties = new Properties();
+        // read the file
+        InputStream input = null;
+
+        try {
+            // load properties file as a stream
+            input = AbstractDataProvider.class.getClassLoader().getResourceAsStream(REPORT_PROPERTIES);
+            if(input!=null) {
+                // load properties from the stream in an adapted structure
+                properties.load(input);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(input!=null) {
+                try {
+                    // close the stream if necessary (not null)
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * Give the value of the property corresponding to the key passed as parameter.
+     * It gives only properties related to the report.
+     * @param property Key of the property you want.
+     * @return The value of the property you want as a String.
+     */
+    public static String getProperty(String property) {
+        return properties.getProperty(property);
+    }
+
+    /**
      * Generates a full parameters object from user cli
      * @param args arguments to process
      * @return handled parameters
      * @throws UnknownParameterException A parameter is not known
      * @throws MalformedParameterException A parameter is not correct
      */
-    public Params create(String[] args) throws UnknownParameterException, MalformedParameterException, MissingParameterException {
+    public Params create(String[] args)
+            throws UnknownParameterException, MalformedParameterException, MissingParameterException {
         // output params
         Params params = new Params();
 
@@ -142,12 +197,12 @@ public class ParamsFactory {
         // append all default configuration
         params.put("sonar.url", "");
         params.put("sonar.project.id", "");
-        params.put("sonar.project.quality.profile", "Sonar way");
-        params.put("sonar.project.quality.gate", "CNES");
-        params.put("project.name", "default");
-        params.put("report.author", "default");
-        params.put("report.date", new Date().toString());
-        params.put("report.path", ".");
-        params.put("report.template", "code-analysis-template.docx");
+        params.put("sonar.project.quality.profile", getProperty("sonar.project.quality.profile"));
+        params.put("sonar.project.quality.gate", getProperty("sonar.project.quality.gate"));
+        params.put("project.name", getProperty("project.name"));
+        params.put("report.author", getProperty("report.author"));
+        params.put("report.date", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+        params.put("report.path", getProperty("report.path"));
+        params.put("report.template", getProperty("report.template"));
     }
 }
