@@ -44,6 +44,8 @@ public class RequestManager {
      * @throws IOException error on response
      */
     public String get(String url) throws IOException {
+        // returned string containing the response as raw string
+        String toReturn = "";
         // create a client
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         // set the request
@@ -55,12 +57,14 @@ public class RequestManager {
         try {
             // execute the request
             result = httpClient.execute(request);
+            // convert to string
+            toReturn = EntityUtils.toString(result.getEntity(), "UTF-8");
         } finally {
             // always close the connexion
             request.reset();
         }
         // return string result
-        return EntityUtils.toString(result.getEntity(), "UTF-8");
+        return toReturn;
     }
 
     /**

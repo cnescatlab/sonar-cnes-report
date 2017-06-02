@@ -24,18 +24,34 @@ public class Project {
         this.name = name;
     }
 
+    /**
+     * Getter for key
+     * @return key
+     */
     public String getKey() {
         return key;
     }
 
+    /**
+     * Setter for name
+     * @param key name
+     */
     public void setKey(String key) {
         this.key = key;
     }
 
+    /**
+     * Getter for name
+     * @return name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Setter for name
+     * @param name value
+     */
     public void setName(String name) {
         this.name = name;
     }

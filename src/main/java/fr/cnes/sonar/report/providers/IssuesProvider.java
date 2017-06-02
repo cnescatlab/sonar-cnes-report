@@ -46,8 +46,8 @@ public class IssuesProvider extends AbstractDataProvider {
         // search all issues of the project
         while(goon) {
             // prepare the url to get all the issues
-            String request = String.format(GET_ISSUES_REQUEST,
-                    getUrl(), getProjectKey(), AbstractDataProvider.MAX_PER_PAGE_SONARQUBE, page);
+            String request = String.format(getRequest("GET_ISSUES_REQUEST"),
+                    getUrl(), getProjectKey(), Integer.valueOf(getRequest("MAX_PER_PAGE_SONARQUBE")), page);
             // perform the request to the server
             JsonObject jo = request(request);
             // transform json to Issue objects
@@ -56,7 +56,7 @@ public class IssuesProvider extends AbstractDataProvider {
             res.addAll(Arrays.asList(tmp));
             // check next results' pages
             int number = (jo.get("total").getAsInt());
-            goon = page* AbstractDataProvider.MAX_PER_PAGE_SONARQUBE < number;
+            goon = page* Integer.valueOf(getRequest("MAX_PER_PAGE_SONARQUBE")) < number;
             page++;
         }
 
@@ -75,7 +75,7 @@ public class IssuesProvider extends AbstractDataProvider {
         ArrayList<Facet> res = new ArrayList<>();
 
         // prepare the request
-        String request = String.format(GET_FACETS_REQUEST, getUrl(), getProjectKey());
+        String request = String.format(getRequest("GET_FACETS_REQUEST"), getUrl(), getProjectKey());
         // contact the server to request the data as json
         JsonObject jo = request(request);
         // put wanted data in facets array and list

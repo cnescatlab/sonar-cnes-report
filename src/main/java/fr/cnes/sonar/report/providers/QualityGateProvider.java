@@ -39,7 +39,7 @@ public class QualityGateProvider extends AbstractDataProvider {
         ArrayList<QualityGate> res = new ArrayList<>();
 
         // Get all quality gates
-        String request = String.format(GET_QUALITY_GATES_REQUEST, getUrl());
+        String request = String.format(getRequest("GET_QUALITY_GATES_REQUEST"), getUrl());
         // perform the request to the server
         JsonObject jo = request(request);
 
@@ -49,7 +49,8 @@ public class QualityGateProvider extends AbstractDataProvider {
         // for each quality gate
         for (QualityGate i : tmp) {
             // request the criteria
-            request = String.format(GET_QUALITY_GATES_DETAILS_REQUEST, getUrl(), i.getName().replaceAll(" ", "%20"));
+            request = String.format(getRequest("GET_QUALITY_GATES_DETAILS_REQUEST"),
+                    getUrl(), i.getName().replaceAll(" ", "%20"));
             // perform previous request
             jo = request(request);
 
@@ -74,7 +75,8 @@ public class QualityGateProvider extends AbstractDataProvider {
      * @throws IOException when there are problem reading json
      * @throws UnknownQualityGateException when there is an error on a quality gate
      */
-    public QualityGate getProjectQualityGate() throws IOException, UnknownQualityGateException, BadSonarQubeRequestException {
+    public QualityGate getProjectQualityGate()
+            throws IOException, UnknownQualityGateException, BadSonarQubeRequestException {
         QualityGate res = null;
         QualityGate tmp;
         boolean find = false;

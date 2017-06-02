@@ -8,6 +8,8 @@ import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.params.Params;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
@@ -15,10 +17,6 @@ import java.util.logging.Logger;
  * @author begarco
  */
 public abstract class AbstractDataProvider {
-    /**
-     * Number max of results per page
-     */
-    final static int MAX_PER_PAGE_SONARQUBE = 500;
 
     /**
      * Logger for the class
@@ -26,41 +24,14 @@ public abstract class AbstractDataProvider {
     static final Logger LOGGER = Logger.getLogger(AbstractDataProvider.class.getCanonicalName());
 
     /**
-     * Request to get the list of metrics
+     * Name for properties' file about requests
      */
-    static final String GET_MEASURES_REQUEST = "%s/api/measures/component?componentKey=%s&metricKeys=ncloc,duplicated_lines_density,coverage,sqale_rating,reliability_rating,security_rating,alert_status,complexity,function_complexity,file_complexity,class_complexity,blocker_violations,critical_violations,major_violations,minor_violations,info_violations,new_violations,bugs,vulnerabilities,code_smells";
+    private static final String REQUESTS_PROPERTIES = "requests.properties";
+
     /**
-     * Request to get the list of quality gates
+     * Contain all the properties related to requests
      */
-    static final String GET_QUALITY_GATES_REQUEST = "%s/api/qualitygates/list";
-    /**
-     * Request to get the details of a quality gate
-     */
-    static final String GET_QUALITY_GATES_DETAILS_REQUEST = "%s/api/qualitygates/show?name=%s";
-    /**
-     * Request to get the list of quality profiles
-     */
-    static final String GET_QUALITY_PROFILES_REQUEST = "%s/api/qualityprofiles/search?projectKey=%s";
-    /**
-     * Request to get the configuration file of a quality profile
-     */
-    static final String GET_QUALITY_PROFILES_CONFIGURATION_REQUEST = "%s/api/qualityprofiles/export?language=%s&name=%s";
-    /**
-     * Request to get the list of rules of a profile
-     */
-    static final String GET_QUALITY_PROFILES_RULES_REQUEST = "%s/api/rules/search?qprofile=%s&f=htmlDesc,name,repo,severity&ps=%d&p=%d";
-    /**
-     * Request to get the list of projects linked to a profile
-     */
-    static final String GET_QUALITY_PROFILES_PROJECTS_REQUEST = "%s/api/qualityprofiles/projects?key=%s";
-    /**
-     * Request to get the list of issues linked to a project
-     */
-    static final String GET_ISSUES_REQUEST = "%s/api/issues/search?projectKeys=%s&resolved=false&facets=types,rules,severities,directories,fileUuids,tags&ps=%d&p=%d&additionalFields=rules";
-    /**
-     * Request to get the list of a project's facets
-     */
-    static final String GET_FACETS_REQUEST = "%s/api/issues/search?projectKeys=%s&resolved=false&facets=rules,severities,types&ps=1&p=1";
+    private static Properties requests;
 
     /**
      * Params of the program itself
@@ -88,6 +59,36 @@ public abstract class AbstractDataProvider {
     private String qualityGateName;
 
     /**
+     * Static initialization block for reading .properties
+     */
+    static {
+        // store properties
+        requests = new Properties();
+        // read the file
+        InputStream input = null;
+
+        try {
+            // load properties file as a stream
+            input = AbstractDataProvider.class.getClassLoader().getResourceAsStream(REQUESTS_PROPERTIES);
+            if(input!=null) {
+                // load properties from the stream in an adapted structure
+                requests.load(input);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(input!=null) {
+                try {
+                    // close the stream if necessary (not null)
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
      * Constructor
      * @param params Program's parameters
      * @throws UnknownParameterException when a parameter is not known in the program
@@ -102,6 +103,16 @@ public abstract class AbstractDataProvider {
         this.projectKey = getParams().get("sonar.project.id");
         // get quality gate's name
         this.qualityGateName = getParams().get("sonar.project.quality.gate");
+    }
+
+    /**
+     * Give the value of the property corresponding to the key passed as parameter.
+     * It gives only properties related to requests.
+     * @param property Key of the property you want.
+     * @return The value of the property you want as a String.
+     */
+    static String getRequest(String property) {
+        return requests.getProperty(property);
     }
 
     /**

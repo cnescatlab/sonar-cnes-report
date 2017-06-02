@@ -35,18 +35,34 @@ public class CodeFile {
         this.content.addAll(Arrays.asList(content));
     }
 
+    /**
+     * Getter for filename
+     * @return filename
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Setter for filename
+     * @param name filename
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Getter for file path
+     * @return file path
+     */
     public String getPath() {
         return path;
     }
 
+    /**
+     * Setter for file path
+     * @param path value
+     */
     public void setPath(String path) {
         this.path = path;
     }
