@@ -82,6 +82,7 @@ public class ParamsFactory {
      * @return handled parameters
      * @throws UnknownParameterException A parameter is not known
      * @throws MalformedParameterException A parameter is not correct
+     * @throws MissingParameterException A parameter is missing
      */
     public Params create(String[] args)
             throws UnknownParameterException, MalformedParameterException, MissingParameterException {

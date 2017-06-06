@@ -74,6 +74,7 @@ public class QualityGateProvider extends AbstractDataProvider {
      * @return The Quality Gate
      * @throws IOException when there are problem reading json
      * @throws UnknownQualityGateException when there is an error on a quality gate
+     * @throws BadSonarQubeRequestException when the request is incorrect
      */
     public QualityGate getProjectQualityGate()
             throws IOException, UnknownQualityGateException, BadSonarQubeRequestException {

@@ -111,8 +111,11 @@ public class DocXExporter implements IExporter {
      * Fill the chart "camembert"
      * @param wordMLPackage word document
      * @param facets data as facets
+     * @throws InvalidFormatException ...
+     * @throws JAXBException when manipulating raw xml of the docx
      */
-    private void fillCharts(WordprocessingMLPackage wordMLPackage, List<Facet> facets) throws InvalidFormatException, JAXBException {
+    private void fillCharts(WordprocessingMLPackage wordMLPackage, List<Facet> facets)
+            throws InvalidFormatException, JAXBException {
         // get charts
         Chart chart1 = (Chart) wordMLPackage.getParts().get(new PartName("/word/charts/chart1.xml"));
         Chart chart2 = (Chart) wordMLPackage.getParts().get(new PartName("/word/charts/chart2.xml"));
@@ -246,6 +249,7 @@ public class DocXExporter implements IExporter {
 
     /**
      * Return values of a given facet
+     * @param facets list of facets from which to extract values
      * @param facetName name of th facet to get
      * @return a list (can be empty)
      */

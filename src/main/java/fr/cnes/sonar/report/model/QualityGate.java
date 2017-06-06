@@ -36,10 +36,18 @@ public class QualityGate {
         this.conf = "";
     }
 
+    /**
+     * Getter for the quality gate's name
+     * @return quality gate's name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Setter for the quality gate's name
+     * @param name quality gate's name
+     */
     public void setName(String name) {
         this.name = name;
     }
@@ -60,18 +68,34 @@ public class QualityGate {
         this.defaultQG = defaultQG;
     }
 
+    /**
+     * Getter for the raw configuration
+     * @return quality gate's configuration as string in json format
+     */
     public String getConf() {
         return conf;
     }
 
+    /**
+     * Setter for the raw configuration
+     * @param conf quality gate's configuration as string in json format
+     */
     public void setConf(String conf) {
         this.conf = conf;
     }
 
+    /**
+     * Getter for the quality gate's id
+     * @return quality gate's id
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Setter for the quality gate's id
+     * @param id quality gate's id
+     */
     public void setId(String id) {
         this.id = id;
     }
