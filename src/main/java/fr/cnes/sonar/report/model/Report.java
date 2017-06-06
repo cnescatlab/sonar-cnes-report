@@ -3,6 +3,7 @@ package fr.cnes.sonar.report.model;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Model of a report containing all information
@@ -41,6 +42,10 @@ public class Report {
      * List of measures on the project
      */
     private List<Measure> measures;
+    /**
+     * List of map representing issues
+     */
+    private List<Map> rawIssues;
 
     /**
      * Default constructor
@@ -61,7 +66,7 @@ public class Report {
      * @return issues
      */
     public List<Issue> getIssues() {
-        return issues;
+        return new ArrayList<>(issues);
     }
 
     /**
@@ -69,7 +74,7 @@ public class Report {
      * @param issues value
      */
     public void setIssues(List<Issue> issues) {
-        this.issues = issues;
+        this.issues = new ArrayList<>(issues);
     }
 
     /**
@@ -125,7 +130,7 @@ public class Report {
      * @return qualityProfiles
      */
     public List<QualityProfile> getQualityProfiles() {
-        return qualityProfiles;
+        return new ArrayList<>(qualityProfiles);
     }
 
     /**
@@ -133,7 +138,7 @@ public class Report {
      * @param qualityProfiles value
      */
     public void setQualityProfiles(List<QualityProfile> qualityProfiles) {
-        this.qualityProfiles = qualityProfiles;
+        this.qualityProfiles = new ArrayList<>(qualityProfiles);
     }
 
     /**
@@ -157,7 +162,7 @@ public class Report {
      * @return measures
      */
     public List<Measure> getMeasures() {
-        return measures;
+        return new ArrayList<>(measures);
     }
 
     /**
@@ -165,7 +170,7 @@ public class Report {
      * @param measures value
      */
     public void setMeasures(List<Measure> measures) {
-        this.measures = measures;
+        this.measures = new ArrayList<>(measures);
     }
 
     /**
@@ -173,7 +178,7 @@ public class Report {
      * @return facets
      */
     public List<Facet> getFacets() {
-        return facets;
+        return new ArrayList<>(facets);
     }
 
     /**
@@ -181,7 +186,7 @@ public class Report {
      * @param facets value
      */
     public void setFacets(List<Facet> facets) {
-        this.facets = facets;
+        this.facets = new ArrayList<>(facets);
     }
 
     /**
@@ -225,7 +230,7 @@ public class Report {
         // result initialization
         Rule rule = null;
 
-        // browse all qualilty profile
+        // browse all quality profile
         Iterator iterator = getQualityProfiles().iterator();
 
         // search for the rule with the asking key
@@ -238,5 +243,20 @@ public class Report {
 
         // return the found rule, can be null
         return rule;
+    }
+
+    /**
+     * Get a list of map representing issues
+     */
+    public List<Map> getRawIssues() {
+        return new ArrayList<>(rawIssues);
+    }
+
+    /**
+     * Set the list of raw issues
+     * @param rawIssues list of map
+     */
+    public void setRawIssues(List<Map> rawIssues) {
+        this.rawIssues = new ArrayList<>(rawIssues);
     }
 }

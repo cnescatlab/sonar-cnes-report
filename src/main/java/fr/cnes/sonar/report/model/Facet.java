@@ -30,7 +30,7 @@ public class Facet {
      * @return  list of values
      */
     public List<Value> getValues() {
-        return values;
+        return new ArrayList<>(values);
     }
 
     /**
@@ -38,7 +38,7 @@ public class Facet {
      * @param values list of values
      */
     public void setValues(List<Value> values) {
-        this.values = values;
+        this.values = new ArrayList<>(values);
     }
 
     /**

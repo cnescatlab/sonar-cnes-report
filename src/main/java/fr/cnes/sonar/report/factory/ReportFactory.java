@@ -1,8 +1,8 @@
 package fr.cnes.sonar.report.factory;
 
+import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
-import fr.cnes.sonar.report.exceptions.UnknownQualityProfileException;
 import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.params.Params;
 import fr.cnes.sonar.report.providers.IssuesProvider;
@@ -34,13 +34,11 @@ public class ReportFactory {
     /**
      * Create a report from program data
      * @return A complete report data model
-     * @throws Exception ...
      * @throws UnknownParameterException a specified parameter does not exist
      * @throws IOException on json problem
-     * @throws UnknownQualityProfileException a quality profile is not correct
      * @throws UnknownQualityGateException a quality gate is not correct
      */
-    public Report create() throws Exception {
+    public Report create() throws UnknownParameterException, IOException, BadSonarQubeRequestException, UnknownQualityGateException {
         // the new report to return
         Report report = new Report();
 
@@ -58,8 +56,9 @@ public class ReportFactory {
         report.setProjectDate(params.get("report.date"));
         // measures's setting
         report.setMeasures(mp.getMeasures());
-        // issues's setting
+        // formatted issues and raw issues' setting
         report.setIssues(ip.getIssues());
+        report.setRawIssues(ip.getRawIssues());
         // facets's setting
         report.setFacets(ip.getFacets());
         // quality profile's setting

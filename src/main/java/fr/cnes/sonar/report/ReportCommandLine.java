@@ -1,5 +1,6 @@
 package fr.cnes.sonar.report;
 
+import fr.cnes.sonar.report.exceptions.*;
 import fr.cnes.sonar.report.exporters.JsonExporter;
 import fr.cnes.sonar.report.exporters.XlsXExporter;
 import fr.cnes.sonar.report.exporters.XmlExporter;
@@ -9,7 +10,10 @@ import fr.cnes.sonar.report.model.QualityProfile;
 import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.params.Params;
 import fr.cnes.sonar.report.params.ParamsFactory;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
 
+import javax.xml.bind.JAXBException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Logger;
@@ -60,7 +64,9 @@ public class ReportCommandLine {
             String xlsXFilename = formatFilename("ISSUES_FILENAME", superReport.getProjectName());
             // export the xlsx issues' list
             issuesExporter.export(superReport, params, xlsXFilename);
-        } catch (Exception e) { // on each exception
+        } catch (BadExportationDataTypeException | JAXBException | MalformedParameterException |
+                Docx4JException | BadSonarQubeRequestException | IOException | UnknownParameterException |
+                MissingParameterException | UnknownQualityGateException e) {
             // it logs all the stack trace
             for (StackTraceElement ste: e.getStackTrace()) {
                 LOGGER.severe(ste.toString());

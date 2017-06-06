@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides issue items
@@ -39,6 +40,42 @@ public class IssuesProvider extends AbstractDataProvider {
         ArrayList<Issue> res = new ArrayList<>();
 
         // stop condition
+        boolean goOn = true;
+        // current page
+        int page = 1;
+
+        // search all issues of the project
+        while(goOn) {
+            // prepare the url to get all the issues
+            String request = String.format(getRequest(GET_ISSUES_REQUEST),
+                    getUrl(), getProjectKey(), Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)), page);
+            // perform the request to the server
+            JsonObject jo = request(request);
+            // transform json to Issue objects
+            Issue [] tmp = (getGson().fromJson(jo.get(ISSUES), Issue[].class));
+            // add them to the final result
+            res.addAll(Arrays.asList(tmp));
+            // check next results' pages
+            int number = (jo.get(TOTAL).getAsInt());
+            goOn = page* Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)) < number;
+            page++;
+        }
+
+        // return the issues
+        return res;
+    }
+
+    /**
+     * Get all the issues of a project in a raw format (map)
+     * @return Array containing all the issues as maps
+     * @throws IOException when connecting the server
+     * @throws BadSonarQubeRequestException A request is not recognized by the server
+     */
+    public List<Map> getRawIssues() throws IOException, BadSonarQubeRequestException {
+        // results variable
+        ArrayList<Map> res = new ArrayList<>();
+
+        // stop condition
         boolean goon = true;
         // current page
         int page = 1;
@@ -46,17 +83,17 @@ public class IssuesProvider extends AbstractDataProvider {
         // search all issues of the project
         while(goon) {
             // prepare the url to get all the issues
-            String request = String.format(getRequest("GET_ISSUES_REQUEST"),
-                    getUrl(), getProjectKey(), Integer.valueOf(getRequest("MAX_PER_PAGE_SONARQUBE")), page);
+            String request = String.format(getRequest(GET_ISSUES_REQUEST),
+                    getUrl(), getProjectKey(), Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)), page);
             // perform the request to the server
             JsonObject jo = request(request);
             // transform json to Issue objects
-            Issue [] tmp = (getGson().fromJson(jo.get("issues"), Issue[].class));
+            Map [] tmp = (getGson().fromJson(jo.get(ISSUES), Map[].class));
             // add them to the final result
             res.addAll(Arrays.asList(tmp));
             // check next results' pages
-            int number = (jo.get("total").getAsInt());
-            goon = page* Integer.valueOf(getRequest("MAX_PER_PAGE_SONARQUBE")) < number;
+            int number = (jo.get(TOTAL).getAsInt());
+            goon = page* Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)) < number;
             page++;
         }
 
@@ -75,11 +112,11 @@ public class IssuesProvider extends AbstractDataProvider {
         ArrayList<Facet> res = new ArrayList<>();
 
         // prepare the request
-        String request = String.format(getRequest("GET_FACETS_REQUEST"), getUrl(), getProjectKey());
+        String request = String.format(getRequest(GET_FACETS_REQUEST), getUrl(), getProjectKey());
         // contact the server to request the data as json
         JsonObject jo = request(request);
         // put wanted data in facets array and list
-        Facet [] tmp = (getGson().fromJson(jo.get("facets"), Facet[].class));
+        Facet [] tmp = (getGson().fromJson(jo.get(FACETS), Facet[].class));
         res.addAll(Arrays.asList(tmp));
 
         // return list of facets

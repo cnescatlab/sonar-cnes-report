@@ -13,13 +13,13 @@ public class Params {
     /**
      * Map of all parameters
      */
-    private HashMap<String,String> params;
+    private HashMap<String,String> paramsMap;
 
     /**
      * Default constructor
      */
     public Params() {
-        params = new HashMap<>();
+        paramsMap = new HashMap<>();
     }
 
     /**
@@ -27,7 +27,7 @@ public class Params {
      * @return true if a parameter exists
      */
     public boolean contains(String key) {
-        return this.params.containsKey(key);
+        return this.paramsMap.containsKey(key);
     }
 
     /**
@@ -39,7 +39,7 @@ public class Params {
         if(!contains(key)) {
             throw new UnknownParameterException(key);
         }
-        return params.get(key);
+        return paramsMap.get(key);
     }
 
     /**
@@ -48,17 +48,17 @@ public class Params {
      * @param value the value of the parameter
      */
     public void put(String key, String value) {
-        this.params.put(key, value);
+        this.paramsMap.put(key, value);
     }
 
     /**
      * Check if is itself correct
-     * @return yes if the params are correct
+     * @return yes if the paramsMap are correct
      * @throws MissingParameterException when a parameter is not given
      */
     public boolean isReliable() throws MissingParameterException {
         // review all pairs
-        for(HashMap.Entry<String, String> entry : params.entrySet()) {
+        for(HashMap.Entry<String, String> entry : paramsMap.entrySet()) {
             // get current key
             String key = entry.getKey();
             // get current value

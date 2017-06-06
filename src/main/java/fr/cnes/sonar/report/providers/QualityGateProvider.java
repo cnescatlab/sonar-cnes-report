@@ -39,17 +39,17 @@ public class QualityGateProvider extends AbstractDataProvider {
         ArrayList<QualityGate> res = new ArrayList<>();
 
         // Get all quality gates
-        String request = String.format(getRequest("GET_QUALITY_GATES_REQUEST"), getUrl());
+        String request = String.format(getRequest(GET_QUALITY_GATES_REQUEST), getUrl());
         // perform the request to the server
         JsonObject jo = request(request);
 
         // Get quality gates criteria
-        String defaultQG = (getGson().fromJson(jo.get("default"), String.class));
-        QualityGate[] tmp = (getGson().fromJson(jo.get("qualitygates"), QualityGate[].class));
+        String defaultQG = (getGson().fromJson(jo.get(DEFAULT), String.class));
+        QualityGate[] tmp = (getGson().fromJson(jo.get(QUALITYGATES), QualityGate[].class));
         // for each quality gate
         for (QualityGate i : tmp) {
             // request the criteria
-            request = String.format(getRequest("GET_QUALITY_GATES_DETAILS_REQUEST"),
+            request = String.format(getRequest(GET_QUALITY_GATES_DETAILS_REQUEST),
                     getUrl(), i.getName().replaceAll(" ", "%20"));
             // perform previous request
             jo = request(request);

@@ -31,7 +31,7 @@ public class ProfileData {
      * @return rules' list
      */
     public List<Rule> getRules() {
-        return rules;
+        return new ArrayList<>(rules);
     }
 
     /**
@@ -39,7 +39,7 @@ public class ProfileData {
      * @param rules a list of rules
      */
     public void setRules(List<Rule> rules) {
-        this.rules = rules;
+        this.rules = new ArrayList<>(rules);
     }
 
     /**

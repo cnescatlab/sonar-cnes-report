@@ -148,7 +148,9 @@ public class DocXTools {
         int it = 0;
         for (Object object : textElements) {
             Text text = (Text) object;
-            String replacementValue = cells.get(it++);
+            String replacementValue = cells.get(it);
+            // increment the index
+            it++;
             if (replacementValue != null) {
                 text.setValue(replacementValue);
             }

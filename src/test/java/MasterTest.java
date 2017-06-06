@@ -10,9 +10,18 @@ import java.util.*;
  */
 public class MasterTest {
 
+    /**
+     * Stubbed report for tests
+     */
     protected Report report;
+    /**
+     * stubbed parameters for testing
+     */
     protected Params params;
 
+    /**
+     * Setting of all stubbed data before launching a test
+     */
     @Before
     public void before() {
         report = new Report();

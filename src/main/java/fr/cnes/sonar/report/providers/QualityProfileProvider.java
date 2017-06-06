@@ -37,17 +37,17 @@ public class QualityProfileProvider extends AbstractDataProvider {
         ArrayList<QualityProfile> res = new ArrayList<>();
 
         // Get all quality profiles (metadata)
-        String request = String.format(getRequest("GET_QUALITY_PROFILES_REQUEST"),
+        String request = String.format(getRequest(GET_QUALITY_PROFILES_REQUEST),
                 getUrl(), getProjectKey());
         // perform the previous request
         JsonObject jo = request(request);
 
         // Get quality profiles data
-        ProfileMetaData[] metaData = (getGson().fromJson(jo.get("profiles"), ProfileMetaData[].class));
+        ProfileMetaData[] metaData = (getGson().fromJson(jo.get(PROFILES), ProfileMetaData[].class));
         for (ProfileMetaData profileMetaData : metaData) {
             ProfileData profileData = new ProfileData();
             // get configuration
-            request = String.format(getRequest("GET_QUALITY_PROFILES_CONFIGURATION_REQUEST"),
+            request = String.format(getRequest(GET_QUALITY_PROFILES_CONFIGURATION_REQUEST),
                     getUrl(), profileMetaData.getLanguage().replaceAll(" ", "%20"),
                     profileMetaData.getName().replaceAll(" ", "%20"));
             // perform request to sonarqube server
@@ -65,30 +65,30 @@ public class QualityProfileProvider extends AbstractDataProvider {
             // continue until there are no more results
             while(goon) {
                 // prepare the request
-                request = String.format(getRequest("GET_QUALITY_PROFILES_RULES_REQUEST"),
+                request = String.format(getRequest(GET_QUALITY_PROFILES_RULES_REQUEST),
                         getUrl(), profileMetaData.getKey().replaceAll(" ", "%20"),
-                        Integer.valueOf(getRequest("MAX_PER_PAGE_SONARQUBE")), page);
+                        Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)), page);
                 // perform the previous request to sonarqube server
                 jo = request(request);
                 // convert json to Rule objects
-                Rule [] tmp = (getGson().fromJson(jo.get("rules"), Rule[].class));
+                Rule [] tmp = (getGson().fromJson(jo.get(RULES), Rule[].class));
                 // add rules to the result list
                 rules.addAll(Arrays.asList(tmp));
 
                 // check if there are other pages
-                int number = (jo.get("total").getAsInt());
-                goon = page* Integer.valueOf(getRequest("MAX_PER_PAGE_SONARQUBE")) < number;
+                int number = (jo.get(TOTAL).getAsInt());
+                goon = page* Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)) < number;
                 page++;
             }
             profileData.setRules(rules);
 
             // get projects linked to the profile
-            request = String.format(getRequest("GET_QUALITY_PROFILES_PROJECTS_REQUEST"),
+            request = String.format(getRequest(GET_QUALITY_PROFILES_PROJECTS_REQUEST),
                     getUrl(), profileMetaData.getKey());
             // perform a request
             jo = request(request);
             // convert json to Project objects
-            Project[] projects = (getGson().fromJson(jo.get("results"), Project[].class));
+            Project[] projects = (getGson().fromJson(jo.get(RESULTS), Project[].class));
 
             // create and add the new quality profile
             QualityProfile qualityProfile = new QualityProfile(profileData, profileMetaData);

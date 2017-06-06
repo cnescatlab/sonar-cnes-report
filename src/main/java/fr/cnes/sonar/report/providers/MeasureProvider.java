@@ -39,11 +39,11 @@ public class MeasureProvider extends AbstractDataProvider {
 
         // send a request to sonarqube server and return th response as a json object
         // if there is an error on server side this method throws an exception
-        JsonObject jo = request(String.format(getRequest("GET_MEASURES_REQUEST"),
+        JsonObject jo = request(String.format(getRequest(GET_MEASURES_REQUEST),
                 getUrl(), getProjectKey()));
 
         // put json in a list of measures
-        Measure[] tmp = (getGson().fromJson(jo.get("component").getAsJsonObject().get("measures"), Measure[].class));
+        Measure[] tmp = (getGson().fromJson(jo.get(COMPONENT).getAsJsonObject().get(MEASURES), Measure[].class));
         // then add all measure to the results list
         res.addAll(Arrays.asList(tmp));
 

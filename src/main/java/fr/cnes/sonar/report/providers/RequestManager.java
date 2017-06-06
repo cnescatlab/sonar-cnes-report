@@ -19,6 +19,19 @@ import java.util.List;
 public class RequestManager {
 
     /**
+     * Encoding for http content
+     */
+    private static final String UTF_8 = "UTF-8";
+    /**
+     * Header http for setting the content type of a request
+     */
+    private static final String CONTENT_TYPE = "content-type";
+    /**
+     * Json type for a content
+     */
+    private static final String APPLICATION_JSON = "application/json";
+
+    /**
      * Instance of the singleton
      */
     private static RequestManager ourInstance = new RequestManager();
@@ -27,7 +40,7 @@ public class RequestManager {
      * Return the unique instance
      * @return the singleton
      */
-    public static RequestManager getInstance() {
+    static RequestManager getInstance() {
         return ourInstance;
     }
 
@@ -51,14 +64,14 @@ public class RequestManager {
         // set the request
         HttpGet request = new HttpGet(url);
         // set content type to json
-        request.addHeader("content-type", "application/json");
+        request.addHeader(CONTENT_TYPE, APPLICATION_JSON);
         // future result of the request
         HttpResponse result;
         try {
             // execute the request
             result = httpClient.execute(request);
             // convert to string
-            toReturn = EntityUtils.toString(result.getEntity(), "UTF-8");
+            toReturn = EntityUtils.toString(result.getEntity(), UTF_8);
         } finally {
             // always close the connexion
             request.reset();
@@ -79,7 +92,7 @@ public class RequestManager {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         // set the request
         HttpPost request = new HttpPost(url);
-        request.addHeader("content-type", "application/json");
+        request.addHeader(CONTENT_TYPE, APPLICATION_JSON);
         request.setEntity(new UrlEncodedFormEntity(data));
         // future result of the request
         HttpResponse result;
@@ -92,6 +105,6 @@ public class RequestManager {
         }
 
         // return string result
-        return EntityUtils.toString(result.getEntity(), "UTF-8");
+        return EntityUtils.toString(result.getEntity(), UTF_8);
     }
 }

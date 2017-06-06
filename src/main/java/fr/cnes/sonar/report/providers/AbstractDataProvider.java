@@ -29,6 +29,87 @@ public abstract class AbstractDataProvider {
     private static final String REQUESTS_PROPERTIES = "requests.properties";
 
     /**
+     *  Name of the request for getting quality profiles' linked projects
+     */
+    static final String GET_QUALITY_PROFILES_PROJECTS_REQUEST = "GET_QUALITY_PROFILES_PROJECTS_REQUEST";
+    /**
+     *  Name of the request for getting quality gates' details
+     */
+    static final String GET_QUALITY_GATES_DETAILS_REQUEST = "GET_QUALITY_GATES_DETAILS_REQUEST";
+    /**
+     *  Name of the request for getting quality profiles' linked rules
+     */
+    static final String GET_QUALITY_PROFILES_RULES_REQUEST = "GET_QUALITY_PROFILES_RULES_REQUEST";
+    /**
+     *  Name of the request for getting issues
+     */
+    static final String GET_ISSUES_REQUEST = "GET_ISSUES_REQUEST";
+    /**
+     *  Name of the request for getting facets
+     */
+    static final String GET_FACETS_REQUEST = "GET_FACETS_REQUEST";
+    /**
+     *  Name of the property for the maximum number of results per page
+     */
+    static final String MAX_PER_PAGE_SONARQUBE = "MAX_PER_PAGE_SONARQUBE";
+    /**
+     *  Name of the request for getting quality gates
+     */
+    static final String GET_QUALITY_GATES_REQUEST = "GET_QUALITY_GATES_REQUEST";
+    /**
+     *  Name of the request for getting measures
+     */
+    static final String GET_MEASURES_REQUEST = "GET_MEASURES_REQUEST";
+    /**
+     *  Name of the request for getting quality profiles
+     */
+    static final String GET_QUALITY_PROFILES_REQUEST = "GET_QUALITY_PROFILES_REQUEST";
+    /**
+     *  Name of the request for getting quality profiles' configuration
+     */
+    static final String GET_QUALITY_PROFILES_CONFIGURATION_REQUEST = "GET_QUALITY_PROFILES_CONFIGURATION_REQUEST";
+    /**
+     * Field to search in json to get results' values
+     */
+    static final String RESULTS = "results";
+    /**
+     * Field to search in json to get profiles
+     */
+    static final String PROFILES = "profiles";
+    /**
+     * Field to search in json to get issues
+     */
+    static final String ISSUES = "issues";
+    /**
+     * Field to search in json to get the total page's number
+     */
+    static final String TOTAL = "total";
+    /**
+     * Field to search in json to get facets
+     */
+    static final String FACETS = "facets";
+    /**
+     * Field to search in json to get the component
+     */
+    static final String COMPONENT = "component";
+    /**
+     * Field to search in json to get measures
+     */
+    static final String MEASURES = "measures";
+    /**
+     * Field to search in json to get the boolean saying if a profile is the default one
+     */
+    static final String DEFAULT = "default";
+    /**
+     * Field to search in json to get quality gates
+     */
+    static final String QUALITYGATES = "qualitygates";
+    /**
+     * Field to search in json to get rules
+     */
+    static final String RULES = "rules";
+
+    /**
      * Contain all the properties related to requests
      */
     private static Properties requests;
@@ -75,14 +156,22 @@ public abstract class AbstractDataProvider {
                 requests.load(input);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.severe(e.getMessage());
+            // it logs all the stack trace
+            for (StackTraceElement ste: e.getStackTrace()) {
+                LOGGER.severe(ste.toString());
+            }
         } finally {
             if(input!=null) {
                 try {
                     // close the stream if necessary (not null)
                     input.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    LOGGER.severe(e.getMessage());
+                    // it logs all the stack trace
+                    for (StackTraceElement ste: e.getStackTrace()) {
+                        LOGGER.severe(ste.toString());
+                    }
                 }
             }
         }
@@ -151,7 +240,12 @@ public abstract class AbstractDataProvider {
         try {
             json = getGson().fromJson(raw, JsonElement.class);
         } catch (Exception e) {
-            e.printStackTrace();
+            // log exception's message
+            LOGGER.severe(e.getMessage());
+            // it logs all the stack trace
+            for (StackTraceElement ste: e.getStackTrace()) {
+                LOGGER.severe(ste.toString());
+            }
             throw new BadSonarQubeRequestException("Server answered: " + raw);
         }
 

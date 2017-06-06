@@ -79,7 +79,7 @@ public class DocXExporter implements IExporter {
         DocXTools.replacePlaceholder(wordMLPackage, report.getQualityGate().getName() + ".xml", "XX-QUALITYGATEFILE-XX");
         DocXTools.replacePlaceholder(wordMLPackage, report.getQualityProfilesName(), "XX-QUALITYPROFILENAME-XX");
         DocXTools.replacePlaceholder(wordMLPackage, report.getQualityProfilesFilename(), "XX-QUALITYPROFILEFILE-XX");
-        // Synthese placeholders
+        // Synthesis placeholders
         for (Measure m : report.getMeasures()) {
             DocXTools.replacePlaceholder(wordMLPackage,
                     m.getMetric().contains("rating")?numberToLetter(m.getValue()):m.getValue(),
