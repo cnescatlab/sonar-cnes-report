@@ -2,8 +2,9 @@ package fr.cnes.sonar.report.exporters;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
-import fr.cnes.sonar.report.params.Params;
+import fr.cnes.sonar.report.input.Params;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
+import org.xlsx4j.exceptions.Xlsx4jException;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
@@ -26,5 +27,5 @@ public interface IExporter {
      */
     void export(Object data, Params params, String filename)
             throws BadExportationDataTypeException, UnknownParameterException,
-            IOException, Docx4JException, JAXBException;
+            IOException, Docx4JException, JAXBException, Xlsx4jException;
 }

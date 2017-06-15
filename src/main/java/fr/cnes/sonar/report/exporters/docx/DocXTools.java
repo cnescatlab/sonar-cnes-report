@@ -27,7 +27,7 @@ public class DocXTools {
      * @param toSearch class to search
      * @return list of contained objects
      */
-    static List<Object> getAllElementsFromObject(Object obj, Class<?> toSearch) {
+    public static List<Object> getAllElementsFromObject(Object obj, Class<?> toSearch) {
         // create a list of results
         List<Object> result = new ArrayList<>();
         // get the value of the JAXBElement if it is

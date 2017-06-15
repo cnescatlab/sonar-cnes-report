@@ -1,4 +1,4 @@
-package fr.cnes.sonar.report.params;
+package fr.cnes.sonar.report.input;
 
 import fr.cnes.sonar.report.exceptions.MissingParameterException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;

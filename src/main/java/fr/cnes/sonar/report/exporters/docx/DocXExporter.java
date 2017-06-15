@@ -4,7 +4,7 @@ import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.exporters.IExporter;
 import fr.cnes.sonar.report.model.*;
-import fr.cnes.sonar.report.params.Params;
+import fr.cnes.sonar.report.input.Params;
 import org.docx4j.Docx4J;
 import org.docx4j.XmlUtils;
 import org.docx4j.dml.chart.CTChartSpace;
@@ -19,10 +19,7 @@ import org.docx4j.openpackaging.parts.relationships.RelationshipsPart;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Exports the report in .docx format
@@ -63,11 +60,15 @@ public class DocXExporter implements IExporter {
 
         // Add issues
         List<List<String>> issues = getIssues(report);
-        DocXTools.replaceTable(4, issues, wordMLPackage);
+        DocXTools.replaceTable(6, issues, wordMLPackage);
+
+        // Add metrics
+        List<List<String>> types = getTypes(report);
+        DocXTools.replaceTable(5, types, wordMLPackage);
 
         // Add metrics
         List<List<String>> metrics = getMetrics(report);
-        DocXTools.replaceTable(5, metrics, wordMLPackage);
+        DocXTools.replaceTable(4, metrics, wordMLPackage);
 
         // Replacement of placeholder
         // report meta data placeholders
@@ -88,6 +89,54 @@ public class DocXExporter implements IExporter {
 
         // Save the result
         wordMLPackage.save(new File(params.get("report.path")+"/"+filename));
+    }
+
+    private List<List<String>> getTypes(Report report) {
+        // result to return
+        List<List<String>> results = new ArrayList<>();
+
+        String[] types = {"VULNERABILITY", "BUG", "CODE SMELL"};
+        String[] severities = {"BLOCKER", "CRITICAL", "MAJOR", "MINOR", "INFO"};
+
+        for(String type : types) {
+            for (String severity : severities) {
+                final long[] nb = {0};
+                final long[] debt = {0};
+                // we sum all issues with a type and a severity
+                report.getIssues().forEach(issue -> {
+                    if(issue.getType().equals(type) && issue.getSeverity().equals(severity)) {
+                        nb[0] = nb[0] + 1;
+                        debt[0] = debt[0] + debtToLong(issue.getEffort());
+                    }
+                });
+                // we add it to the list
+                List<String> item = new ArrayList<>();
+                item.add(type);
+                item.add(severity);
+                item.add(String.valueOf(nb[0]));
+                item.add(String.valueOf(debt[0])+"min");
+                results.add(item);
+            }
+        }
+
+        return results;
+    }
+
+    /**
+     * Get the effort in minutes
+     * @param effort Effort as a string (1h30min)
+     * @return long
+     */
+    private long debtToLong(String effort) {
+        // remove min from the time
+        String tmp = effort.replaceAll("min", "");
+        // parse hours
+        List<String> list = Arrays.asList(tmp.split("h"));
+        // reverse the list
+        Collections.reverse(list);
+
+        // calculate and return minutes sum
+        return Long.valueOf(list.get(0)) + (list.size()>1?Long.valueOf(list.get(1))*60:0);
     }
 
     /**
@@ -228,6 +277,8 @@ public class DocXExporter implements IExporter {
                 issue.add(rule.getSeverity());
                 // add number
                 issue.add(Integer.toString(v.getCount()));
+                // add technical debt
+                issue.add(rule.getDebt());
             } else { // else set just known information
                 // add name
                 issue.add(v.getVal());
@@ -239,6 +290,8 @@ public class DocXExporter implements IExporter {
                 issue.add("?");
                 // add number
                 issue.add(Integer.toString(v.getCount()));
+                // add technical debt
+                issue.add("?");
             }
 
             issues.add(issue);

@@ -1,5 +1,5 @@
 import fr.cnes.sonar.report.model.*;
-import fr.cnes.sonar.report.params.Params;
+import fr.cnes.sonar.report.input.Params;
 import org.junit.Before;
 
 import java.util.*;
@@ -95,13 +95,15 @@ public class MasterTest {
         report.setMeasures(measures);
 
         params.put("sonar.url", "http://sonarqube:9000");
+       // params.put("sonar.url", "https://sonar.garcon.ovh");
         params.put("sonar.project.id", "sonar-report-cnes");
         params.put("sonar.project.quality.profile", "CNES_JAVA_C");
         params.put("sonar.project.quality.gate", "CNES");
         params.put("project.name", "Sonar Report CNES");
         params.put("report.author", "Benoît Garçon");
         params.put("report.date", new Date().toString());
-        params.put("report.path", ".");
+        params.put("report.path", "./target");
         params.put("report.template", "src/main/resources/template/code-analysis-template.docx");
+        params.put("issues.template", "src/main/resources/template/issues-template.xlsx");
     }
 }

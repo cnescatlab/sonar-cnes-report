@@ -3,8 +3,8 @@ package fr.cnes.sonar.report.exporters;
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.model.Issue;
 import fr.cnes.sonar.report.model.Report;
-import fr.cnes.sonar.report.params.Params;
-import fr.cnes.sonar.report.params.ParamsFactory;
+import fr.cnes.sonar.report.input.Params;
+import fr.cnes.sonar.report.input.ParamsFactory;
 
 import java.util.List;
 import java.util.logging.Logger;

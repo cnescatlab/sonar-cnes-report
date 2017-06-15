@@ -29,6 +29,10 @@ public class Rule {
      * Represents the sonarqube's HTML description of the rule
      */
     private String htmlDesc;
+    /**
+     * Represents the sonarqube's technical debt relative to this rule
+     */
+    private String debtRemFnCoeff;
 
     /**
      * Default constructor
@@ -55,6 +59,22 @@ public class Rule {
      */
     public void setKey(String key) {
         this.key = key;
+    }
+
+    /**
+     * Getter for debt
+     * @return debt
+     */
+    public String getDebt() {
+        return debtRemFnCoeff;
+    }
+
+    /**
+     * Setter for debt
+     * @param debt value
+     */
+    public void setDebt(String debt) {
+        this.debtRemFnCoeff = debt;
     }
 
     /**

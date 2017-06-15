@@ -8,7 +8,7 @@ public class DocXExporterTest extends MasterTest {
 //    public void variousTries() throws Exception {
 //        DocXExporter de = new DocXExporter();
 //
-//        de.export(report, params, "analysis-report.docx");
+//        de.export(report, input, "analysis-report.docx");
 //    }
 
 }

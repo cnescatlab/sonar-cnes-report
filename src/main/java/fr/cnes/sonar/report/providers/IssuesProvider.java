@@ -5,7 +5,7 @@ import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.model.Facet;
 import fr.cnes.sonar.report.model.Issue;
-import fr.cnes.sonar.report.params.Params;
+import fr.cnes.sonar.report.input.Params;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class IssuesProvider extends AbstractDataProvider {
     public List<Issue> getIssues()
             throws IOException, BadSonarQubeRequestException {
         // results variable
-        ArrayList<Issue> res = new ArrayList<>();
+        final ArrayList<Issue> res = new ArrayList<>();
 
         // stop condition
         boolean goOn = true;
@@ -46,18 +46,20 @@ public class IssuesProvider extends AbstractDataProvider {
 
         // search all issues of the project
         while(goOn) {
+            // get maximum number of results per page
+            final int maxPerPage = Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE));
             // prepare the url to get all the issues
-            String request = String.format(getRequest(GET_ISSUES_REQUEST),
-                    getUrl(), getProjectKey(), Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)), page);
+            final String request = String.format(getRequest(GET_ISSUES_REQUEST),
+                    getUrl(), getProjectKey(), maxPerPage, page);
             // perform the request to the server
-            JsonObject jo = request(request);
+            final JsonObject jo = request(request);
             // transform json to Issue objects
-            Issue [] tmp = (getGson().fromJson(jo.get(ISSUES), Issue[].class));
+            final Issue [] tmp = (getGson().fromJson(jo.get(ISSUES), Issue[].class));
             // add them to the final result
             res.addAll(Arrays.asList(tmp));
             // check next results' pages
-            int number = (jo.get(TOTAL).getAsInt());
-            goOn = page* Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)) < number;
+            final int number = (jo.get(TOTAL).getAsInt());
+            goOn = page* maxPerPage < number;
             page++;
         }
 
@@ -82,9 +84,11 @@ public class IssuesProvider extends AbstractDataProvider {
 
         // search all issues of the project
         while(goon) {
+            // get maximum number of results per page
+            final int maxPerPage = Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE));
             // prepare the url to get all the issues
             String request = String.format(getRequest(GET_ISSUES_REQUEST),
-                    getUrl(), getProjectKey(), Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)), page);
+                    getUrl(), getProjectKey(), maxPerPage, page);
             // perform the request to the server
             JsonObject jo = request(request);
             // transform json to Issue objects
@@ -93,7 +97,7 @@ public class IssuesProvider extends AbstractDataProvider {
             res.addAll(Arrays.asList(tmp));
             // check next results' pages
             int number = (jo.get(TOTAL).getAsInt());
-            goon = page* Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)) < number;
+            goon = page* maxPerPage < number;
             page++;
         }
 
@@ -109,14 +113,14 @@ public class IssuesProvider extends AbstractDataProvider {
      */
     public List<Facet> getFacets() throws IOException, BadSonarQubeRequestException {
         // results variable
-        ArrayList<Facet> res = new ArrayList<>();
+        final ArrayList<Facet> res = new ArrayList<>();
 
         // prepare the request
-        String request = String.format(getRequest(GET_FACETS_REQUEST), getUrl(), getProjectKey());
+        final String request = String.format(getRequest(GET_FACETS_REQUEST), getUrl(), getProjectKey());
         // contact the server to request the data as json
-        JsonObject jo = request(request);
+        final JsonObject jo = request(request);
         // put wanted data in facets array and list
-        Facet [] tmp = (getGson().fromJson(jo.get(FACETS), Facet[].class));
+        final Facet [] tmp = (getGson().fromJson(jo.get(FACETS), Facet[].class));
         res.addAll(Arrays.asList(tmp));
 
         // return list of facets

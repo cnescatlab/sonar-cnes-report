@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
-import fr.cnes.sonar.report.params.Params;
+import fr.cnes.sonar.report.input.Params;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -276,7 +276,7 @@ public abstract class AbstractDataProvider {
     }
 
     /**
-     * Getter for params
+     * Getter for input
      * @return a Params object
      */
     private Params getParams() {
@@ -284,7 +284,7 @@ public abstract class AbstractDataProvider {
     }
 
     /**
-     * Setter for params
+     * Setter for input
      * @param params the value to give
      */
     private void setParams(Params params) {

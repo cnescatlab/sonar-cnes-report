@@ -38,6 +38,10 @@ public class Issue {
      */
     private String status;
     /**
+     * Issue's effort
+     */
+    private String effort;
+    /**
      * Issue's type
      */
     private String type;
@@ -230,5 +234,21 @@ public class Issue {
      */
     public void setRule(String rule) {
         this.rule = rule;
+    }
+
+    /**
+     * Issue's effort
+     * @return Effort as String and postfixed with 'min'
+     */
+    public String getEffort() {
+        return effort;
+    }
+
+    /**
+     * Setter for the effort or debt
+     * @param effort debt to set
+     */
+    public void setEffort(String effort) {
+        this.effort = effort;
     }
 }

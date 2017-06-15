@@ -2,7 +2,7 @@ package fr.cnes.sonar.report.exporters;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
-import fr.cnes.sonar.report.params.Params;
+import fr.cnes.sonar.report.input.Params;
 
 import java.io.File;
 import java.io.FileWriter;

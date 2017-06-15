@@ -1,4 +1,4 @@
-package fr.cnes.sonar.report.params;
+package fr.cnes.sonar.report.input;
 
 import fr.cnes.sonar.report.exceptions.MalformedParameterException;
 import fr.cnes.sonar.report.exceptions.MissingParameterException;
@@ -86,7 +86,7 @@ public class ParamsFactory {
      */
     public Params create(String[] args)
             throws UnknownParameterException, MalformedParameterException, MissingParameterException {
-        // output params
+        // output input
         Params params = new Params();
 
         // currently handled parameter
@@ -152,11 +152,11 @@ public class ParamsFactory {
         // fill out raw
         raw.addAll(Arrays.asList(args));
 
-        // construction of new params
+        // construction of new input
         Iterator it = raw.iterator();
         while(it.hasNext()) {
 
-            // construction of blank separated params
+            // construction of blank separated input
             StringBuilder param = new StringBuilder((String) it.next());
             if(param.toString().startsWith("\"") && !(param.toString().endsWith("\""))) {
                 while (it.hasNext() && !(param.toString().endsWith("\""))) {
@@ -205,5 +205,6 @@ public class ParamsFactory {
         params.put("report.date", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
         params.put("report.path", getProperty("report.path"));
         params.put("report.template", getProperty("report.template"));
+        params.put("issues.template", getProperty("issues.template"));
     }
 }

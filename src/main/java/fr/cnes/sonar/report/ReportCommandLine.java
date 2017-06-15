@@ -2,15 +2,15 @@ package fr.cnes.sonar.report;
 
 import fr.cnes.sonar.report.exceptions.*;
 import fr.cnes.sonar.report.exporters.JsonExporter;
-import fr.cnes.sonar.report.exporters.XlsXExporter;
 import fr.cnes.sonar.report.exporters.XmlExporter;
 import fr.cnes.sonar.report.exporters.docx.DocXExporter;
+import fr.cnes.sonar.report.exporters.xlsx.XlsXExporter;
 import fr.cnes.sonar.report.factory.ReportFactory;
 import fr.cnes.sonar.report.model.QualityProfile;
 import fr.cnes.sonar.report.model.Report;
-import fr.cnes.sonar.report.params.Params;
-import fr.cnes.sonar.report.params.ParamsFactory;
-import org.docx4j.openpackaging.exceptions.Docx4JException;
+import fr.cnes.sonar.report.input.Params;
+import fr.cnes.sonar.report.input.ParamsFactory;
+import org.xlsx4j.exceptions.Xlsx4jException;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class ReportCommandLine {
      * Entry point of the program
      * @param args arguments that will be preprocessed
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Xlsx4jException {
         // main catch all exceptions
         try {
             // preparing args
@@ -54,23 +54,26 @@ public class ReportCommandLine {
             for(QualityProfile qp : superReport.getQualityProfiles()) {
                 profileExporter.export(qp.getConf(), params, qp.getKey());
             }
+
             // export the quality gate
             gateExporter.export(superReport.getQualityGate().getConf(),params,superReport.getQualityGate().getName());
-            String docXFilename = formatFilename("REPORT_FILENAME", superReport.getProjectName());
 
+            // prepare docx report's filename
+            String docXFilename = formatFilename("REPORT_FILENAME", superReport.getProjectName());
             // export the full docx report
-            docXExporter.export(superReport, params, docXFilename);
-            // construct the docx file name by replacing date and name
+            //docXExporter.export(superReport, input, docXFilename);
+            // construct the xlsx filename by replacing date and name
             String xlsXFilename = formatFilename("ISSUES_FILENAME", superReport.getProjectName());
             // export the xlsx issues' list
             issuesExporter.export(superReport, params, xlsXFilename);
-        } catch (BadExportationDataTypeException | JAXBException | MalformedParameterException |
-                Docx4JException | BadSonarQubeRequestException | IOException | UnknownParameterException |
+        } catch (BadExportationDataTypeException | MalformedParameterException |
+                BadSonarQubeRequestException | IOException | UnknownParameterException |
                 MissingParameterException | UnknownQualityGateException e) {
             // it logs all the stack trace
             for (StackTraceElement ste: e.getStackTrace()) {
                 LOGGER.severe(ste.toString());
             }
+            e.printStackTrace();
             // prints the help
             help();
         }
@@ -106,6 +109,7 @@ public class ReportCommandLine {
                 "  > --report.date\n" +
                 "  > --report.path\n" +
                 "  > --report.template\n" +
+                "  > --issues.template\n" +
                 "Exemple :\n" +
                 "java -jar sonar-report-cnes.jar --sonar.url http://sonarqube:9000 --sonar.project.id genius-sonar");
     }

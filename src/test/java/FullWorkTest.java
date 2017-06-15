@@ -1,12 +1,10 @@
 //import fr.cnes.sonar.report.exporters.JsonExporter;
-//import fr.cnes.sonar.report.exporters.XlsXExporter;
 //import fr.cnes.sonar.report.exporters.XmlExporter;
 //import fr.cnes.sonar.report.exporters.docx.DocXExporter;
+//import fr.cnes.sonar.report.exporters.xlsx.XlsXExporter;
 //import fr.cnes.sonar.report.factory.ReportFactory;
 //import fr.cnes.sonar.report.model.QualityProfile;
 //import fr.cnes.sonar.report.model.Report;
-//import fr.cnes.sonar.report.params.Params;
-//import fr.cnes.sonar.report.params.ParamsFactory;
 //import org.junit.Test;
 //
 //import static fr.cnes.sonar.report.ReportCommandLine.formatFilename;
