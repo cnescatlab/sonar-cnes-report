@@ -10,6 +10,7 @@ import fr.cnes.sonar.report.model.QualityProfile;
 import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.input.Params;
 import fr.cnes.sonar.report.input.ParamsFactory;
+import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.xlsx4j.exceptions.Xlsx4jException;
 
 import javax.xml.bind.JAXBException;
@@ -34,7 +35,7 @@ public class ReportCommandLine {
      * Entry point of the program
      * @param args arguments that will be preprocessed
      */
-    public static void main(String[] args) throws Xlsx4jException {
+    public static void main(String[] args) {
         // main catch all exceptions
         try {
             // preparing args
@@ -61,14 +62,14 @@ public class ReportCommandLine {
             // prepare docx report's filename
             String docXFilename = formatFilename("REPORT_FILENAME", superReport.getProjectName());
             // export the full docx report
-            //docXExporter.export(superReport, input, docXFilename);
+            docXExporter.export(superReport, params, docXFilename);
             // construct the xlsx filename by replacing date and name
             String xlsXFilename = formatFilename("ISSUES_FILENAME", superReport.getProjectName());
             // export the xlsx issues' list
             issuesExporter.export(superReport, params, xlsXFilename);
         } catch (BadExportationDataTypeException | MalformedParameterException |
                 BadSonarQubeRequestException | IOException | UnknownParameterException |
-                MissingParameterException | UnknownQualityGateException e) {
+                MissingParameterException | UnknownQualityGateException | JAXBException | Docx4JException e) {
             // it logs all the stack trace
             for (StackTraceElement ste: e.getStackTrace()) {
                 LOGGER.severe(ste.toString());

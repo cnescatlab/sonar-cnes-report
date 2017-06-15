@@ -63,6 +63,7 @@ public class Issue {
         this.project = "";
         this.status = "";
         this.type = "";
+        this.effort = "0";
     }
 
     /**
