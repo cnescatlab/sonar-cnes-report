@@ -32,47 +32,50 @@ class XlsXTools {
         // Create an object of type XSSFTable containing the template table for selected data
         XSSFTable table = findTableByName(sheet, tableName);
 
-        // get CTTable object
-        CTTable cttable = table.getCTTable();
+        // check that the table exists
+        if(null!=table) {
+            // get CTTable object
+            CTTable cttable = table.getCTTable();
 
-        // Define the data range including headers
-        AreaReference allDataRange = new AreaReference(new CellReference(0, 0), new CellReference(list.size(), headers.size()-1));
+            // Define the data range including headers
+            AreaReference allDataRange = new AreaReference(new CellReference(0, 0), new CellReference(list.size(), headers.size() - 1));
 
-        // Set Range to the Table
-        cttable.setRef(allDataRange.formatAsString());
+            // Set Range to the Table
+            cttable.setRef(allDataRange.formatAsString());
 
-        // set number of columns in the table
-        CTTableColumns columns = cttable.getTableColumns();
-        long oldCount = columns.getCount();
-        columns.setCount(headers.size());
+            // set number of columns in the table
+            CTTableColumns columns = cttable.getTableColumns();
+            long oldCount = columns.getCount();
+            columns.setCount(headers.size());
 
-        // define header information for the table
-        for (long i = oldCount; i < headers.size(); i++) {
-            CTTableColumn column = columns.addNewTableColumn();
-            column.setId(i+1);
-        }
-
-        // row index: 0 is the header
-        int rowIndex = 0;
-
-        // create the headers' row and add it to the sheet
-        createRow(sheet, rowIndex++, headers);
-
-        // we add a row for each map in the list
-        for(Map<Object,Object> map : list) {
-            // will contain all the values sorted as needed to comply to the header
-            String[] content = new String[headers.size()];
-
-            // adding each field of the map in a different column of the row
-            for(Map.Entry issue : map.entrySet()) {
-                // index of the column to fill comparing key and headers
-                int index = headers.indexOf(issue.getKey().toString());
-                // get the cell having the same key as the header
-                content[index] = issue.getValue().toString();
+            // define header information for the table
+            for (long i = oldCount; i < headers.size(); i++) {
+                CTTableColumn column = columns.addNewTableColumn();
+                column.setId(i + 1);
             }
 
-            // create a row from data as string's list
-            createRow(sheet, rowIndex++, Arrays.asList(content));
+            // row index: 0 is the header
+            int rowIndex = 0;
+
+            // create the headers' row and add it to the sheet
+            createRow(sheet, rowIndex++, headers);
+
+            // we add a row for each map in the list
+            for (Map<Object, Object> map : list) {
+                // will contain all the values sorted as needed to comply to the header
+                String[] content = new String[headers.size()];
+
+                // adding each field of the map in a different column of the row
+                for (Map.Entry issue : map.entrySet()) {
+                    // index of the column to fill comparing key and headers
+                    int index = headers.indexOf(issue.getKey().toString());
+                    // get the cell having the same key as the header
+                    content[index] = issue.getValue().toString();
+                }
+
+                // create a row from data as string's list
+                createRow(sheet, rowIndex++, Arrays.asList(content));
+            }
         }
     }
 

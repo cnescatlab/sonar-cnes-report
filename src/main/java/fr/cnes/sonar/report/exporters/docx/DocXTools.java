@@ -86,7 +86,6 @@ public class DocXTools {
      * @param numTable index of the table
      * @param textToAdd list of lines to add
      * @param template template to fill out
-     * @throws Exception ...
      */
     static void replaceTable(int numTable, List<List<String>> textToAdd,
                               WordprocessingMLPackage template) {

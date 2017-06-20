@@ -96,8 +96,7 @@ public class MasterTest {
 
         params.put("sonar.url", "http://sonarqube:9000");
        // params.put("sonar.url", "https://sonar.garcon.ovh");
-        params.put("sonar.project.id", "sonar-report-cnes");
-        params.put("sonar.project.quality.profile", "CNES_JAVA_C");
+        params.put("sonar.project.id", "demo-plugin");
         params.put("sonar.project.quality.gate", "CNES");
         params.put("project.name", "Sonar Report CNES");
         params.put("report.author", "Benoît Garçon");

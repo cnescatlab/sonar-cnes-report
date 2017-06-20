@@ -3,8 +3,8 @@ package fr.cnes.sonar.report.exporters.docx;
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.exporters.IExporter;
-import fr.cnes.sonar.report.model.*;
 import fr.cnes.sonar.report.input.Params;
+import fr.cnes.sonar.report.model.*;
 import org.docx4j.Docx4J;
 import org.docx4j.XmlUtils;
 import org.docx4j.dml.chart.CTChartSpace;
@@ -91,30 +91,35 @@ public class DocXExporter implements IExporter {
         wordMLPackage.save(new File(params.get("report.path")+"/"+filename));
     }
 
+    /**
+     * Prepare list of data to be print in a table
+     * Data are lines containing the number of issues by severity and type
+     * @param report report from which to extract data
+     * @return list of lists of strings
+     */
     private List<List<String>> getTypes(Report report) {
         // result to return
         List<List<String>> results = new ArrayList<>();
 
-        String[] types = {"VULNERABILITY", "BUG", "CODE SMELL"};
+        String[] types = {"VULNERABILITY", "BUG", "CODE_SMELL"};
         String[] severities = {"BLOCKER", "CRITICAL", "MAJOR", "MINOR", "INFO"};
 
         for(String type : types) {
             for (String severity : severities) {
-                final long[] nb = {0};
-                final long[] debt = {0};
+                // accumulator for the number of occurrences
+                long nb = 0;
                 // we sum all issues with a type and a severity
-                report.getIssues().forEach(issue -> {
+                for(Issue issue : report.getIssues()) {
                     if(issue.getType().equals(type) && issue.getSeverity().equals(severity)) {
-                        nb[0] = nb[0] + 1;
-                        debt[0] = debt[0] + debtToLong(issue.getEffort());
+                        nb++;
                     }
-                });
+                }
                 // we add it to the list
                 List<String> item = new ArrayList<>();
                 item.add(type);
                 item.add(severity);
-                item.add(String.valueOf(nb[0]));
-                item.add(String.valueOf(debt[0])+"min");
+                item.add(String.valueOf(nb));
+                // add the whole line to the results
                 results.add(item);
             }
         }
@@ -277,8 +282,6 @@ public class DocXExporter implements IExporter {
                 issue.add(rule.getSeverity());
                 // add number
                 issue.add(Integer.toString(v.getCount()));
-                // add technical debt
-                issue.add(rule.getDebt());
             } else { // else set just known information
                 // add name
                 issue.add(v.getVal());
@@ -290,8 +293,6 @@ public class DocXExporter implements IExporter {
                 issue.add("?");
                 // add number
                 issue.add(Integer.toString(v.getCount()));
-                // add technical debt
-                issue.add("?");
             }
 
             issues.add(issue);
