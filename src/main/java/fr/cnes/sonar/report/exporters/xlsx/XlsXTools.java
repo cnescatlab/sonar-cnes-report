@@ -32,8 +32,8 @@ class XlsXTools {
         // Create an object of type XSSFTable containing the template table for selected data
         XSSFTable table = findTableByName(sheet, tableName);
 
-        // check that the table exists
-        if(null!=table) {
+        // check that there are data to print and the table exists
+        if(headers.size() > 0 && null!=table) {
             // get CTTable object
             CTTable cttable = table.getCTTable();
 

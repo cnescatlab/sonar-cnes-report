@@ -58,7 +58,8 @@ public class XlsXExporter implements IExporter {
      * @throws IOException when reading a file
      */
     @Override
-    public void export(Object data, Params params, String filename) throws BadExportationDataTypeException, IOException, UnknownParameterException {
+    public void export(Object data, Params params, String filename)
+            throws BadExportationDataTypeException, IOException, UnknownParameterException {
         // check data type
         if(!(data instanceof Report)) {
             throw new BadExportationDataTypeException();
