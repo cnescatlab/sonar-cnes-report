@@ -6,17 +6,17 @@ import fr.cnes.sonar.report.exporters.XmlExporter;
 import fr.cnes.sonar.report.exporters.docx.DocXExporter;
 import fr.cnes.sonar.report.exporters.xlsx.XlsXExporter;
 import fr.cnes.sonar.report.factory.ReportFactory;
-import fr.cnes.sonar.report.model.QualityProfile;
-import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.input.Params;
 import fr.cnes.sonar.report.input.ParamsFactory;
+import fr.cnes.sonar.report.model.QualityProfile;
+import fr.cnes.sonar.report.model.Report;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
-import org.xlsx4j.exceptions.Xlsx4jException;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -36,7 +36,7 @@ public class ReportCommandLine {
      * @param args arguments that will be preprocessed
      */
     public static void main(String[] args) {
-        // main catch all exceptions
+        // main catches all exceptions
         try {
             // preparing args
             Params params = new ParamsFactory().create(args);
@@ -63,6 +63,7 @@ public class ReportCommandLine {
             String docXFilename = formatFilename("REPORT_FILENAME", superReport.getProjectName());
             // export the full docx report
             docXExporter.export(superReport, params, docXFilename);
+
             // construct the xlsx filename by replacing date and name
             String xlsXFilename = formatFilename("ISSUES_FILENAME", superReport.getProjectName());
             // export the xlsx issues' list
@@ -71,10 +72,7 @@ public class ReportCommandLine {
                 BadSonarQubeRequestException | IOException | UnknownParameterException |
                 MissingParameterException | UnknownQualityGateException | JAXBException | Docx4JException e) {
             // it logs all the stack trace
-            for (StackTraceElement ste: e.getStackTrace()) {
-                LOGGER.severe(ste.toString());
-            }
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE,e.getMessage(), e);
             // prints the help
             help();
         }

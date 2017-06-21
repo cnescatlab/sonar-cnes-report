@@ -10,6 +10,7 @@ import fr.cnes.sonar.report.input.Params;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -156,22 +157,16 @@ public abstract class AbstractDataProvider {
                 requests.load(input);
             }
         } catch (IOException e) {
-            LOGGER.severe(e.getMessage());
             // it logs all the stack trace
-            for (StackTraceElement ste: e.getStackTrace()) {
-                LOGGER.severe(ste.toString());
-            }
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } finally {
             if(input!=null) {
                 try {
                     // close the stream if necessary (not null)
                     input.close();
                 } catch (IOException e) {
-                    LOGGER.severe(e.getMessage());
                     // it logs all the stack trace
-                    for (StackTraceElement ste: e.getStackTrace()) {
-                        LOGGER.severe(ste.toString());
-                    }
+                    LOGGER.log(Level.SEVERE, e.getMessage(), e);
                 }
             }
         }

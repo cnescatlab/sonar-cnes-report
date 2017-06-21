@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -53,14 +54,14 @@ public class ParamsFactory {
                 properties.load(input);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } finally {
             if(input!=null) {
                 try {
                     // close the stream if necessary (not null)
                     input.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.SEVERE, e.getMessage(), e);
                 }
             }
         }
