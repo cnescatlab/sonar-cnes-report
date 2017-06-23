@@ -47,7 +47,7 @@ public class IssuesProvider extends AbstractDataProvider {
         // search all issues of the project
         while(goOn) {
             // get maximum number of results per page
-            final int maxPerPage = Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE));
+            final int maxPerPage = Integer.parseInt(getRequest(MAX_PER_PAGE_SONARQUBE));
             // prepare the url to get all the issues
             final String request = String.format(getRequest(GET_ISSUES_REQUEST),
                     getUrl(), getProjectKey(), maxPerPage, page);
@@ -85,7 +85,7 @@ public class IssuesProvider extends AbstractDataProvider {
         // search all issues of the project
         while(goon) {
             // get maximum number of results per page
-            final int maxPerPage = Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE));
+            final int maxPerPage = Integer.parseInt(getRequest(MAX_PER_PAGE_SONARQUBE));
             // prepare the url to get all the issues
             String request = String.format(getRequest(GET_ISSUES_REQUEST),
                     getUrl(), getProjectKey(), maxPerPage, page);

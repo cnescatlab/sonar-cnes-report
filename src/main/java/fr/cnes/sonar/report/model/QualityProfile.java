@@ -35,7 +35,7 @@ public class QualityProfile {
      * @return projects
      */
     public Project[] getProjects() {
-        return projects;
+        return projects.clone();
     }
 
     /**
@@ -43,7 +43,7 @@ public class QualityProfile {
      * @param projects value
      */
     public void setProjects(Project[] projects) {
-        this.projects = projects;
+        this.projects = projects.clone();
     }
 
     /**

@@ -19,15 +19,23 @@ import java.util.List;
  * Different tools to manipulate docx
  * @author garconb
  */
-public class DocXTools {
+public final class DocXTools {
+
+    /**
+     * Private constructor to hide the public one
+     */
+    private DocXTools() {}
 
     /**
      * Utils to get all the elements inside a specific element
-     * @param obj object to explore
+     * @param object object to explore
      * @param toSearch class to search
      * @return list of contained objects
      */
-    public static List<Object> getAllElementsFromObject(Object obj, Class<?> toSearch) {
+    public static List<Object> getAllElementsFromObject(Object object, Class<?> toSearch) {
+        // object to process
+        Object obj = object;
+
         // create a list of results
         List<Object> result = new ArrayList<>();
         // get the value of the JAXBElement if it is

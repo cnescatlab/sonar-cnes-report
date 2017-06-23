@@ -16,7 +16,7 @@ import java.util.List;
  * Provides issue items
  * @author begarco
  */
-public class RequestManager {
+public final class RequestManager {
 
     /**
      * Encoding for http content
@@ -37,17 +37,17 @@ public class RequestManager {
     private static RequestManager ourInstance = new RequestManager();
 
     /**
+     * Use of private constructor to singletonize this class
+     */
+    private RequestManager() {
+    }
+
+    /**
      * Return the unique instance
      * @return the singleton
      */
     static RequestManager getInstance() {
         return ourInstance;
-    }
-
-    /**
-     * Use of private constructor to singletonize this class
-     */
-    private RequestManager() {
     }
 
     /**
@@ -58,7 +58,7 @@ public class RequestManager {
      */
     public String get(String url) throws IOException {
         // returned string containing the response as raw string
-        String toReturn = "";
+        String toReturn;
         // create a client
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         // set the request

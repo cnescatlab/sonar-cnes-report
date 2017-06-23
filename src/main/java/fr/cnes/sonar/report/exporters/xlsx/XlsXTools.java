@@ -17,14 +17,20 @@ import java.util.*;
  * Different tools to manipulate docx
  * @author garconb
  */
-class XlsXTools {
+public final class XlsXTools {
+
+    /**
+     * Private constructor to hide the public one
+     */
+    private XlsXTools() {}
+
     /**
      * Add a list of Map in an excel sheet
      * @param sheet sheet to fill out
      * @param list list of map to put
      * @param tableName name of the table to fill out
      */
-    static void addListOfMap(XSSFSheet sheet, List<Map> list, String tableName) {
+    public static void addListOfMap(XSSFSheet sheet, List<Map> list, String tableName) {
 
         // get the headers list
         List<String> headers = extractHeader(list);
@@ -33,7 +39,7 @@ class XlsXTools {
         XSSFTable table = findTableByName(sheet, tableName);
 
         // check that there are data to print and the table exists
-        if(headers.size() > 0 && null!=table) {
+        if(!headers.isEmpty() && null!=table) {
             // get CTTable object
             CTTable cttable = table.getCTTable();
 
@@ -58,7 +64,10 @@ class XlsXTools {
             int rowIndex = 0;
 
             // create the headers' row and add it to the sheet
-            createRow(sheet, rowIndex++, headers);
+            createRow(sheet, rowIndex, headers);
+
+            // go to the first data line
+            rowIndex++;
 
             // we add a row for each map in the list
             for (Map<Object, Object> map : list) {
@@ -74,7 +83,9 @@ class XlsXTools {
                 }
 
                 // create a row from data as string's list
-                createRow(sheet, rowIndex++, Arrays.asList(content));
+                createRow(sheet, rowIndex, Arrays.asList(content));
+                // go to the next line
+                rowIndex++;
             }
         }
     }
@@ -84,7 +95,7 @@ class XlsXTools {
      * @param list List of map whose you want to extract keys
      * @return a list of strings
      */
-    static List<String> extractHeader(List<Map> list) {
+    public static List<String> extractHeader(List<Map> list) {
         // list of header titles to be returned
         List<String> result = new ArrayList<>();
         // gather all unique keys of all maps
@@ -110,7 +121,7 @@ class XlsXTools {
      * @param index Index of the row to create
      * @param list data to fill out the row  @return a filled out row
      */
-    static XSSFRow createRow(XSSFSheet sheet, int index, List<String> list) {
+    public static XSSFRow createRow(XSSFSheet sheet, int index, List<String> list) {
         // create a new row from the context, it will be returned
         XSSFRow row = sheet.createRow(index);
 
@@ -119,7 +130,9 @@ class XlsXTools {
 
         // add each element of the list
         for(String s : list) {
-            row.createCell(colIndex++).setCellValue(s);
+            row.createCell(colIndex).setCellValue(s);
+            // go to the next column
+            colIndex++;
         }
 
         // return the header row
@@ -132,7 +145,7 @@ class XlsXTools {
      * @param selectedSheet sheet where we want to write
      * @param selectedTableName Name of the table to fill
      */
-    static void addSelectedData(Report report, XSSFSheet selectedSheet, String selectedTableName) {
+    public static void addSelectedData(Report report, XSSFSheet selectedSheet, String selectedTableName) {
 
         // retrieve issues from report
         List<Issue> issues = report.getIssues();
@@ -140,31 +153,37 @@ class XlsXTools {
         // Create an object of type XSSFTable containing the template table for selected data
         XSSFTable selectedTable = findTableByName(selectedSheet, selectedTableName);
 
-        // get CTTable object
-        CTTable cttable = selectedTable.getCTTable();
+        // check that the table exists
+        if(null!=selectedTable) {
+            // get CTTable object
+            CTTable cttable = selectedTable.getCTTable();
 
-        // Define the data range including headers
-        AreaReference selectedDataRange = new AreaReference(new CellReference(0, 0), new CellReference(issues.size(), 6));
+            // Define the data range including headers
+            AreaReference selectedDataRange = new AreaReference(new CellReference(0, 0), new CellReference(issues.size(), 6));
 
-        // Set Range to the Table
-        cttable.setRef(selectedDataRange.formatAsString());
+            // Set Range to the Table
+            cttable.setRef(selectedDataRange.formatAsString());
 
-        // number of the row to insert, begin to 1 because 0 is the header
-        int numRow = 1;
+            // number of the row to insert, begin to 1 because 0 is the header
+            int numRow = 1;
 
-        // add issues
-        for(Issue issue : issues) {
-            // initialization of a new row
-            XSSFRow row = selectedSheet.createRow(numRow++);
+            // add issues
+            for (Issue issue : issues) {
+                // initialization of a new row
+                XSSFRow row = selectedSheet.createRow(numRow);
 
-            // adding data
-            row.createCell(0).setCellValue(issue.getRule());
-            row.createCell(1).setCellValue(issue.getMessage());
-            row.createCell(2).setCellValue(issue.getType());
-            row.createCell(3).setCellValue(issue.getSeverity());
-            row.createCell(4).setCellValue(issue.getComponent());
-            row.createCell(5).setCellValue(issue.getLine());
-            row.createCell(6).setCellValue(issue.getEffort());
+                // adding data
+                row.createCell(0).setCellValue(issue.getRule());
+                row.createCell(1).setCellValue(issue.getMessage());
+                row.createCell(2).setCellValue(issue.getType());
+                row.createCell(3).setCellValue(issue.getSeverity());
+                row.createCell(4).setCellValue(issue.getComponent());
+                row.createCell(5).setCellValue(issue.getLine());
+                row.createCell(6).setCellValue(issue.getEffort());
+
+                // go to the next line
+                numRow++;
+            }
         }
     }
 
@@ -174,7 +193,7 @@ class XlsXTools {
      * @param tableName Name of the table to find
      * @return A Table or null
      */
-    static XSSFTable findTableByName(XSSFSheet sheet, Object tableName) {
+    public static XSSFTable findTableByName(XSSFSheet sheet, Object tableName) {
         // result that can be null
         XSSFTable result = null;
         // retrieve all tables to browse

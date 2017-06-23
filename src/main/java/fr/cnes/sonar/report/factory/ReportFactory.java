@@ -36,9 +36,11 @@ public class ReportFactory {
      * @return A complete report data model
      * @throws UnknownParameterException a specified parameter does not exist
      * @throws IOException on json problem
+     * @throws BadSonarQubeRequestException when a request to the server is not well-formed
      * @throws UnknownQualityGateException a quality gate is not correct
      */
-    public Report create() throws UnknownParameterException, IOException, BadSonarQubeRequestException, UnknownQualityGateException {
+    public Report create()
+            throws UnknownParameterException, IOException, BadSonarQubeRequestException, UnknownQualityGateException {
         // the new report to return
         Report report = new Report();
 

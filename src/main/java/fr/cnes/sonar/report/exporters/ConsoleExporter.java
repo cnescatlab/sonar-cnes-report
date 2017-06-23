@@ -24,11 +24,12 @@ public class ConsoleExporter implements IExporter {
      * Overridden export for console
      * @param data Data to export as report
      * @param params Program's parameters
+     * @param path Path where to export the file
      * @param filename Name of the file to export
      * @throws BadExportationDataTypeException data is not a Report
      */
     @Override
-    public void export(Object data, Params params, String filename)
+    public void export(Object data, Params params, String path, String filename)
             throws BadExportationDataTypeException {
         // check data type
         if(!(data instanceof Report)) {
@@ -46,6 +47,6 @@ public class ConsoleExporter implements IExporter {
             LOGGER.info(issue.toString());
         }
         // log number of issues
-        LOGGER.info("Nombre total de violations : " + String.valueOf(issues.size()));
+        LOGGER.info("Nombre total de violations : " + issues.size());
     }
 }

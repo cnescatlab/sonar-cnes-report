@@ -17,13 +17,14 @@ public class JsonExporter implements IExporter {
      * Overridden export for json
      * @param data Data to export as String
      * @param params Program's parameters
+     * @param path Path where to export the file
      * @param filename Name of the file to export
      * @throws BadExportationDataTypeException data is not a String
      * @throws UnknownParameterException When report path is not set
      * @throws IOException ...
      */
     @Override
-    public void export(Object data, Params params, String filename)
+    public void export(Object data, Params params, String path, String filename)
             throws BadExportationDataTypeException, UnknownParameterException, IOException {
 
         // check if the data format is correct
@@ -34,22 +35,15 @@ public class JsonExporter implements IExporter {
         String string = (String) data;
 
         // set relevant variables
-        String filePath = params.get("report.path") + "/" + filename + ".json";
+        String filePath = String.format("%s/%s.json", path, filename);
 
-        // writer used to write the file
-        FileWriter fileWriter = null;
+        // file to write
+        File jsonFile = new File(filePath);
 
         // preventing leaks
-        try {
-            File jsonFile = new File(filePath);
-            fileWriter = new FileWriter(jsonFile, false); // true to append
+        try(FileWriter fileWriter = new FileWriter(jsonFile, false)) {
             // false to overwrite.
             fileWriter.write(string);
-        } finally {
-            // close the writer if it is still open
-            if (fileWriter != null) {
-                fileWriter.close();
-            }
         }
     }
 }

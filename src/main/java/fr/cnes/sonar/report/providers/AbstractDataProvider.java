@@ -22,7 +22,7 @@ public abstract class AbstractDataProvider {
     /**
      * Logger for the class
      */
-    static final Logger LOGGER = Logger.getLogger(AbstractDataProvider.class.getCanonicalName());
+    protected static final Logger LOGGER = Logger.getLogger(AbstractDataProvider.class.getCanonicalName());
 
     /**
      * Name for properties' file about requests
@@ -236,11 +236,7 @@ public abstract class AbstractDataProvider {
             json = getGson().fromJson(raw, JsonElement.class);
         } catch (Exception e) {
             // log exception's message
-            LOGGER.severe(e.getMessage());
-            // it logs all the stack trace
-            for (StackTraceElement ste: e.getStackTrace()) {
-                LOGGER.severe(ste.toString());
-            }
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
             throw new BadSonarQubeRequestException("Server answered: " + raw);
         }
 

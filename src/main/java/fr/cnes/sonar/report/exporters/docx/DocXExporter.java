@@ -36,6 +36,7 @@ public class DocXExporter implements IExporter {
      * Overridden export for docX
      * @param data Data to export as Report
      * @param params Program's parameters
+     * @param path Path where to export the file
      * @param filename Name of the file to export
      * @throws BadExportationDataTypeException Data has not the good type
      * @throws UnknownParameterException report.path is not set
@@ -43,7 +44,7 @@ public class DocXExporter implements IExporter {
      * @throws JAXBException when there is a problem with a jaxb element
      */
     @Override
-    public void export(Object data, Params params, String filename)
+    public void export(Object data, Params params, String path, String filename)
             throws BadExportationDataTypeException, UnknownParameterException, Docx4JException, JAXBException {
         // check data type
         if(!(data instanceof Report)) {
@@ -110,9 +111,7 @@ public class DocXExporter implements IExporter {
                 long nb = 0;
                 // we sum all issues with a type and a severity
                 for(Issue issue : report.getIssues()) {
-                    if(issue.getType().equals(type) && issue.getSeverity().equals(severity)) {
-                        nb++;
-                    }
+                    nb += (issue.getType().equals(type) && issue.getSeverity().equals(severity)) ? 1 :0;
                 }
                 // we add it to the list
                 List<String> item = new ArrayList<>();
@@ -125,23 +124,6 @@ public class DocXExporter implements IExporter {
         }
 
         return results;
-    }
-
-    /**
-     * Get the effort in minutes
-     * @param effort Effort as a string (1h30min)
-     * @return long
-     */
-    private long debtToLong(String effort) {
-        // remove min from the time
-        String tmp = effort.replaceAll("min", "");
-        // parse hours
-        List<String> list = Arrays.asList(tmp.split("h"));
-        // reverse the list
-        Collections.reverse(list);
-
-        // calculate and return minutes sum
-        return Long.valueOf(list.get(0)) + (list.size()>1?Long.valueOf(list.get(1))*60:0);
     }
 
     /**

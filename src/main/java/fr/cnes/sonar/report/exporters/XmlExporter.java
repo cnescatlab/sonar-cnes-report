@@ -17,13 +17,14 @@ public class XmlExporter implements IExporter {
      * Overridden export for xml
      * @param data Data to export as String
      * @param params Program's parameters
+     * @param path Path where to export the file
      * @param filename Name of the file to export
      * @throws BadExportationDataTypeException data format is incorrect
      * @throws UnknownParameterException report.path is not set
      * @throws IOException ...
      */
     @Override
-    public void export(Object data, Params params, String filename)
+    public void export(Object data, Params params, String path, String filename)
             throws BadExportationDataTypeException, UnknownParameterException, IOException {
 
         // check if the data format is correct
@@ -34,21 +35,15 @@ public class XmlExporter implements IExporter {
         String string = (String) data;
 
         // set relevant variables
-        String filePath = params.get("report.path") + "/" + filename + ".xml";
+        String filePath = String.format("%s/%s.xml", path, filename);
 
-        // writer used
-        FileWriter fileWriter = null;
+        // file to write
+        File xmlFile = new File(filePath);
 
         // prevent file's allocation leaks
-        try {
-            File xmlFile = new File(filePath);
-            fileWriter = new FileWriter(xmlFile, false); // true to append
+        try(FileWriter fileWriter = new FileWriter(xmlFile, false)) {
             // false to overwrite.
             fileWriter.write(string);
-        } finally {
-            if (fileWriter != null) {
-                fileWriter.close();
-            }
         }
 
     }

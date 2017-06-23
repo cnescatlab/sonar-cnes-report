@@ -9,10 +9,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 import static fr.cnes.sonar.report.exporters.xlsx.XlsXTools.addListOfMap;
 import static fr.cnes.sonar.report.exporters.xlsx.XlsXTools.addSelectedData;
@@ -52,14 +49,15 @@ public class XlsXExporter implements IExporter {
      * Overridden export for XlsX
      * @param data Data to export as Report
      * @param params Program's parameters
+     * @param path Path where to export the file
      * @param filename Name of the file to export
      * @throws BadExportationDataTypeException ...
      * @throws UnknownParameterException report.path is not set
      * @throws IOException when reading a file
      */
     @Override
-    public void export(Object data, Params params, String filename)
-            throws BadExportationDataTypeException, IOException, UnknownParameterException {
+    public void export(Object data, Params params, String path, String filename)
+            throws BadExportationDataTypeException, UnknownParameterException, IOException {
         // check data type
         if(!(data instanceof Report)) {
             throw new BadExportationDataTypeException();
@@ -70,28 +68,30 @@ public class XlsXExporter implements IExporter {
         // set output filename
         String outputFilePath = params.get(REPORT_PATH)+"/"+filename;
 
+        // excel file
+        File file = new File(params.get(ISSUES_TEMPLATE));
+
         // open the template
-        FileInputStream excelFile = new FileInputStream(new java.io.File(params.get(ISSUES_TEMPLATE)));
-        Workbook workbook = new XSSFWorkbook(excelFile);
+        try(
+                FileInputStream excelFile = new FileInputStream(file);
+                Workbook workbook = new XSSFWorkbook(excelFile);
+                FileOutputStream fileOut = new FileOutputStream(outputFilePath)) {
 
-        // retrieve the sheet aiming to contain selected data
-        XSSFSheet selectedSheet = (XSSFSheet) workbook.getSheet(ISSUES_SHEET_NAME);
+            // retrieve the sheet aiming to contain selected data
+            XSSFSheet selectedSheet = (XSSFSheet) workbook.getSheet(ISSUES_SHEET_NAME);
 
-        // retrieve the sheet aiming to contain selected data
-        XSSFSheet allDataSheet = (XSSFSheet) workbook.getSheet(ALL_DETAILS_SHEET_NAME);
+            // retrieve the sheet aiming to contain selected data
+            XSSFSheet allDataSheet = (XSSFSheet) workbook.getSheet(ALL_DETAILS_SHEET_NAME);
 
-        // write selected data in the file
-        addSelectedData(report, selectedSheet, SELECTED_TABLE_NAME);
+            // write selected data in the file
+            addSelectedData(report, selectedSheet, SELECTED_TABLE_NAME);
 
-        // write all raw data in the third sheet
-        addListOfMap(allDataSheet, report.getRawIssues(), ALL_TABLE_NAME);
+            // write all raw data in the third sheet
+            addListOfMap(allDataSheet, report.getRawIssues(), ALL_TABLE_NAME);
 
-        // write output as file
-        FileOutputStream fileOut = new FileOutputStream(outputFilePath);
-        workbook.write(fileOut);
-        // close the file
-        fileOut.close();
-        excelFile.close();
+            // write output as file
+            workbook.write(fileOut);
+        }
     }
 
 }

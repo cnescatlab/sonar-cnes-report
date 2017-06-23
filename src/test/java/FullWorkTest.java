@@ -29,18 +29,18 @@
 //        // Export all
 //        // export each linked quality profile
 //        for(QualityProfile qp : superReport.getQualityProfiles()) {
-//            profileExporter.export(qp.getConf(), params, qp.getKey());
+//            profileExporter.export(qp.getConf(), params, params.get("report.path"), qp.getKey());
 //        }
 //        // export the quality gate
-//        gateExporter.export(superReport.getQualityGate().getConf(),params,superReport.getQualityGate().getName());
+//        gateExporter.export(superReport.getQualityGate().getConf(),params,params.get("report.path"),superReport.getQualityGate().getName());
 //        String docXFilename = formatFilename("REPORT_FILENAME", superReport.getProjectName());
 //
 //        // export the full docx report
-//        docXExporter.export(superReport, params, docXFilename);
+//        docXExporter.export(superReport, params, params.get("report.path"), docXFilename);
 //        // construct the docx file name by replacing date and name
 //        String xlsXFilename = formatFilename("ISSUES_FILENAME", superReport.getProjectName());
 //        // export the xlsx issues' list
-//        issuesExporter.export(superReport, params, xlsXFilename);
+//        issuesExporter.export(superReport, params, params.get("report.path"), xlsXFilename);
 //    }
 //
 //}

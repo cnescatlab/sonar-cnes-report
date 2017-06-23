@@ -111,17 +111,15 @@ public class ParamsFactory {
                 // continue handling current parameter
             } else {
                 // add the value if the parameter exist
-                if(params.contains(parameter)) {
-                    // check if the parameter is not empty
-                    if(!"".equals(arg)) {
-                        params.put(parameter, arg);
-                    }
-                    // the current parameter's processing is terminated
-                    parameter = null;
-                } else {
+                if(!params.contains(parameter)) {
                     // if it does not exist throw exception
                     throw new UnknownParameterException(parameter);
+                } else if(!arg.isEmpty()) {
+                    // check if the parameter is not empty
+                    params.put(parameter, arg);
                 }
+                // the current parameter's processing is terminated
+                parameter = null;
             }
         }
 

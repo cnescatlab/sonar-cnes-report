@@ -13,11 +13,13 @@ import java.io.IOException;
  * Generic interface for results' exporters
  * @author begarco
  */
+@FunctionalInterface
 public interface IExporter {
     /**
      * Export data in a file
      * @param data Data to export
      * @param params Program's parameters
+     * @param path Path where to export the file
      * @param filename Name of the file to export
      * @throws BadExportationDataTypeException data has not the good type
      * @throws UnknownParameterException report.path is not set
@@ -25,7 +27,7 @@ public interface IExporter {
      * @throws Docx4JException when an error occurred in docx4j
      * @throws JAXBException when there is a problem with a jaxb element
      */
-    void export(Object data, Params params, String filename)
+    void export(Object data, Params params, String path, String filename)
             throws BadExportationDataTypeException, UnknownParameterException,
             IOException, Docx4JException, JAXBException, Xlsx4jException;
 }
