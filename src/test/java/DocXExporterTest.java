@@ -1,6 +1,6 @@
 /**
  * Test the creation of a docx file from a template
- * @author garconb
+ * @author begarco
  */
 public class DocXExporterTest extends MasterTest {
 

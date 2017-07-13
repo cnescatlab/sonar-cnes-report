@@ -68,7 +68,7 @@ public class XlsXExporter implements IExporter {
         // set output filename
         String outputFilePath = params.get(REPORT_PATH)+"/"+filename;
 
-        // excel file
+        // open excel file from the path given in the parameters
         File file = new File(params.get(ISSUES_TEMPLATE));
 
         // open the template

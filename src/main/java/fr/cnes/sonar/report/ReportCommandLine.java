@@ -8,11 +8,12 @@ import fr.cnes.sonar.report.exporters.xlsx.XlsXExporter;
 import fr.cnes.sonar.report.factory.ReportFactory;
 import fr.cnes.sonar.report.input.Params;
 import fr.cnes.sonar.report.input.ParamsFactory;
+import fr.cnes.sonar.report.input.StringManager;
 import fr.cnes.sonar.report.model.QualityProfile;
 import fr.cnes.sonar.report.model.Report;
-import org.docx4j.openpackaging.exceptions.Docx4JException;
+import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
+import org.apache.xmlbeans.XmlException;
 
-import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -45,8 +46,8 @@ public class ReportCommandLine {
     /**
      * Help message to display when a user misused this program
      */
-    private static final String HELP_MESSAGE = "Bienvenue dans Sonar Report CNES\n" +
-            "Voici l'aide pour exécuter correctement cette commande :\n" +
+    private static final String HELP_MESSAGE = "Welcome to Sonar Report CNES\n" +
+            "Here are the list of parameters you can use:\n" +
             "  > --sonar.url [mandatory]\n" +
             "  > --sonar.project.id [mandatory]\n" +
             "  > --sonar.project.quality.profile\n" +
@@ -55,9 +56,11 @@ public class ReportCommandLine {
             "  > --report.author\n" +
             "  > --report.date\n" +
             "  > --report.path\n" +
+            "  > --report.conf [yes|no]\n" +
+            "  > --report.locale [fr_FR|en_US]\n" +
             "  > --report.template\n" +
             "  > --issues.template\n" +
-            "Exemple :\n" +
+            "Example :\n" +
             "java -jar sonar-report-cnes.jar --sonar.url http://sonarqube:9000 --sonar.project.id genius-sonar";
     /**
      * Property for the word report filename
@@ -72,17 +75,21 @@ public class ReportCommandLine {
      */
     private static final String CONF_FOLDER_PATTERN = "%s/conf";
     /**
-     * name of the property to find the base of report location
+     * Name of the property to find the base of report location
      */
     private static final String REPORT_PATH = "report.path";
+    /**
+     * Error message returned when the program cannot create a folder because it already exists
+     */
     private static final String CNES_MKDIR_ERROR = "[ERROR] Impossible to create the following directory: %s";
 
     /**
      * Main method
+     * See HELP_MESSAGE for more information about using this program
      * Entry point of the program
      * @param args arguments that will be preprocessed
      */
-    public static void main(String[] args) {
+    public static void main(String[] args)  {
         // main catches all exceptions
         try {
             // preparing args
@@ -127,11 +134,12 @@ public class ReportCommandLine {
             issuesExporter.export(superReport, params, params.get(REPORT_PATH), xlsXFilename);
         } catch (BadExportationDataTypeException | MalformedParameterException |
                 BadSonarQubeRequestException | IOException | UnknownParameterException |
-                MissingParameterException | UnknownQualityGateException | JAXBException | Docx4JException e) {
+                MissingParameterException | UnknownQualityGateException | OpenXML4JException |
+                XmlException e) {
             // it logs all the stack trace
             LOGGER.log(Level.SEVERE,e.getMessage(), e);
             // prints the help
-            help();
+            LOGGER.info(HELP_MESSAGE);
         }
     }
 
@@ -144,17 +152,9 @@ public class ReportCommandLine {
      */
     public static String formatFilename(String propertyName, String projectName) {
         // construct the filename by replacing date and name
-        return ParamsFactory.getProperty(propertyName)
+        return StringManager.getProperty(propertyName)
                 .replaceAll(DATE, new SimpleDateFormat(DATE_PATTERN).format(new Date()))
                 .replaceAll(NAME, projectName);
-    }
-
-    /**
-     * Provide help on bad command line
-     */
-    private static void help() {
-        // only log the help
-        LOGGER.info(HELP_MESSAGE);
     }
 
 }

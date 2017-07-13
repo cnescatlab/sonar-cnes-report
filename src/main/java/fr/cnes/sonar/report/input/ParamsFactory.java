@@ -3,14 +3,14 @@ package fr.cnes.sonar.report.input;
 import fr.cnes.sonar.report.exceptions.MalformedParameterException;
 import fr.cnes.sonar.report.exceptions.MissingParameterException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
-import fr.cnes.sonar.report.providers.AbstractDataProvider;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static fr.cnes.sonar.report.input.StringManager.REPORT_LOCALE;
+import static fr.cnes.sonar.report.input.StringManager.changeLocale;
+import static fr.cnes.sonar.report.input.StringManager.getProperty;
 
 /**
  * Prepares command line's arguments
@@ -22,60 +22,6 @@ public class ParamsFactory {
      * Logger for ParamFactory
      */
     private static final Logger LOGGER = Logger.getLogger(ParamsFactory.class.getCanonicalName());
-    /**
-     * Prefix of all parameters
-     */
-    private static final String PARAMETER_START = "--";
-
-    /**
-     * Name for properties' file about report
-     */
-    private static final String REPORT_PROPERTIES = "report.properties";
-
-    /**
-     * Contain all the properties related to the report
-     */
-    private static Properties properties;
-
-    /**
-     * Static initialization block for reading .properties
-     */
-    static {
-        // store properties
-        properties = new Properties();
-        // read the file
-        InputStream input = null;
-
-        try {
-            // load properties file as a stream
-            input = AbstractDataProvider.class.getClassLoader().getResourceAsStream(REPORT_PROPERTIES);
-            if(input!=null) {
-                // load properties from the stream in an adapted structure
-                properties.load(input);
-            }
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
-        } finally {
-            if(input!=null) {
-                try {
-                    // close the stream if necessary (not null)
-                    input.close();
-                } catch (IOException e) {
-                    LOGGER.log(Level.SEVERE, e.getMessage(), e);
-                }
-            }
-        }
-    }
-
-    /**
-     * Give the value of the property corresponding to the key passed as parameter.
-     * It gives only properties related to the report.
-     * @param property Key of the property you want.
-     * @return The value of the property you want as a String.
-     */
-    public static String getProperty(String property) {
-        return properties.getProperty(property);
-    }
 
     /**
      * Generates a full parameters object from user cli
@@ -130,7 +76,12 @@ public class ParamsFactory {
 
         // if all parameters are ok log success
         if(params.isReliable()) {
-            LOGGER.info("Paramètres traités avec succès.");
+            LOGGER.info(StringManager.SUCCESSFULLY_PROCESSED_PARAMETERS);
+            // and we set locale
+            String locale[] = params.get(REPORT_LOCALE).split("_");
+            if(locale.length==2) {
+                changeLocale(locale[0], locale[1]);
+            }
         }
 
         // return the final parameters
@@ -177,7 +128,7 @@ public class ParamsFactory {
      */
     private boolean checkParameter(String param) {
         // check that the parameter begins with PARAMETER_START and is not empty
-        return param.startsWith(PARAMETER_START) && param.length() > PARAMETER_START.length();
+        return param.startsWith(StringManager.PARAMETER_START) && param.length() > StringManager.PARAMETER_START.length();
     }
 
     /**
@@ -186,7 +137,7 @@ public class ParamsFactory {
      * @return the correct name
      */
     private String extractParameterName(String param) {
-        return param.substring(PARAMETER_START.length());
+        return param.substring(StringManager.PARAMETER_START.length());
     }
 
     /**
@@ -195,15 +146,17 @@ public class ParamsFactory {
      */
     private void loadDefault(Params params) {
         // append all default configuration
-        params.put("sonar.url", "");
-        params.put("sonar.project.id", "");
-        params.put("sonar.project.quality.profile", getProperty("sonar.project.quality.profile"));
-        params.put("sonar.project.quality.gate", getProperty("sonar.project.quality.gate"));
-        params.put("project.name", getProperty("project.name"));
-        params.put("report.author", getProperty("report.author"));
-        params.put("report.date", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-        params.put("report.path", getProperty("report.path"));
-        params.put("report.template", getProperty("report.template"));
-        params.put("issues.template", getProperty("issues.template"));
+        params.put(StringManager.SONAR_URL, StringManager.EMPTY);
+        params.put(StringManager.SONAR_PROJECT_ID, StringManager.EMPTY);
+        params.put(StringManager.SONAR_PROJECT_QUALITY_PROFILE, getProperty(StringManager.SONAR_PROJECT_QUALITY_PROFILE));
+        params.put(StringManager.SONAR_PROJECT_QUALITY_GATE, getProperty(StringManager.SONAR_PROJECT_QUALITY_GATE));
+        params.put(StringManager.PROJECT_NAME, getProperty(StringManager.PROJECT_NAME));
+        params.put(StringManager.REPORT_AUTHOR, getProperty(StringManager.REPORT_AUTHOR));
+        params.put(StringManager.REPORT_DATE, new SimpleDateFormat(StringManager.DATE_PATTERN).format(new Date()));
+        params.put(StringManager.REPORT_CONF, getProperty(StringManager.REPORT_CONF));
+        params.put(StringManager.REPORT_PATH, getProperty(StringManager.REPORT_PATH));
+        params.put(StringManager.REPORT_LOCALE, getProperty(StringManager.REPORT_LOCALE));
+        params.put(StringManager.REPORT_TEMPLATE, getProperty(StringManager.REPORT_TEMPLATE));
+        params.put(StringManager.ISSUES_TEMPLATE, getProperty(StringManager.ISSUES_TEMPLATE));
     }
 }

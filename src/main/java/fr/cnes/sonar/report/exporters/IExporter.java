@@ -3,10 +3,9 @@ package fr.cnes.sonar.report.exporters;
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.input.Params;
-import org.docx4j.openpackaging.exceptions.Docx4JException;
-import org.xlsx4j.exceptions.Xlsx4jException;
+import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
+import org.apache.xmlbeans.XmlException;
 
-import javax.xml.bind.JAXBException;
 import java.io.IOException;
 
 /**
@@ -24,10 +23,10 @@ public interface IExporter {
      * @throws BadExportationDataTypeException data has not the good type
      * @throws UnknownParameterException report.path is not set
      * @throws IOException ...
-     * @throws Docx4JException when an error occurred in docx4j
-     * @throws JAXBException when there is a problem with a jaxb element
+     * @throws OpenXML4JException When dealing with low level xml
+     * @throws XmlException When dealing with low level xml
      */
     void export(Object data, Params params, String path, String filename)
             throws BadExportationDataTypeException, UnknownParameterException,
-            IOException, Docx4JException, JAXBException, Xlsx4jException;
+            IOException, OpenXML4JException, XmlException;
 }

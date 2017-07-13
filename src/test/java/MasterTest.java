@@ -95,13 +95,13 @@ public class MasterTest {
         report.setMeasures(measures);
 
         params.put("sonar.url", "http://sonarqube:9000");
-       // params.put("sonar.url", "https://sonar.garcon.ovh");
-        params.put("sonar.project.id", "demo-plugin-12");
+        params.put("sonar.project.id", "sonar-report-cnes");
         params.put("sonar.project.quality.gate", "CNES");
         params.put("project.name", "Sonar Report CNES");
         params.put("report.author", "Benoît Garçon");
         params.put("report.date", new Date().toString());
         params.put("report.path", "./target");
+        params.put("report.locale", "en_US");
         params.put("report.template", "src/main/resources/template/code-analysis-template.docx");
         params.put("issues.template", "src/main/resources/template/issues-template.xlsx");
     }
