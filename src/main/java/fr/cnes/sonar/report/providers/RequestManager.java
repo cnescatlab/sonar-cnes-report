@@ -34,7 +34,7 @@ public final class RequestManager {
     /**
      * Instance of the singleton
      */
-    private static RequestManager ourInstance = new RequestManager();
+    private static RequestManager ourInstance = null;
 
     /**
      * Use of private constructor to singletonize this class
@@ -46,7 +46,10 @@ public final class RequestManager {
      * Return the unique instance
      * @return the singleton
      */
-    static RequestManager getInstance() {
+    public static synchronized RequestManager getInstance() {
+        if (ourInstance == null) {
+            ourInstance = new RequestManager();
+        }
         return ourInstance;
     }
 
@@ -83,7 +86,7 @@ public final class RequestManager {
     /**
      * Execute a get http request
      * @param url url to request
-     * @param data list of pairs containing data to post
+     * @param data list of pairs containing resources to post
      * @return response as string
      * @throws IOException error on response
      */

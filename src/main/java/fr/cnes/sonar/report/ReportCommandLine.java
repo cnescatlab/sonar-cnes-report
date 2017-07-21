@@ -46,7 +46,7 @@ public class ReportCommandLine {
     /**
      * Help message to display when a user misused this program
      */
-    private static final String HELP_MESSAGE = "Welcome to Sonar Report CNES\n" +
+    public static final String HELP_MESSAGE = "Welcome to Sonar Report CNES\n" +
             "Here are the list of parameters you can use:\n" +
             "  > --sonar.url [mandatory]\n" +
             "  > --sonar.project.id [mandatory]\n" +
@@ -65,15 +65,15 @@ public class ReportCommandLine {
     /**
      * Property for the word report filename
      */
-    private static final String REPORT_FILENAME = "REPORT_FILENAME";
+    public static final String REPORT_FILENAME = "REPORT_FILENAME";
     /**
      * Property for the excel report filename
      */
-    private static final String ISSUES_FILENAME = "ISSUES_FILENAME";
+    public static final String ISSUES_FILENAME = "ISSUES_FILENAME";
     /**
      * Pattern for the name of the directory containing configuration files
      */
-    private static final String CONF_FOLDER_PATTERN = "%s/conf";
+    public static final String CONF_FOLDER_PATTERN = "%s/conf";
     /**
      * Name of the property to find the base of report location
      */
@@ -81,7 +81,7 @@ public class ReportCommandLine {
     /**
      * Error message returned when the program cannot create a folder because it already exists
      */
-    private static final String CNES_MKDIR_ERROR = "[ERROR] Impossible to create the following directory: %s";
+    public static final String CNES_MKDIR_ERROR = "[ERROR] Impossible to create the following directory: %s";
 
     /**
      * Main method
@@ -95,7 +95,7 @@ public class ReportCommandLine {
             // preparing args
             Params params = new ParamsFactory().create(args);
 
-            // Files exporters : export the data in the correct file type
+            // Files exporters : export the resources in the correct file type
             DocXExporter docXExporter = new DocXExporter();
             XmlExporter profileExporter = new XmlExporter();
             JsonExporter gateExporter = new JsonExporter();

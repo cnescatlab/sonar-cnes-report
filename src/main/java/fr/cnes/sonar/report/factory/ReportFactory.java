@@ -3,17 +3,15 @@ package fr.cnes.sonar.report.factory;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
+import fr.cnes.sonar.report.input.StringManager;
 import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.input.Params;
-import fr.cnes.sonar.report.providers.IssuesProvider;
-import fr.cnes.sonar.report.providers.MeasureProvider;
-import fr.cnes.sonar.report.providers.QualityGateProvider;
-import fr.cnes.sonar.report.providers.QualityProfileProvider;
+import fr.cnes.sonar.report.providers.*;
 
 import java.io.IOException;
 
 /**
- * Construct  the report from data providers
+ * Construct  the report from resources providers
  * @author begarco
  */
 public class ReportFactory {
@@ -32,8 +30,8 @@ public class ReportFactory {
     }
 
     /**
-     * Create a report from program data
-     * @return A complete report data model
+     * Create a report from program resources
+     * @return A complete report resources model
      * @throws UnknownParameterException a specified parameter does not exist
      * @throws IOException on json problem
      * @throws BadSonarQubeRequestException when a request to the server is not well-formed
@@ -45,17 +43,17 @@ public class ReportFactory {
         Report report = new Report();
 
         // instantiation of providers
-        IssuesProvider ip = new IssuesProvider(params);
-        MeasureProvider mp = new MeasureProvider(params);
-        QualityProfileProvider pp = new QualityProfileProvider(params);
-        QualityGateProvider gp = new QualityGateProvider(params);
+        IssuesProvider ip = new IssuesProvider(params, RequestManager.getInstance());
+        MeasureProvider mp = new MeasureProvider(params, RequestManager.getInstance());
+        QualityProfileProvider pp = new QualityProfileProvider(params, RequestManager.getInstance());
+        QualityGateProvider gp = new QualityGateProvider(params, RequestManager.getInstance());
 
         // project's name's setting
-        report.setProjectName(params.get("project.name"));
+        report.setProjectName(params.get(StringManager.PROJECT_NAME));
         // author's setting
-        report.setProjectAuthor(params.get("report.author"));
+        report.setProjectAuthor(params.get(StringManager.REPORT_AUTHOR));
         // date setting
-        report.setProjectDate(params.get("report.date"));
+        report.setProjectDate(params.get(StringManager.REPORT_DATE));
         // measures's setting
         report.setMeasures(mp.getMeasures());
         // formatted issues and raw issues' setting

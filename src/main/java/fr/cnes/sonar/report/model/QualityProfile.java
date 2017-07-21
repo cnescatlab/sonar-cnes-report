@@ -8,7 +8,7 @@ import java.util.Iterator;
  */
 public class QualityProfile {
     /**
-     * Contains data like rules and configuration files
+     * Contains resources like rules and configuration files
      */
     private ProfileData data;
     /**
@@ -23,7 +23,7 @@ public class QualityProfile {
     /**
      * Complete constructor
      * @param data all the rules and configuration
-     * @param metaData data like name, size, default, etc.
+     * @param metaData resources like name, size, default, etc.
      */
     public QualityProfile(ProfileData data, ProfileMetaData metaData) {
         this.data = data;

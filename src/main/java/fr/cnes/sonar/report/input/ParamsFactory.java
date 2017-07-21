@@ -8,9 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
 
-import static fr.cnes.sonar.report.input.StringManager.REPORT_LOCALE;
-import static fr.cnes.sonar.report.input.StringManager.changeLocale;
-import static fr.cnes.sonar.report.input.StringManager.getProperty;
+import static fr.cnes.sonar.report.input.StringManager.*;
 
 /**
  * Prepares command line's arguments
@@ -96,26 +94,27 @@ public class ParamsFactory {
     private List<String> checkBlank(String[] args) {
         // contain the final result with correct input
         List<String> checked = new ArrayList<>();
-        // contain raw data to process
+        // contain raw resources to process
         List<String> raw = new ArrayList<>();
 
         // fill out raw
         raw.addAll(Arrays.asList(args));
 
         // construction of new input
-        Iterator it = raw.iterator();
+        Iterator<String> it = raw.iterator();
+        StringBuilder param;
         while(it.hasNext()) {
 
             // construction of blank separated input
-            StringBuilder param = new StringBuilder((String) it.next());
-            if(param.toString().startsWith("\"") && !(param.toString().endsWith("\""))) {
-                while (it.hasNext() && !(param.toString().endsWith("\""))) {
-                    param.append(' ').append(it.next());
+            param = new StringBuilder(it.next());
+            if(param.toString().startsWith(QUOTES) && !(param.toString().endsWith(QUOTES))) {
+                while (it.hasNext() && !(param.toString().endsWith(QUOTES))) {
+                    param.append(SPACE).append(it.next());
                 }
             }
 
             // add the param
-            checked.add(param.toString().replaceAll("\"",""));
+            checked.add(param.toString().replaceAll(QUOTES,EMPTY));
         }
 
         return checked;

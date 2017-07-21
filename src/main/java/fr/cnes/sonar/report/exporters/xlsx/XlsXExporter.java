@@ -37,11 +37,11 @@ public class XlsXExporter implements IExporter {
      */
     private static final String REPORT_PATH = "report.path";
     /**
-     * Name for the table containing selected data
+     * Name for the table containing selected resources
      */
     private static final String SELECTED_TABLE_NAME = "selected";
     /**
-     * Name for the table containing all raw data
+     * Name for the table containing all raw resources
      */
     private static final String ALL_TABLE_NAME = "all";
 
@@ -58,11 +58,11 @@ public class XlsXExporter implements IExporter {
     @Override
     public void export(Object data, Params params, String path, String filename)
             throws BadExportationDataTypeException, UnknownParameterException, IOException {
-        // check data type
+        // check resources type
         if(!(data instanceof Report)) {
             throw new BadExportationDataTypeException();
         }
-        // data casting
+        // resources casting
         Report report = (Report) data;
 
         // set output filename
@@ -77,16 +77,16 @@ public class XlsXExporter implements IExporter {
                 Workbook workbook = new XSSFWorkbook(excelFile);
                 FileOutputStream fileOut = new FileOutputStream(outputFilePath)) {
 
-            // retrieve the sheet aiming to contain selected data
+            // retrieve the sheet aiming to contain selected resources
             XSSFSheet selectedSheet = (XSSFSheet) workbook.getSheet(ISSUES_SHEET_NAME);
 
-            // retrieve the sheet aiming to contain selected data
+            // retrieve the sheet aiming to contain selected resources
             XSSFSheet allDataSheet = (XSSFSheet) workbook.getSheet(ALL_DETAILS_SHEET_NAME);
 
-            // write selected data in the file
+            // write selected resources in the file
             addSelectedData(report, selectedSheet, SELECTED_TABLE_NAME);
 
-            // write all raw data in the third sheet
+            // write all raw resources in the third sheet
             addListOfMap(allDataSheet, report.getRawIssues(), ALL_TABLE_NAME);
 
             // write output as file

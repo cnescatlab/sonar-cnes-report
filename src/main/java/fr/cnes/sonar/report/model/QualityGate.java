@@ -102,7 +102,7 @@ public class QualityGate {
 
     /**
      * Overridden toString
-     * @return a string containing all data separated by blanks
+     * @return a string containing all resources separated by blanks
      */
     @Override
     public String toString() {

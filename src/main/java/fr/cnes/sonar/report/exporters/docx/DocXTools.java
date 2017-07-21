@@ -3,11 +3,9 @@ package fr.cnes.sonar.report.exporters.docx;
 import fr.cnes.sonar.report.input.StringManager;
 import fr.cnes.sonar.report.model.Facet;
 import fr.cnes.sonar.report.model.Value;
-import org.apache.poi.POIXMLDocumentPart;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.openxml4j.opc.PackagePart;
 import org.apache.poi.ss.util.ImageUtils;
 import org.apache.poi.xwpf.usermodel.*;
 import org.apache.xmlbeans.XmlException;
@@ -19,15 +17,47 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import static fr.cnes.sonar.report.exporters.docx.DataAdapter.getFacetValues;
 
 /**
  * Different tools to manipulate docx
- * @author garconb
+ * @author begarco
  */
 public final class DocXTools {
+
+    /**
+     * folder for image resources
+     */
+    private static final String IMG_FOLDER = "img/";
+    /**
+     * extension for png
+     */
+    private static final String PNG_EXTENSION = ".png";
+    /**
+     * title for chart displaying number of issues by severity
+     */
+    private static final String CHART_SEVERITY_TITLE = "chart.severity.title";
+    /**
+     * title for chart displaying number of issues by type
+     */
+    private static final String CHART_TYPE_TITLE = "chart.type.title";
+    /**
+     * placeholder for chart displaying number of issues by severity
+     */
+    private static final String TYPE_TABLE_PLACEHOLDER = "$TYPE";
+    /**
+     * placeholder for chart displaying number of issues by severity
+     */
+    private static final String SEVERITY_TABLE_PLACEHOLDER = "$SEVERITY";
+    /**
+     * facet's name for number of issues by severity
+     */
+    private static final String SEVERITIES = "severities";
+    /**
+     * facet's name for number of issues by type
+     */
+    private static final String TYPES = "types";
 
     /**
      * Private constructor to hide the public one
@@ -37,29 +67,29 @@ public final class DocXTools {
     /**
      * Fill the chart "camembert"
      * @param opcPackage word document
-     * @param facets data as facets
+     * @param facets resources as facets
      * @throws InvalidFormatException ...
      */
     public static void fillCharts(OPCPackage opcPackage, XWPFDocument document, List<Facet> facets)
             throws OpenXML4JException, IOException, XmlException {
 
         List<XWPFChartSpace> chartSpaces = XWPFChartSpace.getChartSpaces(document);
-        List<Value> dataPerType = getFacetValues(facets, "types");
-        List<Value> dataPerSeverity = getFacetValues(facets, "severities");
+        List<Value> dataPerType = getFacetValues(facets, TYPES);
+        List<Value> dataPerSeverity = getFacetValues(facets, SEVERITIES);
 
         // browse chart list to find placeholders (based on locale) in title
-        // and provide them adapted data
+        // and provide them adapted resources
         for (XWPFChartSpace chartSpace : chartSpaces) {
             String currentChartTitle = chartSpace.getTitle();
             // fill the pie chart with issues count by severity
-            if(currentChartTitle.contains("$SEVERITY")) {
+            if(currentChartTitle.contains(SEVERITY_TABLE_PLACEHOLDER)) {
                 chartSpace.setValues(dataPerSeverity);
-                chartSpace.setTitle(StringManager.string("chart.severity.title"));
+                chartSpace.setTitle(StringManager.string(CHART_SEVERITY_TITLE));
             }
             // fill the pie chart with issues count by type
-            else if(currentChartTitle.contains("$TYPE")) {
+            else if(currentChartTitle.contains(TYPE_TABLE_PLACEHOLDER)) {
                 chartSpace.setValues(dataPerType);
-                chartSpace.setTitle(StringManager.string("chart.type.title"));
+                chartSpace.setTitle(StringManager.string(CHART_TYPE_TITLE));
             }
         }
     }
@@ -72,7 +102,7 @@ public final class DocXTools {
      * @param values a map containing pairs of placeholder/value
      * @throws IOException when a problem occurred on the pictures loading
      */
-    static void replacePlaceholder(XWPFDocument document, Map values)
+    static void replacePlaceholder(XWPFDocument document, Map<String,String> values)
             throws OpenXML4JException, IOException {
 
         // Gather all elements in header, footer and body
@@ -98,10 +128,11 @@ public final class DocXTools {
         // final list to return
         List<XWPFParagraph> paragraphs = new ArrayList<>();
         // browse elements
-        Iterator elementIterator = elements.iterator();
+        Iterator<IBodyElement> elementIterator = elements.iterator();
+        IBodyElement elt;
 
         while (elementIterator.hasNext()) {
-            IBodyElement elt = (IBodyElement) elementIterator.next();
+            elt = elementIterator.next();
 
             // if we find a paragraph we just add it to the list
             if (elt.getElementType().compareTo(BodyElementType.PARAGRAPH) == 0) {
@@ -112,13 +143,15 @@ public final class DocXTools {
             else if(elt.getElementType().compareTo(BodyElementType.TABLE)==0) {
                 XWPFTable table = (XWPFTable) elt;
                 // browse lines
-                Iterator rowIterator = table.getRows().iterator();
+                Iterator<XWPFTableRow> rowIterator = table.getRows().iterator();
+                XWPFTableRow row;
                 while(rowIterator.hasNext()) {
-                    XWPFTableRow row = (XWPFTableRow) rowIterator.next();
+                    row = rowIterator.next();
                     // browse cells
-                    Iterator cellIterator = row.getTableCells().iterator();
+                    Iterator<XWPFTableCell> cellIterator = row.getTableCells().iterator();
+                    XWPFTableCell cell;
                     while(cellIterator.hasNext()) {
-                        XWPFTableCell cell = (XWPFTableCell) cellIterator.next();
+                        cell = cellIterator.next();
                         // final paragraphs add from a cell
                         paragraphs.addAll(cell.getParagraphs());
                     }
@@ -163,12 +196,13 @@ public final class DocXTools {
      * @throws IOException When opening pictures
      * @throws InvalidFormatException When dealing with open files
      */
-    private static void replaceInParagraph(XWPFParagraph paragraph, Map values) throws IOException, InvalidFormatException {
+    private static void replaceInParagraph(XWPFParagraph paragraph, Map<String,String> values) throws IOException, InvalidFormatException {
         // Concatenate all runs' content in a single string
         StringBuilder sb = new StringBuilder();
         List<XWPFRun> runs = paragraph.getRuns();
+        int pos;
         for (XWPFRun r : runs){
-            int pos = r.getTextPosition();
+            pos = r.getTextPosition();
             if(r.getText(pos) != null) {
                 sb.append(r.getText(pos));
             }
@@ -184,16 +218,16 @@ public final class DocXTools {
             // construct here the new string by replacing each placeholder by its value
             String text = sb.toString();
             List<String> pictures = new ArrayList<>();
-            for (Object o : values.entrySet()) {
-                Map.Entry<String, String> nextValue = (Map.Entry<String, String>) o;
-                String key = nextValue.getKey();
-                String value = nextValue.getValue();
+            String key, value;
+            for (Map.Entry<String, String> nextValue : values.entrySet()) {
+                key = nextValue.getKey();
+                value = nextValue.getValue();
 
                 // if we try to replace by a png picture
-                if(value.endsWith(".png") && text.contains(key)) {
+                if(value.endsWith(PNG_EXTENSION) && text.contains(key)) {
                     // we save the filename
                     pictures.add(value);
-                    value = "";
+                    value = StringManager.EMPTY;
                 }
                 // finally we concatenate
                 text = text.replaceAll(key, value);
@@ -205,11 +239,14 @@ public final class DocXTools {
             // add images if we have something to add
             if(!pictures.isEmpty()) {
                 // browse picture list previously filled out
+                ClassLoader classloader;
+                InputStream is;
+                Dimension dim;
                 for(String filename : pictures) {
-                    ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-                    InputStream is = classloader.getResourceAsStream("img/"+filename);
+                    classloader = Thread.currentThread().getContextClassLoader();
+                    is = classloader.getResourceAsStream(IMG_FOLDER +filename);
                     // height and width are retrieve from here
-                    Dimension dim = ImageUtils.getImageDimension(is, XWPFDocument.PICTURE_TYPE_PNG);
+                    dim = ImageUtils.getImageDimension(is, XWPFDocument.PICTURE_TYPE_PNG);
                     run.addPicture(is, XWPFDocument.PICTURE_TYPE_PNG, filename, dim.width, dim.height);
                     // close picture
                     is.close();
@@ -220,7 +257,7 @@ public final class DocXTools {
     }
 
     /**
-     * Fill a table with data sorted by lines in a list of strings
+     * Fill a table with resources sorted by lines in a list of strings
      * You can select the table to fill with th field "name", it must be
      * a placeholder in your table, if it is not found, a new table is
      * added at the end of the document.
@@ -230,27 +267,30 @@ public final class DocXTools {
      */
     public static void fillTable(XWPFDocument document, List<String> header, List<List<String>> data, String name) {
 
-        // if there are no data, there a
+        // if there are no resources, there a
         if(data!=null && !data.isEmpty()) {
             // table to fill out
-            XWPFTable table = null;
+            XWPFTable table = document.createTable();
 
             // search for a table with the corresponding placeholder
-            Iterator iterator = document.getTablesIterator();
-            while (iterator.hasNext() && null == table) {
-                XWPFTable current = (XWPFTable) iterator.next();
+            Iterator<XWPFTable> iterator = document.getTablesIterator();
+            XWPFTable current;
+            boolean found = false;
+            while (iterator.hasNext() && !found) {
+                current = iterator.next();
                 if(current.getText().contains(name)) {
                     table = current;
+                    found = true;
                 }
             }
 
             // if the table does not exist, we create one at the bottom of the document
-            if (null == table) {
+            if (found) {
                 table = document.createTable();
             }
             // otherwise we clear the table
             else {
-                for(int i = table.getNumberOfRows()-1 ; i >= 0 ; ++i) {
+                for(int i = table.getNumberOfRows()-1 ; i >= 0 ; --i) {
                     table.removeRow(i);
                 }
             }
@@ -261,12 +301,12 @@ public final class DocXTools {
                 row.createCell().setText(field);
             }
 
-            // create data rows
-            for(int i = 0 ; i < data.size() ; ++i) {
+            // create resources rows
+            for(int i = 0 ; i < data.size() ; i++) {
                 table.createRow();
             }
 
-            // fill data rows
+            // fill resources rows
             for(int iLine = 0 ; iLine < data.size() ; iLine++) {
                 row = table.getRow(iLine+1);
                 List<String> line = data.get(iLine);

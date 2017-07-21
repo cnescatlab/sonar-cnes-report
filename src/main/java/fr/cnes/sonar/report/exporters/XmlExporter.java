@@ -19,7 +19,7 @@ public class XmlExporter implements IExporter {
      * @param params Program's parameters
      * @param path Path where to export the file
      * @param filename Name of the file to export
-     * @throws BadExportationDataTypeException data format is incorrect
+     * @throws BadExportationDataTypeException resources format is incorrect
      * @throws UnknownParameterException report.path is not set
      * @throws IOException ...
      */
@@ -27,11 +27,11 @@ public class XmlExporter implements IExporter {
     public void export(Object data, Params params, String path, String filename)
             throws BadExportationDataTypeException, UnknownParameterException, IOException {
 
-        // check if the data format is correct
+        // check if the resources format is correct
         if(!(data instanceof String)) {
             throw new BadExportationDataTypeException();
         }
-        // data casting
+        // resources casting
         String string = (String) data;
 
         // set relevant variables

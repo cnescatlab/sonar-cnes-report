@@ -11,7 +11,7 @@ public class UnknownQualityGateException extends Exception {
      * @param key name of the unknown quality gate
      */
     public UnknownQualityGateException(String key) {
-        super("Le quality gate "+key+" n'est pas reconnu.");
+        super("Quality gate "+key+" is unknown.");
     }
 
 }

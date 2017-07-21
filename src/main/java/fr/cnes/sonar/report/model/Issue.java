@@ -68,7 +68,7 @@ public class Issue {
 
     /**
      * Overridden toString
-     * @return all data separated with tabulation
+     * @return all resources separated with tabulation
      */
     @Override
     public String toString() {

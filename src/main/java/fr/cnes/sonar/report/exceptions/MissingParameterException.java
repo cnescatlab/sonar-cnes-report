@@ -11,7 +11,7 @@ public class MissingParameterException extends Exception {
      * @param key Key of the missing parameter
      */
     public MissingParameterException(String key) {
-        super("Le paramètre " + key + " n'est pas renseigné.");
+        super("Parameter " + key + " is missing.");
     }
 
 }

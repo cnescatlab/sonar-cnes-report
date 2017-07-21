@@ -11,7 +11,7 @@ public class UnknownParameterException extends Exception {
      * @param key key of the unknown parameter
      */
     public UnknownParameterException(String key) {
-        super("Le paramètre "+key+" n'est pas reconnu.");
+        super("Parameter " + key + " is unknown.");
     }
 
 }

@@ -22,10 +22,11 @@ public class IssuesProvider extends AbstractDataProvider {
     /**
      * Complete constructor
      * @param params Program's parameters
+     * @param singleton RequestManager which does http request
      * @throws UnknownParameterException The program does not recognize the parameter
      */
-    public IssuesProvider(Params params) throws UnknownParameterException {
-        super(params);
+    public IssuesProvider(Params params, RequestManager singleton) throws UnknownParameterException {
+        super(params, singleton);
     }
 
     /**
@@ -37,7 +38,7 @@ public class IssuesProvider extends AbstractDataProvider {
     public List<Issue> getIssues()
             throws IOException, BadSonarQubeRequestException {
         // results variable
-        final ArrayList<Issue> res = new ArrayList<>();
+        final List<Issue> res = new ArrayList<>();
 
         // stop condition
         boolean goOn = true;
@@ -75,7 +76,7 @@ public class IssuesProvider extends AbstractDataProvider {
      */
     public List<Map> getRawIssues() throws IOException, BadSonarQubeRequestException {
         // results variable
-        ArrayList<Map> res = new ArrayList<>();
+        final List<Map> res = new ArrayList<>();
 
         // stop condition
         boolean goon = true;
@@ -108,18 +109,18 @@ public class IssuesProvider extends AbstractDataProvider {
     /**
      * Get all the stats on a project
      * @return A list of facets
-     * @throws IOException on data processing error
+     * @throws IOException on resources processing error
      * @throws BadSonarQubeRequestException A request is not recognized by the server
      */
     public List<Facet> getFacets() throws IOException, BadSonarQubeRequestException {
         // results variable
-        final ArrayList<Facet> res = new ArrayList<>();
+        final List<Facet> res = new ArrayList<>();
 
         // prepare the request
         final String request = String.format(getRequest(GET_FACETS_REQUEST), getUrl(), getProjectKey());
-        // contact the server to request the data as json
+        // contact the server to request the resources as json
         final JsonObject jo = request(request);
-        // put wanted data in facets array and list
+        // put wanted resources in facets array and list
         final Facet [] tmp = (getGson().fromJson(jo.get(FACETS), Facet[].class));
         res.addAll(Arrays.asList(tmp));
 

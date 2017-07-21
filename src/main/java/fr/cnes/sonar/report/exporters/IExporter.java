@@ -15,12 +15,12 @@ import java.io.IOException;
 @FunctionalInterface
 public interface IExporter {
     /**
-     * Export data in a file
+     * Export resources in a file
      * @param data Data to export
      * @param params Program's parameters
      * @param path Path where to export the file
      * @param filename Name of the file to export
-     * @throws BadExportationDataTypeException data has not the good type
+     * @throws BadExportationDataTypeException resources has not the good type
      * @throws UnknownParameterException report.path is not set
      * @throws IOException ...
      * @throws OpenXML4JException When dealing with low level xml

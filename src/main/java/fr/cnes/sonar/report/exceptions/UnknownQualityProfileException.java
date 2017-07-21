@@ -11,7 +11,7 @@ public class UnknownQualityProfileException extends Exception {
      * @param key Name of the unknown quality profile
      */
     public UnknownQualityProfileException(String key) {
-        super("Le profil qualité "+key+" n'est pas reconnu.");
+        super("Quality profile "+key+" is unknown.");
     }
 
 }

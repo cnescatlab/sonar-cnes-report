@@ -20,10 +20,11 @@ public class QualityProfileProvider extends AbstractDataProvider {
     /**
      * Complete constructor
      * @param params Program's parameters
+     * @param singleton RequestManager which does http request
      * @throws UnknownParameterException The program does not recognize the parameter
      */
-    public QualityProfileProvider(Params params) throws UnknownParameterException {
-        super(params);
+    public QualityProfileProvider(Params params, RequestManager singleton) throws UnknownParameterException {
+        super(params, singleton);
     }
 
     /**
@@ -34,7 +35,7 @@ public class QualityProfileProvider extends AbstractDataProvider {
      */
     public List<QualityProfile> getQualityProfiles() throws IOException, BadSonarQubeRequestException {
         // initializing returned list
-        ArrayList<QualityProfile> res = new ArrayList<>();
+        final List<QualityProfile> res = new ArrayList<>();
 
         // Get all quality profiles (metadata)
         String request = String.format(getRequest(GET_QUALITY_PROFILES_REQUEST),
@@ -42,7 +43,7 @@ public class QualityProfileProvider extends AbstractDataProvider {
         // perform the previous request
         JsonObject jo = request(request);
 
-        // Get quality profiles data
+        // Get quality profiles resources
         ProfileMetaData[] metaData = (getGson().fromJson(jo.get(PROFILES), ProfileMetaData[].class));
         for (ProfileMetaData profileMetaData : metaData) {
             ProfileData profileData = new ProfileData();

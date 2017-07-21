@@ -21,10 +21,11 @@ public class MeasureProvider extends AbstractDataProvider {
     /**
      * Complete constructor
      * @param params Program's parameters
+     * @param singleton RequestManager which does http request
      * @throws UnknownParameterException The program does not recognize the parameter
      */
-    public MeasureProvider(Params params) throws UnknownParameterException {
-        super(params);
+    public MeasureProvider(Params params, RequestManager singleton) throws UnknownParameterException {
+        super(params, singleton);
     }
 
     /**
@@ -35,7 +36,7 @@ public class MeasureProvider extends AbstractDataProvider {
      */
     public List<Measure> getMeasures() throws IOException, BadSonarQubeRequestException {
         // results list
-        ArrayList<Measure> res = new ArrayList<>();
+        final List<Measure> res = new ArrayList<>();
 
         // send a request to sonarqube server and return th response as a json object
         // if there is an error on server side this method throws an exception

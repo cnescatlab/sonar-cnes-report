@@ -21,10 +21,11 @@ public class QualityGateProvider extends AbstractDataProvider {
     /**
      * Complete constructor
      * @param params Program's parameters
+     * @param singleton RequestManager which does http request
      * @throws UnknownParameterException The program does not recognize the parameter
      */
-    public QualityGateProvider(Params params) throws UnknownParameterException {
-        super(params);
+    public QualityGateProvider(Params params, RequestManager singleton) throws UnknownParameterException {
+        super(params, singleton);
     }
 
     /**
@@ -36,7 +37,7 @@ public class QualityGateProvider extends AbstractDataProvider {
     public List<QualityGate> getQualityGates()
             throws IOException, BadSonarQubeRequestException {
         // result list
-        ArrayList<QualityGate> res = new ArrayList<>();
+        final List<QualityGate> res = new ArrayList<>();
 
         // Get all quality gates
         String request = String.format(getRequest(GET_QUALITY_GATES_REQUEST), getUrl());

@@ -8,8 +8,9 @@ import org.apache.poi.openxml4j.opc.PackagePart;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlObject;
-import org.openxmlformats.schemas.drawingml.x2006.chart.*;
-import org.openxmlformats.schemas.drawingml.x2006.chart.impl.CTStrValImpl;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTNumVal;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTPlotArea;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTStrVal;
 import org.openxmlformats.schemas.drawingml.x2006.chart.impl.ChartSpaceDocumentImpl;
 
 import java.io.IOException;
@@ -140,8 +141,8 @@ public class XWPFChartSpace {
             ptListCat.clear();
             ptListVal.clear();
 
-            // write data in the pie chart
-            for (int i = 0 ; i < values.size() ; ++i) {
+            // write resources in the pie chart
+            for (int i = 0 ; i < values.size() ; i++) {
                 // instantiate new label and value
                 CTStrVal cat = CTStrVal.Factory.newInstance();
                 CTNumVal val = CTNumVal.Factory.newInstance();
@@ -154,7 +155,7 @@ public class XWPFChartSpace {
                 cat.setV(String.valueOf(values.get(i).getVal()));
                 val.setV(String.valueOf(values.get(i).getCount()));
 
-                // add new data to lists
+                // add new resources to lists
                 ptListCat.add(cat);
                 ptListVal.add(val);
             }

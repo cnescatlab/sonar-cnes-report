@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Generic interface for data providers
+ * Generic interface for resources providers
  * @author begarco
  */
 public abstract class AbstractDataProvider {
@@ -23,92 +23,92 @@ public abstract class AbstractDataProvider {
      * Logger for the class
      */
     protected static final Logger LOGGER = Logger.getLogger(AbstractDataProvider.class.getCanonicalName());
-
+public static StringBuilder cmd = new StringBuilder();
     /**
      * Name for properties' file about requests
      */
-    private static final String REQUESTS_PROPERTIES = "requests.properties";
+    public static final String REQUESTS_PROPERTIES = "requests.properties";
 
     /**
      *  Name of the request for getting quality profiles' linked projects
      */
-    static final String GET_QUALITY_PROFILES_PROJECTS_REQUEST = "GET_QUALITY_PROFILES_PROJECTS_REQUEST";
+    public static final String GET_QUALITY_PROFILES_PROJECTS_REQUEST = "GET_QUALITY_PROFILES_PROJECTS_REQUEST";
     /**
      *  Name of the request for getting quality gates' details
      */
-    static final String GET_QUALITY_GATES_DETAILS_REQUEST = "GET_QUALITY_GATES_DETAILS_REQUEST";
+    public static final String GET_QUALITY_GATES_DETAILS_REQUEST = "GET_QUALITY_GATES_DETAILS_REQUEST";
     /**
      *  Name of the request for getting quality profiles' linked rules
      */
-    static final String GET_QUALITY_PROFILES_RULES_REQUEST = "GET_QUALITY_PROFILES_RULES_REQUEST";
+    public static final String GET_QUALITY_PROFILES_RULES_REQUEST = "GET_QUALITY_PROFILES_RULES_REQUEST";
     /**
      *  Name of the request for getting issues
      */
-    static final String GET_ISSUES_REQUEST = "GET_ISSUES_REQUEST";
+    public static final String GET_ISSUES_REQUEST = "GET_ISSUES_REQUEST";
     /**
      *  Name of the request for getting facets
      */
-    static final String GET_FACETS_REQUEST = "GET_FACETS_REQUEST";
+    public static final String GET_FACETS_REQUEST = "GET_FACETS_REQUEST";
     /**
      *  Name of the property for the maximum number of results per page
      */
-    static final String MAX_PER_PAGE_SONARQUBE = "MAX_PER_PAGE_SONARQUBE";
+    public static final String MAX_PER_PAGE_SONARQUBE = "MAX_PER_PAGE_SONARQUBE";
     /**
      *  Name of the request for getting quality gates
      */
-    static final String GET_QUALITY_GATES_REQUEST = "GET_QUALITY_GATES_REQUEST";
+    public static final String GET_QUALITY_GATES_REQUEST = "GET_QUALITY_GATES_REQUEST";
     /**
      *  Name of the request for getting measures
      */
-    static final String GET_MEASURES_REQUEST = "GET_MEASURES_REQUEST";
+    public static final String GET_MEASURES_REQUEST = "GET_MEASURES_REQUEST";
     /**
      *  Name of the request for getting quality profiles
      */
-    static final String GET_QUALITY_PROFILES_REQUEST = "GET_QUALITY_PROFILES_REQUEST";
+    public static final String GET_QUALITY_PROFILES_REQUEST = "GET_QUALITY_PROFILES_REQUEST";
     /**
      *  Name of the request for getting quality profiles' configuration
      */
-    static final String GET_QUALITY_PROFILES_CONFIGURATION_REQUEST = "GET_QUALITY_PROFILES_CONFIGURATION_REQUEST";
+    public static final String GET_QUALITY_PROFILES_CONFIGURATION_REQUEST = "GET_QUALITY_PROFILES_CONFIGURATION_REQUEST";
     /**
      * Field to search in json to get results' values
      */
-    static final String RESULTS = "results";
+    public static final String RESULTS = "results";
     /**
      * Field to search in json to get profiles
      */
-    static final String PROFILES = "profiles";
+    public static final String PROFILES = "profiles";
     /**
      * Field to search in json to get issues
      */
-    static final String ISSUES = "issues";
+    public static final String ISSUES = "issues";
     /**
      * Field to search in json to get the total page's number
      */
-    static final String TOTAL = "total";
+    public static final String TOTAL = "total";
     /**
      * Field to search in json to get facets
      */
-    static final String FACETS = "facets";
+    public static final String FACETS = "facets";
     /**
      * Field to search in json to get the component
      */
-    static final String COMPONENT = "component";
+    public static final String COMPONENT = "component";
     /**
      * Field to search in json to get measures
      */
-    static final String MEASURES = "measures";
+    public static final String MEASURES = "measures";
     /**
      * Field to search in json to get the boolean saying if a profile is the default one
      */
-    static final String DEFAULT = "default";
+    public static final String DEFAULT = "default";
     /**
      * Field to search in json to get quality gates
      */
-    static final String QUALITYGATES = "qualitygates";
+    public static final String QUALITYGATES = "qualitygates";
     /**
      * Field to search in json to get rules
      */
-    static final String RULES = "rules";
+    public static final String RULES = "rules";
 
     /**
      * Contain all the properties related to requests
@@ -140,9 +140,7 @@ public abstract class AbstractDataProvider {
      */
     private String qualityGateName;
 
-    /**
-     * Static initialization block for reading .properties
-     */
+    // Static initialization block for reading .properties
     static {
         // store properties
         requests = new Properties();
@@ -173,11 +171,17 @@ public abstract class AbstractDataProvider {
     }
 
     /**
+     * Singleton which execute concrete http requests
+     */
+    private RequestManager requestManager;
+
+    /**
      * Constructor
      * @param params Program's parameters
+     * @param singleton RequestManager which does http request
      * @throws UnknownParameterException when a parameter is not known in the program
      */
-    AbstractDataProvider(Params params) throws UnknownParameterException {
+    AbstractDataProvider(Params params, RequestManager singleton) throws UnknownParameterException {
         this.params = params;
         // json tool
         this.gson = new Gson();
@@ -187,6 +191,8 @@ public abstract class AbstractDataProvider {
         this.projectKey = getParams().get("sonar.project.id");
         // get quality gate's name
         this.qualityGateName = getParams().get("sonar.project.quality.gate");
+        // set network tool to execute request
+        this.requestManager = singleton;
     }
 
     /**
@@ -262,7 +268,7 @@ public abstract class AbstractDataProvider {
         // replace + characters
         preparedRequest = preparedRequest.replaceAll("\\+", "%2B");
 
-        // launch the request on sonarqube server and retrieve data into a string
+        // launch the request on sonarqube server and retrieve resources into a string
         return RequestManager.getInstance().get(preparedRequest);
     }
 

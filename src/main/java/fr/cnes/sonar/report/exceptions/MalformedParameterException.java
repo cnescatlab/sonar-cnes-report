@@ -11,7 +11,7 @@ public class MalformedParameterException extends Exception {
      * @param key Key of the malformed parameter
      */
     public MalformedParameterException(String key) {
-        super("Le paramètre " + key + " n'est pas correct.");
+        super("Parameter " + key + " is incorrect.");
     }
 
 }

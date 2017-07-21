@@ -2,7 +2,7 @@ package fr.cnes.sonar.report.exceptions;
 
 /**
  * Thrown when a request is not recognize by SonarQube
- * @author garconb
+ * @author begarco
  */
 public class BadSonarQubeRequestException extends Exception {
 

@@ -12,9 +12,9 @@ import java.util.logging.Logger;
 
 /**
  * Public class which contains all public String used by internal classes
+ * @author begarco
  */
-public class StringManager {
-
+public final class StringManager {
     /**
      * Logger for StringManager
      */
@@ -89,6 +89,14 @@ public class StringManager {
      */
     public static final String SONAR_PROJECT_QUALITY_PROFILE = "sonar.project.quality.profile";
     /**
+     * Just a quote with a backslash for regex
+     */
+    public static final String QUOTES = "\"";
+    /**
+     * Just a space character
+     */
+    public static final char SPACE = ' ';
+    /**
      * Just the word rule
      */
     public static final String RULES = "rules";
@@ -107,6 +115,11 @@ public class StringManager {
      * Define the language of the program
      */
     private static Locale currentLocale;
+
+    /**
+     * Unique instance of this class (singleton)
+     */
+    private static StringManager ourInstance = null;
 
     //
     // Static initialization block for reading .properties
@@ -142,6 +155,23 @@ public class StringManager {
     }
 
     /**
+     * Private constructor to singletonize the class
+     */
+    private StringManager() {}
+
+    /**
+     * Get the singleton
+     *
+     * @return unique instance of StringManager
+     */
+    public static synchronized StringManager getInstance() {
+        if (ourInstance == null) {
+            ourInstance = new StringManager();
+        }
+        return ourInstance;
+    }
+
+    /**
      * Give the value of the property corresponding to the key passed as parameter.
      * It gives only properties related to the report.
      * @param property Key of the property you want.
@@ -156,7 +186,7 @@ public class StringManager {
      * @param language String in lowercase
      * @param country String in upper case
      */
-    public static void changeLocale(String language, String country) {
+    public static synchronized void changeLocale(String language, String country) {
         // change locale
         currentLocale = new Locale(language,country);
         // reload messages

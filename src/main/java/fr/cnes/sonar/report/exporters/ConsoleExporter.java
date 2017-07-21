@@ -26,16 +26,16 @@ public class ConsoleExporter implements IExporter {
      * @param params Program's parameters
      * @param path Path where to export the file
      * @param filename Name of the file to export
-     * @throws BadExportationDataTypeException data is not a Report
+     * @throws BadExportationDataTypeException resources is not a Report
      */
     @Override
     public void export(Object data, Params params, String path, String filename)
             throws BadExportationDataTypeException {
-        // check data type
+        // check resources type
         if(!(data instanceof Report)) {
             throw new BadExportationDataTypeException();
         }
-        // data casting
+        // resources casting
         Report report = (Report) data;
 
         // get issues

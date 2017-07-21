@@ -1,9 +1,6 @@
 package fr.cnes.sonar.report.model;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Model of a report containing all information
@@ -59,10 +56,38 @@ public class Report {
         this.issues = new ArrayList<>();
         this.facets = new ArrayList<>();
         this.measures = new ArrayList<>();
+        this.rawIssues = new ArrayList<>();
     }
 
     /**
-     * Getter for issues
+     * Get number of issues by issue
+     * @return issues
+     */
+    public Map<String, Long> getIssuesFacets() {
+        // returned map containing issues key/number of issues
+        Map<String, Long> facets = new HashMap<>();
+        // collect issues' occurrences number
+        long counter;
+        // collect the rule's id for each issue
+        String rule;
+
+        // we browse all the issues and for each issue,
+        // if it is known then we increment its counter
+        // otherwise we add it to the map
+        for(Issue issue : getIssues()) {
+            rule = issue.getRule();
+            counter = 1;
+            if(facets.containsKey(rule)) {
+                counter = facets.get(rule) + 1;
+            }
+            facets.put(rule, counter);
+        }
+
+        return facets;
+    }
+
+    /**
+     * Get issues
      * @return issues
      */
     public List<Issue> getIssues() {
@@ -231,12 +256,13 @@ public class Report {
         Rule rule = null;
 
         // browse all quality profile
-        Iterator iterator = getQualityProfiles().iterator();
+        Iterator<QualityProfile> iterator = getQualityProfiles().iterator();
+        QualityProfile qp;
 
         // search for the rule with the asking key
         while(iterator.hasNext() && rule==null) {
             // get next profile
-            QualityProfile qp = (QualityProfile) iterator.next();
+            qp = iterator.next();
             // check if the rule is in this profile
             rule = qp.find(key);
         }

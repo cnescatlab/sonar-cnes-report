@@ -2,7 +2,7 @@
  * Test the creation of a docx file from a template
  * @author begarco
  */
-public class DocXExporterTest extends MasterTest {
+public class DocXExporterTest extends CommonTest {
 
 //    @Test
 //    public void variousTries() throws Exception {
