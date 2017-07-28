@@ -270,7 +270,7 @@ public final class DocXTools {
         // if there are no resources, there a
         if(data!=null && !data.isEmpty()) {
             // table to fill out
-            XWPFTable table = document.createTable();
+            XWPFTable table = null;
 
             // search for a table with the corresponding placeholder
             Iterator<XWPFTable> iterator = document.getTablesIterator();
@@ -285,13 +285,15 @@ public final class DocXTools {
             }
 
             // if the table does not exist, we create one at the bottom of the document
-            if (found) {
+            if (!found) {
                 table = document.createTable();
             }
             // otherwise we clear the table
             else {
-                for(int i = table.getNumberOfRows()-1 ; i >= 0 ; --i) {
-                    table.removeRow(i);
+                if(table!=null) {
+                    for (int i = table.getNumberOfRows() - 1; i >= 0; --i) {
+                        table.removeRow(i);
+                    }
                 }
             }
 
@@ -312,6 +314,9 @@ public final class DocXTools {
                 List<String> line = data.get(iLine);
 
                 for (int iCell = 0; iCell < line.size(); iCell++) {
+                    if(iCell>=row.getTableCells().size()) {
+                        row.createCell();
+                    }
                     row.getCell(iCell).setText(line.get(iCell));
                 }
             }
