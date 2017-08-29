@@ -23,7 +23,7 @@ public abstract class AbstractDataProvider {
      * Logger for the class
      */
     protected static final Logger LOGGER = Logger.getLogger(AbstractDataProvider.class.getCanonicalName());
-public static StringBuilder cmd = new StringBuilder();
+
     /**
      * Name for properties' file about requests
      */
@@ -181,7 +181,7 @@ public static StringBuilder cmd = new StringBuilder();
      * @param singleton RequestManager which does http request
      * @throws UnknownParameterException when a parameter is not known in the program
      */
-    AbstractDataProvider(Params params, RequestManager singleton) throws UnknownParameterException {
+    public AbstractDataProvider(Params params, RequestManager singleton) throws UnknownParameterException {
         this.params = params;
         // json tool
         this.gson = new Gson();
@@ -201,7 +201,7 @@ public static StringBuilder cmd = new StringBuilder();
      * @param property Key of the property you want.
      * @return The value of the property you want as a String.
      */
-    static String getRequest(String property) {
+    public static String getRequest(String property) {
         return requests.getProperty(property);
     }
 
@@ -230,7 +230,7 @@ public static StringBuilder cmd = new StringBuilder();
      * @throws IOException if there were an error contacting the server
      * @throws BadSonarQubeRequestException if SonarQube Server sent an error
      */
-    JsonObject request(String request) throws IOException, BadSonarQubeRequestException {
+    public JsonObject request(String request) throws IOException, BadSonarQubeRequestException {
         // do the request to the server and return a string answer
         String raw = stringRequest(request);
 
@@ -290,8 +290,9 @@ public static StringBuilder cmd = new StringBuilder();
 
     /**
      * Json parsing tool
-      */
-    Gson getGson() {
+     * @return the gson tool
+     */
+    public Gson getGson() {
         return gson;
     }
 
@@ -299,14 +300,15 @@ public static StringBuilder cmd = new StringBuilder();
      * Setter of gson
      * @param gson value
      */
-    void setGson(Gson gson) {
+    public void setGson(Gson gson) {
         this.gson = gson;
     }
 
     /**
      * Name of the project to report
+     * @return the url
      */
-    String getUrl() {
+    public String getUrl() {
         return url;
     }
 
@@ -314,14 +316,15 @@ public static StringBuilder cmd = new StringBuilder();
      * Setter of url
      * @param url value
      */
-    void setUrl(String url) {
+    public void setUrl(String url) {
         this.url = url;
     }
 
     /**
      * Key of the project to report
+     * @return the project key as a String
      */
-    String getProjectKey() {
+    public String getProjectKey() {
         return projectKey;
     }
 
@@ -329,14 +332,15 @@ public static StringBuilder cmd = new StringBuilder();
      * Setter of projectKey
      * @param projectKey value to give
      */
-    void setProjectKey(String projectKey) {
+    public void setProjectKey(String projectKey) {
         this.projectKey = projectKey;
     }
 
     /**
      * Quality gate's name (used by the project)
+     * @return the name of the quality gate as a string
      */
-    String getQualityGateName() {
+    public String getQualityGateName() {
         return qualityGateName;
     }
 
@@ -344,7 +348,7 @@ public static StringBuilder cmd = new StringBuilder();
      * Setter of qualityGateName
      * @param qualityGateName value
      */
-    void setQualityGateName(String qualityGateName) {
+    public void setQualityGateName(String qualityGateName) {
         this.qualityGateName = qualityGateName;
     }
 }

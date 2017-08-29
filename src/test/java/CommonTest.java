@@ -11,6 +11,10 @@ import java.util.*;
 public class CommonTest {
 
     /**
+     * Severity for stubbed violations
+     */
+    private static final String MAJOR = "MAJOR";
+    /**
      * Stubbed report for tests
      */
     protected Report report;
@@ -41,7 +45,7 @@ public class CommonTest {
         i1.setLine("15");
         i1.setMessage("azerty");
         i1.setProject("genius");
-        i1.setSeverity("MAJOR");
+        i1.setSeverity(MAJOR);
         i1.setStatus("OPEN");
         i1.setType("BUG");
         i2.setComponent("b");
@@ -49,7 +53,7 @@ public class CommonTest {
         i2.setLine("23");
         i2.setMessage("qwertz");
         i2.setProject("genius");
-        i2.setSeverity("MAJOR");
+        i2.setSeverity(MAJOR);
         i2.setStatus("OPEN");
         i2.setType("SECURITY");
         report.setIssues(issues);
@@ -70,7 +74,7 @@ public class CommonTest {
         rule1.setKey("squid:S1258");
         rule1.setName("Nom swag");
         rule1.setHtmlDesc("Cette description est pas trop longue donc ça va en fait, faut pas s'inquiéter.");
-        rule1.setSeverity("MAJOR");
+        rule1.setSeverity(MAJOR);
         rule1.setType("BUG");
         rulesOfProfile.add(rule1);
         profileData.setRules(rulesOfProfile);

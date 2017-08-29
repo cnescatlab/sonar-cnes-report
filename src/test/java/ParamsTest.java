@@ -12,12 +12,17 @@ import org.junit.Test;
 public class ParamsTest {
 
     /**
+     * Property for the id of the project
+     */
+    private static final String SONAR_PROJECT_ID = "--sonar.project.id";
+
+    /**
      * Classical case
      * @throws Exception ...
      */
     @Test
     public void paramsCreationTest() throws Exception {
-        String [] args = {"--sonar.project.id", "bob", "--sonar.url", "alice"};
+        String [] args = {SONAR_PROJECT_ID, "bob", "--sonar.url", "alice"};
 
         ParamsFactory paramsFactory = new ParamsFactory();
 
@@ -32,7 +37,7 @@ public class ParamsTest {
      */
     @Test(expected = MissingParameterException.class)
     public void paramsCreationMissingMandatoryParameterTest() throws Exception {
-        String [] args = {"--sonar.project.id", "bob"};
+        String [] args = {SONAR_PROJECT_ID, "bob"};
 
         ParamsFactory paramsFactory = new ParamsFactory();
 
@@ -64,7 +69,7 @@ public class ParamsTest {
      */
     @Test(expected = UnknownParameterException.class)
     public void paramsCreationMissingValueParameterTest() throws Exception {
-        String [] args = {"--sonar.project.id", "bob", "--sonar.url"};
+        String [] args = {SONAR_PROJECT_ID, "bob", "--sonar.url"};
 
         ParamsFactory paramsFactory = new ParamsFactory();
 
