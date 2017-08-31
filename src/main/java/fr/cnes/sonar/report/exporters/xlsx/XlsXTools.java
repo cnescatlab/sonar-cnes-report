@@ -171,7 +171,7 @@ public final class XlsXTools {
             CTTable cttable = selectedTable.getCTTable();
 
             // Define the resources range including headers
-            AreaReference selectedDataRange = new AreaReference(new CellReference(0, 0), new CellReference(issues.size(), 6));
+            AreaReference selectedDataRange = new AreaReference(new CellReference(0, 0), new CellReference(issues.size(), 7));
 
             // Set Range to the Table
             cttable.setRef(selectedDataRange.formatAsString());
@@ -189,9 +189,10 @@ public final class XlsXTools {
                 row.createCell(1).setCellValue(issue.getMessage());
                 row.createCell(2).setCellValue(issue.getType());
                 row.createCell(3).setCellValue(issue.getSeverity());
-                row.createCell(4).setCellValue(issue.getComponent());
-                row.createCell(5).setCellValue(issue.getLine());
-                row.createCell(6).setCellValue(issue.getEffort());
+                row.createCell(4).setCellValue(issue.getLanguage());
+                row.createCell(5).setCellValue(issue.getComponent());
+                row.createCell(6).setCellValue(issue.getLine());
+                row.createCell(7).setCellValue(issue.getEffort());
 
                 // go to the next line
                 numRow++;

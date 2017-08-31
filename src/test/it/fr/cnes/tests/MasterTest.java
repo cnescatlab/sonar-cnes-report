@@ -35,9 +35,9 @@ public class MasterTest {
         // create stubbed params
         params = new Params();
         params.put("sonar.url", "http://sonarqube:9000");
-        params.put("sonar.project.id", "projet-exemple-web");
+        params.put("sonar.project.id", "cat");
         params.put("sonar.project.quality.gate", "CNES");
-        params.put("project.name", "CNES.FR");
+        params.put("project.name", "Code Analysis Tool");
         params.put("report.author", "Benoît Garçon");
         params.put("report.date", new Date().toString());
         params.put("report.path", "./target");

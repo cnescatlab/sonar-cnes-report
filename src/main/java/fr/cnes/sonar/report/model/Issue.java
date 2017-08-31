@@ -49,6 +49,10 @@ public class Issue {
      * Issue's message
      */
     private String message;
+    /**
+     * Issue's programming language
+     */
+    private String language;
 
     /**
      * Default constructor
@@ -64,6 +68,7 @@ public class Issue {
         this.status = "";
         this.type = "";
         this.effort = "0";
+        this.language = "";
     }
 
     /**
@@ -251,5 +256,21 @@ public class Issue {
      */
     public void setEffort(String effort) {
         this.effort = effort;
+    }
+
+    /**
+     * Getter for language
+     * @return language
+     */
+    public String getLanguage() {
+        return language;
+    }
+
+    /**
+     * Setter for language
+     * @param language value
+     */
+    public void setLanguage(String language) {
+        this.language = language;
     }
 }

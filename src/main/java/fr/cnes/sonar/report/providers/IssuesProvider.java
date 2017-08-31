@@ -6,6 +6,7 @@ import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.model.Facet;
 import fr.cnes.sonar.report.model.Issue;
 import fr.cnes.sonar.report.input.Params;
+import fr.cnes.sonar.report.model.Rule;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,6 +46,10 @@ public class IssuesProvider extends AbstractDataProvider {
         // current page
         int page = 1;
 
+        // temporary declared variable to contain data from ws
+        Issue [] issuesTemp;
+        Rule[] rulesTemp;
+
         // search all issues of the project
         while(goOn) {
             // get maximum number of results per page
@@ -54,10 +59,13 @@ public class IssuesProvider extends AbstractDataProvider {
                     getUrl(), getProjectKey(), maxPerPage, page);
             // perform the request to the server
             final JsonObject jo = request(request);
-            // transform json to Issue objects
-            final Issue [] tmp = (getGson().fromJson(jo.get(ISSUES), Issue[].class));
+            // transform json to Issue and Rule objects
+            issuesTemp = (getGson().fromJson(jo.get(ISSUES), Issue[].class));
+            rulesTemp = (getGson().fromJson(jo.get(RULES), Rule[].class));
+            // association of issues and languages
+            setIssuesLanguage(issuesTemp, rulesTemp);
             // add them to the final result
-            res.addAll(Arrays.asList(tmp));
+            res.addAll(Arrays.asList(issuesTemp));
             // check next results' pages
             final int number = (jo.get(TOTAL).getAsInt());
             goOn = page* maxPerPage < number;
@@ -66,6 +74,54 @@ public class IssuesProvider extends AbstractDataProvider {
 
         // return the issues
         return res;
+    }
+
+    /**
+     * Find the display name of the programming language corresponding
+     * to a rule with its key
+     * @param ruleKey key of the rule to find
+     * @param rules array of the rules to browse
+     * @return a String containing the display name of the programming language
+     */
+    private String findLanguageOf(String ruleKey, Rule[] rules) {
+        // stop condition for the main loop
+        boolean again = true;
+        // increment for browsing the array
+        int inc = 0;
+
+        // result to return
+        String language = "";
+
+        // we iterate on the array until we find the good key
+        while(again && inc < rules.length) {
+            if(ruleKey.equals(rules[inc].getKey())) {
+                again = false;
+                language = rules[inc].getLangName();
+            }
+            inc++;
+        }
+
+        return language;
+    }
+
+    /**
+     * Set the language of each issues
+     * @param issues an array of issues to set
+     * @param rules an array of rules containing language information
+     */
+    private void setIssuesLanguage(Issue[] issues, Rule[] rules) {
+        // rule's key of an issue
+        String rulesKey;
+        // language of the previous rule's key
+        String rulesLanguage;
+
+        // for each issue we associate the corresponding programming language
+        // by browsing the rules array
+        for(int i = 0 ; i < issues.length ; i++) {
+            rulesKey = issues[i].getRule();
+            rulesLanguage = findLanguageOf(rulesKey, rules);
+            issues[i].setLanguage(rulesLanguage);
+        }
     }
 
     /**

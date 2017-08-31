@@ -33,6 +33,18 @@ public class Rule {
      * Represents the sonarqube's technical debt relative to this rule
      */
     private String debtRemFnCoeff;
+    /**
+     * The key of the language corresponding to the rule
+     */
+    private String lang;
+    /**
+     * The status of the rule
+     */
+    private String status;
+    /**
+     * The display name of the language corresponding to the rule
+     */
+    private String langName;
 
     /**
      * Default constructor
@@ -43,6 +55,9 @@ public class Rule {
         this.name = "";
         this.severity = "";
         this.htmlDesc = "";
+        this.lang = "";
+        this.status = "";
+        this.langName = "";
     }
 
     /**
@@ -155,5 +170,54 @@ public class Rule {
      */
     public void setHtmlDesc(String htmlDesc) {
         this.htmlDesc = htmlDesc;
+    }
+
+    /**
+     * Represents the sonarqube's programming language of this rule (key)
+     * @return key of the language relative to the rule
+     */
+    public String getLang() {
+        return lang;
+    }
+
+    /**
+     * Setter for the language name (key)
+     * @param lang language to set
+     */
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
+
+    /**
+     * Represents the sonarqube's status of the rule
+     * @return the status as a String
+     */
+    public String getStatus() {
+        return status;
+    }
+
+
+    /**
+     * Setter for the status of the rule
+     * @param status status to set
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
+     * Represents the sonarqube's programming language of this rule (display name)
+     * @return a string containing th display name of the corresponding language
+     */
+    public String getLangName() {
+        return langName;
+    }
+
+    /**
+     * Setter for the language name
+     * @param langName language to set
+     */
+    public void setLangName(String langName) {
+        this.langName = langName;
     }
 }

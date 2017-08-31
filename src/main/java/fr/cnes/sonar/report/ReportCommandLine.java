@@ -81,7 +81,7 @@ public class ReportCommandLine {
     /**
      * Error message returned when the program cannot create a folder because it already exists
      */
-    public static final String CNES_MKDIR_ERROR = "[ERROR] Impossible to create the following directory: %s";
+    public static final String CNES_MKDIR_ERROR = "[WARN] Impossible to create the following directory: %s";
 
     /**
      * Main method
