@@ -3,6 +3,7 @@ package fr.cnes.sonar.report.providers;
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
+import fr.cnes.sonar.report.input.StringManager;
 import fr.cnes.sonar.report.model.Facet;
 import fr.cnes.sonar.report.model.Issue;
 import fr.cnes.sonar.report.input.Params;
@@ -14,11 +15,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static fr.cnes.sonar.report.input.StringManager.ISSUES_OVERFLOW_MSG;
+
 /**
  * Provides issue items
  * @author begarco
  */
 public class IssuesProvider extends AbstractDataProvider {
+
+    /**
+     * Correspond to the maximum number of issues that SonarQube allow
+     * web api's users to collect.
+     */
+    private static final int MAXIMUM_ISSUES_LIMIT = 10000;
 
     /**
      * Complete constructor
@@ -43,6 +52,8 @@ public class IssuesProvider extends AbstractDataProvider {
 
         // stop condition
         boolean goOn = true;
+        // flag when there are too many violation (> MAXIMUM_ISSUES_LIMIT)
+        boolean overflow = false;
         // current page
         int page = 1;
 
@@ -67,9 +78,20 @@ public class IssuesProvider extends AbstractDataProvider {
             // add them to the final result
             res.addAll(Arrays.asList(issuesTemp));
             // check next results' pages
-            final int number = (jo.get(TOTAL).getAsInt());
+            int number = (jo.get(TOTAL).getAsInt());
+
+            // check overflow
+            if(number > MAXIMUM_ISSUES_LIMIT) {
+                number = MAXIMUM_ISSUES_LIMIT;
+                overflow = true;
+            }
             goOn = page* maxPerPage < number;
             page++;
+        }
+
+        // in case of overflow we log the problem
+        if(overflow) {
+            LOGGER.warning(StringManager.string(ISSUES_OVERFLOW_MSG));
         }
 
         // return the issues
@@ -136,6 +158,8 @@ public class IssuesProvider extends AbstractDataProvider {
 
         // stop condition
         boolean goon = true;
+        // flag when there are too many violation (> MAXIMUM_ISSUES_LIMIT)
+        boolean overflow = false;
         // current page
         int page = 1;
 
@@ -154,8 +178,20 @@ public class IssuesProvider extends AbstractDataProvider {
             res.addAll(Arrays.asList(tmp));
             // check next results' pages
             int number = (jo.get(TOTAL).getAsInt());
+
+            // check overflow
+            if(number > MAXIMUM_ISSUES_LIMIT) {
+                number = MAXIMUM_ISSUES_LIMIT;
+                overflow = true;
+            }
+
             goon = page* maxPerPage < number;
             page++;
+        }
+
+        // in case of overflow we log the problem
+        if(overflow) {
+            LOGGER.warning(StringManager.string(ISSUES_OVERFLOW_MSG));
         }
 
         // return the issues

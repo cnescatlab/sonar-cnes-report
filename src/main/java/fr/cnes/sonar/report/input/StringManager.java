@@ -89,6 +89,10 @@ public final class StringManager {
      */
     public static final String SONAR_PROJECT_QUALITY_PROFILE = "sonar.project.quality.profile";
     /**
+     * Logged message when there are too much issues to export.
+     */
+    public static final String ISSUES_OVERFLOW_MSG = "log.overflow.msg";
+    /**
      * Just a quote with a backslash for regex
      */
     public static final String QUOTES = "\"";
