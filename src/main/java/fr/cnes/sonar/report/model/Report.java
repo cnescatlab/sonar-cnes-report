@@ -1,5 +1,7 @@
 package fr.cnes.sonar.report.model;
 
+import fr.cnes.sonar.report.input.StringManager;
+
 import java.util.*;
 
 /**
@@ -43,6 +45,10 @@ public class Report {
      * List of map representing issues
      */
     private List<Map> rawIssues;
+    /**
+     * Data about the project
+     */
+    private Project project;
 
     /**
      * Default constructor
@@ -57,6 +63,7 @@ public class Report {
         this.facets = new ArrayList<>();
         this.measures = new ArrayList<>();
         this.rawIssues = new ArrayList<>();
+        this.project = new Project(StringManager.EMPTY, StringManager.EMPTY,StringManager.EMPTY,StringManager.EMPTY);
     }
 
     /**
@@ -216,15 +223,15 @@ public class Report {
 
     /**
      * Construct a string with all quality profiles' names
-     * @return a string like profile1 profile2 profile3
+     * @return a string like profile1 [language1]; profile2 [language2]; profile3 [language3];
      */
     public String getQualityProfilesName() {
         // gather all names
         StringBuilder sb = new StringBuilder();
 
         // append each quality profile name
-        for(QualityProfile q : getQualityProfiles()) {
-            sb.append(q.getName()).append(' ');
+        for(ProfileMetaData q : project.getQualityProfiles()) {
+            sb.append(q.getName()).append(" [").append(q.getLanguage()).append("]; ");
         }
 
         return sb.toString();
@@ -239,8 +246,8 @@ public class Report {
         StringBuilder sb = new StringBuilder();
 
         // append each quality profile filename
-        for(QualityProfile q : getQualityProfiles()) {
-            sb.append(q.getKey()).append(".json").append(' ');
+        for(ProfileMetaData q : project.getQualityProfiles()) {
+            sb.append(q.getKey()).append(".json").append("; ");
         }
 
         return sb.toString();
@@ -284,5 +291,37 @@ public class Report {
      */
     public void setRawIssues(List<Map> rawIssues) {
         this.rawIssues = new ArrayList<>(rawIssues);
+    }
+
+    /**
+     * Get the version of the project given by the user
+     * @return a string
+     */
+    public String getProjectVersion() {
+        return this.project.getVersion();
+    }
+
+    /**
+     * Get the description of the project given by the user
+     * @return a string
+     */
+    public String getProjectDescription() {
+        return this.project.getDescription();
+    }
+
+    /**
+     * Get the project as an object
+     * @return Project
+     */
+    public Project getProject() {
+        return project;
+    }
+
+    /**
+     * Set the project data
+     * @param project data to set
+     */
+    public void setProject(Project project) {
+        this.project = project;
     }
 }

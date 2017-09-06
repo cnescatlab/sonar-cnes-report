@@ -43,10 +43,11 @@ public class ReportFactory {
         Report report = new Report();
 
         // instantiation of providers
-        IssuesProvider ip = new IssuesProvider(params, RequestManager.getInstance());
-        MeasureProvider mp = new MeasureProvider(params, RequestManager.getInstance());
-        QualityProfileProvider pp = new QualityProfileProvider(params, RequestManager.getInstance());
-        QualityGateProvider gp = new QualityGateProvider(params, RequestManager.getInstance());
+        IssuesProvider issuesProvider = new IssuesProvider(params, RequestManager.getInstance());
+        MeasureProvider measureProvider = new MeasureProvider(params, RequestManager.getInstance());
+        ProjectProvider projectProvider = new ProjectProvider(params, RequestManager.getInstance());
+        QualityProfileProvider qualityProfileProvider = new QualityProfileProvider(params, RequestManager.getInstance());
+        QualityGateProvider qualityGateProvider = new QualityGateProvider(params, RequestManager.getInstance());
 
         // project's name's setting
         report.setProjectName(params.get(StringManager.PROJECT_NAME));
@@ -55,16 +56,18 @@ public class ReportFactory {
         // date setting
         report.setProjectDate(params.get(StringManager.REPORT_DATE));
         // measures's setting
-        report.setMeasures(mp.getMeasures());
+        report.setMeasures(measureProvider.getMeasures());
+        // set report basic data
+        report.setProject(projectProvider.getProject(projectProvider.getProjectKey()));
         // formatted issues and raw issues' setting
-        report.setIssues(ip.getIssues());
-        report.setRawIssues(ip.getRawIssues());
+        report.setIssues(issuesProvider.getIssues());
+        report.setRawIssues(issuesProvider.getRawIssues());
         // facets's setting
-        report.setFacets(ip.getFacets());
+        report.setFacets(issuesProvider.getFacets());
         // quality profile's setting
-        report.setQualityProfiles(pp.getQualityProfiles());
+        report.setQualityProfiles(qualityProfileProvider.getQualityProfiles());
         // quality gate's setting
-        report.setQualityGate(gp.getProjectQualityGate());
+        report.setQualityGate(qualityGateProvider.getProjectQualityGate());
 
         return report;
     }

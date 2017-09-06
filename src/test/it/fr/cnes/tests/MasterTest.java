@@ -2,19 +2,10 @@ package fr.cnes.tests;
 
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.input.Params;
-import fr.cnes.sonar.report.model.Report;
-import fr.cnes.sonar.report.providers.*;
 import org.junit.Before;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Contains common code for tests

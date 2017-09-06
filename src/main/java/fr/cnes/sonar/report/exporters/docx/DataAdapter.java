@@ -110,7 +110,7 @@ public class DataAdapter {
     /**
      * Placeholder for maintainability mark
      */
-    private static final String MAINTAINABILITY_PLACEHOLDER = "XX-MAINTAINBILITY-XX";
+    private static final String MAINTAINABILITY_PLACEHOLDER = "XX-MAINTAINABILITY-XX";
     /**
      * Placeholder for coverage rate
      */
@@ -118,7 +118,7 @@ public class DataAdapter {
     /**
      * Placeholder for complexity mark
      */
-    private static final String COMPLEXITY_PLACEHOLDER = "XX-COMPLEXITY-XX";
+    private static final String LINES_PLACEHOLDER = "XX-LINES-XX";
     /**
      * Placeholder for quality gate's status
      */
@@ -127,6 +127,14 @@ public class DataAdapter {
      * Placeholder for security mark
      */
     private static final String SECURITY_PLACEHOLDER = "XX-SECURITY-XX";
+    /**
+     * Placeholder for the project's version
+     */
+    private static final String VERSION_PLACEHOLDER = "XX-VERSION-XX";
+    /**
+     * Placeholder for the project's description
+     */
+    private static final String DESCRIPTION_PLACEHOLDER = "XX-DESCRIPTION-XX";
     /**
      * Default placeholder
      */
@@ -148,7 +156,7 @@ public class DataAdapter {
      */
     private static final String COVERAGE = "coverage";
     /**
-     * Field in json response for complexity
+     * Field in json response for number of code lines
      */
     private static final String NCLOC = "ncloc";
     /**
@@ -167,6 +175,26 @@ public class DataAdapter {
      * List of possible issue severities
      */
     private static final String[] ISSUE_SEVERITIES = {"BLOCKER", "CRITICAL", "MAJOR", "MINOR", "INFO"};
+    /**
+     * Field in json response for number of code lines per language
+     */
+    private static final String NCLOC_PER_LANGUAGE = "ncloc_language_distribution";
+    /**
+     * Just an equals sign
+     */
+    private static final String EQUALS = "=";
+    /**
+     * Just a semicolon
+     */
+    private static final String SEMICOLON = ";";
+    /**
+     * Label for the total line
+     */
+    private static final String TOTAL = "Total";
+    /**
+     * Just an empty string
+     */
+    private static final String EMPTY = "";
 
     /**
      * Prepare list of resources to be print in a table
@@ -301,6 +329,8 @@ public class DataAdapter {
         // Replacement of placeholder
         // report meta resources placeholders
         replacementValues.put(AUTHOR_PLACEHOLDER, report.getProjectAuthor());
+        replacementValues.put(VERSION_PLACEHOLDER, report.getProjectVersion());
+        replacementValues.put(DESCRIPTION_PLACEHOLDER, report.getProjectDescription());
         replacementValues.put(DATE_PLACEHOLDER, report.getProjectDate());
         replacementValues.put(PROJECTNAME_PLACEHOLDER, report.getProjectName());
         // configuration placeholders
@@ -375,7 +405,7 @@ public class DataAdapter {
                 res = COVERAGE_PLACEHOLDER;
                 break;
             case NCLOC:
-                res = COMPLEXITY_PLACEHOLDER;
+                res = LINES_PLACEHOLDER;
                 break;
             case ALERT_STATUS:
                 res = QUALITYGATE_PLACEHOLDER;
@@ -390,4 +420,49 @@ public class DataAdapter {
         return res;
     }
 
+
+    /**
+     * Load in a list all the volume metrics with the corresponding value (value)
+     * @param report Report from which resources are extracted
+     * @return the volumes list
+     */
+    public static List<List<String>> getVolumes(Report report) {
+        // result to return
+        List<List<String>> volumes = new ArrayList<>();
+
+        // find metrics per language and for all
+        String perLanguage = findMeasure(report.getMeasures(), NCLOC_PER_LANGUAGE);
+        String total = findMeasure(report.getMeasures(), NCLOC);
+
+        // split raw string data into list of list of string
+        // to get a relevant table
+        List<String> firstSplit = Arrays.asList(perLanguage.split(SEMICOLON));
+        firstSplit.forEach(x -> volumes.add(Arrays.asList(x.split(EQUALS))));
+        // add the total lines
+        volumes.add(Arrays.asList(TOTAL, total));
+
+        return volumes;
+    }
+
+    /**
+     * Return the value of a given metrics
+     * @param measures List of measures to browse
+     * @param metric metric to search
+     * @return a String containing the measure
+     */
+    private static String findMeasure(List<Measure> measures, String metric) {
+        // result that can be null
+        String result = EMPTY;
+        // retrieve all measures to browse
+        Iterator<Measure> iterator = measures.iterator();
+        Measure current;
+        // search by name the measure corresponding to metric
+        while (iterator.hasNext() && result.equals(EMPTY)) {
+            current = iterator.next();
+            if(current.getMetric().equals(metric)) {
+                result = current.getValue();
+            }
+        }
+        return result;
+    }
 }

@@ -62,6 +62,10 @@ public abstract class AbstractDataProvider {
      */
     public static final String GET_MEASURES_REQUEST = "GET_MEASURES_REQUEST";
     /**
+     *  Name of the request for getting a specific project
+     */
+    public static final String GET_PROJECT_REQUEST = "GET_PROJECT_REQUEST";
+    /**
      *  Name of the request for getting quality profiles
      */
     public static final String GET_QUALITY_PROFILES_REQUEST = "GET_QUALITY_PROFILES_REQUEST";

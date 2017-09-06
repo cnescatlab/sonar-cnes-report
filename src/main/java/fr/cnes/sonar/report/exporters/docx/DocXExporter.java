@@ -41,18 +41,26 @@ public class DocXExporter implements IExporter {
      */
     private static final String COUNT_TABLE_PLACEHOLDER = "$ISSUES_COUNT";
     /**
+     * Placeholder for the table containing counts of issues by type and severity
+     */
+    private static final String VOLUME_TABLE_PLACEHOLDER = "$VOLUME";
+    /**
      * Just a slash
      */
-    static final String SLASH = "/";
+    private static final String SLASH = "/";
     /**
      * Name of the property giving the path to the report
      */
-    static final String REPORT_PATH_PROPERTY_KEY = "report.path";
+    private static final String REPORT_PATH_PROPERTY_KEY = "report.path";
     /**
      * Name of the columns in issues table
      */
-    static final String[] HEADER_FIELDS = {string("header.name"), string("header.description"),
+    private static final String[] HEADER_FIELDS = {string("header.name"), string("header.description"),
             string("header.type"), string("header.severity"), string("header.number")};
+    /**
+     *
+     */
+    private static final String[] VOLUMES_HEADER = {string("header.language"), string("header.number")};
 
     /**
      * Overridden export for docX
@@ -98,6 +106,10 @@ public class DocXExporter implements IExporter {
             List<List<String>> types = DataAdapter.getTypes(report);
             DocXTools.fillTable(document, headerIssues.subList(2,5), types, COUNT_TABLE_PLACEHOLDER);
 
+            // Add volumes by language
+            List<String> volumesHeader = new ArrayList<>(Arrays.asList(VOLUMES_HEADER));
+            List<List<String>> volumes = DataAdapter.getVolumes(report);
+            DocXTools.fillTable(document, volumesHeader, volumes, VOLUME_TABLE_PLACEHOLDER);
 
             // Map which contains all values to replace
             // the key is the placeholder and the value is the value to write over

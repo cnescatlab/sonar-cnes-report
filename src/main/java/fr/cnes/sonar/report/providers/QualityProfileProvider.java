@@ -3,6 +3,7 @@ package fr.cnes.sonar.report.providers;
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
+import fr.cnes.sonar.report.input.StringManager;
 import fr.cnes.sonar.report.model.*;
 import fr.cnes.sonar.report.input.Params;
 
@@ -49,8 +50,8 @@ public class QualityProfileProvider extends AbstractDataProvider {
             ProfileData profileData = new ProfileData();
             // get configuration
             request = String.format(getRequest(GET_QUALITY_PROFILES_CONFIGURATION_REQUEST),
-                    getUrl(), profileMetaData.getLanguage().replaceAll(" ", "%20"),
-                    profileMetaData.getName().replaceAll(" ", "%20"));
+                    getUrl(), profileMetaData.getLanguage().replaceAll(String.valueOf(StringManager.SPACE), "%20"),
+                    profileMetaData.getName().replaceAll(String.valueOf(StringManager.SPACE), "%20"));
             // perform request to sonarqube server
             String xml = stringRequest(request);
             // add configuration as string to the profile
@@ -67,7 +68,7 @@ public class QualityProfileProvider extends AbstractDataProvider {
             while(goon) {
                 // prepare the request
                 request = String.format(getRequest(GET_QUALITY_PROFILES_RULES_REQUEST),
-                        getUrl(), profileMetaData.getKey().replaceAll(" ", "%20"),
+                        getUrl(), profileMetaData.getKey().replaceAll(String.valueOf(StringManager.SPACE), "%20"),
                         Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)), page);
                 // perform the previous request to sonarqube server
                 jo = request(request);

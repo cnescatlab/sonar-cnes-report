@@ -82,11 +82,15 @@ public class CommonTest {
         profileMetaData.setName("BG");
         profileMetaData.setKey("BG");
         QualityProfile qualityProfile = new QualityProfile(profileData, profileMetaData);
-        qualityProfile.setProjects((new Project[]{new Project("sonar-cnes-plugin", "sonar-cnes-plugin")}));
+        qualityProfile.setProjects((new Project[]{new Project("sonar-cnes-plugin", "sonar-cnes-plugin","","")}));
         report.setQualityProfiles(Collections.singletonList(qualityProfile));
         QualityGate qualityGate = new QualityGate();
         qualityGate.setName("CNES");
         report.setQualityGate(qualityGate);
+
+        Project project = new Project("key", "Name", "Version", "Short description");
+        project.setQualityProfiles(new ProfileMetaData[0]);
+        report.setProject(project);
 
         List<Measure> measures = new ArrayList<>();
         measures.add(new Measure("reliability_rating", "1.0"));
