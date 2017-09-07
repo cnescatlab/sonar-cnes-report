@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.input.Params;
+import fr.cnes.sonar.report.model.ProfileMetaData;
 import fr.cnes.sonar.report.model.Project;
 
 import java.io.IOException;
@@ -15,6 +16,8 @@ import java.io.IOException;
  */
 public class ProjectProvider extends AbstractDataProvider {
 
+    LanguageProvider languageProvider;
+
     /**
      * Complete constructor
      * @param params Program's parameters
@@ -23,6 +26,7 @@ public class ProjectProvider extends AbstractDataProvider {
      */
     public ProjectProvider(Params params, RequestManager singleton) throws UnknownParameterException {
         super(params, singleton);
+        languageProvider = new LanguageProvider(params, singleton);
     }
 
     /**
@@ -39,6 +43,17 @@ public class ProjectProvider extends AbstractDataProvider {
                 getUrl(), projectKey));
 
         // put json in a Project class
-        return (getGson().fromJson(jo, Project.class));
+        Project project = (getGson().fromJson(jo, Project.class));
+
+        // set language's name for profiles
+        ProfileMetaData[] metaData = project.getQualityProfiles();
+        String languageName;
+        for(ProfileMetaData it : metaData){
+            languageName = languageProvider.getLanguage(it.getLanguage());
+            it.setLanguageName(languageName);
+        }
+        project.setQualityProfiles(metaData);
+
+        return project;
     }
 }

@@ -48,7 +48,7 @@ public class ReportFactory {
         ProjectProvider projectProvider = new ProjectProvider(params, RequestManager.getInstance());
         QualityProfileProvider qualityProfileProvider = new QualityProfileProvider(params, RequestManager.getInstance());
         QualityGateProvider qualityGateProvider = new QualityGateProvider(params, RequestManager.getInstance());
-
+        LanguageProvider languageProvider = new LanguageProvider(params, RequestManager.getInstance());
         // project's name's setting
         report.setProjectName(params.get(StringManager.PROJECT_NAME));
         // author's setting
@@ -68,6 +68,8 @@ public class ReportFactory {
         report.setQualityProfiles(qualityProfileProvider.getQualityProfiles());
         // quality gate's setting
         report.setQualityGate(qualityGateProvider.getProjectQualityGate());
+        // languages' settings
+        report.getProject().setLanguages(languageProvider.getLanguages());
 
         return report;
     }

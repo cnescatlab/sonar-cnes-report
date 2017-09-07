@@ -230,8 +230,10 @@ public class Report {
         StringBuilder sb = new StringBuilder();
 
         // append each quality profile name
+        Language language;
         for(ProfileMetaData q : project.getQualityProfiles()) {
-            sb.append(q.getName()).append(" [").append(q.getLanguage()).append("]; ");
+            language = project.getLanguage(q.getLanguage());
+            sb.append(q.getName()).append(" [").append(language.getName()).append("]; ");
         }
 
         return sb.toString();

@@ -438,6 +438,16 @@ public class DataAdapter {
         // to get a relevant table
         List<String> firstSplit = Arrays.asList(perLanguage.split(SEMICOLON));
         firstSplit.forEach(x -> volumes.add(Arrays.asList(x.split(EQUALS))));
+
+        // replace language's key by language's name
+        Language language;
+        for(List<String> l : volumes) {
+            language = report.getProject().getLanguage(l.get(0));
+            if(null!=language) {
+                l.set(0, language.getName());
+            }
+        }
+
         // add the total lines
         volumes.add(Arrays.asList(TOTAL, total));
 

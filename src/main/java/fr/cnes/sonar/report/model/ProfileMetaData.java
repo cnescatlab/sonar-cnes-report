@@ -90,7 +90,7 @@ public class ProfileMetaData {
      * @return language's name
      */
     public String getLanguageName() {
-        return languageName;
+        return this.languageName;
     }
 
     /**

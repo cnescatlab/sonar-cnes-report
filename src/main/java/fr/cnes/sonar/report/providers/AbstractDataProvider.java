@@ -30,6 +30,11 @@ public abstract class AbstractDataProvider {
     public static final String REQUESTS_PROPERTIES = "requests.properties";
 
     /**
+     *  Field to retrieve languages list.
+     */
+    public static final String GET_LANGUAGES = "GET_LANGUAGES";
+
+    /**
      *  Name of the request for getting quality profiles' linked projects
      */
     public static final String GET_QUALITY_PROFILES_PROJECTS_REQUEST = "GET_QUALITY_PROFILES_PROJECTS_REQUEST";
@@ -113,6 +118,8 @@ public abstract class AbstractDataProvider {
      * Field to search in json to get rules
      */
     public static final String RULES = "rules";
+
+
 
     /**
      * Contain all the properties related to requests

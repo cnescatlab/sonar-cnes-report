@@ -88,8 +88,16 @@ public class CommonTest {
         qualityGate.setName("CNES");
         report.setQualityGate(qualityGate);
 
+        Language language = new Language();
+        language.setKey("java");
+        language.setName("Java");
+
+        Map<String, Language> languages = new HashMap<>();
+        languages.put(language.getKey(), language);
+
         Project project = new Project("key", "Name", "Version", "Short description");
         project.setQualityProfiles(new ProfileMetaData[0]);
+        project.setLanguages(languages);
         report.setProject(project);
 
         List<Measure> measures = new ArrayList<>();
