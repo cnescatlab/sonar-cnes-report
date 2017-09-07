@@ -112,7 +112,6 @@ public class CommonTest {
 
         params.put("sonar.url", "http://sonarqube:9000");
         params.put("sonar.project.id", "sonar-report-cnes");
-        params.put("sonar.project.quality.gate", "CNES");
         params.put("project.name", "Sonar Report CNES");
         params.put("report.author", "Benoît Garçon");
         params.put("report.date", new Date().toString());

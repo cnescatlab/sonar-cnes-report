@@ -9,6 +9,7 @@ import fr.cnes.sonar.report.factory.ReportFactory;
 import fr.cnes.sonar.report.input.Params;
 import fr.cnes.sonar.report.input.ParamsFactory;
 import fr.cnes.sonar.report.input.StringManager;
+import fr.cnes.sonar.report.model.ProfileMetaData;
 import fr.cnes.sonar.report.model.QualityProfile;
 import fr.cnes.sonar.report.model.Report;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
@@ -18,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,8 +52,6 @@ public class ReportCommandLine {
             "Here are the list of parameters you can use:\n" +
             "  > --sonar.url [mandatory]\n" +
             "  > --sonar.project.id [mandatory]\n" +
-            "  > --sonar.project.quality.profile\n" +
-            "  > --sonar.project.quality.gate\n" +
             "  > --project.name\n" +
             "  > --report.author\n" +
             "  > --report.date\n" +
@@ -116,8 +116,16 @@ public class ReportCommandLine {
 
             // Export all
             // export each linked quality profile
-            for(QualityProfile qp : superReport.getQualityProfiles()) {
-                profileExporter.export(qp.getConf(), params, confDirectory, qp.getKey());
+            for(ProfileMetaData metaData : superReport.getProject().getQualityProfiles()) {
+                Iterator<QualityProfile> iterator = superReport.getQualityProfiles().iterator();
+                boolean goOn = true;
+                while(iterator.hasNext() && goOn) {
+                    QualityProfile qp = iterator.next();
+                    if(qp.getKey().equals(metaData.getKey())) {
+                        profileExporter.export(qp.getConf(), params, confDirectory, qp.getKey());
+                        goOn = false;
+                    }
+                }
             }
 
             // export the quality gate

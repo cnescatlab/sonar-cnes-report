@@ -29,10 +29,6 @@ public final class StringManager {
      */
     public static final String EMPTY = "";
     /**
-     * Name of the property giving the quality gate used during the analysis
-     */
-    public static final String SONAR_PROJECT_QUALITY_GATE = "sonar.project.quality.gate";
-    /**
      * Name of the property giving the project's name
      */
     public static final String PROJECT_NAME = "project.name";
@@ -84,10 +80,6 @@ public final class StringManager {
      * Name of the property giving the id of the project to analyze
      */
     public static final String SONAR_PROJECT_ID = "sonar.project.id";
-    /**
-     * Name of the property giving the path to the xlsx template
-     */
-    public static final String SONAR_PROJECT_QUALITY_PROFILE = "sonar.project.quality.profile";
     /**
      * Logged message when there are too much issues to export.
      */

@@ -19,6 +19,15 @@ import java.util.List;
 public class QualityGateProvider extends AbstractDataProvider {
 
     /**
+     * Field to find in json
+     */
+    private static final String QUALITY_GATE = "qualityGate";
+    /**
+     * Field to find in json corresponding to the quality gate's id
+     */
+    private static final String KEY = "key";
+
+    /**
      * Complete constructor
      * @param params Program's parameters
      * @param singleton RequestManager which does http request
@@ -84,12 +93,20 @@ public class QualityGateProvider extends AbstractDataProvider {
         boolean find = false;
         // get all the quality gates
         List<QualityGate> qualityGates = getQualityGates();
+        // request the criteria
+        String request = String.format(getRequest(GET_QUALITY_GATE_REQUEST),
+                getUrl(), getProjectKey());
+
+        // perform previous request
+        JsonObject jo = request(request);
+        String key = jo.getAsJsonObject(QUALITY_GATE)
+                .get(KEY).getAsString();
 
         // search for the good quality gate
         Iterator<QualityGate> iterator = qualityGates.iterator();
         while (iterator.hasNext() && !find) {
             tmp = iterator.next();
-            if(tmp.getName().equals(getQualityGateName())) {
+            if(tmp.getId().equals(key)) {
                 res = tmp;
                 find = true;
             }
@@ -97,7 +114,7 @@ public class QualityGateProvider extends AbstractDataProvider {
 
         // check if it was found
         if(!find) {
-            throw new UnknownQualityGateException(getQualityGateName());
+            throw new UnknownQualityGateException(key);
         }
 
         return res;

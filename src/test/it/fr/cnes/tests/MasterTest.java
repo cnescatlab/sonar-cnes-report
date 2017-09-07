@@ -27,7 +27,6 @@ public class MasterTest {
         params = new Params();
         params.put("sonar.url", "http://sonarqube:9000");
         params.put("sonar.project.id", "cat");
-        params.put("sonar.project.quality.gate", "CNES");
         params.put("project.name", "Code Analysis Tool");
         params.put("report.author", "Benoît Garçon");
         params.put("report.date", new Date().toString());

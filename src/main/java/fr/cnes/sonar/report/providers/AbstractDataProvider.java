@@ -39,6 +39,10 @@ public abstract class AbstractDataProvider {
      */
     public static final String GET_QUALITY_PROFILES_PROJECTS_REQUEST = "GET_QUALITY_PROFILES_PROJECTS_REQUEST";
     /**
+     *  Name of the request allowing to retrieve the quality gate
+     */
+    public static final String GET_QUALITY_GATE_REQUEST = "GET_QUALITY_GATE_REQUEST";
+    /**
      *  Name of the request for getting quality gates' details
      */
     public static final String GET_QUALITY_GATES_DETAILS_REQUEST = "GET_QUALITY_GATES_DETAILS_REQUEST";
@@ -200,8 +204,6 @@ public abstract class AbstractDataProvider {
         this.url = getParams().get("sonar.url");
         // get project key
         this.projectKey = getParams().get("sonar.project.id");
-        // get quality gate's name
-        this.qualityGateName = getParams().get("sonar.project.quality.gate");
         // set network tool to execute request
         this.requestManager = singleton;
     }
