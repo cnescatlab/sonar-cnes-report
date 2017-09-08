@@ -49,8 +49,7 @@ public class ReportFactory {
         QualityProfileProvider qualityProfileProvider = new QualityProfileProvider(params, RequestManager.getInstance());
         QualityGateProvider qualityGateProvider = new QualityGateProvider(params, RequestManager.getInstance());
         LanguageProvider languageProvider = new LanguageProvider(params, RequestManager.getInstance());
-        // project's name's setting
-        report.setProjectName(params.get(StringManager.PROJECT_NAME));
+
         // author's setting
         report.setProjectAuthor(params.get(StringManager.REPORT_AUTHOR));
         // date setting
@@ -59,6 +58,8 @@ public class ReportFactory {
         report.setMeasures(measureProvider.getMeasures());
         // set report basic data
         report.setProject(projectProvider.getProject(projectProvider.getProjectKey()));
+        // project's name's setting
+        report.setProjectName(report.getProject().getName());
         // formatted issues and raw issues' setting
         report.setIssues(issuesProvider.getIssues());
         report.setRawIssues(issuesProvider.getRawIssues());

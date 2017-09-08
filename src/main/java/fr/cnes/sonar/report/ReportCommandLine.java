@@ -52,7 +52,6 @@ public class ReportCommandLine {
             "Here are the list of parameters you can use:\n" +
             "  > --sonar.url [mandatory]\n" +
             "  > --sonar.project.id [mandatory]\n" +
-            "  > --project.name\n" +
             "  > --report.author\n" +
             "  > --report.date\n" +
             "  > --report.path\n" +

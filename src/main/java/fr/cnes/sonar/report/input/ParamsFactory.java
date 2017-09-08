@@ -147,7 +147,6 @@ public class ParamsFactory {
         // append all default configuration
         params.put(StringManager.SONAR_URL, StringManager.EMPTY);
         params.put(StringManager.SONAR_PROJECT_ID, StringManager.EMPTY);
-        params.put(StringManager.PROJECT_NAME, getProperty(StringManager.PROJECT_NAME));
         params.put(StringManager.REPORT_AUTHOR, getProperty(StringManager.REPORT_AUTHOR));
         params.put(StringManager.REPORT_DATE, new SimpleDateFormat(StringManager.DATE_PATTERN).format(new Date()));
         params.put(StringManager.REPORT_CONF, getProperty(StringManager.REPORT_CONF));

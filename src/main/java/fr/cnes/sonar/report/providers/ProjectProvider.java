@@ -16,7 +16,7 @@ import java.io.IOException;
  */
 public class ProjectProvider extends AbstractDataProvider {
 
-    LanguageProvider languageProvider;
+    private LanguageProvider languageProvider;
 
     /**
      * Complete constructor

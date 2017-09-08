@@ -29,10 +29,6 @@ public final class StringManager {
      */
     public static final String EMPTY = "";
     /**
-     * Name of the property giving the project's name
-     */
-    public static final String PROJECT_NAME = "project.name";
-    /**
      * Name of the property giving the author's name
      */
     public static final String REPORT_AUTHOR = "report.author";
