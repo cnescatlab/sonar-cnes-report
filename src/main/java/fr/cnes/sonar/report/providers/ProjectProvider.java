@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.input.Params;
+import fr.cnes.sonar.report.input.StringManager;
 import fr.cnes.sonar.report.model.ProfileMetaData;
 import fr.cnes.sonar.report.model.Project;
 
@@ -53,6 +54,11 @@ public class ProjectProvider extends AbstractDataProvider {
             it.setLanguageName(languageName);
         }
         project.setQualityProfiles(metaData);
+
+        // check description nullity
+        if(null==project.getDescription()) {
+            project.setDescription(StringManager.EMPTY);
+        }
 
         return project;
     }
