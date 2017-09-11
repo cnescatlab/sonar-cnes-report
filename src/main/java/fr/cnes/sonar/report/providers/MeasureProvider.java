@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * Provides issue items
- * @author begarco
+ * @author lequal
  */
 public class MeasureProvider extends AbstractDataProvider {
 

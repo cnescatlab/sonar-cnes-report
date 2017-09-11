@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * Contain all rules of the profile
- * @author begarco
+ * @author lequal
  */
 public class ProfileData {
     /**

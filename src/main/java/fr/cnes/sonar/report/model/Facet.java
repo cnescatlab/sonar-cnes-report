@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * A facet of sonarqube
- * @author begarco
+ * @author lequal
  */
 public class Facet {
     /**

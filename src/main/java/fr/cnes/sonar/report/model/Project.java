@@ -4,7 +4,7 @@ import java.util.*;
 
 /**
  * Represents a project
- * @author begarco
+ * @author lequal
  */
 public class Project {
     /**

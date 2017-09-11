@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 /**
  * Exports the report in the console
- * @author begarco
+ * @author lequal
  */
 public class ConsoleExporter implements IExporter {
 

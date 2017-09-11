@@ -7,7 +7,7 @@ import java.util.*;
 
 /**
  * Format resources in different structure to have an easier use
- * @author begarco
+ * @author lequal
  */
 public class DataAdapter {
 

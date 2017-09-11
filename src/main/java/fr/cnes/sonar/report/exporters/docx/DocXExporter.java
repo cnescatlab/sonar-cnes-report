@@ -24,7 +24,7 @@ import static fr.cnes.sonar.report.input.StringManager.string;
 
 /**
  * Exports the report in .docx format
- * @author begarco
+ * @author lequal
  */
 public class DocXExporter implements IExporter {
 

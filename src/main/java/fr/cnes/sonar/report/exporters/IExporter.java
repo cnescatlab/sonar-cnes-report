@@ -10,7 +10,7 @@ import java.io.IOException;
 
 /**
  * Generic interface for results' exporters
- * @author begarco
+ * @author lequal
  */
 @FunctionalInterface
 public interface IExporter {

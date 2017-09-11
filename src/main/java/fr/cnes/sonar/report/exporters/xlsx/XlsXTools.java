@@ -15,7 +15,7 @@ import java.util.*;
 
 /**
  * Different tools to manipulate docx
- * @author begarco
+ * @author lequal
  */
 public final class XlsXTools {
 

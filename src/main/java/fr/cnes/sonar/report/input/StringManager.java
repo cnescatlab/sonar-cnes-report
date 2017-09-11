@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 /**
  * Public class which contains all public String used by internal classes
- * @author begarco
+ * @author lequal
  */
 public final class StringManager {
     /**

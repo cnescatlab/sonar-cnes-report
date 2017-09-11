@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * Contain all profile
- * @author begarco
+ * @author lequal
  */
 public class ProfileMetaData {
     /**

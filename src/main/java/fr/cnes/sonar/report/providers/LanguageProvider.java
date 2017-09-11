@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
  * Provides languages
- * @author begarco
+ * @author lequal
  */
 public class LanguageProvider extends AbstractDataProvider {
 

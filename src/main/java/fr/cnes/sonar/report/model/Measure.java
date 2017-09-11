@@ -2,7 +2,7 @@ package fr.cnes.sonar.report.model;
 
 /**
  * Represents a measure
- * @author begarco
+ * @author lequal
  */
 public class Measure {
     /**

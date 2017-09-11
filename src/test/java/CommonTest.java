@@ -6,7 +6,7 @@ import java.util.*;
 
 /**
  * Contains common code for tests
- * @author begarco
+ * @author lequal
  */
 public class CommonTest {
 

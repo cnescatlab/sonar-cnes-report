@@ -2,7 +2,7 @@ package fr.cnes.sonar.report.model;
 
 /**
  * Model of a quality code rule
- * @author begarco
+ * @author lequal
  */
 public class Rule {
     /**

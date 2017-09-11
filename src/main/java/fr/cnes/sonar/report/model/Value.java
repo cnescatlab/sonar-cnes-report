@@ -2,7 +2,7 @@ package fr.cnes.sonar.report.model;
 
 /**
  * A simple pair
- * @author begarco
+ * @author lequal
  */
 public class Value {
     /**

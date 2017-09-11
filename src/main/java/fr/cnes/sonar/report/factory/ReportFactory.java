@@ -12,7 +12,7 @@ import java.io.IOException;
 
 /**
  * Construct  the report from resources providers
- * @author begarco
+ * @author lequal
  */
 public class ReportFactory {
 

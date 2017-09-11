@@ -19,7 +19,7 @@ import static fr.cnes.sonar.report.input.StringManager.ISSUES_OVERFLOW_MSG;
 
 /**
  * Provides issue items
- * @author begarco
+ * @author lequal
  */
 public class IssuesProvider extends AbstractDataProvider {
 

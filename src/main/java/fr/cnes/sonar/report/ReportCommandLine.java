@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 
 /**
  * Main entry point
- * @author begarco
+ * @author lequal
  */
 public class ReportCommandLine {
 

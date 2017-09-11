@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * Provides quality gates
- * @author begarco
+ * @author lequal
  */
 public class QualityGateProvider extends AbstractDataProvider {
 

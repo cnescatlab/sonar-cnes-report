@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 /**
  * Contain all Quality Profile's details
- * @author begarco
+ * @author lequal
  */
 public class QualityProfile {
     /**

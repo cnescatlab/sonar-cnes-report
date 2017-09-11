@@ -1,6 +1,6 @@
 /**
  * General package for the program.
- * @author begarco
+ * @author lequal
  * @version 1.0
  */
 

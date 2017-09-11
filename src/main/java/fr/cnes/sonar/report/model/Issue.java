@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Represents a violation of a rule
- * @author begarco
+ * @author lequal
  */
 public class Issue {
 

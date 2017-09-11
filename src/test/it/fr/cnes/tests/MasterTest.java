@@ -9,7 +9,7 @@ import java.util.Date;
 
 /**
  * Contains common code for tests
- * @author begarco
+ * @author lequal
  */
 public class MasterTest {
 

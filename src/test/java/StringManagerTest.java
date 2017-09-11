@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Test for the StringManager class
- * @author begarco
+ * @author lequal
  */
 public class StringManagerTest {
 

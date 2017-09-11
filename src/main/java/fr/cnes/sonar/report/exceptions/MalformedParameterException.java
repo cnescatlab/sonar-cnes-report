@@ -2,7 +2,7 @@ package fr.cnes.sonar.report.exceptions;
 
 /**
  * A given parameter is not correct
- * @author begarco
+ * @author lequal
  */
 public class MalformedParameterException extends Exception {
 

@@ -7,7 +7,7 @@ import org.junit.Test;
 
 /**
  * Test the creation of files from an abstract report
- * @author begarco
+ * @author lequal
  */
 public class ExportersTest extends CommonTest {
 

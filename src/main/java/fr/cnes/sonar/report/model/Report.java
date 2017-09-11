@@ -6,7 +6,7 @@ import java.util.*;
 
 /**
  * Model of a report containing all information
- * @author begarco
+ * @author lequal
  */
 public class Report {
     /**

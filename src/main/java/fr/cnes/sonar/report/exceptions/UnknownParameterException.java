@@ -2,7 +2,7 @@ package fr.cnes.sonar.report.exceptions;
 
 /**
  * A given parameter does not exist
- * @author begarco
+ * @author lequal
  */
 public class UnknownParameterException extends Exception {
 

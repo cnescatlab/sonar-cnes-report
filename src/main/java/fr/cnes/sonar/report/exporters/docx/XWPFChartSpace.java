@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 /**
  * Custom class to handle chart spaces
  * Complete the Apache POI framework
- * @author begarco
+ * @author lequal
  */
 public class XWPFChartSpace {
     /**

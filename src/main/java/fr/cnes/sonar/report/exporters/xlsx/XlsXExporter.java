@@ -16,7 +16,7 @@ import static fr.cnes.sonar.report.exporters.xlsx.XlsXTools.addSelectedData;
 
 /**
  * Exports the report in .docx format
- * @author begarco
+ * @author lequal
  */
 public class XlsXExporter implements IExporter {
 

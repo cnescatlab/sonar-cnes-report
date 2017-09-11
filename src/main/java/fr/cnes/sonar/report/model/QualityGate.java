@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * Contain all Quality Gate's details
- * @author begarco
+ * @author lequal
  */
 public class QualityGate {
     /**

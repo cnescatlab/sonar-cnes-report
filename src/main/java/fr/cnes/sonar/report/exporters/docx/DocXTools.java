@@ -22,7 +22,7 @@ import static fr.cnes.sonar.report.exporters.docx.DataAdapter.getFacetValues;
 
 /**
  * Different tools to manipulate docx
- * @author begarco
+ * @author lequal
  */
 public final class DocXTools {
 

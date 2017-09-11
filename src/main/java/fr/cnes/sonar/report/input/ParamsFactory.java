@@ -12,7 +12,7 @@ import static fr.cnes.sonar.report.input.StringManager.*;
 
 /**
  * Prepares command line's arguments
- * @author begarco
+ * @author lequal
  */
 public class ParamsFactory {
 

@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 /**
  * Parameters of the command
- * @author begarco
+ * @author lequal
  */
 public class Params {
     /**

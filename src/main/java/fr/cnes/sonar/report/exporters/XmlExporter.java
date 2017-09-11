@@ -10,7 +10,7 @@ import java.io.IOException;
 
 /**
  * Exports the report in .xml format
- * @author begarco
+ * @author lequal
  */
 public class XmlExporter implements IExporter {
     /**

@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Check Report class
- * @author begarco
+ * @author lequal
  */
 public class ReportTest {
 

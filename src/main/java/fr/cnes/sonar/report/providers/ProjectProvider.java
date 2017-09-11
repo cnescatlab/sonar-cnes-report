@@ -13,7 +13,7 @@ import java.io.IOException;
 
 /**
  * Provides basic project's information
- * @author begarco
+ * @author lequal
  */
 public class ProjectProvider extends AbstractDataProvider {
 

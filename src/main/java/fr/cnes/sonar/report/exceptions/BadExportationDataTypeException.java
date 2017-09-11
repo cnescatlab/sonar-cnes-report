@@ -2,7 +2,7 @@ package fr.cnes.sonar.report.exceptions;
 
 /**
  * Thrown when a type for exporters is not correct
- * @author begarco
+ * @author lequal
  */
 public class BadExportationDataTypeException extends Exception {
 }

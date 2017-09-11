@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 
 /**
  * Generic interface for resources providers
- * @author begarco
+ * @author lequal
  */
 public abstract class AbstractDataProvider {
 
