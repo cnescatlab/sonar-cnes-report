@@ -269,7 +269,8 @@ public abstract class AbstractDataProvider {
      * @throws IOException if there were an error contacting the server
      * @throws BadSonarQubeRequestException if SonarQube Server sent an error
      */
-    public JsonObject request(final String request) throws IOException, BadSonarQubeRequestException {
+    public JsonObject request(final String request)
+            throws IOException, BadSonarQubeRequestException {
         // do the request to the server and return a string answer
         final String raw = stringRequest(request);
 
