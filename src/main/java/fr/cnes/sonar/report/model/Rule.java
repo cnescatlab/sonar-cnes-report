@@ -87,10 +87,10 @@ public class Rule {
 
     /**
      * Setter for key
-     * @param key value
+     * @param pKey value
      */
-    public void setKey(String key) {
-        this.key = key;
+    public void setKey(final String pKey) {
+        this.key = pKey;
     }
 
     /**
@@ -103,10 +103,10 @@ public class Rule {
 
     /**
      * Setter for debt
-     * @param debt value
+     * @param pDebt value
      */
-    public void setDebt(String debt) {
-        this.debtRemFnCoeff = debt;
+    public void setDebt(final String pDebt) {
+        this.debtRemFnCoeff = pDebt;
     }
 
     /**
@@ -119,10 +119,10 @@ public class Rule {
 
     /**
      * Setter for repo
-     * @param repo value
+     * @param pRepo value
      */
-    public void setRepo(String repo) {
-        this.repo = repo;
+    public void setRepo(final String pRepo) {
+        this.repo = pRepo;
     }
 
     /**
@@ -135,10 +135,10 @@ public class Rule {
 
     /**
      * Setter for name
-     * @param name value
+     * @param pName value
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setName(final String pName) {
+        this.name = pName;
     }
 
     /**
@@ -151,10 +151,10 @@ public class Rule {
 
     /**
      * Setter for severity
-     * @param severity value
+     * @param pSeverity value
      */
-    public void setSeverity(String severity) {
-        this.severity = severity;
+    public void setSeverity(final String pSeverity) {
+        this.severity = pSeverity;
     }
 
     /**
@@ -167,10 +167,10 @@ public class Rule {
 
     /**
      * Setter for type
-     * @param type value
+     * @param pType value
      */
-    public void setType(String type) {
-        this.type = type;
+    public void setType(final String pType) {
+        this.type = pType;
     }
 
     /**
@@ -183,10 +183,10 @@ public class Rule {
 
     /**
      * Setter for htmlDesc
-     * @param htmlDesc value
+     * @param pHtmlDesc value
      */
-    public void setHtmlDesc(String htmlDesc) {
-        this.htmlDesc = htmlDesc;
+    public void setHtmlDesc(final String pHtmlDesc) {
+        this.htmlDesc = pHtmlDesc;
     }
 
     /**
@@ -199,10 +199,10 @@ public class Rule {
 
     /**
      * Setter for the language name (key)
-     * @param lang language to set
+     * @param pLang language to set
      */
-    public void setLang(String lang) {
-        this.lang = lang;
+    public void setLang(final String pLang) {
+        this.lang = pLang;
     }
 
     /**
@@ -216,10 +216,10 @@ public class Rule {
 
     /**
      * Setter for the status of the rule
-     * @param status status to set
+     * @param pStatus status to set
      */
-    public void setStatus(String status) {
-        this.status = status;
+    public void setStatus(final String pStatus) {
+        this.status = pStatus;
     }
 
     /**
@@ -232,9 +232,9 @@ public class Rule {
 
     /**
      * Setter for the language name
-     * @param langName language to set
+     * @param pLangName language to set
      */
-    public void setLangName(String langName) {
-        this.langName = langName;
+    public void setLangName(final String pLangName) {
+        this.langName = pLangName;
     }
 }

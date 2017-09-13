@@ -37,14 +37,16 @@ public class MasterTest {
 
     /**
      * Setting of all stubbed resources before launching a test
-     */
+	 * @throws IOException propagate error on file exception
+	 * @throws UnknownParameterException propagate error on argument exception
+	 */
     @Before
     public void before() throws IOException, UnknownParameterException {
         // create stubbed params
         params = new Params();
         params.put("sonar.url", "http://sonarqube:9000");
         params.put("sonar.project.id", "cat");
-        params.put("report.author", "Benoît Garçon");
+        params.put("report.author", "Lequal");
         params.put("report.date", new Date().toString());
         params.put("report.path", "./target");
         params.put("report.locale", "fr_FR");

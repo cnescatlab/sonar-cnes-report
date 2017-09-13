@@ -52,10 +52,10 @@ public class ProfileData {
 
     /**
      * Setter for rules
-     * @param rules a list of rules
+     * @param pRules a list of rules
      */
-    public void setRules(List<Rule> rules) {
-        this.rules = new ArrayList<>(rules);
+    public void setRules(List<Rule> pRules) {
+        this.rules = new ArrayList<>(pRules);
     }
 
     /**
@@ -68,9 +68,9 @@ public class ProfileData {
 
     /**
      * Setter for the configuration
-     * @param conf configuration as String
+     * @param pConf configuration as String
      */
-    public void setConf(String conf) {
-        this.conf = conf;
+    public void setConf(String pConf) {
+        this.conf = pConf;
     }
 }

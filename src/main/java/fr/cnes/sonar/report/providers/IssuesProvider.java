@@ -32,8 +32,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static fr.cnes.sonar.report.input.StringManager.ISSUES_OVERFLOW_MSG;
-
 /**
  * Provides issue items
  * @author lequal
@@ -52,7 +50,8 @@ public class IssuesProvider extends AbstractDataProvider {
      * @param singleton RequestManager which does http request
      * @throws UnknownParameterException The program does not recognize the parameter
      */
-    public IssuesProvider(Params params, RequestManager singleton) throws UnknownParameterException {
+    public IssuesProvider(Params params, RequestManager singleton)
+            throws UnknownParameterException {
         super(params, singleton);
     }
 
@@ -108,7 +107,7 @@ public class IssuesProvider extends AbstractDataProvider {
 
         // in case of overflow we log the problem
         if(overflow) {
-            LOGGER.warning(StringManager.string(ISSUES_OVERFLOW_MSG));
+            LOGGER.warning(StringManager.string(StringManager.ISSUES_OVERFLOW_MSG));
         }
 
         // return the issues
@@ -185,12 +184,12 @@ public class IssuesProvider extends AbstractDataProvider {
             // get maximum number of results per page
             final int maxPerPage = Integer.parseInt(getRequest(MAX_PER_PAGE_SONARQUBE));
             // prepare the url to get all the issues
-            String request = String.format(getRequest(GET_ISSUES_REQUEST),
+            final String request = String.format(getRequest(GET_ISSUES_REQUEST),
                     getUrl(), getProjectKey(), maxPerPage, page);
             // perform the request to the server
-            JsonObject jo = request(request);
+            final JsonObject jo = request(request);
             // transform json to Issue objects
-            Map [] tmp = (getGson().fromJson(jo.get(ISSUES), Map[].class));
+            final Map [] tmp = (getGson().fromJson(jo.get(ISSUES), Map[].class));
             // add them to the final result
             res.addAll(Arrays.asList(tmp));
             // check next results' pages
@@ -208,7 +207,7 @@ public class IssuesProvider extends AbstractDataProvider {
 
         // in case of overflow we log the problem
         if(overflow) {
-            LOGGER.warning(StringManager.string(ISSUES_OVERFLOW_MSG));
+            LOGGER.warning(StringManager.string(StringManager.ISSUES_OVERFLOW_MSG));
         }
 
         // return the issues
@@ -226,7 +225,8 @@ public class IssuesProvider extends AbstractDataProvider {
         final List<Facet> res = new ArrayList<>();
 
         // prepare the request
-        final String request = String.format(getRequest(GET_FACETS_REQUEST), getUrl(), getProjectKey());
+        final String request = String.format(getRequest(GET_FACETS_REQUEST),
+                getUrl(), getProjectKey());
         // contact the server to request the resources as json
         final JsonObject jo = request(request);
         // put wanted resources in facets array and list

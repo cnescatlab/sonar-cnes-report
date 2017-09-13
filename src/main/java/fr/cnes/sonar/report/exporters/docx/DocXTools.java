@@ -35,8 +35,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static fr.cnes.sonar.report.exporters.docx.DataAdapter.getFacetValues;
-
 /**
  * Different tools to manipulate docx
  * @author lequal
@@ -84,27 +82,29 @@ public final class DocXTools {
     /**
      * Fill the chart "camembert"
      * @param opcPackage word document
+     * @param document word document
      * @param facets resources as facets
-     * @throws InvalidFormatException ...
+     * @throws OpenXML4JException ...
+     * @throws IOException ...
+     * @throws XmlException ...
      */
     public static void fillCharts(OPCPackage opcPackage, XWPFDocument document, List<Facet> facets)
             throws OpenXML4JException, IOException, XmlException {
 
-        List<XWPFChartSpace> chartSpaces = XWPFChartSpace.getChartSpaces(document);
-        List<Value> dataPerType = getFacetValues(facets, TYPES);
-        List<Value> dataPerSeverity = getFacetValues(facets, SEVERITIES);
+        final List<XWPFChartSpace> chartSpaces = XWPFChartSpace.getChartSpaces(document);
+        final List<Value> dataPerType = DataAdapter.getFacetValues(facets, TYPES);
+        final List<Value> dataPerSeverity = DataAdapter.getFacetValues(facets, SEVERITIES);
 
         // browse chart list to find placeholders (based on locale) in title
         // and provide them adapted resources
         for (XWPFChartSpace chartSpace : chartSpaces) {
-            String currentChartTitle = chartSpace.getTitle();
+            final String currentChartTitle = chartSpace.getTitle();
             // fill the pie chart with issues count by severity
             if(currentChartTitle.contains(SEVERITY_TABLE_PLACEHOLDER)) {
                 chartSpace.setValues(dataPerSeverity);
                 chartSpace.setTitle(StringManager.string(CHART_SEVERITY_TITLE));
-            }
             // fill the pie chart with issues count by type
-            else if(currentChartTitle.contains(TYPE_TABLE_PLACEHOLDER)) {
+            } else if(currentChartTitle.contains(TYPE_TABLE_PLACEHOLDER)) {
                 chartSpace.setValues(dataPerType);
                 chartSpace.setTitle(StringManager.string(CHART_TYPE_TITLE));
             }
@@ -117,6 +117,7 @@ public final class DocXTools {
      * which contains string.
      * @param document word file
      * @param values a map containing pairs of placeholder/value
+     * @throws OpenXML4JException when a problem occurred on the file writting
      * @throws IOException when a problem occurred on the pictures loading
      */
     static void replacePlaceholder(XWPFDocument document, Map<String,String> values)
@@ -124,10 +125,10 @@ public final class DocXTools {
 
         // Gather all elements in header, footer and body
         // in order to extract for each parts all paragraphs
-        List<IBodyElement> elements = getAllElements(document);
+        final List<IBodyElement> elements = getAllElements(document);
 
         // gather all paragraphs from the previous collected elements
-        List<XWPFParagraph> paragraphs = getAllParagraphs(elements);
+        final List<XWPFParagraph> paragraphs = getAllParagraphs(elements);
 
         // replace all placeholders in all gathered paragraphs
         for (XWPFParagraph p : paragraphs) {
@@ -143,9 +144,9 @@ public final class DocXTools {
      */
     private static List<XWPFParagraph> getAllParagraphs(List<IBodyElement> elements) {
         // final list to return
-        List<XWPFParagraph> paragraphs = new ArrayList<>();
+        final List<XWPFParagraph> paragraphs = new ArrayList<>();
         // browse elements
-        Iterator<IBodyElement> elementIterator = elements.iterator();
+        final Iterator<IBodyElement> elementIterator = elements.iterator();
         IBodyElement elt;
 
         while (elementIterator.hasNext()) {
@@ -154,18 +155,17 @@ public final class DocXTools {
             // if we find a paragraph we just add it to the list
             if (elt.getElementType().compareTo(BodyElementType.PARAGRAPH) == 0) {
                 paragraphs.add((XWPFParagraph) elt);
-            }
             // otherwise if it is a table we browse its lines
             // in order to collect all paragraphs of all cells
-            else if(elt.getElementType().compareTo(BodyElementType.TABLE)==0) {
-                XWPFTable table = (XWPFTable) elt;
+            } else if(elt.getElementType().compareTo(BodyElementType.TABLE)==0) {
+                final XWPFTable table = (XWPFTable) elt;
                 // browse lines
-                Iterator<XWPFTableRow> rowIterator = table.getRows().iterator();
+                final Iterator<XWPFTableRow> rowIterator = table.getRows().iterator();
                 XWPFTableRow row;
                 while(rowIterator.hasNext()) {
                     row = rowIterator.next();
                     // browse cells
-                    Iterator<XWPFTableCell> cellIterator = row.getTableCells().iterator();
+                    final Iterator<XWPFTableCell> cellIterator = row.getTableCells().iterator();
                     XWPFTableCell cell;
                     while(cellIterator.hasNext()) {
                         cell = cellIterator.next();
@@ -187,20 +187,20 @@ public final class DocXTools {
     private static List<IBodyElement> getAllElements(XWPFDocument document) {
         // gather the final list
         // add directly body content
-        List<IBodyElement> elements = new ArrayList<>(document.getBodyElements());
+        final List<IBodyElement> elements = new ArrayList<>(document.getBodyElements());
         // iterator for headers
-        Iterator<XWPFHeader> headerIterator = document.getHeaderList().iterator();
+        final Iterator<XWPFHeader> headerIterator = document.getHeaderList().iterator();
         // iterator for footers
-        Iterator<XWPFFooter> footerIterator = document.getFooterList().iterator();
+        final Iterator<XWPFFooter> footerIterator = document.getFooterList().iterator();
 
         // collect header elements
         while (headerIterator.hasNext()) {
-            XWPFHeaderFooter header = headerIterator.next();
+            final XWPFHeaderFooter header = headerIterator.next();
             elements.addAll(header.getBodyElements());
         }
         // collect footer elements
         while (footerIterator.hasNext()) {
-            XWPFHeaderFooter header = footerIterator.next();
+            final XWPFHeaderFooter header = footerIterator.next();
             elements.addAll(header.getBodyElements());
         }
         return elements;
@@ -213,10 +213,11 @@ public final class DocXTools {
      * @throws IOException When opening pictures
      * @throws InvalidFormatException When dealing with open files
      */
-    private static void replaceInParagraph(XWPFParagraph paragraph, Map<String,String> values) throws IOException, InvalidFormatException {
+    private static void replaceInParagraph(XWPFParagraph paragraph, Map<String,String> values)
+            throws IOException, InvalidFormatException {
         // Concatenate all runs' content in a single string
-        StringBuilder sb = new StringBuilder();
-        List<XWPFRun> runs = paragraph.getRuns();
+        final StringBuilder sb = new StringBuilder();
+        final List<XWPFRun> runs = paragraph.getRuns();
         int pos;
         for (XWPFRun r : runs){
             pos = r.getTextPosition();
@@ -234,7 +235,7 @@ public final class DocXTools {
 
             // construct here the new string by replacing each placeholder by its value
             String text = sb.toString();
-            List<String> pictures = new ArrayList<>();
+            final List<String> pictures = new ArrayList<>();
             String key, value;
             for (Map.Entry<String, String> nextValue : values.entrySet()) {
                 key = nextValue.getKey();
@@ -251,7 +252,7 @@ public final class DocXTools {
             }
 
             // Add new run with updated text
-            XWPFRun run = paragraph.createRun();
+            final XWPFRun run = paragraph.createRun();
             run.setText(text);
             // add images if we have something to add
             if(!pictures.isEmpty()) {
@@ -264,7 +265,8 @@ public final class DocXTools {
                     is = classloader.getResourceAsStream(IMG_FOLDER +filename);
                     // height and width are retrieve from here
                     dim = ImageUtils.getImageDimension(is, XWPFDocument.PICTURE_TYPE_PNG);
-                    run.addPicture(is, XWPFDocument.PICTURE_TYPE_PNG, filename, dim.width, dim.height);
+                    run.addPicture(is, XWPFDocument.PICTURE_TYPE_PNG,
+                            filename, dim.width, dim.height);
                     // close picture
                     is.close();
                 }
@@ -279,10 +281,12 @@ public final class DocXTools {
      * a placeholder in your table, if it is not found, a new table is
      * added at the end of the document.
      * @param document Document containing the table
+     * @param header Header to add in the table
      * @param data Issues to add in the table
      * @param name Table's name
      */
-    public static void fillTable(XWPFDocument document, List<String> header, List<List<String>> data, String name) {
+    public static void fillTable(XWPFDocument document, List<String> header,
+                                 List<List<String>> data, String name) {
 
         // if there are no resources, there a
         if(data!=null && !data.isEmpty()) {
@@ -290,7 +294,7 @@ public final class DocXTools {
             XWPFTable table = null;
 
             // search for a table with the corresponding placeholder
-            Iterator<XWPFTable> iterator = document.getTablesIterator();
+            final Iterator<XWPFTable> iterator = document.getTablesIterator();
             XWPFTable current;
             boolean found = false;
             while (iterator.hasNext() && !found) {
@@ -304,9 +308,8 @@ public final class DocXTools {
             // if the table does not exist, we create one at the bottom of the document
             if (!found) {
                 table = document.createTable();
-            }
             // otherwise we clear the table
-            else {
+            } else {
                 if(table!=null) {
                     for (int i = table.getNumberOfRows() - 1; i >= 0; --i) {
                         table.removeRow(i);
@@ -328,7 +331,7 @@ public final class DocXTools {
             // fill resources rows
             for(int iLine = 0 ; iLine < data.size() ; iLine++) {
                 row = table.getRow(iLine+1);
-                List<String> line = data.get(iLine);
+                final List<String> line = data.get(iLine);
 
                 for (int iCell = 0; iCell < line.size(); iCell++) {
                     if(iCell>=row.getTableCells().size()) {

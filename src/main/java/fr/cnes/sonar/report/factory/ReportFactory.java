@@ -40,10 +40,10 @@ public class ReportFactory {
 
     /**
      * Complete constructor
-     * @param params Program's parameters
+     * @param pParams Program's parameters
      */
-    public ReportFactory(Params params) {
-        this.params = params;
+    public ReportFactory(final Params pParams) {
+        this.params = pParams;
     }
 
     /**
@@ -55,17 +55,24 @@ public class ReportFactory {
      * @throws UnknownQualityGateException a quality gate is not correct
      */
     public Report create()
-            throws UnknownParameterException, IOException, BadSonarQubeRequestException, UnknownQualityGateException {
+            throws UnknownParameterException, IOException,
+            BadSonarQubeRequestException, UnknownQualityGateException {
         // the new report to return
-        Report report = new Report();
+        final Report report = new Report();
 
         // instantiation of providers
-        IssuesProvider issuesProvider = new IssuesProvider(params, RequestManager.getInstance());
-        MeasureProvider measureProvider = new MeasureProvider(params, RequestManager.getInstance());
-        ProjectProvider projectProvider = new ProjectProvider(params, RequestManager.getInstance());
-        QualityProfileProvider qualityProfileProvider = new QualityProfileProvider(params, RequestManager.getInstance());
-        QualityGateProvider qualityGateProvider = new QualityGateProvider(params, RequestManager.getInstance());
-        LanguageProvider languageProvider = new LanguageProvider(params, RequestManager.getInstance());
+        final IssuesProvider issuesProvider =
+                new IssuesProvider(params, RequestManager.getInstance());
+        final MeasureProvider measureProvider =
+                new MeasureProvider(params, RequestManager.getInstance());
+        final ProjectProvider projectProvider =
+                new ProjectProvider(params, RequestManager.getInstance());
+        final QualityProfileProvider qualityProfileProvider =
+                new QualityProfileProvider(params, RequestManager.getInstance());
+        final QualityGateProvider qualityGateProvider =
+                new QualityGateProvider(params, RequestManager.getInstance());
+        final LanguageProvider languageProvider =
+                new LanguageProvider(params, RequestManager.getInstance());
 
         // author's setting
         report.setProjectAuthor(params.get(StringManager.REPORT_AUTHOR));

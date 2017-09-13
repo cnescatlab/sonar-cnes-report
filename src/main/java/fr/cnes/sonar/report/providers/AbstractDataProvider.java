@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.input.Params;
+import fr.cnes.sonar.report.input.StringManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,11 +38,6 @@ import java.util.logging.Logger;
 public abstract class AbstractDataProvider {
 
     /**
-     * Logger for the class
-     */
-    protected static final Logger LOGGER = Logger.getLogger(AbstractDataProvider.class.getCanonicalName());
-
-    /**
      * Name for properties' file about requests
      */
     public static final String REQUESTS_PROPERTIES = "requests.properties";
@@ -54,7 +50,8 @@ public abstract class AbstractDataProvider {
     /**
      *  Name of the request for getting quality profiles' linked projects
      */
-    public static final String GET_QUALITY_PROFILES_PROJECTS_REQUEST = "GET_QUALITY_PROFILES_PROJECTS_REQUEST";
+    public static final String GET_QUALITY_PROFILES_PROJECTS_REQUEST =
+            "GET_QUALITY_PROFILES_PROJECTS_REQUEST";
     /**
      *  Name of the request allowing to retrieve the quality gate
      */
@@ -62,11 +59,13 @@ public abstract class AbstractDataProvider {
     /**
      *  Name of the request for getting quality gates' details
      */
-    public static final String GET_QUALITY_GATES_DETAILS_REQUEST = "GET_QUALITY_GATES_DETAILS_REQUEST";
+    public static final String GET_QUALITY_GATES_DETAILS_REQUEST =
+            "GET_QUALITY_GATES_DETAILS_REQUEST";
     /**
      *  Name of the request for getting quality profiles' linked rules
      */
-    public static final String GET_QUALITY_PROFILES_RULES_REQUEST = "GET_QUALITY_PROFILES_RULES_REQUEST";
+    public static final String GET_QUALITY_PROFILES_RULES_REQUEST =
+            "GET_QUALITY_PROFILES_RULES_REQUEST";
     /**
      *  Name of the request for getting issues
      */
@@ -98,7 +97,8 @@ public abstract class AbstractDataProvider {
     /**
      *  Name of the request for getting quality profiles' configuration
      */
-    public static final String GET_QUALITY_PROFILES_CONFIGURATION_REQUEST = "GET_QUALITY_PROFILES_CONFIGURATION_REQUEST";
+    public static final String GET_QUALITY_PROFILES_CONF_REQUEST =
+            "GET_QUALITY_PROFILES_CONFIGURATION_REQUEST";
     /**
      * Field to search in json to get results' values
      */
@@ -140,7 +140,11 @@ public abstract class AbstractDataProvider {
      */
     public static final String RULES = "rules";
 
-
+    /**
+     * Logger for the class
+     */
+    protected static final Logger LOGGER =
+            Logger.getLogger(AbstractDataProvider.class.getCanonicalName());
 
     /**
      * Contain all the properties related to requests
@@ -179,9 +183,11 @@ public abstract class AbstractDataProvider {
         // read the file
         InputStream input = null;
 
+        final ClassLoader classLoader = AbstractDataProvider.class.getClassLoader();
+
         try {
             // load properties file as a stream
-            input = AbstractDataProvider.class.getClassLoader().getResourceAsStream(REQUESTS_PROPERTIES);
+            input = classLoader.getResourceAsStream(REQUESTS_PROPERTIES);
             if(input!=null) {
                 // load properties from the stream in an adapted structure
                 requests.load(input);
@@ -209,12 +215,13 @@ public abstract class AbstractDataProvider {
 
     /**
      * Constructor
-     * @param params Program's parameters
-     * @param singleton RequestManager which does http request
+     * @param pParams Program's parameters
+     * @param pSingleton RequestManager which does http request
      * @throws UnknownParameterException when a parameter is not known in the program
      */
-    public AbstractDataProvider(Params params, RequestManager singleton) throws UnknownParameterException {
-        this.params = params;
+    public AbstractDataProvider(final Params pParams, final RequestManager pSingleton)
+            throws UnknownParameterException {
+        this.params = pParams;
         // json tool
         this.gson = new Gson();
         // get sonar url
@@ -222,7 +229,7 @@ public abstract class AbstractDataProvider {
         // get project key
         this.projectKey = getParams().get("sonar.project.id");
         // set network tool to execute request
-        this.requestManager = singleton;
+        this.requestManager = pSingleton;
     }
 
     /**
@@ -231,7 +238,7 @@ public abstract class AbstractDataProvider {
      * @param property Key of the property you want.
      * @return The value of the property you want as a String.
      */
-    public static String getRequest(String property) {
+    public static String getRequest(final String property) {
         return requests.getProperty(property);
     }
 
@@ -240,14 +247,16 @@ public abstract class AbstractDataProvider {
      * @param jsonObject The response from the server
      * @throws BadSonarQubeRequestException thrown if the server do not understand our request
      */
-    private void isErrorFree(JsonObject jsonObject) throws BadSonarQubeRequestException {
+    private void isErrorFree(final JsonObject jsonObject) throws BadSonarQubeRequestException {
         // we retrieve the exception
-        JsonElement error = jsonObject.get("errors");
+        final JsonElement error = jsonObject.get("errors");
         // if there is an error we search the message and throw an exception
         if (error != null) {
+            // Json object of the error
+            final JsonObject errorJO = error.getAsJsonArray().get(0).getAsJsonObject();
             // get the error message
-            JsonElement errorElement = error.getAsJsonArray().get(0).getAsJsonObject().get("msg");
-            String errorMessage = (getGson().fromJson(errorElement, String.class));
+            final JsonElement errorElement = errorJO.get("msg");
+            final String errorMessage = (getGson().fromJson(errorElement, String.class));
             // throw exception if there was a problem when dealing with the server
             throw new BadSonarQubeRequestException(errorMessage);
         }
@@ -260,12 +269,12 @@ public abstract class AbstractDataProvider {
      * @throws IOException if there were an error contacting the server
      * @throws BadSonarQubeRequestException if SonarQube Server sent an error
      */
-    public JsonObject request(String request) throws IOException, BadSonarQubeRequestException {
+    public JsonObject request(final String request) throws IOException, BadSonarQubeRequestException {
         // do the request to the server and return a string answer
-        String raw = stringRequest(request);
+        final String raw = stringRequest(request);
 
         // prepare json
-        JsonElement json;
+        final JsonElement json;
 
         // verify that the server response was correct
         try {
@@ -273,16 +282,17 @@ public abstract class AbstractDataProvider {
         } catch (Exception e) {
             // log exception's message
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            throw new BadSonarQubeRequestException("Server answered: " + raw);
+            throw new BadSonarQubeRequestException("Server answered: " + raw +
+                    StringManager.SPACE + e.getMessage());
         }
 
         // get the json object version
-        JsonObject jo = json.getAsJsonObject();
+        final JsonObject jsonObject = json.getAsJsonObject();
 
         // verify if an error occurred
-        isErrorFree(jo);
+        isErrorFree(jsonObject);
 
-        return jo;
+        return jsonObject;
     }
 
     /**
@@ -291,7 +301,7 @@ public abstract class AbstractDataProvider {
      * @return the server's response as a string
      * @throws IOException when not able to contact the server
      */
-    protected String stringRequest(String request) throws IOException {
+    protected String stringRequest(final String request) throws IOException {
         // prepare the request by replacing some relevant special characters
         // replace spaces
         String preparedRequest = request.replaceAll(" ", "%20");
@@ -312,10 +322,10 @@ public abstract class AbstractDataProvider {
 
     /**
      * Setter for input
-     * @param params the value to give
+     * @param pParams the value to give
      */
-    private void setParams(Params params) {
-        this.params = params;
+    private void setParams(final Params pParams) {
+        this.params = pParams;
     }
 
     /**
@@ -328,10 +338,10 @@ public abstract class AbstractDataProvider {
 
     /**
      * Setter of gson
-     * @param gson value
+     * @param pGson value
      */
-    public void setGson(Gson gson) {
-        this.gson = gson;
+    public void setGson(final Gson pGson) {
+        this.gson = pGson;
     }
 
     /**
@@ -344,10 +354,10 @@ public abstract class AbstractDataProvider {
 
     /**
      * Setter of url
-     * @param url value
+     * @param pUrl value
      */
-    public void setUrl(String url) {
-        this.url = url;
+    public void setUrl(final String pUrl) {
+        this.url = pUrl;
     }
 
     /**
@@ -360,10 +370,10 @@ public abstract class AbstractDataProvider {
 
     /**
      * Setter of projectKey
-     * @param projectKey value to give
+     * @param pProjectKey value to give
      */
-    public void setProjectKey(String projectKey) {
-        this.projectKey = projectKey;
+    public void setProjectKey(final String pProjectKey) {
+        this.projectKey = pProjectKey;
     }
 
     /**
@@ -376,9 +386,9 @@ public abstract class AbstractDataProvider {
 
     /**
      * Setter of qualityGateName
-     * @param qualityGateName value
+     * @param pQualityGateName value
      */
-    public void setQualityGateName(String qualityGateName) {
-        this.qualityGateName = qualityGateName;
+    public void setQualityGateName(final String pQualityGateName) {
+        this.qualityGateName = pQualityGateName;
     }
 }

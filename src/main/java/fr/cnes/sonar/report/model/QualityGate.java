@@ -18,6 +18,7 @@
 package fr.cnes.sonar.report.model;
 
 import com.google.gson.annotations.SerializedName;
+import fr.cnes.sonar.report.input.StringManager;
 
 /**
  * Contain all Quality Gate's details
@@ -62,10 +63,10 @@ public class QualityGate {
 
     /**
      * Setter for the quality gate's name
-     * @param name quality gate's name
+     * @param pName quality gate's name
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String pName) {
+        this.name = pName;
     }
 
     /**
@@ -78,10 +79,10 @@ public class QualityGate {
 
     /**
      * Set the default field
-     * @param defaultQG true if it is the default gate
+     * @param pDefaultQG true if it is the default gate
      */
-    public void setDefault(boolean defaultQG) {
-        this.defaultQG = defaultQG;
+    public void setDefault(boolean pDefaultQG) {
+        this.defaultQG = pDefaultQG;
     }
 
     /**
@@ -94,10 +95,10 @@ public class QualityGate {
 
     /**
      * Setter for the raw configuration
-     * @param conf quality gate's configuration as string in json format
+     * @param pConf quality gate's configuration as string in json format
      */
-    public void setConf(String conf) {
-        this.conf = conf;
+    public void setConf(String pConf) {
+        this.conf = pConf;
     }
 
     /**
@@ -110,10 +111,10 @@ public class QualityGate {
 
     /**
      * Setter for the quality gate's id
-     * @param id quality gate's id
+     * @param pId quality gate's id
      */
-    public void setId(String id) {
-        this.id = id;
+    public void setId(String pId) {
+        this.id = pId;
     }
 
     /**
@@ -122,6 +123,7 @@ public class QualityGate {
      */
     @Override
     public String toString() {
-        return getId() + " " + getName() + " " + isDefault() + " " + getConf();
+        return getId() + StringManager.SPACE + getName() +
+                StringManager.SPACE + isDefault() + StringManager.SPACE + getConf();
     }
 }

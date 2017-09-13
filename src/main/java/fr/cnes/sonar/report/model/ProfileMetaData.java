@@ -69,8 +69,12 @@ public class ProfileMetaData {
         return key;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    /**
+     * Setter for key
+     * @param pKey value to set
+     */
+    public void setKey(String pKey) {
+        this.key = pKey;
     }
 
     /**
@@ -81,8 +85,12 @@ public class ProfileMetaData {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    /**
+     * Setter for name
+     * @param pName value to set
+     */
+    public void setName(String pName) {
+        this.name = pName;
     }
 
     /**
@@ -95,10 +103,10 @@ public class ProfileMetaData {
 
     /**
      * Setter for language
-     * @param language  language
+     * @param pLanguage language
      */
-    public void setLanguage(String language) {
-        this.language = language;
+    public void setLanguage(String pLanguage) {
+        this.language = pLanguage;
     }
 
     /**
@@ -111,10 +119,10 @@ public class ProfileMetaData {
 
     /**
      * Setter for language's name
-     * @param languageName  language's name
+     * @param pLanguageName  language's name
      */
-    public void setLanguageName(String languageName) {
-        this.languageName = languageName;
+    public void setLanguageName(String pLanguageName) {
+        this.languageName = pLanguageName;
     }
 
     /**
@@ -127,10 +135,10 @@ public class ProfileMetaData {
 
     /**
      * Getter for inheritance boolean
-     * @param inherited inheritance boolean
+     * @param pInherited inheritance boolean
      */
-    public void setInherited(Boolean inherited) {
-        isInherited = inherited;
+    public void setInherited(Boolean pInherited) {
+        isInherited = pInherited;
     }
 
     /**
@@ -143,10 +151,10 @@ public class ProfileMetaData {
 
     /**
      * Setter for default language boolean
-     * @param isDefault default language boolean
+     * @param pIsDefault default language boolean
      */
-    public void setDefault(Boolean isDefault) {
-        this.isDefault = isDefault;
+    public void setDefault(Boolean pIsDefault) {
+        this.isDefault = pIsDefault;
     }
 
     /**
@@ -159,9 +167,9 @@ public class ProfileMetaData {
 
     /**
      * Setter for deprecated rules number
-     * @param deprecatedRules deprecated rules number
+     * @param pDeprecatedRules deprecated rules number
      */
-    public void setDeprecatedRules(int deprecatedRules) {
-        this.deprecatedRules = deprecatedRules;
+    public void setDeprecatedRules(int pDeprecatedRules) {
+        this.deprecatedRules = pDeprecatedRules;
     }
 }

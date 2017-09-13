@@ -49,13 +49,13 @@ public class JsonExporter implements IExporter {
             throw new BadExportationDataTypeException();
         }
         // resources casting
-        String string = (String) data;
+        final String string = (String) data;
 
         // set relevant variables
-        String filePath = String.format("%s/%s.json", path, filename);
+        final String filePath = String.format("%s/%s.json", path, filename);
 
         // file to write
-        File jsonFile = new File(filePath);
+        final File jsonFile = new File(filePath);
 
         // preventing leaks
         try(FileWriter fileWriter = new FileWriter(jsonFile, false)) {

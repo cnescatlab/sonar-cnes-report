@@ -39,12 +39,12 @@ public class QualityProfile {
 
     /**
      * Complete constructor
-     * @param data all the rules and configuration
-     * @param metaData resources like name, size, default, etc.
+     * @param pData all the rules and configuration
+     * @param pMetaData resources like name, size, default, etc.
      */
-    public QualityProfile(ProfileData data, ProfileMetaData metaData) {
-        this.data = data;
-        this.metaData = metaData;
+    public QualityProfile(ProfileData pData, ProfileMetaData pMetaData) {
+        this.data = pData;
+        this.metaData = pMetaData;
     }
 
     /**
@@ -57,10 +57,10 @@ public class QualityProfile {
 
     /**
      * Setter for projects
-     * @param projects value
+     * @param pProjects value
      */
-    public void setProjects(Project[] projects) {
-        this.projects = projects.clone();
+    public void setProjects(Project[] pProjects) {
+        this.projects = pProjects.clone();
     }
 
     /**
@@ -97,12 +97,12 @@ public class QualityProfile {
         Rule rule = null;
 
         // iterator on profile's rules
-        Iterator<Rule> iterator = data.getRules().iterator();
+        final Iterator<Rule> iterator = data.getRules().iterator();
 
         // search for the rule with the asking key
         while(iterator.hasNext() && rule==null) {
             // get current rule
-            Rule r = iterator.next();
+            final Rule r = iterator.next();
             // check the current rule's key equals to wanted key
             if(r.getKey().equals(key)) {
                 rule = r;

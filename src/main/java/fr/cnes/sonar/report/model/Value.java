@@ -33,12 +33,12 @@ public class Value {
 
     /**
      * Complete constructor
-     * @param val value to give to val
-     * @param count value to give to count
+     * @param pVal value to give to val
+     * @param pCount value to give to count
      */
-    public Value(String val, int count) {
-        this.val = val;
-        this.count = count;
+    public Value(final String pVal, final int pCount) {
+        this.val = pVal;
+        this.count = pCount;
     }
 
     /**
@@ -51,10 +51,10 @@ public class Value {
 
     /**
      * Setter for val
-     * @param val value to give to val
+     * @param pVal value to give to val
      */
-    public void setVal(String val) {
-        this.val = val;
+    public void setVal(final String pVal) {
+        this.val = pVal;
     }
 
     /**
@@ -67,9 +67,9 @@ public class Value {
 
     /**
      * Setter to give to count
-     * @param count count
+     * @param pCount count
      */
-    public void setCount(int count) {
-        this.count = count;
+    public void setCount(final int pCount) {
+        this.count = pCount;
     }
 }

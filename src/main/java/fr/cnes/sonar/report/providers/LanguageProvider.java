@@ -38,6 +38,9 @@ public class LanguageProvider extends AbstractDataProvider {
      */
     private static final String LANGUAGES_FIELD = "languages";
 
+    /**
+     * Map containing temporary memory of the data
+     */
     private Map<String, Language> languages;
 
     /**
@@ -46,7 +49,8 @@ public class LanguageProvider extends AbstractDataProvider {
      * @param singleton RequestManager which does http request
      * @throws UnknownParameterException The program does not recognize the parameter
      */
-    public LanguageProvider(Params params, RequestManager singleton) throws UnknownParameterException {
+    public LanguageProvider(Params params, RequestManager singleton)
+            throws UnknownParameterException {
         super(params, singleton);
         languages = new HashMap<>();
     }
@@ -58,7 +62,8 @@ public class LanguageProvider extends AbstractDataProvider {
      * @throws IOException when contacting the server
      * @throws BadSonarQubeRequestException when the server does not understand the request
      */
-    public String getLanguage(final String languageKey) throws IOException, BadSonarQubeRequestException {
+    public String getLanguage(final String languageKey)
+            throws IOException, BadSonarQubeRequestException {
         if(languages.isEmpty()){
             this.getLanguages();
         }
@@ -74,9 +79,9 @@ public class LanguageProvider extends AbstractDataProvider {
     public Map<String, Language> getLanguages() throws IOException, BadSonarQubeRequestException {
         // send a request to sonarqube server and return th response as a json object
         // if there is an error on server side this method throws an exception
-        JsonObject jo = request(String.format(getRequest(GET_LANGUAGES),
-                getUrl()));
-        Language[] languagesList = getGson().fromJson(jo.get(LANGUAGES_FIELD), Language[].class);
+        final JsonObject jo = request(String.format(getRequest(GET_LANGUAGES), getUrl()));
+        final Language[] languagesList = getGson().fromJson(jo.get(LANGUAGES_FIELD),
+                Language[].class);
 
         // put data in a map to access it faster
         this.languages = new HashMap<>();

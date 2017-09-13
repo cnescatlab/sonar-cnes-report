@@ -52,10 +52,10 @@ public class Facet {
 
     /**
      * Set the values of the facet
-     * @param values list of values
+     * @param pValues list of values
      */
-    public void setValues(List<Value> values) {
-        this.values = new ArrayList<>(values);
+    public void setValues(List<Value> pValues) {
+        this.values = new ArrayList<>(pValues);
     }
 
     /**
@@ -67,9 +67,9 @@ public class Facet {
 
     /**
      * Set the name of a facet
-     * @param property name to set
+     * @param pProperty name to set
      */
-    public void setProperty(String property) {
-        this.property = property;
+    public void setProperty(String pProperty) {
+        this.property = pProperty;
     }
 }

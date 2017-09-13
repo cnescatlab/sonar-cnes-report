@@ -1,4 +1,4 @@
-/*
+package fr.cnes.sonar.tests;/*
  * This file is part of cnesreport.
  *
  * cnesreport is free software: you can redistribute it and/or modify
@@ -39,8 +39,8 @@ public class StringManagerTest {
      */
     @Test
     public void singletonUniquenessTest() {
-        StringManager sm1 = StringManager.getInstance();
-        StringManager sm2 = StringManager.getInstance();
+        final StringManager sm1 = StringManager.getInstance();
+        final StringManager sm2 = StringManager.getInstance();
 
         assertEquals(sm1, sm2);
     }

@@ -17,6 +17,7 @@
 
 package fr.cnes.sonar.report.providers;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
@@ -40,7 +41,8 @@ public class MeasureProvider extends AbstractDataProvider {
      * @param singleton RequestManager which does http request
      * @throws UnknownParameterException The program does not recognize the parameter
      */
-    public MeasureProvider(Params params, RequestManager singleton) throws UnknownParameterException {
+    public MeasureProvider(Params params, RequestManager singleton)
+            throws UnknownParameterException {
         super(params, singleton);
     }
 
@@ -56,11 +58,13 @@ public class MeasureProvider extends AbstractDataProvider {
 
         // send a request to sonarqube server and return th response as a json object
         // if there is an error on server side this method throws an exception
-        JsonObject jo = request(String.format(getRequest(GET_MEASURES_REQUEST),
+        final JsonObject jo = request(String.format(getRequest(GET_MEASURES_REQUEST),
                 getUrl(), getProjectKey()));
 
+        // json element containing measure information
+        final JsonElement measuresJE = jo.get(COMPONENT).getAsJsonObject().get(MEASURES);
         // put json in a list of measures
-        Measure[] tmp = (getGson().fromJson(jo.get(COMPONENT).getAsJsonObject().get(MEASURES), Measure[].class));
+        final Measure[] tmp = (getGson().fromJson(measuresJE, Measure[].class));
         // then add all measure to the results list
         res.addAll(Arrays.asList(tmp));
 

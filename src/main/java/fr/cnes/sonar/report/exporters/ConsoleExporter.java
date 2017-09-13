@@ -53,10 +53,10 @@ public class ConsoleExporter implements IExporter {
             throw new BadExportationDataTypeException();
         }
         // resources casting
-        Report report = (Report) data;
+        final Report report = (Report) data;
 
         // get issues
-        List<Issue> issues = report.getIssues();
+        final List<Issue> issues = report.getIssues();
         LOGGER.info("key\t" + "project\t" + "component\t" + "type\t" + "severity\t" +
                 "message\t" + "line\t" + "status\t" + "\t");
         // log all issues

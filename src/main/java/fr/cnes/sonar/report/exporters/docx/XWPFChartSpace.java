@@ -31,6 +31,7 @@ import org.openxmlformats.schemas.drawingml.x2006.chart.CTStrVal;
 import org.openxmlformats.schemas.drawingml.x2006.chart.impl.ChartSpaceDocumentImpl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,9 +80,9 @@ public class XWPFChartSpace {
     public static List<XWPFChartSpace> getChartSpaces(XWPFDocument document)
             throws IOException, XmlException, OpenXML4JException {
         // gather charts documents
-        List<POIXMLDocumentPart> charts = new ArrayList<>();
+        final List<POIXMLDocumentPart> charts = new ArrayList<>();
         // results list to return at the end
-        List<XWPFChartSpace> result = new ArrayList<>();
+        final List<XWPFChartSpace> result = new ArrayList<>();
 
         // get parts related to charts
         for(POIXMLDocumentPart p : document.getRelations()) {
@@ -92,7 +93,9 @@ public class XWPFChartSpace {
 
         // get chart spaces inside previous parts
         for(POIXMLDocumentPart p : charts) {
-            ChartSpaceDocumentImpl c = (ChartSpaceDocumentImpl) XmlObject.Factory.parse(p.getPackagePart().getInputStream(),
+            final InputStream inputStream = p.getPackagePart().getInputStream();
+            final ChartSpaceDocumentImpl c = (ChartSpaceDocumentImpl)
+                    XmlObject.Factory.parse(inputStream,
                     POIXMLTypeLoader.DEFAULT_XML_OPTIONS);
             result.add(new XWPFChartSpace(c,p.getPackagePart()));
         }
@@ -121,17 +124,18 @@ public class XWPFChartSpace {
      * @return a string containing the raw title
      */
     public String getTitle() {
-        String title;
-        title = chartSpace.getChartSpace().getChart().getTitle().getTx().getRich().getPList().get(0).getRList().get(0).getT();
-        return title;
+        return chartSpace.getChartSpace().getChart().getTitle().getTx()
+                .getRich().getPList().get(0).getRList().get(0).getT();
     }
 
     /**
      * Set the value of chart's title
      * @param newTitle the new value
+     * @throws IOException error when writting the chart's file
      */
     public void setTitle(String newTitle) throws IOException {
-        chartSpace.getChartSpace().getChart().getTitle().getTx().getRich().getPList().get(0).getRList().get(0).setT(newTitle);
+        chartSpace.getChartSpace().getChart().getTitle().getTx().getRich()
+                .getPList().get(0).getRList().get(0).setT(newTitle);
         this.save();
     }
 
@@ -140,19 +144,26 @@ public class XWPFChartSpace {
      * @throws IOException When saving chart in the output stream
      */
     public void save() throws IOException {
-        OutputStream outputStream = packagePart.getOutputStream();
+        final OutputStream outputStream = packagePart.getOutputStream();
         chartSpace.save(outputStream);
         outputStream.close();
     }
 
+    /**
+     * Set values contained in the chart 
+     * @param values values to set as a list of label/value
+     * @throws IOException when writing the file
+     */
     public void setValues(List<Value> values) throws IOException {
-        CTPlotArea ctPlotArea = chartSpace.getChartSpace().getChart().getPlotArea();
+        final CTPlotArea ctPlotArea = chartSpace.getChartSpace().getChart().getPlotArea();
 
         // if the chart is a pie chart we continue
         if(!ctPlotArea.getPieChartList().isEmpty()) {
             // get lists of values and categories (labels) of the pie chart
-            List<CTNumVal> ptListVal = ctPlotArea.getPieChartList().get(0).getSerList().get(0).getVal().getNumRef().getNumCache().getPtList();
-            List<CTStrVal> ptListCat = ctPlotArea.getPieChartList().get(0).getSerList().get(0).getCat().getStrRef().getStrCache().getPtList();
+            final List<CTNumVal> ptListVal = ctPlotArea.getPieChartList().get(0)
+                    .getSerList().get(0).getVal().getNumRef().getNumCache().getPtList();
+            final List<CTStrVal> ptListCat = ctPlotArea.getPieChartList().get(0)
+                    .getSerList().get(0).getCat().getStrRef().getStrCache().getPtList();
 
             // clear what could be present before
             ptListCat.clear();
@@ -161,8 +172,8 @@ public class XWPFChartSpace {
             // write resources in the pie chart
             for (int i = 0 ; i < values.size() ; i++) {
                 // instantiate new label and value
-                CTStrVal cat = CTStrVal.Factory.newInstance();
-                CTNumVal val = CTNumVal.Factory.newInstance();
+                final CTStrVal cat = CTStrVal.Factory.newInstance();
+                final CTNumVal val = CTNumVal.Factory.newInstance();
 
                 // set ids
                 cat.setIdx(i);

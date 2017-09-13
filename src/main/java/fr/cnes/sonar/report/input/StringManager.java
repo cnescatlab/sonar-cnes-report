@@ -32,19 +32,32 @@ import java.util.logging.Logger;
  * @author lequal
  */
 public final class StringManager {
-    /**
-     * Logger for StringManager
-     */
-    private static final Logger LOGGER = Logger.getLogger(StringManager.class.getCanonicalName());
 
     /**
      * Message logged when parameters are correctly preprocessed
      */
-    public static final String SUCCESSFULLY_PROCESSED_PARAMETERS = "Successfully processed parameters.";
+    public static final String SUCCESSFULLY_PROCESSED_PARAMETERS =
+            "Successfully processed parameters.";
     /**
      * Just an empty string
      */
     public static final String EMPTY = "";
+    /**
+     * Just a tabulation
+     */
+    public static final String TAB = "\t";
+    /**
+     * Just a new line
+     */
+    public static final String NEW_LINE = "\n";
+    /**
+     * Just a space
+     */
+    public static final String SPACE = " ";
+    /**
+     * Just a space for URI
+     */
+    public static final String URI_SPACE = "%20";
     /**
      * Name of the property giving the author's name
      */
@@ -102,14 +115,15 @@ public final class StringManager {
      */
     public static final String QUOTES = "\"";
     /**
-     * Just a space character
-     */
-    public static final char SPACE = ' ';
-    /**
      * Just the word rule
      */
     public static final String RULES = "rules";
 
+    /**
+     * Logger for StringManager
+     */
+    private static final Logger LOGGER = Logger.getLogger(StringManager.class.getCanonicalName());
+    
     /**
      * Contain all the properties related to the report
      */
@@ -139,9 +153,11 @@ public final class StringManager {
         // read the file
         InputStream input = null;
 
+        final ClassLoader classLoader = AbstractDataProvider.class.getClassLoader();
+
         try {
             // load properties file as a stream
-            input = AbstractDataProvider.class.getClassLoader().getResourceAsStream(StringManager.REPORT_PROPERTIES);
+            input = classLoader.getResourceAsStream(StringManager.REPORT_PROPERTIES);
             if(input!=null) {
                 // load properties from the stream in an adapted structure
                 properties.load(input);
@@ -186,7 +202,7 @@ public final class StringManager {
      * @param property Key of the property you want.
      * @return The value of the property you want as a String.
      */
-    public static String getProperty(String property) {
+    public static String getProperty(final String property) {
         return properties.getProperty(property);
     }
 
@@ -195,7 +211,7 @@ public final class StringManager {
      * @param language String in lowercase
      * @param country String in upper case
      */
-    public static synchronized void changeLocale(String language, String country) {
+    public static synchronized void changeLocale(final String language, final String country) {
         // change locale
         currentLocale = new Locale(language,country);
         // reload messages
@@ -207,7 +223,7 @@ public final class StringManager {
      * @param key name of the property in the bundle messages
      * @return a String
      */
-    public static String string(String key) {
+    public static String string(final String key) {
         return messages.getString(key);
     }
 }

@@ -50,7 +50,8 @@ public class QualityGateProvider extends AbstractDataProvider {
      * @param singleton RequestManager which does http request
      * @throws UnknownParameterException The program does not recognize the parameter
      */
-    public QualityGateProvider(Params params, RequestManager singleton) throws UnknownParameterException {
+    public QualityGateProvider(Params params, RequestManager singleton)
+            throws UnknownParameterException {
         super(params, singleton);
     }
 
@@ -71,8 +72,8 @@ public class QualityGateProvider extends AbstractDataProvider {
         JsonObject jo = request(request);
 
         // Get quality gates criteria
-        String defaultQG = (getGson().fromJson(jo.get(DEFAULT), String.class));
-        QualityGate[] tmp = (getGson().fromJson(jo.get(QUALITYGATES), QualityGate[].class));
+        final String defaultQG = (getGson().fromJson(jo.get(DEFAULT), String.class));
+        final QualityGate[] tmp = (getGson().fromJson(jo.get(QUALITYGATES), QualityGate[].class));
         // for each quality gate
         for (QualityGate i : tmp) {
             // request the criteria
@@ -109,18 +110,18 @@ public class QualityGateProvider extends AbstractDataProvider {
         QualityGate tmp;
         boolean find = false;
         // get all the quality gates
-        List<QualityGate> qualityGates = getQualityGates();
+        final List<QualityGate> qualityGates = getQualityGates();
         // request the criteria
-        String request = String.format(getRequest(GET_QUALITY_GATE_REQUEST),
+        final String request = String.format(getRequest(GET_QUALITY_GATE_REQUEST),
                 getUrl(), getProjectKey());
 
         // perform previous request
-        JsonObject jo = request(request);
-        String key = jo.getAsJsonObject(QUALITY_GATE)
+        final JsonObject jo = request(request);
+        final String key = jo.getAsJsonObject(QUALITY_GATE)
                 .get(KEY).getAsString();
 
         // search for the good quality gate
-        Iterator<QualityGate> iterator = qualityGates.iterator();
+        final Iterator<QualityGate> iterator = qualityGates.iterator();
         while (iterator.hasNext() && !find) {
             tmp = iterator.next();
             if(tmp.getId().equals(key)) {

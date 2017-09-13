@@ -41,12 +41,12 @@ public class Measure {
 
     /**
      * Complete constructor
-     * @param metric value for metric
-     * @param value value for value
+     * @param pMetric value for metric
+     * @param pValue value for value
      */
-    public Measure(String metric, String value) {
-        this.metric = metric;
-        this.value = value;
+    public Measure(String pMetric, String pValue) {
+        this.metric = pMetric;
+        this.value = pValue;
     }
 
     /**
@@ -59,10 +59,10 @@ public class Measure {
 
     /**
      * Setter for metric's name
-     * @param metric value
+     * @param pMetric value
      */
-    public void setMetric(String metric) {
-        this.metric = metric;
+    public void setMetric(String pMetric) {
+        this.metric = pMetric;
     }
 
     /**
@@ -75,10 +75,10 @@ public class Measure {
 
     /**
      * Setter for value
-     * @param value value
+     * @param pValue value
      */
-    public void setValue(String value) {
-        this.value = value;
+    public void setValue(String pValue) {
+        this.value = pValue;
     }
 
     /**

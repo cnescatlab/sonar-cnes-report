@@ -49,13 +49,13 @@ public class XmlExporter implements IExporter {
             throw new BadExportationDataTypeException();
         }
         // resources casting
-        String string = (String) data;
+        final String string = (String) data;
 
         // set relevant variables
-        String filePath = String.format("%s/%s.xml", path, filename);
+        final String filePath = String.format("%s/%s.xml", path, filename);
 
         // file to write
-        File xmlFile = new File(filePath);
+        final File xmlFile = new File(filePath);
 
         // prevent file's allocation leaks
         try(FileWriter fileWriter = new FileWriter(xmlFile, false)) {

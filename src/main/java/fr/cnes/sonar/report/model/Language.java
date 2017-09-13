@@ -45,10 +45,10 @@ public class Language {
 
     /**
      * Set language's key
-     * @param key value to set
+     * @param pKey value to set
      */
-    public void setKey(String key) {
-        this.key = key;
+    public void setKey(final String pKey) {
+        this.key = pKey;
     }
 
     /**
@@ -61,9 +61,9 @@ public class Language {
 
     /**
      * Set language's name
-     * @param name value to set
+     * @param pName value to set
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setName(final String pName) {
+        this.name = pName;
     }
 }

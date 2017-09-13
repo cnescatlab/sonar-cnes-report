@@ -23,6 +23,38 @@ public final class XlsXTools {
      * The maximum number of characters that can be contained in a cell
      */
     private static final int MAX_CELL_SIZE = 32767;
+    /**
+     * Column index for rule id
+     */
+    private static final int RULE_ID_INDEX = 0;
+    /**
+     * Column index for issue's message
+     */
+    private static final int MESSAGE_INDEX = 1;
+    /**
+     * Column index for issue's type
+     */
+    private static final int ISSUE_TYPE_INDEX = 2;
+    /**
+     * Column index for issue's severity
+     */
+    private static final int ISSUE_SEVERITY_INDEX = 3;
+    /**
+     * Column index for issue's language
+     */
+    private static final int ISSUE_LANGUAGE_INDEX = 4;
+    /**
+     * Column index for issue's file
+     */
+    private static final int ISSUE_FILE_INDEX = 5;
+    /**
+     * Column index for issue's line
+     */
+    private static final int ISSUE_LINE_INDEX = 6;
+    /**
+     * Column index for issue's effort
+     */
+    private static final int ISSUE_EFFORT_INDEX = 7;
 
     /**
      * Private constructor to hide the public one
@@ -38,30 +70,32 @@ public final class XlsXTools {
     public static void addListOfMap(XSSFSheet sheet, List<Map> list, String tableName) {
 
         // get the headers list
-        List<String> headers = extractHeader(list);
+        final List<String> headers = extractHeader(list);
 
         // Create an object of type XSSFTable containing the template table for selected resources
-        XSSFTable table = findTableByName(sheet, tableName);
+        final XSSFTable table = findTableByName(sheet, tableName);
 
         // check that there are resources to print and the table exists
         if(!headers.isEmpty() && null!=table) {
             // get CTTable object
-            CTTable cttable = table.getCTTable();
+            final CTTable cttable = table.getCTTable();
 
             // Define the resources range including headers
-            AreaReference allDataRange = new AreaReference(new CellReference(0, 0), new CellReference(list.size(), headers.size() - 1));
+            final AreaReference allDataRange = new AreaReference(
+                    new CellReference(0, 0),
+                    new CellReference(list.size(), headers.size() - 1));
 
             // Set Range to the Table
             cttable.setRef(allDataRange.formatAsString());
 
             // set number of columns in the table
-            CTTableColumns columns = cttable.getTableColumns();
-            long oldCount = columns.getCount();
+            final CTTableColumns columns = cttable.getTableColumns();
+            final long oldCount = columns.getCount();
             columns.setCount(headers.size());
 
             // define header information for the table
             for (long i = oldCount; i < headers.size(); i++) {
-                CTTableColumn column = columns.addNewTableColumn();
+                final CTTableColumn column = columns.addNewTableColumn();
                 column.setId(i + 1);
             }
 
@@ -102,9 +136,9 @@ public final class XlsXTools {
      */
     public static List<String> extractHeader(List<Map> list) {
         // list of header titles to be returned
-        List<String> result = new ArrayList<>();
+        final List<String> result = new ArrayList<>();
         // gather all unique keys of all maps
-        Map<String, String> gatherer = new HashMap<>();
+        final Map<String, String> gatherer = new HashMap<>();
 
         // we gather all the key thanks to the map
         for(Map<String,String> map : list) {
@@ -125,10 +159,11 @@ public final class XlsXTools {
      * @param sheet Sheet to fill out
      * @param index Index of the row to create
      * @param list resources to fill out the row  @return a filled out row
+     * @return return the created row as a XSSFRow
      */
     public static XSSFRow createRow(XSSFSheet sheet, int index, List<String> list) {
         // create a new row from the context, it will be returned
-        XSSFRow row = sheet.createRow(index);
+        final XSSFRow row = sheet.createRow(index);
 
         // index on the columns of the row
         int colIndex = 0;
@@ -138,7 +173,7 @@ public final class XlsXTools {
 
             // a cell cannot contain a string bigger than 32,767 chars
             // so we check and cut it if it is too long
-            if(s != null && s.length() > 32767) {
+            if(s != null && s.length() > MAX_CELL_SIZE) {
                 s = s.substring(0, MAX_CELL_SIZE);
             }
             row.createCell(colIndex).setCellValue(s);
@@ -157,21 +192,24 @@ public final class XlsXTools {
      * @param selectedSheet sheet where we want to write
      * @param selectedTableName Name of the table to fill
      */
-    public static void addSelectedData(Report report, XSSFSheet selectedSheet, String selectedTableName) {
+    public static void addSelectedData(Report report, XSSFSheet selectedSheet,
+                                       String selectedTableName) {
 
         // retrieve issues from report
-        List<Issue> issues = report.getIssues();
+        final List<Issue> issues = report.getIssues();
 
         // Create an object of type XSSFTable containing the template table for selected resources
-        XSSFTable selectedTable = findTableByName(selectedSheet, selectedTableName);
+        final XSSFTable selectedTable = findTableByName(selectedSheet, selectedTableName);
 
         // check that the table exists
         if(null!=selectedTable) {
             // get CTTable object
-            CTTable cttable = selectedTable.getCTTable();
+            final CTTable cttable = selectedTable.getCTTable();
 
             // Define the resources range including headers
-            AreaReference selectedDataRange = new AreaReference(new CellReference(0, 0), new CellReference(issues.size(), 7));
+            final AreaReference selectedDataRange = new AreaReference(
+                    new CellReference(0, 0),
+                    new CellReference(issues.size(), 7));
 
             // Set Range to the Table
             cttable.setRef(selectedDataRange.formatAsString());
@@ -182,17 +220,17 @@ public final class XlsXTools {
             // add issues
             for (Issue issue : issues) {
                 // initialization of a new row
-                XSSFRow row = selectedSheet.createRow(numRow);
+                final XSSFRow row = selectedSheet.createRow(numRow);
 
                 // adding resources
-                row.createCell(0).setCellValue(issue.getRule());
-                row.createCell(1).setCellValue(issue.getMessage());
-                row.createCell(2).setCellValue(issue.getType());
-                row.createCell(3).setCellValue(issue.getSeverity());
-                row.createCell(4).setCellValue(issue.getLanguage());
-                row.createCell(5).setCellValue(issue.getComponent());
-                row.createCell(6).setCellValue(issue.getLine());
-                row.createCell(7).setCellValue(issue.getEffort());
+                row.createCell(RULE_ID_INDEX).setCellValue(issue.getRule());
+                row.createCell(MESSAGE_INDEX).setCellValue(issue.getMessage());
+                row.createCell(ISSUE_TYPE_INDEX).setCellValue(issue.getType());
+                row.createCell(ISSUE_SEVERITY_INDEX).setCellValue(issue.getSeverity());
+                row.createCell(ISSUE_LANGUAGE_INDEX).setCellValue(issue.getLanguage());
+                row.createCell(ISSUE_FILE_INDEX).setCellValue(issue.getComponent());
+                row.createCell(ISSUE_LINE_INDEX).setCellValue(issue.getLine());
+                row.createCell(ISSUE_EFFORT_INDEX).setCellValue(issue.getEffort());
 
                 // go to the next line
                 numRow++;
@@ -210,7 +248,7 @@ public final class XlsXTools {
         // result that can be null
         XSSFTable result = null;
         // retrieve all tables to browse
-        Iterator<XSSFTable> iterator = sheet.getTables().iterator();
+        final Iterator<XSSFTable> iterator = sheet.getTables().iterator();
         XSSFTable current;
         // search by name the table corresponding to tableName
         while (iterator.hasNext() && result==null) {

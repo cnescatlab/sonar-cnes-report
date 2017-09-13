@@ -27,7 +27,7 @@ public class UnknownParameterException extends Exception {
      * Constructor
      * @param key key of the unknown parameter
      */
-    public UnknownParameterException(String key) {
+    public UnknownParameterException(final String key) {
         super("Parameter " + key + " is unknown.");
     }
 

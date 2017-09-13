@@ -44,8 +44,25 @@ import java.util.logging.Logger;
  * Main entry point
  * @author lequal
  */
-public class ReportCommandLine {
+public final class ReportCommandLine {
 
+	 /**
+     * Property for the word report filename
+     */
+    public static final String REPORT_FILENAME = "REPORT_FILENAME";
+    /**
+     * Property for the excel report filename
+     */
+    public static final String ISSUES_FILENAME = "ISSUES_FILENAME";
+    /**
+     * Pattern for the name of the directory containing configuration files
+     */
+    public static final String CONF_FOLDER_PATTERN = "%s/conf";
+    /**
+     * Error message returned when the program cannot create a folder because it already exists
+     */
+    public static final String CNES_MKDIR_ERROR =
+            "[WARN] Impossible to create the following directory: %s";
     /**
      * Logger of this class
      */
@@ -63,9 +80,13 @@ public class ReportCommandLine {
      */
     private static final String DATE_PATTERN = "yyyy-MM-dd";
     /**
+     * Name of the property to find the base of report location
+     */
+    private static final String REPORT_PATH = "report.path";
+    /**
      * Help message to display when a user misused this program
      */
-    public static final String HELP_MESSAGE = "Welcome to Sonar Report CNES\n" +
+    private static final String HELP_MESSAGE = "Welcome to Sonar Report CNES\n" +
             "Here are the list of parameters you can use:\n" +
             "  > --sonar.url [mandatory]\n" +
             "  > --sonar.project.id [mandatory]\n" +
@@ -77,27 +98,13 @@ public class ReportCommandLine {
             "  > --report.template\n" +
             "  > --issues.template\n" +
             "Example :\n" +
-            "java -jar sonar-report-cnes.jar --sonar.url http://sonarqube:9000 --sonar.project.id genius-sonar";
+            "java -jar sonar-report-cnes.jar --sonar.url http://sonarqube:9000" +
+            " --sonar.project.id cat";
+
     /**
-     * Property for the word report filename
+     * Private constructor to not be able to instantiate it.
      */
-    public static final String REPORT_FILENAME = "REPORT_FILENAME";
-    /**
-     * Property for the excel report filename
-     */
-    public static final String ISSUES_FILENAME = "ISSUES_FILENAME";
-    /**
-     * Pattern for the name of the directory containing configuration files
-     */
-    public static final String CONF_FOLDER_PATTERN = "%s/conf";
-    /**
-     * Name of the property to find the base of report location
-     */
-    private static final String REPORT_PATH = "report.path";
-    /**
-     * Error message returned when the program cannot create a folder because it already exists
-     */
-    public static final String CNES_MKDIR_ERROR = "[WARN] Impossible to create the following directory: %s";
+    private ReportCommandLine(){}
 
     /**
      * Main method
@@ -109,34 +116,35 @@ public class ReportCommandLine {
         // main catches all exceptions
         try {
             // preparing args
-            Params params = new ParamsFactory().create(args);
+            final Params params = new ParamsFactory().create(args);
 
             // Files exporters : export the resources in the correct file type
-            DocXExporter docXExporter = new DocXExporter();
-            XmlExporter profileExporter = new XmlExporter();
-            JsonExporter gateExporter = new JsonExporter();
-            XlsXExporter issuesExporter = new XlsXExporter();
+            final DocXExporter docXExporter = new DocXExporter();
+            final XmlExporter profileExporter = new XmlExporter();
+            final JsonExporter gateExporter = new JsonExporter();
+            final XlsXExporter issuesExporter = new XlsXExporter();
 
             // full path to the configuration folder
-            String confDirectory = String.format(CONF_FOLDER_PATTERN,params.get(REPORT_PATH));
+            final String confDirectory = String.format(CONF_FOLDER_PATTERN,params.get(REPORT_PATH));
 
             // create the configuration folder
-            boolean success = (new File(confDirectory)).mkdirs();
+            final boolean success = (new File(confDirectory)).mkdirs();
             if (!success) {
                 // Directory creation failed
                 LOGGER.severe(String.format(CNES_MKDIR_ERROR, confDirectory));
             }
 
             // Producing the report
-            Report superReport = new ReportFactory(params).create();
+            final Report superReport = new ReportFactory(params).create();
 
             // Export all
             // export each linked quality profile
             for(ProfileMetaData metaData : superReport.getProject().getQualityProfiles()) {
-                Iterator<QualityProfile> iterator = superReport.getQualityProfiles().iterator();
+                final Iterator<QualityProfile> iterator =
+                        superReport.getQualityProfiles().iterator();
                 boolean goOn = true;
                 while(iterator.hasNext() && goOn) {
-                    QualityProfile qp = iterator.next();
+                    final QualityProfile qp = iterator.next();
                     if(qp.getKey().equals(metaData.getKey())) {
                         profileExporter.export(qp.getConf(), params, confDirectory, qp.getKey());
                         goOn = false;
@@ -144,16 +152,21 @@ public class ReportCommandLine {
                 }
             }
 
+            // quality gate information
+            final String qualityGateName = superReport.getQualityGate().getName();
+            final String qualityGateConf = superReport.getQualityGate().getConf();
             // export the quality gate
-            gateExporter.export(superReport.getQualityGate().getConf(),params,confDirectory,superReport.getQualityGate().getName());
+            gateExporter.export(qualityGateConf,params,confDirectory,qualityGateName);
 
             // prepare docx report's filename
-            String docXFilename = formatFilename(REPORT_FILENAME, superReport.getProjectName());
+            final String docXFilename = formatFilename(REPORT_FILENAME,
+                    superReport.getProjectName());
             // export the full docx report
             docXExporter.export(superReport, params, params.get(REPORT_PATH), docXFilename);
 
             // construct the xlsx filename by replacing date and name
-            String xlsXFilename = formatFilename(ISSUES_FILENAME, superReport.getProjectName());
+            final String xlsXFilename = formatFilename(ISSUES_FILENAME,
+                    superReport.getProjectName());
             // export the xlsx issues' list
             issuesExporter.export(superReport, params, params.get(REPORT_PATH), xlsXFilename);
         } catch (BadExportationDataTypeException | MalformedParameterException |

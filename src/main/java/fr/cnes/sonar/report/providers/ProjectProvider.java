@@ -33,6 +33,9 @@ import java.io.IOException;
  */
 public class ProjectProvider extends AbstractDataProvider {
 
+	/**
+	 * Used to get language data for the projects
+	 */
     private LanguageProvider languageProvider;
 
     /**
@@ -41,7 +44,8 @@ public class ProjectProvider extends AbstractDataProvider {
      * @param singleton RequestManager which does http request
      * @throws UnknownParameterException The program does not recognize the parameter
      */
-    public ProjectProvider(Params params, RequestManager singleton) throws UnknownParameterException {
+    public ProjectProvider(Params params, RequestManager singleton)
+            throws UnknownParameterException {
         super(params, singleton);
         languageProvider = new LanguageProvider(params, singleton);
     }
@@ -56,14 +60,14 @@ public class ProjectProvider extends AbstractDataProvider {
     public Project getProject(String projectKey) throws IOException, BadSonarQubeRequestException {
         // send a request to sonarqube server and return th response as a json object
         // if there is an error on server side this method throws an exception
-        JsonObject jo = request(String.format(getRequest(GET_PROJECT_REQUEST),
+        final JsonObject jo = request(String.format(getRequest(GET_PROJECT_REQUEST),
                 getUrl(), projectKey));
 
         // put json in a Project class
-        Project project = (getGson().fromJson(jo, Project.class));
+        final Project project = (getGson().fromJson(jo, Project.class));
 
         // set language's name for profiles
-        ProfileMetaData[] metaData = project.getQualityProfiles();
+        final ProfileMetaData[] metaData = project.getQualityProfiles();
         String languageName;
         for(ProfileMetaData it : metaData){
             languageName = languageProvider.getLanguage(it.getLanguage());

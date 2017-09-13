@@ -1,4 +1,4 @@
-/*
+package fr.cnes.sonar.tests;/*
  * This file is part of cnesreport.
  *
  * cnesreport is free software: you can redistribute it and/or modify
@@ -39,11 +39,11 @@ public class ParamsTest {
      */
     @Test
     public void paramsCreationTest() throws Exception {
-        String [] args = {SONAR_PROJECT_ID, "bob", "--sonar.url", "alice"};
+        final String [] args = {SONAR_PROJECT_ID, "bob", "--sonar.url", "alice"};
 
-        ParamsFactory paramsFactory = new ParamsFactory();
+        final ParamsFactory paramsFactory = new ParamsFactory();
 
-        Params params = paramsFactory.create(args);
+        final Params params = paramsFactory.create(args);
 
         assert(params.isReliable());
     }
@@ -54,11 +54,11 @@ public class ParamsTest {
      */
     @Test(expected = MissingParameterException.class)
     public void paramsCreationMissingMandatoryParameterTest() throws Exception {
-        String [] args = {SONAR_PROJECT_ID, "bob"};
+        final String [] args = {SONAR_PROJECT_ID, "bob"};
 
-        ParamsFactory paramsFactory = new ParamsFactory();
+        final ParamsFactory paramsFactory = new ParamsFactory();
 
-        Params params = paramsFactory.create(args);
+        final Params params = paramsFactory.create(args);
 
         assert(params.isReliable());
     }
@@ -70,11 +70,11 @@ public class ParamsTest {
      */
     @Test(expected = MalformedParameterException.class)
     public void paramsCreationMalformedParameterTest() throws Exception {
-        String [] args = {"sonar.project.id", "bob"};
+        final String [] args = {"sonar.project.id", "bob"};
 
-        ParamsFactory paramsFactory = new ParamsFactory();
+        final ParamsFactory paramsFactory = new ParamsFactory();
 
-        Params params = paramsFactory.create(args);
+        final Params params = paramsFactory.create(args);
 
         assert(params.isReliable());
     }
@@ -86,11 +86,11 @@ public class ParamsTest {
      */
     @Test(expected = UnknownParameterException.class)
     public void paramsCreationMissingValueParameterTest() throws Exception {
-        String [] args = {SONAR_PROJECT_ID, "bob", "--sonar.url"};
+        final String [] args = {SONAR_PROJECT_ID, "bob", "--sonar.url"};
 
-        ParamsFactory paramsFactory = new ParamsFactory();
+        final ParamsFactory paramsFactory = new ParamsFactory();
 
-        Params params = paramsFactory.create(args);
+        final Params params = paramsFactory.create(args);
 
         assert(params.isReliable());
     }
@@ -102,11 +102,11 @@ public class ParamsTest {
      */
     @Test(expected = UnknownParameterException.class)
     public void paramsCreationUnknownParameterTest() throws Exception {
-        String [] args = {"--alice", "bob"};
+        final String [] args = {"--alice", "bob"};
 
-        ParamsFactory paramsFactory = new ParamsFactory();
+        final ParamsFactory paramsFactory = new ParamsFactory();
 
-        Params params = paramsFactory.create(args);
+        final Params params = paramsFactory.create(args);
 
         assert(params.isReliable());
     }

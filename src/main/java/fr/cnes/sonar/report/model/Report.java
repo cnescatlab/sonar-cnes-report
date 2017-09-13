@@ -80,7 +80,8 @@ public class Report {
         this.facets = new ArrayList<>();
         this.measures = new ArrayList<>();
         this.rawIssues = new ArrayList<>();
-        this.project = new Project(StringManager.EMPTY, StringManager.EMPTY,StringManager.EMPTY,StringManager.EMPTY);
+        this.project = new Project(StringManager.EMPTY, StringManager.EMPTY,
+                StringManager.EMPTY,StringManager.EMPTY);
     }
 
     /**
@@ -89,7 +90,7 @@ public class Report {
      */
     public Map<String, Long> getIssuesFacets() {
         // returned map containing issues key/number of issues
-        Map<String, Long> facets = new HashMap<>();
+        final Map<String, Long> lFacets = new HashMap<>();
         // collect issues' occurrences number
         long counter;
         // collect the rule's id for each issue
@@ -101,13 +102,13 @@ public class Report {
         for(Issue issue : getIssues()) {
             rule = issue.getRule();
             counter = 1;
-            if(facets.containsKey(rule)) {
-                counter = facets.get(rule) + 1;
+            if(lFacets.containsKey(rule)) {
+                counter = lFacets.get(rule) + 1;
             }
-            facets.put(rule, counter);
+            lFacets.put(rule, counter);
         }
 
-        return facets;
+        return lFacets;
     }
 
     /**
@@ -120,10 +121,10 @@ public class Report {
 
     /**
      * Setter for issues
-     * @param issues value
+     * @param pIssues value
      */
-    public void setIssues(List<Issue> issues) {
-        this.issues = new ArrayList<>(issues);
+    public void setIssues(List<Issue> pIssues) {
+        this.issues = new ArrayList<>(pIssues);
     }
 
     /**
@@ -136,10 +137,10 @@ public class Report {
 
     /**
      * Setter for projectName
-     * @param projectName value
+     * @param pProjectName value
      */
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
+    public void setProjectName(String pProjectName) {
+        this.projectName = pProjectName;
     }
 
     /**
@@ -152,10 +153,10 @@ public class Report {
 
     /**
      * Setter for projectAuthor
-     * @param projectAuthor value
+     * @param pProjectAuthor value
      */
-    public void setProjectAuthor(String projectAuthor) {
-        this.projectAuthor = projectAuthor;
+    public void setProjectAuthor(String pProjectAuthor) {
+        this.projectAuthor = pProjectAuthor;
     }
 
     /**
@@ -168,10 +169,10 @@ public class Report {
 
     /**
      * Setter for projectDate
-     * @param projectDate value
+     * @param pProjectDate value
      */
-    public void setProjectDate(String projectDate) {
-        this.projectDate = projectDate;
+    public void setProjectDate(String pProjectDate) {
+        this.projectDate = pProjectDate;
     }
 
     /**
@@ -184,10 +185,10 @@ public class Report {
 
     /**
      * Setter for qualityProfiles
-     * @param qualityProfiles value
+     * @param pQualityProfiles value
      */
-    public void setQualityProfiles(List<QualityProfile> qualityProfiles) {
-        this.qualityProfiles = new ArrayList<>(qualityProfiles);
+    public void setQualityProfiles(List<QualityProfile> pQualityProfiles) {
+        this.qualityProfiles = new ArrayList<>(pQualityProfiles);
     }
 
     /**
@@ -200,10 +201,10 @@ public class Report {
 
     /**
      * Setter for qualityGate
-     * @param qualityGate value
+     * @param pQualityGate value
      */
-    public void setQualityGate(QualityGate qualityGate) {
-        this.qualityGate = qualityGate;
+    public void setQualityGate(QualityGate pQualityGate) {
+        this.qualityGate = pQualityGate;
     }
 
     /**
@@ -216,10 +217,10 @@ public class Report {
 
     /**
      * Setter for measures
-     * @param measures value
+     * @param pMeasures value
      */
-    public void setMeasures(List<Measure> measures) {
-        this.measures = new ArrayList<>(measures);
+    public void setMeasures(List<Measure> pMeasures) {
+        this.measures = new ArrayList<>(pMeasures);
     }
 
     /**
@@ -232,10 +233,10 @@ public class Report {
 
     /**
      * Setter for facets
-     * @param facets value
+     * @param pFacets value
      */
-    public void setFacets(List<Facet> facets) {
-        this.facets = new ArrayList<>(facets);
+    public void setFacets(List<Facet> pFacets) {
+        this.facets = new ArrayList<>(pFacets);
     }
 
     /**
@@ -244,7 +245,7 @@ public class Report {
      */
     public String getQualityProfilesName() {
         // gather all names
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
 
         // append each quality profile name
         Language language;
@@ -262,7 +263,7 @@ public class Report {
      */
     public String getQualityProfilesFilename() {
         // gather all names
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
 
         // append each quality profile filename
         for(ProfileMetaData q : project.getQualityProfiles()) {
@@ -274,15 +275,15 @@ public class Report {
 
     /**
      * Find a rule with its key
-     * @param key key of the rule
+     * @param pKey key of the rule
      * @return the rule or null if not found
      */
-    public Rule getRule(String key) {
+    public Rule getRule(String pKey) {
         // result initialization
         Rule rule = null;
 
         // browse all quality profile
-        Iterator<QualityProfile> iterator = getQualityProfiles().iterator();
+        final Iterator<QualityProfile> iterator = getQualityProfiles().iterator();
         QualityProfile qp;
 
         // search for the rule with the asking key
@@ -290,7 +291,7 @@ public class Report {
             // get next profile
             qp = iterator.next();
             // check if the rule is in this profile
-            rule = qp.find(key);
+            rule = qp.find(pKey);
         }
 
         // return the found rule, can be null
@@ -299,6 +300,7 @@ public class Report {
 
     /**
      * Get a list of map representing issues
+     * @return return the raw issues' list
      */
     public List<Map> getRawIssues() {
         return new ArrayList<>(rawIssues);
@@ -306,10 +308,10 @@ public class Report {
 
     /**
      * Set the list of raw issues
-     * @param rawIssues list of map
+     * @param pRawIssues list of map
      */
-    public void setRawIssues(List<Map> rawIssues) {
-        this.rawIssues = new ArrayList<>(rawIssues);
+    public void setRawIssues(List<Map> pRawIssues) {
+        this.rawIssues = new ArrayList<>(pRawIssues);
     }
 
     /**
@@ -338,9 +340,9 @@ public class Report {
 
     /**
      * Set the project data
-     * @param project data to set
+     * @param pProject data to set
      */
-    public void setProject(Project project) {
-        this.project = project;
+    public void setProject(Project pProject) {
+        this.project = pProject;
     }
 }

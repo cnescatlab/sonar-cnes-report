@@ -6,7 +6,7 @@
 
     <groupId>fr.cnes.sonar</groupId>
     <artifactId>sonar-report-cnes</artifactId>
-    <version>1.2</version>
+    <version>1.0</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -16,8 +16,8 @@
 
     <licenses>
         <license>
-            <name>LGPL-3.0</name>
-            <url>https://www.gnu.org/licenses/lgpl-3.0.txt</url>
+            <name>GPL-3.0</name>
+            <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>

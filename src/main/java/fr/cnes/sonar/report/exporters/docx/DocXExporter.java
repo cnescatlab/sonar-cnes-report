@@ -21,6 +21,7 @@ import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.exporters.IExporter;
 import fr.cnes.sonar.report.input.Params;
+import fr.cnes.sonar.report.input.StringManager;
 import fr.cnes.sonar.report.model.Report;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
@@ -35,9 +36,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import static fr.cnes.sonar.report.exporters.docx.DataAdapter.loadPlaceholdersMap;
-import static fr.cnes.sonar.report.input.StringManager.string;
 
 /**
  * Exports the report in .docx format
@@ -70,14 +68,30 @@ public class DocXExporter implements IExporter {
      */
     private static final String REPORT_PATH_PROPERTY_KEY = "report.path";
     /**
+     * Name of the property giving the path header's number
+     */
+    private static final String HEADER_NUMBER = "header.number";
+    /**
      * Name of the columns in issues table
      */
-    private static final String[] HEADER_FIELDS = {string("header.name"), string("header.description"),
-            string("header.type"), string("header.severity"), string("header.number")};
+    private static final String[] HEADER_FIELDS = {StringManager.string("header.name"),
+            StringManager.string("header.description"),
+            StringManager.string("header.type"),
+            StringManager.string("header.severity"),
+            StringManager.string(HEADER_NUMBER)};
     /**
-     *
+     * Name of the columns in volumes table
      */
-    private static final String[] VOLUMES_HEADER = {string("header.language"), string("header.number")};
+    private static final String[] VOLUMES_HEADER = {StringManager.string("header.language"),
+            StringManager.string(HEADER_NUMBER)};
+    /**
+     * Start index of the sub array in the headers array for the the second table
+     */
+    private static final int HEADER_START_INDEX = 2;
+    /**
+     * End index of the sub array in the headers array for the the second table
+     */
+    private static final int HEADER_END_INDEX = 5;
 
     /**
      * Overridden export for docX
@@ -93,51 +107,53 @@ public class DocXExporter implements IExporter {
      */
     @Override
     public void export(Object data, Params params, String path, String filename)
-            throws BadExportationDataTypeException, UnknownParameterException, OpenXML4JException, IOException, XmlException {
+            throws BadExportationDataTypeException, UnknownParameterException,
+            OpenXML4JException, IOException, XmlException {
         // check resources type
         if (!(data instanceof Report)) {
             throw new BadExportationDataTypeException();
         }
         // resources casting
-        Report report = (Report) data;
+        final Report report = (Report) data;
 
         // open excel file from the path given in the parameters
-        File file = new File(params.get(REPORT_TEMPLATE));
+        final File file = new File(params.get(REPORT_TEMPLATE));
         try (
             FileInputStream fileInputStream = new FileInputStream(file);
             OPCPackage opcPackage = OPCPackage.open(fileInputStream);
             XWPFDocument document = new XWPFDocument(opcPackage)
-        )
-        {
+        ) {
 
             // Fill charts
             DocXTools.fillCharts(opcPackage, document,report.getFacets());
 
             // Add issues
-            List<List<String>> issues = DataAdapter.getIssues(report);
-            String[] issuesArrayFr = HEADER_FIELDS;
-            List<String> headerIssues = new ArrayList<>(Arrays.asList(issuesArrayFr));
+            final List<List<String>> issues = DataAdapter.getIssues(report);
+            final String[] issuesArrayFr = HEADER_FIELDS;
+            final List<String> headerIssues = new ArrayList<>(Arrays.asList(issuesArrayFr));
             DocXTools.fillTable(document, headerIssues, issues, DETAILS_TABLE_PLACEHOLDER);
 
             // Add issues count by type and severity
-            List<List<String>> types = DataAdapter.getTypes(report);
-            DocXTools.fillTable(document, headerIssues.subList(2,5), types, COUNT_TABLE_PLACEHOLDER);
+            final List<List<String>> types = DataAdapter.getTypes(report);
+            DocXTools.fillTable(document,
+                    headerIssues.subList(HEADER_START_INDEX, HEADER_END_INDEX),
+                    types, COUNT_TABLE_PLACEHOLDER);
 
             // Add volumes by language
-            List<String> volumesHeader = new ArrayList<>(Arrays.asList(VOLUMES_HEADER));
-            List<List<String>> volumes = DataAdapter.getVolumes(report);
+            final List<String> volumesHeader = new ArrayList<>(Arrays.asList(VOLUMES_HEADER));
+            final List<List<String>> volumes = DataAdapter.getVolumes(report);
             DocXTools.fillTable(document, volumesHeader, volumes, VOLUME_TABLE_PLACEHOLDER);
 
             // Map which contains all values to replace
             // the key is the placeholder and the value is the value to write over
-            Map<String, String> replacementValues = loadPlaceholdersMap(report);
+            final Map<String, String> replacementValues = DataAdapter.loadPlaceholdersMap(report);
 
             // replace all placeholder in the document (head, body, foot) with the map
             DocXTools.replacePlaceholder(document, replacementValues);
 
             // Save the result by creating a new file in the directory given by report.path property
-            String outputName = params.get(REPORT_PATH_PROPERTY_KEY) + SLASH + filename;
-            FileOutputStream out = new FileOutputStream(outputName);
+            final String outputName = params.get(REPORT_PATH_PROPERTY_KEY) + SLASH + filename;
+            final FileOutputStream out = new FileOutputStream(outputName);
             // close open resources
             document.write(out);
             out.close();

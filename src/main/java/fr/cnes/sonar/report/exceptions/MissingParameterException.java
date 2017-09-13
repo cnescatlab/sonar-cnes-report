@@ -27,7 +27,7 @@ public class MissingParameterException extends Exception {
      * Constructor
      * @param key Key of the missing parameter
      */
-    public MissingParameterException(String key) {
+    public MissingParameterException(final String key) {
         super("Parameter " + key + " is missing.");
     }
 

@@ -1,4 +1,4 @@
-/*
+package fr.cnes.sonar.tests;/*
  * This file is part of cnesreport.
  *
  * cnesreport is free software: you can redistribute it and/or modify
@@ -28,10 +28,13 @@ import static org.junit.Assert.assertEquals;
 public class ReportTest {
 
     /**
-     *  Simple text for testing messages
+     * Simple text for testing messages
      */
     private static final String TEST_STRING = "This is a test string.";
 
+    /**
+     * Tested entity
+     */
     private Report report;
 
     /**

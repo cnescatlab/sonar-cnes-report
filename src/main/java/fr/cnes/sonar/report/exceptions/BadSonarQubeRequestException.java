@@ -27,7 +27,7 @@ public class BadSonarQubeRequestException extends Exception {
      * Constructor
      * @param message the text to print (exception's details)
      */
-    public BadSonarQubeRequestException(String message) {
+    public BadSonarQubeRequestException(final String message) {
         super(message);
     }
 }

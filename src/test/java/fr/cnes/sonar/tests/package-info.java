@@ -15,20 +15,11 @@
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.cnes.sonar.report.exceptions;
-
 /**
- * A given parameter does not exist
+ * Test package for the plugin.
+ * Contains plugin's unit tests.
  * @author lequal
+ * @version 1.0
  */
-public class UnknownQualityGateException extends Exception {
 
-    /**
-     * Constructor
-     * @param key name of the unknown quality gate
-     */
-    public UnknownQualityGateException(final String key) {
-        super("Quality gate "+key+" is unknown.");
-    }
-
-}
+package fr.cnes.sonar.tests;

@@ -78,15 +78,15 @@ public final class RequestManager {
      */
     public String get(String url) throws IOException {
         // returned string containing the response as raw string
-        String toReturn;
+        final String toReturn;
         // create a client
-        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        final CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         // set the request
-        HttpGet request = new HttpGet(url);
+        final HttpGet request = new HttpGet(url);
         // set content type to json
         request.addHeader(CONTENT_TYPE, APPLICATION_JSON);
         // future result of the request
-        HttpResponse result;
+        final HttpResponse result;
         try {
             // execute the request
             result = httpClient.execute(request);
@@ -109,13 +109,13 @@ public final class RequestManager {
      */
     public String post(String url, List<NameValuePair> data) throws IOException {
         // create a client
-        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+        final CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         // set the request
-        HttpPost request = new HttpPost(url);
+        final HttpPost request = new HttpPost(url);
         request.addHeader(CONTENT_TYPE, APPLICATION_JSON);
         request.setEntity(new UrlEncodedFormEntity(data));
         // future result of the request
-        HttpResponse result;
+        final HttpResponse result;
         try {
             // execute the request
             result = httpClient.execute(request);

@@ -17,6 +17,8 @@
 
 package fr.cnes.sonar.report.model;
 
+import fr.cnes.sonar.report.input.StringManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,7 +96,10 @@ public class Issue {
      */
     @Override
     public String toString() {
-        return key + "\t" + project + "\t" + component + "\t" + type + "\t" + severity + "\t" + message + "\t" + line + "\t" + status + "\t" + "\t";
+        return key + StringManager.TAB + project + StringManager.TAB +
+                component + StringManager.TAB + type + StringManager.TAB +
+                severity + StringManager.TAB + message + StringManager.TAB + line +
+                StringManager.TAB + status + StringManager.TAB + StringManager.TAB;
     }
 
     /**
@@ -102,7 +107,7 @@ public class Issue {
      * @return list of strings
      */
     public List<String> getAll() {
-        List<String> list = new ArrayList<>();
+        final List<String> list = new ArrayList<>();
         list.add(getKey());
         list.add(getProject());
         list.add(getComponent());
@@ -125,10 +130,10 @@ public class Issue {
 
     /**
      * Setter for severity
-     * @param severity value
+     * @param pSeverity value
      */
-    public void setSeverity(String severity) {
-        this.severity = severity;
+    public void setSeverity(String pSeverity) {
+        this.severity = pSeverity;
     }
 
     /**
@@ -141,10 +146,10 @@ public class Issue {
 
     /**
      * Setter for key
-     * @param key value
+     * @param pKey value
      */
-    public void setKey(String key) {
-        this.key = key;
+    public void setKey(String pKey) {
+        this.key = pKey;
     }
 
     /**
@@ -157,10 +162,10 @@ public class Issue {
 
     /**
      * Setter for component
-     * @param component value
+     * @param pComponent value
      */
-    public void setComponent(String component) {
-        this.component = component;
+    public void setComponent(String pComponent) {
+        this.component = pComponent;
     }
 
     /**
@@ -173,10 +178,10 @@ public class Issue {
 
     /**
      * Setter for project
-     * @param project value
+     * @param pProject value
      */
-    public void setProject(String project) {
-        this.project = project;
+    public void setProject(String pProject) {
+        this.project = pProject;
     }
 
     /**
@@ -189,10 +194,10 @@ public class Issue {
 
     /**
      * Setter for line
-     * @param line value
+     * @param pLine value
      */
-    public void setLine(String line) {
-        this.line = line;
+    public void setLine(String pLine) {
+        this.line = pLine;
     }
 
     /**
@@ -205,10 +210,10 @@ public class Issue {
 
     /**
      * Setter for status
-     * @param status value
+     * @param pStatus value
      */
-    public void setStatus(String status) {
-        this.status = status;
+    public void setStatus(String pStatus) {
+        this.status = pStatus;
     }
 
     /**
@@ -221,10 +226,10 @@ public class Issue {
 
     /**
      * Setter for type
-     * @param type value
+     * @param pType value
      */
-    public void setType(String type) {
-        this.type = type;
+    public void setType(String pType) {
+        this.type = pType;
     }
 
     /**
@@ -237,10 +242,10 @@ public class Issue {
 
     /**
      * Setter for message
-     * @param message value
+     * @param pMessage value
      */
-    public void setMessage(String message) {
-        this.message = message;
+    public void setMessage(String pMessage) {
+        this.message = pMessage;
     }
 
     /**
@@ -253,10 +258,10 @@ public class Issue {
 
     /**
      * Setter for rule
-     * @param rule value
+     * @param pRule value
      */
-    public void setRule(String rule) {
-        this.rule = rule;
+    public void setRule(String pRule) {
+        this.rule = pRule;
     }
 
     /**
@@ -269,10 +274,10 @@ public class Issue {
 
     /**
      * Setter for the effort or debt
-     * @param effort debt to set
+     * @param pEffort debt to set
      */
-    public void setEffort(String effort) {
-        this.effort = effort;
+    public void setEffort(String pEffort) {
+        this.effort = pEffort;
     }
 
     /**
@@ -285,9 +290,9 @@ public class Issue {
 
     /**
      * Setter for language
-     * @param language value
+     * @param pLanguage value
      */
-    public void setLanguage(String language) {
-        this.language = language;
+    public void setLanguage(String pLanguage) {
+        this.language = pLanguage;
     }
 }

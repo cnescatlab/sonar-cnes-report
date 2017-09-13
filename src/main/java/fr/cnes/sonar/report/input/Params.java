@@ -77,9 +77,9 @@ public class Params {
         // review all pairs
         for(HashMap.Entry<String, String> entry : paramsMap.entrySet()) {
             // get current key
-            String key = entry.getKey();
+            final String key = entry.getKey();
             // get current value
-            String value = entry.getValue();
+            final String value = entry.getValue();
 
             // check if one of them contains an empty string
             if("".equals(value)) {

@@ -1,4 +1,4 @@
-/*
+package fr.cnes.sonar.tests;/*
  * This file is part of cnesreport.
  *
  * cnesreport is free software: you can redistribute it and/or modify
@@ -50,11 +50,11 @@ public class CommonTest {
 
         report.setProjectName("GENIUS");
         report.setProjectDate(new Date().toString());
-        report.setProjectAuthor("Benoît Garçon");
+        report.setProjectAuthor("Lequal");
 
-        List<Issue> issues = new ArrayList<>();
-        Issue i1 = new Issue();
-        Issue i2 = new Issue();
+        final List<Issue> issues = new ArrayList<>();
+        final Issue i1 = new Issue();
+        final Issue i2 = new Issue();
         issues.add(i1);
         issues.add(i2);
         i1.setComponent("a");
@@ -75,19 +75,19 @@ public class CommonTest {
         i2.setType("SECURITY");
         report.setIssues(issues);
 
-        List<Facet> facets = new ArrayList<>();
-        Facet rules = new Facet();
+        final List<Facet> facets = new ArrayList<>();
+        final Facet rules = new Facet();
         rules.setProperty("rules");
-        List<Value> values = new ArrayList<>();
+        final List<Value> values = new ArrayList<>();
         values.add(new Value("squid:S1258", 3));
         rules.setValues(values);
         facets.add(rules);
         report.setFacets(facets);
 
-        ProfileData profileData = new ProfileData();
+        final ProfileData profileData = new ProfileData();
         profileData.setConf("coucou");
-        List<Rule> rulesOfProfile = new ArrayList<>();
-        Rule rule1 = new Rule();
+        final List<Rule> rulesOfProfile = new ArrayList<>();
+        final Rule rule1 = new Rule();
         rule1.setKey("squid:S1258");
         rule1.setName("Nom swag");
         rule1.setHtmlDesc("Cette description est pas trop longue donc ça va en fait, faut pas s'inquiéter.");
@@ -95,29 +95,29 @@ public class CommonTest {
         rule1.setType("BUG");
         rulesOfProfile.add(rule1);
         profileData.setRules(rulesOfProfile);
-        ProfileMetaData profileMetaData = new ProfileMetaData();
+        final ProfileMetaData profileMetaData = new ProfileMetaData();
         profileMetaData.setName("BG");
         profileMetaData.setKey("BG");
-        QualityProfile qualityProfile = new QualityProfile(profileData, profileMetaData);
+        final QualityProfile qualityProfile = new QualityProfile(profileData, profileMetaData);
         qualityProfile.setProjects((new Project[]{new Project("sonar-cnes-plugin", "sonar-cnes-plugin","","")}));
         report.setQualityProfiles(Collections.singletonList(qualityProfile));
-        QualityGate qualityGate = new QualityGate();
+        final QualityGate qualityGate = new QualityGate();
         qualityGate.setName("CNES");
         report.setQualityGate(qualityGate);
 
-        Language language = new Language();
+        final Language language = new Language();
         language.setKey("java");
         language.setName("Java");
 
-        Map<String, Language> languages = new HashMap<>();
+        final Map<String, Language> languages = new HashMap<>();
         languages.put(language.getKey(), language);
 
-        Project project = new Project("key", "Name", "Version", "Short description");
+        final Project project = new Project("key", "Name", "Version", "Short description");
         project.setQualityProfiles(new ProfileMetaData[0]);
         project.setLanguages(languages);
         report.setProject(project);
 
-        List<Measure> measures = new ArrayList<>();
+        final List<Measure> measures = new ArrayList<>();
         measures.add(new Measure("reliability_rating", "1.0"));
         measures.add(new Measure("duplicated_lines_density", "1.0"));
         measures.add(new Measure("sqale_rating", "1.0"));
@@ -130,7 +130,7 @@ public class CommonTest {
         params.put("sonar.url", "http://sonarqube:9000");
         params.put("sonar.project.id", "sonar-report-cnes");
         params.put("project.name", "Sonar Report CNES");
-        params.put("report.author", "Benoît Garçon");
+        params.put("report.author", "Lequal");
         params.put("report.date", new Date().toString());
         params.put("report.path", "./target");
         params.put("report.locale", "en_US");

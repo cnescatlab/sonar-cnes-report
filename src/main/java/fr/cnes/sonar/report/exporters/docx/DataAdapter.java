@@ -26,7 +26,7 @@ import java.util.*;
  * Format resources in different structure to have an easier use
  * @author lequal
  */
-public class DataAdapter {
+public final class DataAdapter {
 
     /**
      * Regex to delete html tags
@@ -191,7 +191,9 @@ public class DataAdapter {
     /**
      * List of possible issue severities
      */
-    private static final String[] ISSUE_SEVERITIES = {"BLOCKER", "CRITICAL", "MAJOR", "MINOR", "INFO"};
+    private static final String[] ISSUE_SEVERITIES = {
+        "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "INFO"
+    };
     /**
      * Field in json response for number of code lines per language
      */
@@ -214,6 +216,11 @@ public class DataAdapter {
     private static final String EMPTY = "";
 
     /**
+     * Private constructor to forbid instantiation of this class
+     */
+    private DataAdapter(){}
+
+    /**
      * Prepare list of resources to be print in a table
      * Data are lines containing the number of issues by severity and type
      * @param report report from which to extract resources
@@ -221,10 +228,10 @@ public class DataAdapter {
      */
     public static List<List<String>> getTypes(Report report) {
         // result to return
-        List<List<String>> results = new ArrayList<>();
+        final List<List<String>> results = new ArrayList<>();
 
-        String[] types = ISSUE_TYPES;
-        String[] severities = ISSUE_SEVERITIES;
+        final String[] types = ISSUE_TYPES;
+        final String[] severities = ISSUE_SEVERITIES;
 
         for(String type : types) {
             for (String severity : severities) {
@@ -237,7 +244,7 @@ public class DataAdapter {
                     }
                 }
                 // we add it to the list
-                List<String> item = new ArrayList<>();
+                final List<String> item = new ArrayList<>();
                 item.add(type);
                 item.add(severity);
                 item.add(String.valueOf(nb));
@@ -256,7 +263,7 @@ public class DataAdapter {
      */
     public static List<List<String>> getMetrics(Report report) {
         // result to return
-        List<List<String>> metrics = new ArrayList<>();
+        final List<List<String>> metrics = new ArrayList<>();
 
         // construct each metric
         for (Measure m : report.getMeasures()) {
@@ -272,19 +279,20 @@ public class DataAdapter {
      * @return issues list
      */
     public static List<List<String>> getIssues(Report report) {
-        List<List<String>> issues = new ArrayList<>();  // result to return
+        final List<List<String>> issues = new ArrayList<>();  // result to return
 
         // Get the issues' id
-        Map<String, Long> items = report.getIssuesFacets();
+        final Map<String, Long> items = report.getIssuesFacets();
 
         for (Map.Entry<String, Long> v : items.entrySet()) { // construct each issues
-            List<String> issue = new ArrayList<>();
-            Rule rule = report.getRule(v.getKey());
+            final List<String> issue = new ArrayList<>();
+            final Rule rule = report.getRule(v.getKey());
             if(rule!=null) { // if the rule is found, fill information
                 // add name
                 issue.add(rule.getName());
                 // add description
-                issue.add(rule.getHtmlDesc().replaceAll(DELETE_HTML_TAGS_REGEX, StringManager.EMPTY));
+                issue.add(rule.getHtmlDesc()
+                        .replaceAll(DELETE_HTML_TAGS_REGEX, StringManager.EMPTY));
                 // add type
                 issue.add(rule.getType());
                 // add severity
@@ -319,7 +327,7 @@ public class DataAdapter {
     public static List<Value> getFacetValues(List<Facet> facets, String facetName) {
 
         // iterate on facets' list
-        Iterator<Facet> iterator = facets.iterator();
+        final Iterator<Facet> iterator = facets.iterator();
         // list of results
         List<Value> items = new ArrayList<>();
         Facet facet;
@@ -342,22 +350,40 @@ public class DataAdapter {
      */
     public static Map<String, String> loadPlaceholdersMap(Report report) {
         // final map to return
-        Map<String, String> replacementValues = new HashMap<>();
+        final Map<String, String> replacementValues = new HashMap<>();
         // Replacement of placeholder
         // report meta resources placeholders
-        replacementValues.put(AUTHOR_PLACEHOLDER, report.getProjectAuthor());
-        replacementValues.put(VERSION_PLACEHOLDER, report.getProjectVersion());
-        replacementValues.put(DESCRIPTION_PLACEHOLDER, report.getProjectDescription());
-        replacementValues.put(DATE_PLACEHOLDER, report.getProjectDate());
-        replacementValues.put(PROJECTNAME_PLACEHOLDER, report.getProjectName());
+        replacementValues.put(
+                AUTHOR_PLACEHOLDER,
+                report.getProjectAuthor());
+        replacementValues.put(
+                VERSION_PLACEHOLDER,
+                report.getProjectVersion());
+        replacementValues.put(
+                DESCRIPTION_PLACEHOLDER,
+                report.getProjectDescription());
+        replacementValues.put(
+                DATE_PLACEHOLDER,
+                report.getProjectDate());
+        replacementValues.put(
+                PROJECTNAME_PLACEHOLDER,
+                report.getProjectName());
         // configuration placeholders
-        replacementValues.put(QUALITYGATENAME_PLACEHOLDER, report.getQualityGate().getName());
-        replacementValues.put(QUALITYGATEFILE_PLACEHOLDER, report.getQualityGate().getName() + XML_EXTENSION);
-        replacementValues.put(QUALITYPROFILENAME_PLACEHOLDER, report.getQualityProfilesName());
-        replacementValues.put(QUALITYPROFILEFILE_PLACEHOLDER, report.getQualityProfilesFilename());
+        replacementValues.put(
+                QUALITYGATENAME_PLACEHOLDER,
+                report.getQualityGate().getName());
+        replacementValues.put(
+                QUALITYGATEFILE_PLACEHOLDER,
+                report.getQualityGate().getName() + XML_EXTENSION);
+        replacementValues.put(
+                QUALITYPROFILENAME_PLACEHOLDER,
+                report.getQualityProfilesName());
+        replacementValues.put(
+                QUALITYPROFILEFILE_PLACEHOLDER,
+                report.getQualityProfilesFilename());
         // Synthesis placeholders
         for (Measure m : report.getMeasures()) {
-            String placeholder = getPlaceHolderName(m.getMetric());
+            final String placeholder = getPlaceHolderName(m.getMetric());
             String value = m.getValue();
 
             // convert numerical mark to letter if necessary
@@ -365,7 +391,9 @@ public class DataAdapter {
                 value = numberToLetter(m.getValue());
             }
 
-            replacementValues.put(placeholder, value);
+            replacementValues.put(
+                    placeholder,
+                    value);
         }
         return replacementValues;
     }
@@ -376,7 +404,7 @@ public class DataAdapter {
      * @return a letter
      */
     private static String numberToLetter(String value) {
-        String res;
+        final String res;
         // make the link between numbers and letters
         switch (value) {
             case MARK_1_NUMBER:
@@ -407,7 +435,7 @@ public class DataAdapter {
      * @return value of the place holder
      */
     private static String getPlaceHolderName(String metric) {
-        String res;
+        final String res;
         switch (metric) {
             case RELIABILITY_RATING:
                 res = RELIABILITY_PLACEHOLDER;
@@ -445,15 +473,15 @@ public class DataAdapter {
      */
     public static List<List<String>> getVolumes(Report report) {
         // result to return
-        List<List<String>> volumes = new ArrayList<>();
+        final List<List<String>> volumes = new ArrayList<>();
 
         // find metrics per language and for all
-        String perLanguage = findMeasure(report.getMeasures(), NCLOC_PER_LANGUAGE);
-        String total = findMeasure(report.getMeasures(), NCLOC);
+        final String perLanguage = findMeasure(report.getMeasures(), NCLOC_PER_LANGUAGE);
+        final String total = findMeasure(report.getMeasures(), NCLOC);
 
         // split raw string data into list of list of string
         // to get a relevant table
-        List<String> firstSplit = Arrays.asList(perLanguage.split(SEMICOLON));
+        final List<String> firstSplit = Arrays.asList(perLanguage.split(SEMICOLON));
         firstSplit.forEach(x -> volumes.add(Arrays.asList(x.split(EQUALS))));
 
         // replace language's key by language's name
@@ -481,7 +509,7 @@ public class DataAdapter {
         // result that can be null
         String result = EMPTY;
         // retrieve all measures to browse
-        Iterator<Measure> iterator = measures.iterator();
+        final Iterator<Measure> iterator = measures.iterator();
         Measure current;
         // search by name the measure corresponding to metric
         while (iterator.hasNext() && result.equals(EMPTY)) {
@@ -492,4 +520,5 @@ public class DataAdapter {
         }
         return result;
     }
+
 }

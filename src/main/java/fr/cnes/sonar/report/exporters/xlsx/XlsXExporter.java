@@ -11,9 +11,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
 
-import static fr.cnes.sonar.report.exporters.xlsx.XlsXTools.addListOfMap;
-import static fr.cnes.sonar.report.exporters.xlsx.XlsXTools.addSelectedData;
-
 /**
  * Exports the report in .docx format
  * @author lequal
@@ -63,13 +60,13 @@ public class XlsXExporter implements IExporter {
             throw new BadExportationDataTypeException();
         }
         // resources casting
-        Report report = (Report) data;
+        final Report report = (Report) data;
 
         // set output filename
-        String outputFilePath = params.get(REPORT_PATH)+"/"+filename;
+        final String outputFilePath = params.get(REPORT_PATH)+"/"+filename;
 
         // open excel file from the path given in the parameters
-        File file = new File(params.get(ISSUES_TEMPLATE));
+        final File file = new File(params.get(ISSUES_TEMPLATE));
 
         // open the template
         try(
@@ -78,16 +75,16 @@ public class XlsXExporter implements IExporter {
                 FileOutputStream fileOut = new FileOutputStream(outputFilePath)) {
 
             // retrieve the sheet aiming to contain selected resources
-            XSSFSheet selectedSheet = (XSSFSheet) workbook.getSheet(ISSUES_SHEET_NAME);
+            final XSSFSheet selectedSheet = (XSSFSheet) workbook.getSheet(ISSUES_SHEET_NAME);
 
             // retrieve the sheet aiming to contain selected resources
-            XSSFSheet allDataSheet = (XSSFSheet) workbook.getSheet(ALL_DETAILS_SHEET_NAME);
+            final XSSFSheet allDataSheet = (XSSFSheet) workbook.getSheet(ALL_DETAILS_SHEET_NAME);
 
             // write selected resources in the file
-            addSelectedData(report, selectedSheet, SELECTED_TABLE_NAME);
+            XlsXTools.addSelectedData(report, selectedSheet, SELECTED_TABLE_NAME);
 
             // write all raw resources in the third sheet
-            addListOfMap(allDataSheet, report.getRawIssues(), ALL_TABLE_NAME);
+            XlsXTools.addListOfMap(allDataSheet, report.getRawIssues(), ALL_TABLE_NAME);
 
             // write output as file
             workbook.write(fileOut);
