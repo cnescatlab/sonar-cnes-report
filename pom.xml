@@ -26,7 +26,9 @@
         <developer>
             <id>begarco</id>
             <name>Benoît Garçon</name>
+            <email>benoit.garcon@outlook.com</email>
             <organization>CNES</organization>
+            <organizationUrl>https://cnes.fr/</organizationUrl>
         </developer>
     </developers>
 
