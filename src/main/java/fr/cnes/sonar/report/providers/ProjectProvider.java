@@ -79,6 +79,10 @@ public class ProjectProvider extends AbstractDataProvider {
         if(null==project.getDescription()) {
             project.setDescription(StringManager.EMPTY);
         }
+        // check version nullity
+        if(null==project.getVersion()) {
+            project.setVersion(StringManager.EMPTY);
+        }
 
         return project;
     }
