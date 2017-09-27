@@ -22,6 +22,10 @@ public class XlsXExporter implements IExporter {
      */
     private static final String ISSUES_SHEET_NAME = "Issues";
     /**
+     * Name of the tab containing unconfirmed issues
+     */
+    private static final String UNCONFIRMED_SHEET_NAME = "Unconfirmed";
+    /**
      *  Name of the tab containing all detailed issues
      */
     private static final String ALL_DETAILS_SHEET_NAME = "All";
@@ -37,6 +41,10 @@ public class XlsXExporter implements IExporter {
      * Name for the table containing selected resources
      */
     private static final String SELECTED_TABLE_NAME = "selected";
+    /**
+     * Name for the table containing unconfirmed resources
+     */
+    private static final String UNCONFIRMED_TABLE_NAME = "unconfirmed";
     /**
      * Name for the table containing all raw resources
      */
@@ -78,10 +86,16 @@ public class XlsXExporter implements IExporter {
             final XSSFSheet selectedSheet = (XSSFSheet) workbook.getSheet(ISSUES_SHEET_NAME);
 
             // retrieve the sheet aiming to contain selected resources
+            final XSSFSheet unconfirmedSheet = (XSSFSheet) workbook.getSheet(UNCONFIRMED_SHEET_NAME);
+
+            // retrieve the sheet aiming to contain selected resources
             final XSSFSheet allDataSheet = (XSSFSheet) workbook.getSheet(ALL_DETAILS_SHEET_NAME);
 
             // write selected resources in the file
-            XlsXTools.addSelectedData(report, selectedSheet, SELECTED_TABLE_NAME);
+            XlsXTools.addSelectedData(report.getIssues(), selectedSheet, SELECTED_TABLE_NAME);
+
+            // write selected resources in the file
+            XlsXTools.addSelectedData(report.getUnconfirmed(), unconfirmedSheet, UNCONFIRMED_TABLE_NAME);
 
             // write all raw resources in the third sheet
             XlsXTools.addListOfMap(allDataSheet, report.getRawIssues(), ALL_TABLE_NAME);

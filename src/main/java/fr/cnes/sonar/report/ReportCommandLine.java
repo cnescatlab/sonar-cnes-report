@@ -82,7 +82,7 @@ public final class ReportCommandLine {
     /**
      * Name of the property to find the base of report location
      */
-    private static final String REPORT_PATH = "report.path";
+    public static final String REPORT_PATH = "report.path";
     /**
      * Help message to display when a user misused this program
      */

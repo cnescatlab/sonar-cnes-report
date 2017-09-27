@@ -43,6 +43,14 @@ public class IssuesProvider extends AbstractDataProvider {
      * web api's users to collect.
      */
     private static final int MAXIMUM_ISSUES_LIMIT = 10000;
+    /**
+     * Value of the field to get confirmed issues
+     */
+    private static final String CONFIRMED = "false";
+    /**
+     * Value of the field to get unconfirmed issues
+     */
+    private static final String UNCONFIRMED = "true";
 
     /**
      * Complete constructor
@@ -56,12 +64,35 @@ public class IssuesProvider extends AbstractDataProvider {
     }
 
     /**
-     * Get all the issues of a project
+     * Get all the real issues of a project
      * @return Array containing all the issues
      * @throws IOException when connecting the server
      * @throws BadSonarQubeRequestException A request is not recognized by the server
      */
     public List<Issue> getIssues()
+            throws IOException, BadSonarQubeRequestException {
+        return getIssuesByStatus(CONFIRMED);
+    }
+
+    /**
+     * Get all the unconfirmed issues of a project
+     * @return Array containing all the issues
+     * @throws IOException when connecting the server
+     * @throws BadSonarQubeRequestException A request is not recognized by the server
+     */
+    public List<Issue> getUnconfirmedIssues()
+            throws IOException, BadSonarQubeRequestException {
+        return getIssuesByStatus(UNCONFIRMED);
+    }
+
+    /**
+     * Get issues depending on their resolved status
+     * @param confirmed equals "true" if Unconfirmed and "false" if confirmed
+     * @return List containing all the issues
+     * @throws IOException when connecting the server
+     * @throws BadSonarQubeRequestException A request is not recognized by the server
+     */
+    private List<Issue> getIssuesByStatus(String confirmed)
             throws IOException, BadSonarQubeRequestException {
         // results variable
         final List<Issue> res = new ArrayList<>();
@@ -83,7 +114,7 @@ public class IssuesProvider extends AbstractDataProvider {
             final int maxPerPage = Integer.parseInt(getRequest(MAX_PER_PAGE_SONARQUBE));
             // prepare the url to get all the issues
             final String request = String.format(getRequest(GET_ISSUES_REQUEST),
-                    getUrl(), getProjectKey(), maxPerPage, page);
+                    getUrl(), getProjectKey(), maxPerPage, page, confirmed);
             // perform the request to the server
             final JsonObject jo = request(request);
             // transform json to Issue and Rule objects
@@ -185,7 +216,7 @@ public class IssuesProvider extends AbstractDataProvider {
             final int maxPerPage = Integer.parseInt(getRequest(MAX_PER_PAGE_SONARQUBE));
             // prepare the url to get all the issues
             final String request = String.format(getRequest(GET_ISSUES_REQUEST),
-                    getUrl(), getProjectKey(), maxPerPage, page);
+                    getUrl(), getProjectKey(), maxPerPage, page, CONFIRMED);
             // perform the request to the server
             final JsonObject jo = request(request);
             // transform json to Issue objects

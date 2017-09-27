@@ -66,6 +66,10 @@ public class Report {
      * Data about the project
      */
     private Project project;
+    /**
+     * List of unconfirmed issues in the project like false positives and wont fix
+     */
+    private List<Issue> unconfirmed;
 
     /**
      * Default constructor
@@ -77,6 +81,7 @@ public class Report {
         this.qualityProfiles = new ArrayList<>();
         this.qualityGate = new QualityGate();
         this.issues = new ArrayList<>();
+        this.unconfirmed = new ArrayList<>();
         this.facets = new ArrayList<>();
         this.measures = new ArrayList<>();
         this.rawIssues = new ArrayList<>();
@@ -344,5 +349,22 @@ public class Report {
      */
     public void setProject(Project pProject) {
         this.project = pProject;
+    }
+
+
+    /**
+     * Getter for unconfirmed
+     * @return issues
+     */
+    public List<Issue> getUnconfirmed() {
+        return new ArrayList<>(unconfirmed);
+    }
+
+    /**
+     * Setter for unconfirmed
+     * @param pIssues value
+     */
+    public void setUnconfirmed(List<Issue> pIssues) {
+        this.unconfirmed = new ArrayList<>(pIssues);
     }
 }

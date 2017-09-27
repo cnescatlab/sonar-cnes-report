@@ -57,6 +57,10 @@ public class Issue {
      */
     private String status;
     /**
+     * Issue's status resolution
+     */
+    private String resolution;
+    /**
      * Issue's effort
      */
     private String effort;
@@ -85,6 +89,7 @@ public class Issue {
         this.severity = "";
         this.project = "";
         this.status = "";
+        this.resolution = "";
         this.type = "";
         this.effort = "0";
         this.language = "";
@@ -214,6 +219,22 @@ public class Issue {
      */
     public void setStatus(String pStatus) {
         this.status = pStatus;
+    }
+
+    /**
+     * Getter for resolution
+     * @return resolution
+     */
+    public String getResolution() {
+        return resolution;
+    }
+
+    /**
+     * Setter for resolution
+     * @param pResolution value
+     */
+    public void setResolution(String pResolution) {
+        this.resolution = pResolution;
     }
 
     /**

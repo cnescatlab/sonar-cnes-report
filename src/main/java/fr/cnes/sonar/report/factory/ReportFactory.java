@@ -84,8 +84,9 @@ public class ReportFactory {
         report.setProject(projectProvider.getProject(projectProvider.getProjectKey()));
         // project's name's setting
         report.setProjectName(report.getProject().getName());
-        // formatted issues and raw issues' setting
+        // formatted issues, unconfirmed issues and raw issues' setting
         report.setIssues(issuesProvider.getIssues());
+        report.setUnconfirmed(issuesProvider.getUnconfirmedIssues());
         report.setRawIssues(issuesProvider.getRawIssues());
         // facets's setting
         report.setFacets(issuesProvider.getFacets());

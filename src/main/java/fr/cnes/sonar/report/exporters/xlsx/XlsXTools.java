@@ -1,7 +1,6 @@
 package fr.cnes.sonar.report.exporters.xlsx;
 
 import fr.cnes.sonar.report.model.Issue;
-import fr.cnes.sonar.report.model.Report;
 import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -55,6 +54,14 @@ public final class XlsXTools {
      * Column index for issue's effort
      */
     private static final int ISSUE_EFFORT_INDEX = 7;
+    /**
+     * Column index for issue's status
+     */
+    private static final int ISSUE_STATUS_INDEX = 8;
+    /**
+     * Status for false positive / wont fix
+     */
+    private static final String RESOLVED = "RESOLVED";
 
     /**
      * Private constructor to hide the public one
@@ -188,15 +195,12 @@ public final class XlsXTools {
 
     /**
      * Write the formatted resources as wanted in the corresponding sheet
-     * @param report Intern resources to format to excel
+     * @param issues Intern resources to format to excel
      * @param selectedSheet sheet where we want to write
      * @param selectedTableName Name of the table to fill
      */
-    public static void addSelectedData(Report report, XSSFSheet selectedSheet,
+    public static void addSelectedData(List<Issue> issues, XSSFSheet selectedSheet,
                                        String selectedTableName) {
-
-        // retrieve issues from report
-        final List<Issue> issues = report.getIssues();
 
         // Create an object of type XSSFTable containing the template table for selected resources
         final XSSFTable selectedTable = findTableByName(selectedSheet, selectedTableName);
@@ -209,7 +213,7 @@ public final class XlsXTools {
             // Define the resources range including headers
             final AreaReference selectedDataRange = new AreaReference(
                     new CellReference(0, 0),
-                    new CellReference(issues.size(), 7));
+                    new CellReference(issues.size(), 8));
 
             // Set Range to the Table
             cttable.setRef(selectedDataRange.formatAsString());
@@ -231,6 +235,12 @@ public final class XlsXTools {
                 row.createCell(ISSUE_FILE_INDEX).setCellValue(issue.getComponent());
                 row.createCell(ISSUE_LINE_INDEX).setCellValue(issue.getLine());
                 row.createCell(ISSUE_EFFORT_INDEX).setCellValue(issue.getEffort());
+                // if the issue's status is RESOLVED we print the status resolution
+                String status = issue.getStatus();
+                if(status.equals(RESOLVED)) {
+                    status = issue.getResolution();
+                }
+                row.createCell(ISSUE_STATUS_INDEX).setCellValue(status);
 
                 // go to the next line
                 numRow++;
