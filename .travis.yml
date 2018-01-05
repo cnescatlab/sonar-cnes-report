@@ -5,9 +5,7 @@ install: true
 addons:
   sonarcloud:
     organization: "lequal"
-    token:
-      secure: "IyM5Bdxr5HBYP/k0i7yWuXgS1/sNIiQ4Tuvhn+UgMOAdpldMxBRCAmrvRLO/yvILwBNeEZrfdLN7noWo5lbqb9mYuR9pLyCd58VGyOnquD6uAso/nejYXrFXktssRM5ITmV4c6H8QImpOEkI3yLgP84yG7B4SfwC1SXXOOWfctSXN8/cO4FB54XyH24hx1XSzGydafNtOhnHbCvk4R31ErUxfdlSxIG32XjKQLffcwBzwmIuBvpELKlz/Mj6LKIpZOLG9iBN6+21H3+Tl64jeaksSxFB1alw7/QQ93cbHBeadkrM6baUL5c9pn2bmP3li+ZCUQ6zN3XAcqnP1KR4DsbL18TyEGkmmXhCWSLG8XUQ6OaaWYcF01rW50E+brqSKGsFN+PBAkl7iEVUde6+XRitB1XHoDkmM502uzDRr/yR9/k6uNtYBSPycw1XgNMgWqY2VefZCmVb/7iEZ1YfEwTGVFWWwGM2hHRl3hhvQ2urBhMNHjVpYCjMbXoGEUiCc0NuGDnPZbSVQxT9XUlDBTdw0lCe28f08T6Zx91IoleU2C7NAO7ZM7rQtygHJPhZi+dRZuh1TK3qglUvGkaTwNYrQTKuI6SL3ZBBGsnRhO4BK5zQel5FDq9Qj0xklQC39pb6cdvayfdJBZ3v0DF4ZYnvv1GQdUTmLMxUYrpvUCY="
-      
+    
 jdk:
   - oraclejdk8
   
