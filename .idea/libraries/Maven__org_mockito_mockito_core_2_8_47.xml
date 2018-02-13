@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.mockito:mockito-core:2.8.47">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/2.8.47/mockito-core-2.8.47.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/2.8.47/mockito-core-2.8.47-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-core/2.8.47/mockito-core-2.8.47-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
