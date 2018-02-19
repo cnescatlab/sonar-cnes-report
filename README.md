@@ -1,4 +1,4 @@
-# Sonar Report CNES [![Build Status](https://travis-ci.org/lequal/sonar-cnes-report.svg?branch=master)](https://travis-ci.org/lequal/sonar-cnes-report) [![Quality Gate](https://sonarcloud.io/api/badges/gate?key=fr.cnes.sonar.report%3Asonar-cnes-report)](https://sonarcloud.io/dashboard?id=fr.cnes.sonar.report%3Asonar-cnes-report)
+# Sonar Report CNES [![Build Status](https://travis-ci.org/lequal/sonar-cnes-report.svg?branch=master)](https://travis-ci.org/lequal/sonar-cnes-report) [![Quality Gate](https://sonarcloud.io/api/badges/gate?key=fr.cnes.sonar%3Asonar-cnes-report)](https://sonarcloud.io/dashboard?id=fr.cnes.sonar%3Asonar-cnes-report)
 SonarQube is an open platform to manage code quality. This program can export code analysis from a SonarQube server as a docx file, xlsx file and text files.
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
