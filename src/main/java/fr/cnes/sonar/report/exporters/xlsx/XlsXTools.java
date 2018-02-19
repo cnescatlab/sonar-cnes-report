@@ -206,7 +206,7 @@ public final class XlsXTools {
         final XSSFTable selectedTable = findTableByName(selectedSheet, selectedTableName);
 
         // check that the table exists
-        if(null!=selectedTable) {
+        if(null!=selectedTable && !issues.isEmpty()) {
             // get CTTable object
             final CTTable cttable = selectedTable.getCTTable();
 
