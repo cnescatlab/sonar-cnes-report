@@ -6,7 +6,7 @@ This program is free software; you can redistribute it and/or modify it under th
 ### Quickstart
 - Setup a SonarQube instance
 - Run an analysis
-- Execute th program in command line
+- Execute the program in command line
 
 #### Example
 ````
