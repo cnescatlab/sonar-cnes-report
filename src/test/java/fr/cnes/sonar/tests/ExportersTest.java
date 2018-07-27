@@ -42,7 +42,7 @@ public class ExportersTest extends CommonTest {
     public void docxExportTest() throws Exception {
         final DocXExporter de = new DocXExporter();
 
-        de.export(report, params, TARGET, "test.docx");
+        de.export(report, TARGET+"/test.docx", params.get("report.template"));
     }
 
     /**
@@ -54,7 +54,7 @@ public class ExportersTest extends CommonTest {
     public void xlsxExportTest() throws Exception {
         final XlsXExporter xe = new XlsXExporter();
 
-        xe.export(report, params, TARGET, "test.xlsx");
+        xe.export(report, TARGET+"/test.xlsx", params.get("issues.template"));
     }
 
     /**
@@ -66,7 +66,7 @@ public class ExportersTest extends CommonTest {
     public void jsonExportTest() throws Exception {
         final JsonExporter je = new JsonExporter();
 
-        je.export("{field:'value'}", params, TARGET, "test.xml");
+        je.export("{field:'value'}", TARGET, "test.xml");
     }
 
     /**
@@ -78,7 +78,7 @@ public class ExportersTest extends CommonTest {
     public void xmlExportTest() throws Exception {
         final XmlExporter xe = new XmlExporter();
 
-        xe.export("<tag>value</tag>", params, TARGET, "test.json");
+        xe.export("<tag>value</tag>", TARGET, "test.json");
     }
 
     /**
@@ -90,7 +90,7 @@ public class ExportersTest extends CommonTest {
     public void docxExportBadDataTest() throws Exception {
         final DocXExporter de = new DocXExporter();
 
-        de.export(1, params, TARGET, "test.docx");
+        de.export(1, TARGET+"/test.docx", params.get("report.template"));
     }
 
     /**
@@ -102,7 +102,7 @@ public class ExportersTest extends CommonTest {
     public void xlsxExportBadDataTest() throws Exception {
         final XlsXExporter xe = new XlsXExporter();
 
-        xe.export(2, params, TARGET, "test.xlsx");
+        xe.export(2, TARGET+"/test.xlsx", params.get("issues.template"));
     }
 
     /**
@@ -114,7 +114,7 @@ public class ExportersTest extends CommonTest {
     public void jsonExportBadDataTest() throws Exception {
         final JsonExporter je = new JsonExporter();
 
-        je.export(3, params, TARGET, "test.xml");
+        je.export(3, TARGET, "test.xml");
     }
 
     /**
@@ -126,7 +126,7 @@ public class ExportersTest extends CommonTest {
     public void xmlExportBadDataTest() throws Exception {
         final XmlExporter xe = new XmlExporter();
 
-        xe.export(4, params, TARGET, "test.json");
+        xe.export(4, TARGET, "test.json");
     }
 
 }
