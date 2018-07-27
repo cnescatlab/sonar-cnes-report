@@ -7,7 +7,7 @@
     <groupId>fr.cnes.sonar</groupId>
     <artifactId>sonar-cnes-report</artifactId>
     <packaging>sonar-plugin</packaging>
-    <version>2.0</version>
+    <version>1.2.0</version>
 
     <name>SonarQube CNES Report App</name>
     <description>CNES app for SonarQube that allows users to export analysis reports as OpenXML.</description>
