@@ -18,8 +18,6 @@
 package fr.cnes.sonar.report.exporters;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
-import fr.cnes.sonar.report.exceptions.UnknownParameterException;
-import fr.cnes.sonar.report.input.Params;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -33,16 +31,15 @@ public class XmlExporter implements IExporter {
     /**
      * Overridden export for xml
      * @param data Data to export as String
-     * @param params Program's parameters
      * @param path Path where to export the file
      * @param filename Name of the file to export
+     * @return Generated file.
      * @throws BadExportationDataTypeException resources format is incorrect
-     * @throws UnknownParameterException report.path is not set
      * @throws IOException ...
      */
     @Override
-    public void export(Object data, Params params, String path, String filename)
-            throws BadExportationDataTypeException, UnknownParameterException, IOException {
+    public File export(final Object data, final String path, final String filename)
+            throws BadExportationDataTypeException, IOException {
 
         // check if the resources format is correct
         if(!(data instanceof String)) {
@@ -63,5 +60,6 @@ public class XmlExporter implements IExporter {
             fileWriter.write(string);
         }
 
+        return xmlFile;
     }
 }

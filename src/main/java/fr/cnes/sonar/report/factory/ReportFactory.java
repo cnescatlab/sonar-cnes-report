@@ -18,11 +18,8 @@
 package fr.cnes.sonar.report.factory;
 
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
-import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
-import fr.cnes.sonar.report.input.StringManager;
 import fr.cnes.sonar.report.model.Report;
-import fr.cnes.sonar.report.input.Params;
 import fr.cnes.sonar.report.providers.*;
 
 import java.io.IOException;
@@ -34,50 +31,65 @@ import java.io.IOException;
 public class ReportFactory {
 
     /**
-     * Program's parameters
+     * Url of the SonarQube server.
      */
-    private Params params;
+    private String url;
+    /**
+     * Token of the SonarQube user.
+     */
+    private String token;
+    /**
+     * Id of the project to report.
+     */
+    private String project;
+    /**
+     * Author of the project to report.
+     */
+    private String author;
+    /**
+     * Date of the reporting.
+     */
+    private String date;
 
     /**
      * Complete constructor
-     * @param pParams Program's parameters
+     * @param pUrl Value for url.
+     * @param pToken Value for token.
+     * @param pProject Value for project id.
+     * @param pAuthor Name of the author.
+     * @param pDate Date of the reporting.
      */
-    public ReportFactory(final Params pParams) {
-        this.params = pParams;
+    public ReportFactory(final String pUrl, final String pToken, final String pProject, final String pAuthor, final String pDate) {
+        this.url = pUrl;
+        this.token = pToken;
+        this.project = pProject;
+        this.author = pAuthor;
+        this.date = pDate;
     }
 
     /**
      * Create a report from program resources
      * @return A complete report resources model
-     * @throws UnknownParameterException a specified parameter does not exist
      * @throws IOException on json problem
      * @throws BadSonarQubeRequestException when a request to the server is not well-formed
      * @throws UnknownQualityGateException a quality gate is not correct
      */
-    public Report create()
-            throws UnknownParameterException, IOException,
-            BadSonarQubeRequestException, UnknownQualityGateException {
+    public Report create() throws IOException, BadSonarQubeRequestException, UnknownQualityGateException {
         // the new report to return
         final Report report = new Report();
 
         // instantiation of providers
-        final IssuesProvider issuesProvider =
-                new IssuesProvider(params, RequestManager.getInstance());
-        final MeasureProvider measureProvider =
-                new MeasureProvider(params, RequestManager.getInstance());
-        final ProjectProvider projectProvider =
-                new ProjectProvider(params, RequestManager.getInstance());
-        final QualityProfileProvider qualityProfileProvider =
-                new QualityProfileProvider(params, RequestManager.getInstance());
-        final QualityGateProvider qualityGateProvider =
-                new QualityGateProvider(params, RequestManager.getInstance());
-        final LanguageProvider languageProvider =
-                new LanguageProvider(params, RequestManager.getInstance());
+        final IssuesProvider issuesProvider = new IssuesProvider(this.url, this.token, this.project);
+        final MeasureProvider measureProvider = new MeasureProvider(this.url, this.token, this.project);
+        final ProjectProvider projectProvider = new ProjectProvider(this.url, this.token, this.project);
+        final QualityProfileProvider qualityProfileProvider = new QualityProfileProvider(this.url, this.token, this.project);
+        final QualityGateProvider qualityGateProvider = new QualityGateProvider(this.url, this.token, this.project);
+        final LanguageProvider languageProvider = new LanguageProvider(this.url, this.token, this.project);
 
         // author's setting
-        report.setProjectAuthor(params.get(StringManager.REPORT_AUTHOR));
+        report.setProjectAuthor(author);
         // date setting
-        report.setProjectDate(params.get(StringManager.REPORT_DATE));
+        report.setProjectDate(date);
         // measures's setting
         report.setMeasures(measureProvider.getMeasures());
         // set report basic data

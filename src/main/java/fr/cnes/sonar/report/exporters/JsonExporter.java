@@ -18,8 +18,6 @@
 package fr.cnes.sonar.report.exporters;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
-import fr.cnes.sonar.report.exceptions.UnknownParameterException;
-import fr.cnes.sonar.report.input.Params;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -33,16 +31,15 @@ public class JsonExporter implements IExporter {
     /**
      * Overridden export for json
      * @param data Data to export as String
-     * @param params Program's parameters
      * @param path Path where to export the file
      * @param filename Name of the file to export
+     * @return Generated file.
      * @throws BadExportationDataTypeException resources is not a String
-     * @throws UnknownParameterException When report path is not set
      * @throws IOException ...
      */
     @Override
-    public void export(Object data, Params params, String path, String filename)
-            throws BadExportationDataTypeException, UnknownParameterException, IOException {
+    public File export(final Object data, final String path, final String filename)
+            throws BadExportationDataTypeException, IOException {
 
         // check if the resources format is correct
         if(!(data instanceof String)) {
@@ -62,5 +59,7 @@ public class JsonExporter implements IExporter {
             // false to overwrite.
             fileWriter.write(string);
         }
+
+        return jsonFile;
     }
 }

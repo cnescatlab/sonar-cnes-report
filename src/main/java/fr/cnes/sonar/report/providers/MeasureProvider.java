@@ -20,9 +20,7 @@ package fr.cnes.sonar.report.providers;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
-import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.model.Measure;
-import fr.cnes.sonar.report.input.Params;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,13 +35,12 @@ public class MeasureProvider extends AbstractDataProvider {
 
     /**
      * Complete constructor
-     * @param params Program's parameters
-     * @param singleton RequestManager which does http request
-     * @throws UnknownParameterException The program does not recognize the parameter
+     * @param url String representing the server address.
+     * @param token String representing the user token.
+     * @param project The id of the project to report.
      */
-    public MeasureProvider(Params params, RequestManager singleton)
-            throws UnknownParameterException {
-        super(params, singleton);
+    public MeasureProvider(final String url, final String token, final String project) {
+        super(url, token, project);
     }
 
     /**
