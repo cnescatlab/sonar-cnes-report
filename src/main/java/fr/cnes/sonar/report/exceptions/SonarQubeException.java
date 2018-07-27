@@ -15,11 +15,18 @@
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Page definition's package for the plugin.
- * Contains classes to declare web pages.
- * @author lequal
- * @version 2.0
- */
+package fr.cnes.sonar.report.exceptions;
 
-package fr.cnes.sonar.report.plugin.web;
+/**
+ * Thrown when an error occurred when contacting SonarQube
+ */
+public class SonarQubeException extends Exception {
+
+    /**
+     * Constructor
+     * @param message the text to print (exception's details)
+     */
+    public SonarQubeException(final String message) {
+        super(message);
+    }
+}

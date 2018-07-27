@@ -26,7 +26,6 @@ import java.io.IOException;
 
 /**
  * Generic interface for results' exporters
- * @author lequal
  */
 @FunctionalInterface
 public interface IExporter {

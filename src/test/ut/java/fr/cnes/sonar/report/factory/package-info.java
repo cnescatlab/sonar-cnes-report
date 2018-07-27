@@ -16,10 +16,9 @@
  */
 
 /**
- * Tasks' package for the plugin.
- * Contains classes executing tasks when the web api is called.
- * @author lequal
- * @version 2.0
+ * Test package for the cnesreport app.
+ * Contains plugin's unit report.
+ * @version 2.0.0
  */
 
-package fr.cnes.sonar.report.plugin.tasks;
+package fr.cnes.sonar.report.factory;

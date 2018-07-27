@@ -21,7 +21,6 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * Contain all profile
- * @author lequal
  */
 public class ProfileMetaData {
     /**

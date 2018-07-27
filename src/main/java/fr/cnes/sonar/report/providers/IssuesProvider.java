@@ -19,12 +19,13 @@ package fr.cnes.sonar.report.providers;
 
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
-import fr.cnes.sonar.report.utils.StringManager;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Facet;
 import fr.cnes.sonar.report.model.Issue;
 import fr.cnes.sonar.report.model.Rule;
+import fr.cnes.sonar.report.model.SonarQubeServer;
+import fr.cnes.sonar.report.utils.StringManager;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +33,6 @@ import java.util.Map;
 
 /**
  * Provides issue items
- * @author lequal
  */
 public class IssuesProvider extends AbstractDataProvider {
 
@@ -51,34 +51,34 @@ public class IssuesProvider extends AbstractDataProvider {
     private static final String UNCONFIRMED = "true";
 
     /**
-     * Complete constructor
-     * @param url String representing the server address.
-     * @param token String representing the user token.
-     * @param project The id of the project to report.
+     * Complete constructor.
+     * @param pServer SonarQube server.
+     * @param pToken String representing the user token.
+     * @param pProject The id of the project to report.
      */
-    public IssuesProvider(final String url, final String token, final String project) {
-        super(url, token, project);
+    public IssuesProvider(final SonarQubeServer pServer, final String pToken, final String pProject) {
+        super(pServer, pToken, pProject);
     }
 
     /**
      * Get all the real issues of a project
      * @return Array containing all the issues
-     * @throws IOException when connecting the server
      * @throws BadSonarQubeRequestException A request is not recognized by the server
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
     public List<Issue> getIssues()
-            throws IOException, BadSonarQubeRequestException {
+            throws BadSonarQubeRequestException, SonarQubeException {
         return getIssuesByStatus(CONFIRMED);
     }
 
     /**
      * Get all the unconfirmed issues of a project
      * @return Array containing all the issues
-     * @throws IOException when connecting the server
      * @throws BadSonarQubeRequestException A request is not recognized by the server
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
     public List<Issue> getUnconfirmedIssues()
-            throws IOException, BadSonarQubeRequestException {
+            throws BadSonarQubeRequestException, SonarQubeException {
         return getIssuesByStatus(UNCONFIRMED);
     }
 
@@ -86,11 +86,11 @@ public class IssuesProvider extends AbstractDataProvider {
      * Get issues depending on their resolved status
      * @param confirmed equals "true" if Unconfirmed and "false" if confirmed
      * @return List containing all the issues
-     * @throws IOException when connecting the server
      * @throws BadSonarQubeRequestException A request is not recognized by the server
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
     private List<Issue> getIssuesByStatus(String confirmed)
-            throws IOException, BadSonarQubeRequestException {
+            throws BadSonarQubeRequestException, SonarQubeException {
         // results variable
         final List<Issue> res = new ArrayList<>();
 
@@ -109,9 +109,9 @@ public class IssuesProvider extends AbstractDataProvider {
         while(goOn) {
             // get maximum number of results per page
             final int maxPerPage = Integer.parseInt(getRequest(MAX_PER_PAGE_SONARQUBE));
-            // prepare the url to get all the issues
+            // prepare the server to get all the issues
             final String request = String.format(getRequest(GET_ISSUES_REQUEST),
-                    getUrl(), getProjectKey(), maxPerPage, page, confirmed);
+                    getServer().getUrl(), getProjectKey(), maxPerPage, page, confirmed);
             // perform the request to the server
             final JsonObject jo = request(request);
             // transform json to Issue and Rule objects
@@ -183,20 +183,20 @@ public class IssuesProvider extends AbstractDataProvider {
 
         // for each issue we associate the corresponding programming language
         // by browsing the rules array
-        for(int i = 0 ; i < issues.length ; i++) {
-            rulesKey = issues[i].getRule();
+        for (Issue issue : issues) {
+            rulesKey = issue.getRule();
             rulesLanguage = findLanguageOf(rulesKey, rules);
-            issues[i].setLanguage(rulesLanguage);
+            issue.setLanguage(rulesLanguage);
         }
     }
 
     /**
      * Get all the issues of a project in a raw format (map)
      * @return Array containing all the issues as maps
-     * @throws IOException when connecting the server
      * @throws BadSonarQubeRequestException A request is not recognized by the server
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
-    public List<Map> getRawIssues() throws IOException, BadSonarQubeRequestException {
+    public List<Map> getRawIssues() throws BadSonarQubeRequestException, SonarQubeException {
         // results variable
         final List<Map> res = new ArrayList<>();
 
@@ -211,9 +211,9 @@ public class IssuesProvider extends AbstractDataProvider {
         while(goon) {
             // get maximum number of results per page
             final int maxPerPage = Integer.parseInt(getRequest(MAX_PER_PAGE_SONARQUBE));
-            // prepare the url to get all the issues
+            // prepare the server to get all the issues
             final String request = String.format(getRequest(GET_ISSUES_REQUEST),
-                    getUrl(), getProjectKey(), maxPerPage, page, CONFIRMED);
+                    getServer().getUrl(), getProjectKey(), maxPerPage, page, CONFIRMED);
             // perform the request to the server
             final JsonObject jo = request(request);
             // transform json to Issue objects
@@ -245,23 +245,20 @@ public class IssuesProvider extends AbstractDataProvider {
     /**
      * Get all the stats on a project
      * @return A list of facets
-     * @throws IOException on resources processing error
      * @throws BadSonarQubeRequestException A request is not recognized by the server
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
-    public List<Facet> getFacets() throws IOException, BadSonarQubeRequestException {
-        // results variable
-        final List<Facet> res = new ArrayList<>();
+    public List<Facet> getFacets() throws BadSonarQubeRequestException, SonarQubeException {
 
         // prepare the request
         final String request = String.format(getRequest(GET_FACETS_REQUEST),
-                getUrl(), getProjectKey());
+                getServer().getUrl(), getProjectKey());
         // contact the server to request the resources as json
         final JsonObject jo = request(request);
         // put wanted resources in facets array and list
         final Facet [] tmp = (getGson().fromJson(jo.get(FACETS), Facet[].class));
-        res.addAll(Arrays.asList(tmp));
 
         // return list of facets
-        return res;
+        return new ArrayList<>(Arrays.asList(tmp));
     }
 }

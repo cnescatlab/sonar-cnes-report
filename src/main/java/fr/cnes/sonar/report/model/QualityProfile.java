@@ -21,7 +21,6 @@ import java.util.Iterator;
 
 /**
  * Contain all Quality Profile's details
- * @author lequal
  */
 public class QualityProfile {
     /**
