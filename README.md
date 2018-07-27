@@ -1,6 +1,6 @@
-# Sonar CNES Report
+# Sonar Report CNES 
 [![Build Status](https://travis-ci.org/lequal/sonar-cnes-report.svg?branch=master)](https://travis-ci.org/lequal/sonar-cnes-report)
-![SonarQube Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonar%3Asonar-cnes-report&metric=alert_status)
+![SonarQube Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonarqube.plugins%3Asonar-icode-cnes-plugin&metric=alert_status)
 ![SonarQube Bugs](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonar%3Asonar-cnes-report&metric=bugs)
 ![SonarQube Coverage](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonar%3Asonar-cnes-report&metric=coverage)
 ![SonarQube Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonar%3Asonar-cnes-report&metric=sqale_index)
@@ -16,7 +16,7 @@ This program is free software; you can redistribute it and/or modify it under th
 
 #### Example
 ````
-java -jar sonar-cnes-report.jar --sonar.token xuixgehubezxbefuiez87fre987 --sonar.url http://sonarqube:9000 --sonar.project.id my-project-id --report.template ./template.docx --report.locale fr_FR
+java -jar sonar-report-cnes.jar --sonar.token xuixgehubezxbefuiez87fre987 --sonar.url http://sonarqube:9000 --sonar.project.id my-project-id --report.template ./template.docx --report.locale fr_FR
 ````
 
 ### Features
