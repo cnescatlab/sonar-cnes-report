@@ -1,15 +1,16 @@
 package fr.cnes.sonar.report.exporters.xlsx;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
-import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.exporters.IExporter;
-import fr.cnes.sonar.report.input.Params;
 import fr.cnes.sonar.report.model.Report;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Exports the report in .docx format
@@ -30,14 +31,6 @@ public class XlsXExporter implements IExporter {
      */
     private static final String ALL_DETAILS_SHEET_NAME = "All";
     /**
-     *  Name of the property for the path of the issues template
-     */
-    private static final String ISSUES_TEMPLATE = "issues.template";
-    /**
-     *  Name of the property for the path of the report output folder
-     */
-    private static final String REPORT_PATH = "report.path";
-    /**
      * Name for the table containing selected resources
      */
     private static final String SELECTED_TABLE_NAME = "selected";
@@ -53,16 +46,15 @@ public class XlsXExporter implements IExporter {
     /**
      * Overridden export for XlsX
      * @param data Data to export as Report
-     * @param params Program's parameters
      * @param path Path where to export the file
-     * @param filename Name of the file to export
+     * @param filename Name of the template file
+     * @return Generated file.
      * @throws BadExportationDataTypeException ...
-     * @throws UnknownParameterException report.path is not set
      * @throws IOException when reading a file
      */
     @Override
-    public void export(Object data, Params params, String path, String filename)
-            throws BadExportationDataTypeException, UnknownParameterException, IOException {
+    public File export(Object data, String path, String filename)
+            throws BadExportationDataTypeException, IOException {
         // check resources type
         if(!(data instanceof Report)) {
             throw new BadExportationDataTypeException();
@@ -71,10 +63,10 @@ public class XlsXExporter implements IExporter {
         final Report report = (Report) data;
 
         // set output filename
-        final String outputFilePath = params.get(REPORT_PATH)+"/"+filename;
+        final String outputFilePath = path;
 
         // open excel file from the path given in the parameters
-        final File file = new File(params.get(ISSUES_TEMPLATE));
+        final File file = new File(filename);
 
         // open the template
         try(
@@ -103,6 +95,8 @@ public class XlsXExporter implements IExporter {
             // write output as file
             workbook.write(fileOut);
         }
+
+        return new File(outputFilePath);
     }
 
 }

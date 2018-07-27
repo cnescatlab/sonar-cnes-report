@@ -18,11 +18,11 @@
 package fr.cnes.sonar.report.exporters;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
+import fr.cnes.sonar.report.utils.ParamsFactory;
 import fr.cnes.sonar.report.model.Issue;
 import fr.cnes.sonar.report.model.Report;
-import fr.cnes.sonar.report.input.Params;
-import fr.cnes.sonar.report.input.ParamsFactory;
 
+import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -40,13 +40,13 @@ public class ConsoleExporter implements IExporter {
     /**
      * Overridden export for console
      * @param data Data to export as report
-     * @param params Program's parameters
      * @param path Path where to export the file
      * @param filename Name of the file to export
+     * @return null: no file is generated
      * @throws BadExportationDataTypeException resources is not a Report
      */
     @Override
-    public void export(Object data, Params params, String path, String filename)
+    public File export(Object data, String path, String filename)
             throws BadExportationDataTypeException {
         // check resources type
         if(!(data instanceof Report)) {
@@ -65,5 +65,6 @@ public class ConsoleExporter implements IExporter {
         }
         // log number of issues
         LOGGER.info("Nombre total de violations : " + issues.size());
+        return null;
     }
 }

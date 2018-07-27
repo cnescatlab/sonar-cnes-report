@@ -18,7 +18,7 @@
 package fr.cnes.sonar.report.model;
 
 import com.google.gson.annotations.SerializedName;
-import fr.cnes.sonar.report.input.StringManager;
+import fr.cnes.sonar.report.utils.StringManager;
 
 /**
  * Contain all Quality Gate's details
