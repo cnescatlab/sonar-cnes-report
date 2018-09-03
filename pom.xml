@@ -6,9 +6,33 @@
 
     <groupId>fr.cnes.sonar</groupId>
     <artifactId>sonar-cnes-report</artifactId>
-    <version>1.0</version>
+    <version>1.2.1</version>
+
+    <name>SonarQube CNES Report App</name>
+    <description>CNES app for SonarQube that allows users to export analysis reports as OpenXML.</description>
+    <organization>
+        <name>CNES</name>
+        <url>https://cnes.fr/</url>
+    </organization>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/lequal/sonar-cnes-report/issues</url>
+    </issueManagement>
+    <ciManagement>
+        <system>Travis-CI</system>
+        <url>https://travis-ci.org/lequal/sonar-cnes-report</url>
+    </ciManagement>
+    <scm>
+        <url>https://github.com/lequal/sonar-cnes-report</url>
+    </scm>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sonar.apiVersion>6.7.1</sonar.apiVersion>
+        <sonar.sslr-squid-bridge.version>2.6.1</sonar.sslr-squid-bridge.version>
+        <jdk.min.version>1.8</jdk.min.version>
+        <pluginUrl>https://cnes.fr</pluginUrl>
+        <pluginOrganizationName>CNES</pluginOrganizationName>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <jacoco.version>0.7.9</jacoco.version>
@@ -33,40 +57,82 @@
     </developers>
 
     <dependencies>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.5</version>
         </dependency>
         <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.0</version>
+            <groupId>org.sonarsource.sonarqube</groupId>
+            <artifactId>sonar-plugin-api</artifactId>
+            <version>${sonar.apiVersion}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
+            <groupId>org.sonarsource.sonarqube</groupId>
+            <artifactId>sonar-ws</artifactId>
+            <version>${sonar.apiVersion}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>3.17</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>ooxml-schemas</artifactId>
-            <version>1.3</version>
-        </dependency>
-        <dependency>
+            <!-- network use -->
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.2</version>
         </dependency>
         <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>2.8.47</version>
+            <!-- packaged with the plugin -->
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
+        <dependency>
+            <!-- packaged with the plugin -->
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>LATEST</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <!-- json parsing -->
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <!-- openxml generation -->
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.15</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <!-- openxml generation -->
+            <groupId>org.apache.poi</groupId>
+            <artifactId>ooxml-schemas</artifactId>
+            <version>1.3</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- unit tests -->
+        <dependency>
+            <groupId>org.sonarsource.sonarqube</groupId>
+            <artifactId>sonar-testing-harness</artifactId>
+            <version>${sonar.apiVersion}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.sonar</groupId>
+            <artifactId>sonar-testing-harness</artifactId>
+            <version>4.2</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -83,7 +149,7 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    <finalName>sonar-report-cnes</finalName>
+                    <finalName>sonar-cnes-report</finalName>
                     <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
                 <executions>

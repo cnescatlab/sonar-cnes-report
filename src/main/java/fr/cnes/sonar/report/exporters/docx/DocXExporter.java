@@ -18,10 +18,8 @@
 package fr.cnes.sonar.report.exporters.docx;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
-import fr.cnes.sonar.report.exceptions.UnknownParameterException;
 import fr.cnes.sonar.report.exporters.IExporter;
-import fr.cnes.sonar.report.input.Params;
-import fr.cnes.sonar.report.input.StringManager;
+import fr.cnes.sonar.report.utils.StringManager;
 import fr.cnes.sonar.report.model.Report;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
@@ -44,10 +42,6 @@ import java.util.Map;
 public class DocXExporter implements IExporter {
 
     /**
-     *  Name of the property containing the destination path of the report
-     */
-    private static final String REPORT_TEMPLATE = "report.template";
-    /**
      * Placeholder for the table containing detailed issues
      */
     private static final String DETAILS_TABLE_PLACEHOLDER = "$ISSUES_DETAILS";
@@ -59,14 +53,6 @@ public class DocXExporter implements IExporter {
      * Placeholder for the table containing counts of issues by type and severity
      */
     private static final String VOLUME_TABLE_PLACEHOLDER = "$VOLUME";
-    /**
-     * Just a slash
-     */
-    private static final String SLASH = "/";
-    /**
-     * Name of the property giving the path to the report
-     */
-    private static final String REPORT_PATH_PROPERTY_KEY = "report.path";
     /**
      * Name of the property giving the path header's number
      */
@@ -96,19 +82,17 @@ public class DocXExporter implements IExporter {
     /**
      * Overridden export for docX
      * @param data Data to export as Report
-     * @param params Program's parameters
      * @param path Path where to export the file
-     * @param filename Name of the file to export
+     * @param filename Name of the template file
+     * @return Exported file.
      * @throws BadExportationDataTypeException Data has not the good type
-     * @throws UnknownParameterException report.path is not set
      * @throws OpenXML4JException ...
      * @throws IOException ...
      * @throws XmlException ...
      */
     @Override
-    public void export(Object data, Params params, String path, String filename)
-            throws BadExportationDataTypeException, UnknownParameterException,
-            OpenXML4JException, IOException, XmlException {
+    public File export(Object data, String path, String filename)
+            throws BadExportationDataTypeException, OpenXML4JException, IOException, XmlException {
         // check resources type
         if (!(data instanceof Report)) {
             throw new BadExportationDataTypeException();
@@ -117,7 +101,7 @@ public class DocXExporter implements IExporter {
         final Report report = (Report) data;
 
         // open excel file from the path given in the parameters
-        final File file = new File(params.get(REPORT_TEMPLATE));
+        final File file = new File(filename);
         try (
             FileInputStream fileInputStream = new FileInputStream(file);
             OPCPackage opcPackage = OPCPackage.open(fileInputStream);
@@ -125,7 +109,7 @@ public class DocXExporter implements IExporter {
         ) {
 
             // Fill charts
-            DocXTools.fillCharts(opcPackage, document,report.getFacets());
+            DocXTools.fillCharts(opcPackage, document, report.getFacets());
 
             // Add issues
             final List<List<String>> issues = DataAdapter.getIssues(report);
@@ -152,13 +136,14 @@ public class DocXExporter implements IExporter {
             DocXTools.replacePlaceholder(document, replacementValues);
 
             // Save the result by creating a new file in the directory given by report.path property
-            final String outputName = params.get(REPORT_PATH_PROPERTY_KEY) + SLASH + filename;
-            final FileOutputStream out = new FileOutputStream(outputName);
+            final FileOutputStream out = new FileOutputStream(path);
             // close open resources
             document.write(out);
             out.close();
             document.close();
         }
+
+        return new File(path);
     }
 
 

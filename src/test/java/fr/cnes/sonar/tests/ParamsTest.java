@@ -18,8 +18,8 @@ package fr.cnes.sonar.tests;/*
 import fr.cnes.sonar.report.exceptions.MalformedParameterException;
 import fr.cnes.sonar.report.exceptions.MissingParameterException;
 import fr.cnes.sonar.report.exceptions.UnknownParameterException;
-import fr.cnes.sonar.report.input.Params;
-import fr.cnes.sonar.report.input.ParamsFactory;
+import fr.cnes.sonar.report.utils.Params;
+import fr.cnes.sonar.report.utils.ParamsFactory;
 import org.junit.Test;
 
 /**

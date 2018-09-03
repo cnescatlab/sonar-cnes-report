@@ -15,7 +15,7 @@ package fr.cnes.sonar.tests;/*
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import fr.cnes.sonar.report.input.StringManager;
+import fr.cnes.sonar.report.utils.StringManager;
 import org.junit.Test;
 
 import java.util.MissingResourceException;

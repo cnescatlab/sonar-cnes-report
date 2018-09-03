@@ -1,0 +1,54 @@
+<!--
+	This file is part of cnesreport.
+
+	cnesreport is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	cnesreport is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<div id="bd" class="page-wrapper-simple">
+    <div id="nonav" class="page-simple" style="width:100%; margin-left: 10%; margin-right: 10%;">
+        <div>
+            <h1 class="maintenance-title text-center">Generate a report</h1>
+            <form id="generation-form">
+                <div class="big-spacer-bottom">
+                    <label for="key" id="keyLabel" class="login-label" style="display: block;"><strong>Project key</strong></label>
+                    <select id="key"
+                            name="key"
+                            class="login-input" required></select>
+                    <em style="color:grey;">
+                        Tips: all projects are available <a href="../../../projects" target="_blank">here</a>.
+                    </em>
+                </div>
+                <div class="big-spacer-bottom">
+                    <label for="author" id="authorLabel" class="login-label" style="display: block;">Author</label>
+                    <input   type="text"
+                             id="author"
+                             name="author"
+                             class="login-input"
+                             maxlength="255"
+                             required
+                             placeholder="Report's author">
+                    <em style="color:grey;">Default value: default</em>
+                </div>
+                <div class="big-spacer-bottom">
+                    <div id="loading" class="text-center overflow-hidden" style="margin-bottom: 1em; display: none;">
+                        <img src="../../static/cnesreport/images/loader.gif" alt="Working..."/>
+                    </div>
+                    <div class="text-center overflow-hidden">
+                        <input id="generation" name="generation" type="button" value="Generate">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
