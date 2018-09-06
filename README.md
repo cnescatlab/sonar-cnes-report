@@ -16,7 +16,7 @@ This program is free software; you can redistribute it and/or modify it under th
 
 #### Example
 ````
-java -jar sonar-report-cnes.jar --sonar.token xuixgehubezxbefuiez87fre987 --sonar.url http://sonarqube:9000 --sonar.project.id my-project-id --report.template ./template.docx --report.locale fr_FR
+java -jar sonar-cnes-report.jar --sonar.token xuixgehubezxbefuiez87fre987 --sonar.url http://sonarqube:9000 --sonar.project.id my-project-id --report.template ./template.docx --report.locale fr_FR
 ````
 
 ### Features
