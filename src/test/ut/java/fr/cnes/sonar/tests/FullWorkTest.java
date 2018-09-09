@@ -54,7 +54,7 @@
 //
 //        try {
 //            // extract params
-//            final String url = params.get("sonar.url");
+//            final String server = params.get("sonar.server");
 //            final String token = params.get("sonar.token");
 //            final String project = params.get("sonar.project.id");
 //            final String author = params.get("report.author");
@@ -64,7 +64,7 @@
 //            final String issuesTemplate = params.get(StringManager.ISSUES_TEMPLATE);
 //
 //            // generate report
-//            ReportCommandLine.report(url, token, project, author, date, reportPath, reportTemplate, issuesTemplate);
+//            ReportCommandLine.report(server, token, project, author, date, reportPath, reportTemplate, issuesTemplate);
 //        } catch (BadExportationDataTypeException | BadSonarQubeRequestException | IOException |
 //                UnknownParameterException | UnknownQualityGateException | OpenXML4JException |
 //                XmlException e) {

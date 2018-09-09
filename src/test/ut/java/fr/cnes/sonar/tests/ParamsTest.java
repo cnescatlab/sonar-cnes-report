@@ -39,7 +39,7 @@ public class ParamsTest {
      */
     @Test
     public void paramsCreationTest() throws Exception {
-        final String [] args = {SONAR_PROJECT_ID, "bob", "--sonar.url", "alice"};
+        final String [] args = {SONAR_PROJECT_ID, "bob", "--sonar.server", "alice"};
 
         final ParamsFactory paramsFactory = new ParamsFactory();
 
@@ -86,7 +86,7 @@ public class ParamsTest {
      */
     @Test(expected = UnknownParameterException.class)
     public void paramsCreationMissingValueParameterTest() throws Exception {
-        final String [] args = {SONAR_PROJECT_ID, "bob", "--sonar.url"};
+        final String [] args = {SONAR_PROJECT_ID, "bob", "--sonar.server"};
 
         final ParamsFactory paramsFactory = new ParamsFactory();
 

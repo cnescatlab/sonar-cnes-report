@@ -19,9 +19,10 @@ package fr.cnes.sonar.report.providers;
 
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
-import fr.cnes.sonar.report.utils.StringManager;
 import fr.cnes.sonar.report.model.ProfileMetaData;
 import fr.cnes.sonar.report.model.Project;
+import fr.cnes.sonar.report.model.SonarQubeServer;
+import fr.cnes.sonar.report.utils.StringManager;
 
 import java.io.IOException;
 
@@ -37,34 +38,45 @@ public class ProjectProvider extends AbstractDataProvider {
     private LanguageProvider languageProvider;
 
     /**
-     * Complete constructor
-     * @param url String representing the server address.
-     * @param token String representing the user token.
-     * @param project The id of the project to report.
+     * Complete constructor.
+     * @param pServer SonarQube server..
+     * @param pToken String representing the user token.
+     * @param pProject The id of the project to report.
      */
-    public ProjectProvider(final String url, final String token, final String project) {
-        super(url, token, project);
-        languageProvider = new LanguageProvider(url, token, project);
+    public ProjectProvider(final SonarQubeServer pServer, final String pToken, final String pProject) {
+        super(pServer, pToken, pProject);
+        languageProvider = new LanguageProvider(pServer, pToken, pProject);
     }
 
     /**
-     * Get the project corresponding to the given key
-     * @param projectKey the key of the project
-     * @return A simple project
-     * @throws IOException when contacting the server
-     * @throws BadSonarQubeRequestException when the server does not understand the request
+     * Get the project corresponding to the given key.
+     * @param projectKey the key of the project.
+     * @return A simple project.
+     * @throws IOException when contacting the server.
+     * @throws BadSonarQubeRequestException when the server does not understand the request.
      */
-    public Project getProject(String projectKey) throws IOException, BadSonarQubeRequestException {
+    public Project getProject(final String projectKey) throws IOException, BadSonarQubeRequestException {
         // send a request to sonarqube server and return th response as a json object
         // if there is an error on server side this method throws an exception
-        final JsonObject jo = request(String.format(getRequest(GET_PROJECT_REQUEST),
-                getUrl(), projectKey));
+        JsonObject jo = request(String.format(getRequest(GET_PROJECT_REQUEST),
+                getServer().getUrl(), projectKey));
 
         // put json in a Project class
         final Project project = (getGson().fromJson(jo, Project.class));
+        ProfileMetaData[] metaData;
 
-        // set language's name for profiles
-        final ProfileMetaData[] metaData = project.getQualityProfiles();
+        if(server.getNormalizedVersion().matches("5.*")) {
+            // retrieve quality profiles for SQ 5.X versions
+            jo = request(String.format(getRequest(GET_PROJECT_QUALITY_PROFILES_REQUEST),
+                    getServer().getUrl(), projectKey));
+            // set language's name for profiles
+            metaData = (getGson().fromJson(jo.getAsJsonArray(PROFILES), ProfileMetaData[].class));
+            project.setQualityProfiles(metaData);
+        } else {
+            // set language's name for profiles
+            metaData = project.getQualityProfiles();
+        }
+
         String languageName;
         for(ProfileMetaData it : metaData){
             languageName = languageProvider.getLanguage(it.getLanguage());
@@ -82,5 +94,24 @@ public class ProjectProvider extends AbstractDataProvider {
         }
 
         return project;
+    }
+
+    /**
+     * Check if a project exists on a SonarQube instance.
+     * @param projectKey the key of the project.
+     * @return True if the project exists.
+     * @throws IOException when contacting the server.
+     * @throws BadSonarQubeRequestException when the server does not understand the request.
+     */
+    public boolean hasProject(final String projectKey) throws IOException, BadSonarQubeRequestException {
+        // send a request to sonarqube server and return th response as a json object
+        // if there is an error on server side this method throws an exception
+        final JsonObject jsonObject = request(String.format(getRequest(GET_PROJECT_REQUEST),
+                getServer().getUrl(), projectKey));
+
+        // Retrieve project key if the project exists or null.
+        final String project = jsonObject.get("key").getAsString();
+
+        return project != null && project.equals(projectKey);
     }
 }

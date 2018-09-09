@@ -17,8 +17,8 @@
 
 package fr.cnes.sonar.report.exporters.docx;
 
-import fr.cnes.sonar.report.utils.StringManager;
 import fr.cnes.sonar.report.model.*;
+import fr.cnes.sonar.report.utils.StringManager;
 
 import java.util.*;
 

@@ -19,8 +19,8 @@ package fr.cnes.sonar.report.exporters.docx;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exporters.IExporter;
-import fr.cnes.sonar.report.utils.StringManager;
 import fr.cnes.sonar.report.model.Report;
+import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;

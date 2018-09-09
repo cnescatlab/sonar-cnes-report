@@ -28,13 +28,17 @@ import java.util.Map;
  */
 public class Project {
     /**
-     * Key used by sonarqube
+     * Key used by SonarQube
      */
     private String key;
     /**
      * Name of the project
      */
     private String name;
+    /**
+     * Name of the organization
+     */
+    private String organization;
     /**
      * Version of the project
      */
@@ -56,12 +60,15 @@ public class Project {
      * Constructor to set basics
      * @param pKey SonarQube key
      * @param pName Name of the project
+     * @param pOrganization Name of the organization
      * @param pVersion Version given by the user
      * @param pDescription Project's description
      */
-    public Project(String pKey, String pName, String pVersion, String pDescription) {
+    public Project(final String pKey, final String pName, final String pOrganization,
+                   final String pVersion, final String pDescription) {
         this.key = pKey;
         this.name = pName;
+        this.organization = pOrganization;
         this.version = pVersion;
         this.description = pDescription;
         this.qualityProfiles = new ProfileMetaData[0];
@@ -80,7 +87,7 @@ public class Project {
      * Setter for name
      * @param pKey name
      */
-    public void setKey(String pKey) {
+    public void setKey(final String pKey) {
         this.key = pKey;
     }
 
@@ -96,8 +103,24 @@ public class Project {
      * Setter for name
      * @param pName value
      */
-    public void setName(String pName) {
+    public void setName(final String pName) {
         this.name = pName;
+    }
+
+    /**
+     * Getter for organization
+     * @return organization
+     */
+    public String getOrganization() {
+        return organization;
+    }
+
+    /**
+     * Setter for organization
+     * @param pOrganization organization
+     */
+    public void setOrganization(final String pOrganization) {
+        this.organization = pOrganization;
     }
 
     /**
@@ -112,7 +135,7 @@ public class Project {
      * Setter for version
      * @param pVersion value
      */
-    public void setVersion(String pVersion) {
+    public void setVersion(final String pVersion) {
         this.version = pVersion;
     }
 
@@ -128,7 +151,7 @@ public class Project {
      * Setter for description
      * @param pDescription value
      */
-    public void setDescription(String pDescription) {
+    public void setDescription(final String pDescription) {
         this.description = pDescription;
     }
 
@@ -144,7 +167,7 @@ public class Project {
      * Set the value of quality profiles by making a copy
      * @param pQualityProfiles value to set
      */
-    public void setQualityProfiles(ProfileMetaData[] pQualityProfiles) {
+    public void setQualityProfiles(final ProfileMetaData[] pQualityProfiles) {
         this.qualityProfiles = pQualityProfiles.clone();
     }
 
@@ -153,7 +176,7 @@ public class Project {
      * @param pLanguageKey Key of the language to get
      * @return A Language object
      */
-    public Language getLanguage(String pLanguageKey) {
+    public Language getLanguage(final String pLanguageKey) {
         return this.languages.get(pLanguageKey);
     }
 
@@ -169,7 +192,7 @@ public class Project {
      * Set the languages' values
      * @param pLanguages map to set
      */
-    public void setLanguages(Map<String, Language> pLanguages) {
+    public void setLanguages(final Map<String, Language> pLanguages) {
         this.languages = new HashMap<>(pLanguages);
     }
 }

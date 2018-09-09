@@ -18,22 +18,24 @@
 package fr.cnes.sonar.report.factory;
 
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
 import fr.cnes.sonar.report.model.Report;
+import fr.cnes.sonar.report.model.SonarQubeServer;
 import fr.cnes.sonar.report.providers.*;
 
 import java.io.IOException;
 
 /**
- * Construct  the report from resources providers
+ * Construct the report from resources providers
  * @author lequal
  */
 public class ReportFactory {
 
     /**
-     * Url of the SonarQube server.
+     * SonarQube server.
      */
-    private String url;
+    private SonarQubeServer server;
     /**
      * Token of the SonarQube user.
      */
@@ -53,14 +55,14 @@ public class ReportFactory {
 
     /**
      * Complete constructor
-     * @param pUrl Value for url.
+     * @param pServer Value for SQ server.
      * @param pToken Value for token.
      * @param pProject Value for project id.
      * @param pAuthor Name of the author.
      * @param pDate Date of the reporting.
      */
-    public ReportFactory(final String pUrl, final String pToken, final String pProject, final String pAuthor, final String pDate) {
-        this.url = pUrl;
+    public ReportFactory(final SonarQubeServer pServer, final String pToken, final String pProject, final String pAuthor, final String pDate) {
+        this.server = pServer;
         this.token = pToken;
         this.project = pProject;
         this.author = pAuthor;
@@ -73,23 +75,30 @@ public class ReportFactory {
      * @throws IOException on json problem
      * @throws BadSonarQubeRequestException when a request to the server is not well-formed
      * @throws UnknownQualityGateException a quality gate is not correct
+     * @throws SonarQubeException When an error occurred from SonarQube server.
      */
-    public Report create() throws IOException, BadSonarQubeRequestException, UnknownQualityGateException {
+    public Report create() throws IOException, BadSonarQubeRequestException, UnknownQualityGateException, SonarQubeException {
         // the new report to return
         final Report report = new Report();
 
         // instantiation of providers
-        final IssuesProvider issuesProvider = new IssuesProvider(this.url, this.token, this.project);
-        final MeasureProvider measureProvider = new MeasureProvider(this.url, this.token, this.project);
-        final ProjectProvider projectProvider = new ProjectProvider(this.url, this.token, this.project);
-        final QualityProfileProvider qualityProfileProvider = new QualityProfileProvider(this.url, this.token, this.project);
-        final QualityGateProvider qualityGateProvider = new QualityGateProvider(this.url, this.token, this.project);
-        final LanguageProvider languageProvider = new LanguageProvider(this.url, this.token, this.project);
+        final ProviderFactory providerFactory = new ProviderFactory(this.server, this.token, this.project);
+        final IssuesProvider issuesProvider = providerFactory.create(IssuesProvider.class);
+        final MeasureProvider measureProvider = providerFactory.create(MeasureProvider.class);
+        final ProjectProvider projectProvider = providerFactory.create(ProjectProvider.class);
+        final QualityProfileProvider qualityProfileProvider = providerFactory.create(QualityProfileProvider.class);
+        final QualityGateProvider qualityGateProvider = providerFactory.create(QualityGateProvider.class);
+        final LanguageProvider languageProvider = providerFactory.create(LanguageProvider.class);
 
         // author's setting
-        report.setProjectAuthor(author);
+        report.setProjectAuthor(this.author);
         // date setting
-        report.setProjectDate(date);
+        report.setProjectDate(this.date);
+
+        if(!projectProvider.hasProject(this.project)) {
+            throw new SonarQubeException(String.format("Unknown project '%s' on SonarQube instance.", this.project));
+        }
+
         // measures's setting
         report.setMeasures(measureProvider.getMeasures());
         // set report basic data
@@ -103,7 +112,7 @@ public class ReportFactory {
         // facets's setting
         report.setFacets(issuesProvider.getFacets());
         // quality profile's setting
-        report.setQualityProfiles(qualityProfileProvider.getQualityProfiles());
+        report.setQualityProfiles(qualityProfileProvider.getQualityProfiles(report.getProject().getOrganization()));
         // quality gate's setting
         report.setQualityGate(qualityGateProvider.getProjectQualityGate());
         // languages' settings

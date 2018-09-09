@@ -53,7 +53,7 @@ public final class RequestManager {
 
     /**
      * Execute a get http request
-     * @param url url to request
+     * @param url server to request
      * @param token token to authenticate to SonarQube
      * @return response as string
      */
@@ -68,7 +68,6 @@ public final class RequestManager {
         }
         final HttpConnector httpConnector = builder.build();
         WsResponse response = httpConnector.call(new GetRequest(path));
-        response.failIfNotSuccessful();
         return response.content();
     }
 }
