@@ -26,6 +26,8 @@ env:
 
 before_install:
   - docker run -d -p 127.0.0.1:9000:9000/tcp sonarqube:${sonarqube}-alpine
+  - echo "Waiting 5 minutes for SonarQube..."
+  - sleep 300
 
 script:
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
