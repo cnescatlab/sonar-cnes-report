@@ -31,6 +31,7 @@ before_install:
 
 script:
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
+  - chmod +x src/test/it/run-test.sh
   - src/test/it/run-test.sh
   
 cache:
