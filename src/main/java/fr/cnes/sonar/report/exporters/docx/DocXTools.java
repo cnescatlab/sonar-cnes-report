@@ -17,9 +17,9 @@
 
 package fr.cnes.sonar.report.exporters.docx;
 
-import fr.cnes.sonar.report.utils.StringManager;
 import fr.cnes.sonar.report.model.Facet;
 import fr.cnes.sonar.report.model.Value;
+import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;

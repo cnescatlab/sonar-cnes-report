@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
+import fr.cnes.sonar.report.model.SonarQubeServer;
 import fr.cnes.sonar.report.utils.StringManager;
 
 import java.io.IOException;
@@ -39,21 +40,28 @@ public abstract class AbstractDataProvider {
      * Name for properties' file about requests
      */
     protected static final String REQUESTS_PROPERTIES = "requests.properties";
-
     /**
      *  Field to retrieve languages list.
      */
     protected static final String GET_LANGUAGES = "GET_LANGUAGES";
-
     /**
      *  Name of the request for getting quality profiles' linked projects
      */
     protected static final String GET_QUALITY_PROFILES_PROJECTS_REQUEST =
             "GET_QUALITY_PROFILES_PROJECTS_REQUEST";
     /**
+     *  Name of the request for getting project's quality profiles
+     */
+    public static final String GET_PROJECT_QUALITY_PROFILES_REQUEST =
+            "GET_PROJECT_QUALITY_PROFILES_REQUEST";
+    /**
      *  Name of the request allowing to retrieve the quality gate
      */
     protected static final String GET_QUALITY_GATE_REQUEST = "GET_QUALITY_GATE_REQUEST";
+    /**
+     *  Name of the request allowing to retrieve the projects linked to quality gate
+     */
+    public static final String QUALITY_GATE_PROJECTS_REQUEST = "QUALITY_GATE_PROJECTS_REQUEST";
     /**
      *  Name of the request for getting quality gates' details
      */
@@ -97,6 +105,11 @@ public abstract class AbstractDataProvider {
      */
     protected static final String GET_QUALITY_PROFILES_CONF_REQUEST =
             "GET_QUALITY_PROFILES_CONFIGURATION_REQUEST";
+    /**
+     *  Name of the request for getting SonarQube server information
+     */
+    protected static final String GET_SONARQUBE_INFO_REQUEST =
+            "GET_SONARQUBE_INFO_REQUEST";
     /**
      * Field to search in json to get results' values
      */
@@ -147,7 +160,7 @@ public abstract class AbstractDataProvider {
     /**
      * Contain all the properties related to requests
      */
-    protected static Properties requests;
+    protected static Properties requests = new Properties();
 
     /**
      * Tool for parsing json
@@ -155,9 +168,9 @@ public abstract class AbstractDataProvider {
     protected Gson gson;
 
     /**
-     * Url of the sonarqube server
+     * SonarQube server
      */
-    protected String url;
+    protected SonarQubeServer server;
 
     /**
      * Token to authenticate the user on the sonarqube server
@@ -176,16 +189,11 @@ public abstract class AbstractDataProvider {
 
     // Static initialization block for reading .properties
     static {
-        // store properties
-        requests = new Properties();
-        // read the file
-        InputStream input = null;
-
+        // Need of the local classloader to read inner properties file.
         final ClassLoader classLoader = AbstractDataProvider.class.getClassLoader();
 
-        try {
-            // load properties file as a stream
-            input = classLoader.getResourceAsStream(REQUESTS_PROPERTIES);
+        // load properties file as a stream
+        try (InputStream input = classLoader.getResourceAsStream(REQUESTS_PROPERTIES)){
             if(input!=null) {
                 // load properties from the stream in an adapted structure
                 requests.load(input);
@@ -193,36 +201,25 @@ public abstract class AbstractDataProvider {
         } catch (IOException e) {
             // it logs all the stack trace
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
-        } finally {
-            if(input!=null) {
-                try {
-                    // close the stream if necessary (not null)
-                    input.close();
-                } catch (IOException e) {
-                    // it logs all the stack trace
-                    LOGGER.log(Level.SEVERE, e.getMessage(), e);
-                }
-            }
         }
     }
 
     /**
      * Singleton which execute concrete http requests
      */
-    protected RequestManager requestManager;
+    private RequestManager requestManager;
 
     /**
      * Constructor.
-     *
-     * @param url String representing the server address.
+     *  @param server SonarQube server.
      * @param token String representing the user token.
      * @param project The id of the project to report.
      */
-    AbstractDataProvider(final String url, final String token, final String project) {
+    AbstractDataProvider(final SonarQubeServer server, final String token, final String project) {
         // json tool
         this.gson = new Gson();
-        // get sonar url
-        this.url = url;
+        // get sonar server
+        this.server = server;
         // get user token
         this.token = token;
         // get project key
@@ -297,7 +294,7 @@ public abstract class AbstractDataProvider {
 
     /**
      * Get the raw string response
-     * @param request the raw url of the request
+     * @param request the raw server of the request
      * @return the server's response as a string
      */
     protected String stringRequest(final String request) {
@@ -328,19 +325,19 @@ public abstract class AbstractDataProvider {
     }
 
     /**
-     * Url of the SonarQube instance
-     * @return the url
+     * SonarQube instance
+     * @return the server
      */
-    public String getUrl() {
-        return url;
+    public SonarQubeServer getServer() {
+        return server;
     }
 
     /**
-     * Setter of url
-     * @param pUrl value
+     * Setter of server
+     * @param pServer value
      */
-    public void setUrl(final String pUrl) {
-        this.url = pUrl;
+    public void setServer(final SonarQubeServer pServer) {
+        this.server = pServer;
     }
 
     /**

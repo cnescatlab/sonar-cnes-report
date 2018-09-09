@@ -19,10 +19,11 @@ package fr.cnes.sonar.report.providers;
 
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
-import fr.cnes.sonar.report.utils.StringManager;
 import fr.cnes.sonar.report.model.Facet;
 import fr.cnes.sonar.report.model.Issue;
 import fr.cnes.sonar.report.model.Rule;
+import fr.cnes.sonar.report.model.SonarQubeServer;
+import fr.cnes.sonar.report.utils.StringManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,13 +52,13 @@ public class IssuesProvider extends AbstractDataProvider {
     private static final String UNCONFIRMED = "true";
 
     /**
-     * Complete constructor
-     * @param url String representing the server address.
-     * @param token String representing the user token.
-     * @param project The id of the project to report.
+     * Complete constructor.
+     * @param pServer SonarQube server.
+     * @param pToken String representing the user token.
+     * @param pProject The id of the project to report.
      */
-    public IssuesProvider(final String url, final String token, final String project) {
-        super(url, token, project);
+    public IssuesProvider(final SonarQubeServer pServer, final String pToken, final String pProject) {
+        super(pServer, pToken, pProject);
     }
 
     /**
@@ -109,9 +110,9 @@ public class IssuesProvider extends AbstractDataProvider {
         while(goOn) {
             // get maximum number of results per page
             final int maxPerPage = Integer.parseInt(getRequest(MAX_PER_PAGE_SONARQUBE));
-            // prepare the url to get all the issues
+            // prepare the server to get all the issues
             final String request = String.format(getRequest(GET_ISSUES_REQUEST),
-                    getUrl(), getProjectKey(), maxPerPage, page, confirmed);
+                    getServer().getUrl(), getProjectKey(), maxPerPage, page, confirmed);
             // perform the request to the server
             final JsonObject jo = request(request);
             // transform json to Issue and Rule objects
@@ -211,9 +212,9 @@ public class IssuesProvider extends AbstractDataProvider {
         while(goon) {
             // get maximum number of results per page
             final int maxPerPage = Integer.parseInt(getRequest(MAX_PER_PAGE_SONARQUBE));
-            // prepare the url to get all the issues
+            // prepare the server to get all the issues
             final String request = String.format(getRequest(GET_ISSUES_REQUEST),
-                    getUrl(), getProjectKey(), maxPerPage, page, CONFIRMED);
+                    getServer().getUrl(), getProjectKey(), maxPerPage, page, CONFIRMED);
             // perform the request to the server
             final JsonObject jo = request(request);
             // transform json to Issue objects
@@ -254,7 +255,7 @@ public class IssuesProvider extends AbstractDataProvider {
 
         // prepare the request
         final String request = String.format(getRequest(GET_FACETS_REQUEST),
-                getUrl(), getProjectKey());
+                getServer().getUrl(), getProjectKey());
         // contact the server to request the resources as json
         final JsonObject jo = request(request);
         // put wanted resources in facets array and list

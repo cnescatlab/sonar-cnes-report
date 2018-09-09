@@ -19,8 +19,8 @@ package fr.cnes.sonar.report.providers;
 
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
-import fr.cnes.sonar.report.utils.StringManager;
 import fr.cnes.sonar.report.model.*;
+import fr.cnes.sonar.report.utils.StringManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,28 +35,29 @@ public class QualityProfileProvider extends AbstractDataProvider {
 
     /**
      * Complete constructor
-     * @param url String representing the server address.
-     * @param token String representing the user token.
-     * @param project The id of the project to report.
+     * @param pServer SonarQube server..
+     * @param pToken String representing the user token.
+     * @param pProject The id of the project to report.
      */
-    public QualityProfileProvider(final String url, final String token, final String project) {
-        super(url, token, project);
+    public QualityProfileProvider(final SonarQubeServer pServer, final String pToken, final String pProject) {
+        super(pServer, pToken, pProject);
     }
 
     /**
-     * Get all the quality profiles
-     * @return Array containing all the quality profiles of a project
-     * @throws IOException when connecting the server
-     * @throws BadSonarQubeRequestException A request is not recognized by the server
+     * Get all the quality profiles.
+     * @return Array containing all the quality profiles of a project.
+     * @param pOrganization Specify organization in which the project is.
+     * @throws IOException When connecting the server.
+     * @throws BadSonarQubeRequestException A request is not recognized by the server.
      */
-    public List<QualityProfile> getQualityProfiles()
+    public List<QualityProfile> getQualityProfiles(final String pOrganization)
             throws IOException, BadSonarQubeRequestException {
         // initializing returned list
         final List<QualityProfile> res = new ArrayList<>();
 
         // Get all quality profiles (metadata)
         String request = String.format(getRequest(GET_QUALITY_PROFILES_REQUEST),
-                getUrl(), getProjectKey());
+                getServer().getUrl(), getProjectKey(), pOrganization);
         // perform the previous request
         JsonObject jo = request(request);
 
@@ -67,7 +68,7 @@ public class QualityProfileProvider extends AbstractDataProvider {
             final ProfileData profileData = new ProfileData();
             // get configuration
             request = String.format(getRequest(GET_QUALITY_PROFILES_CONF_REQUEST),
-                    getUrl(),
+                    getServer().getUrl(),
                     profileMetaData.getLanguage().replaceAll(String.valueOf(StringManager.SPACE),
                     StringManager.URI_SPACE),
                     profileMetaData.getName().replaceAll(String.valueOf(StringManager.SPACE),
@@ -84,7 +85,7 @@ public class QualityProfileProvider extends AbstractDataProvider {
             int page = 1;
             // contain the resulted rules
             final List<Rule> rules = new ArrayList<>();
-            // profile's key formatted for url (%20 instead of ' ')
+            // profile's key formatted for server (%20 instead of ' ')
             final String profileKey = profileMetaData.getKey().replaceAll(
                     String.valueOf(StringManager.SPACE),
                     StringManager.URI_SPACE);
@@ -92,7 +93,7 @@ public class QualityProfileProvider extends AbstractDataProvider {
             while(goon) {
                 // prepare the request
                 request = String.format(getRequest(GET_QUALITY_PROFILES_RULES_REQUEST),
-                        getUrl(), profileKey,
+                        getServer().getUrl(), profileKey,
                         Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)), page);
                 // perform the previous request to sonarqube server
                 jo = request(request);
@@ -110,7 +111,7 @@ public class QualityProfileProvider extends AbstractDataProvider {
 
             // get projects linked to the profile
             request = String.format(getRequest(GET_QUALITY_PROFILES_PROJECTS_REQUEST),
-                    getUrl(), profileMetaData.getKey());
+                    getServer().getUrl(), profileMetaData.getKey());
             // perform a request
             jo = request(request);
             // convert json to Project objects

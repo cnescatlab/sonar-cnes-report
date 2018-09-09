@@ -99,7 +99,7 @@ public final class StringManager {
      */
     public static final String REPORT_PROPERTIES = "report.properties";
     /**
-     * Name of the property giving the server url
+     * Name of the property giving the server server
      */
     public static final String SONAR_URL = "sonar.url";
     /**
@@ -122,6 +122,24 @@ public final class StringManager {
      * Just the word rule
      */
     public static final String RULES = "rules";
+    /**
+     * Help message to display when a user misused this program
+     */
+    public static final String HELP_MESSAGE = "Welcome to Sonar CNES Report.\n" +
+            "Here are the list of parameters you can use:\n" +
+            "  > --sonar.server [mandatory]\n" +
+            "  > --sonar.token\n" +
+            "  > --sonar.project.id [mandatory]\n" +
+            "  > --report.author\n" +
+            "  > --report.date\n" +
+            "  > --report.path\n" +
+            "  > --report.conf [yes|no]\n" +
+            "  > --report.locale [fr_FR|en_US]\n" +
+            "  > --report.template\n" +
+            "  > --issues.template\n" +
+            "\nExample :\n" +
+            "java -jar sonar-report-cnes.jar --sonar.server http://sonarqube:9000" +
+            " --sonar.project.id cat";
 
     /**
      * Logger for StringManager

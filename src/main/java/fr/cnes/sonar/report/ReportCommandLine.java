@@ -24,12 +24,14 @@ import fr.cnes.sonar.report.exporters.XmlExporter;
 import fr.cnes.sonar.report.exporters.docx.DocXExporter;
 import fr.cnes.sonar.report.exporters.xlsx.XlsXExporter;
 import fr.cnes.sonar.report.factory.ReportFactory;
-import fr.cnes.sonar.report.utils.Params;
-import fr.cnes.sonar.report.utils.ParamsFactory;
-import fr.cnes.sonar.report.utils.StringManager;
+import fr.cnes.sonar.report.factory.ServerFactory;
 import fr.cnes.sonar.report.model.ProfileMetaData;
 import fr.cnes.sonar.report.model.QualityProfile;
 import fr.cnes.sonar.report.model.Report;
+import fr.cnes.sonar.report.model.SonarQubeServer;
+import fr.cnes.sonar.report.utils.Params;
+import fr.cnes.sonar.report.utils.ParamsFactory;
+import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.xmlbeans.XmlException;
 
@@ -65,11 +67,11 @@ public final class ReportCommandLine {
 	 /**
      * Property for the word report filename
      */
-    public static final String REPORT_FILENAME = "REPORT_FILENAME";
+    public static final String REPORT_FILENAME = "report.output";
     /**
      * Property for the excel report filename
      */
-    public static final String ISSUES_FILENAME = "ISSUES_FILENAME";
+    public static final String ISSUES_FILENAME = "issues.output";
     /**
      * Pattern for the name of the directory containing configuration files
      */
@@ -77,8 +79,7 @@ public final class ReportCommandLine {
     /**
      * Error message returned when the program cannot create a folder because it already exists
      */
-    public static final String CNES_MKDIR_ERROR =
-            "Impossible to create the following directory: %s";
+    public static final String CNES_MKDIR_ERROR = "Impossible to create the following directory: %s";
     /**
      * Logger of this class
      */
@@ -99,24 +100,6 @@ public final class ReportCommandLine {
      * Name of the property to find the base of report location
      */
     public static final String REPORT_PATH = "report.path";
-    /**
-     * Help message to display when a user misused this program
-     */
-    private static final String HELP_MESSAGE = "Welcome to Sonar CNES Report.\n" +
-            "Here are the list of parameters you can use:\n" +
-            "  > --sonar.url [mandatory]\n" +
-            "  > --sonar.token\n" +
-            "  > --sonar.project.id [mandatory]\n" +
-            "  > --report.author\n" +
-            "  > --report.date\n" +
-            "  > --report.path\n" +
-            "  > --report.conf [yes|no]\n" +
-            "  > --report.locale [fr_FR|en_US]\n" +
-            "  > --report.template\n" +
-            "  > --issues.template\n" +
-            "\nExample :\n" +
-            "java -jar sonar-report-cnes.jar --sonar.url http://sonarqube:9000" +
-            " --sonar.project.id cat";
 
     /**
      * Private constructor to not be able to instantiate it.
@@ -145,25 +128,67 @@ public final class ReportCommandLine {
             final String reportTemplate = params.get(StringManager.REPORT_TEMPLATE);
             final String issuesTemplate = params.get(StringManager.ISSUES_TEMPLATE);
 
-            // generate report
-            report(url, token, project, author, date, reportPath, reportTemplate, issuesTemplate);
+            // Print information about SonarQube.
+            LOGGER.info(String.format("SonarQube URL: %s", url));
 
-        } catch (BadExportationDataTypeException | MalformedParameterException |
-                BadSonarQubeRequestException | IOException | UnknownParameterException |
-                MissingParameterException | UnknownQualityGateException | OpenXML4JException |
-                XmlException e) {
+            // Initialize connexion with SonarQube and retrieve primitive information
+            final SonarQubeServer server = new ServerFactory(url, token).create();
+
+            LOGGER.info(String.format("SonarQube online: %s", server.isUp()));
+
+            if(!server.isUp()) {
+                throw new SonarQubeException("Impossible to reach SonarQube instance.");
+            }
+
+            LOGGER.info(String.format("Detected SonarQube version: %s", server.getNormalizedVersion()));
+
+            if(!server.isSupported()) {
+                throw new SonarQubeException("SonarQube instance is not supported by cnesreport.");
+            }
+
+            // generate report
+            report(server, token, project, author, date, reportPath, reportTemplate, issuesTemplate);
+
+            LOGGER.info("Report generation: SUCCESS");
+
+        } catch (BadExportationDataTypeException | BadSonarQubeRequestException | IOException |
+                UnknownQualityGateException | OpenXML4JException | XmlException e) {
+            // it logs all the stack trace
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        } catch (SonarQubeException e) {
+            LOGGER.severe(e.getMessage());
+        } catch (UnknownParameterException | MalformedParameterException | MissingParameterException e) {
             // it logs all the stack trace
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             // prints the help
-            LOGGER.log(Level.INFO, HELP_MESSAGE);
+            LOGGER.log(Level.INFO, StringManager.HELP_MESSAGE);
         }
     }
 
-    public static void report(final String url, final String token, final String project,
+    /**
+     * Generate report from simple parameters.
+     * @param server SonarQube server.
+     * @param token Token of the SonarQube user.
+     * @param project Project ID.
+     * @param author Author of the report.
+     * @param date Date of the report.
+     * @param reportPath Output path.
+     * @param reportTemplate Path to the general report template.
+     * @param issuesTemplate Path to the issues report template.
+     * @throws IOException Caused by I/O.
+     * @throws BadSonarQubeRequestException Caused by requests.
+     * @throws UnknownQualityGateException Caused by quality gates.
+     * @throws XmlException Caused by XML error.
+     * @throws BadExportationDataTypeException Caused by export.
+     * @throws OpenXML4JException Caused by Apache library.
+     * @throws SonarQubeException Occurred on server side error.
+     */
+    public static void report(final SonarQubeServer server, final String token, final String project,
                               final String author, final String date, final String reportPath,
                               final String reportTemplate, final String issuesTemplate)
             throws IOException, BadSonarQubeRequestException, UnknownQualityGateException,
-            XmlException, BadExportationDataTypeException, OpenXML4JException {
+            XmlException, BadExportationDataTypeException, OpenXML4JException, SonarQubeException {
+
         // Files exporters : export the resources in the correct file type
         final DocXExporter docXExporter = new DocXExporter();
         final XmlExporter profileExporter = new XmlExporter();
@@ -173,6 +198,9 @@ public final class ReportCommandLine {
         // full path to the configuration folder
         final String confDirectory = String.format(CONF_FOLDER_PATTERN, reportPath);
 
+        // Producing the report
+        final Report superReport = new ReportFactory(server, token, project, author, date).create();
+
         // create the configuration folder
         final File configFolder = new File(confDirectory);
         final boolean success = configFolder.mkdirs();
@@ -180,9 +208,6 @@ public final class ReportCommandLine {
             // Directory creation failed
             LOGGER.warning(String.format(CNES_MKDIR_ERROR, confDirectory));
         }
-
-        // Producing the report
-        final Report superReport = new ReportFactory(url, token, project, author, date).create();
 
         // Export all
         // export each linked quality profile

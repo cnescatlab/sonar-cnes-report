@@ -18,9 +18,9 @@
 package fr.cnes.sonar.report.exporters;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
-import fr.cnes.sonar.report.utils.ParamsFactory;
 import fr.cnes.sonar.report.model.Issue;
 import fr.cnes.sonar.report.model.Report;
+import fr.cnes.sonar.report.utils.ParamsFactory;
 
 import java.io.File;
 import java.util.List;

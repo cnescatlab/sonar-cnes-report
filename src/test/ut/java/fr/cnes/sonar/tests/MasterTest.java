@@ -40,7 +40,7 @@
 //    public void before() {
 //        // create stubbed params
 //        params = new Params();
-//        params.put("sonar.url", "http://localhost:9000");
+//        params.put("sonar.server", "http://localhost:9000");
 //        params.put("sonar.token", "10d9aa688626e238739c7391e30ac9bf28fe0bbd");
 //        //params.put("sonar.token", "noauth");
 //        params.put("sonar.project.id", "fr.cnes.sonarqube.plugins:sonar-icode-plugin");

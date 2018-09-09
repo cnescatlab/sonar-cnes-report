@@ -19,14 +19,17 @@ package fr.cnes.sonar.report.plugin.tasks;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
 import fr.cnes.sonar.report.exporters.JsonExporter;
 import fr.cnes.sonar.report.exporters.XmlExporter;
 import fr.cnes.sonar.report.exporters.docx.DocXExporter;
 import fr.cnes.sonar.report.exporters.xlsx.XlsXExporter;
 import fr.cnes.sonar.report.factory.ReportFactory;
-import fr.cnes.sonar.report.utils.StringManager;
+import fr.cnes.sonar.report.factory.ServerFactory;
 import fr.cnes.sonar.report.model.Report;
+import fr.cnes.sonar.report.model.SonarQubeServer;
+import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.xmlbeans.XmlException;
@@ -75,18 +78,24 @@ public class ReportTask implements RequestHandler {
      * @throws IOException When a file writing goes wrong.
      * @throws BadSonarQubeRequestException Invoked request is not correct.
      * @throws UnknownQualityGateException Asked quality gate is unknown.
+     * @throws SonarQubeException Occurred on server side error.
      */
     public String report(final String projectId, final String reportAuthor, final String reportPath,
                          final String reportTemplate, final String issuesTemplate)
-            throws IOException, BadSonarQubeRequestException, UnknownQualityGateException, BadExportationDataTypeException, XmlException, OpenXML4JException {
+            throws IOException, BadSonarQubeRequestException, UnknownQualityGateException, BadExportationDataTypeException, XmlException, OpenXML4JException, SonarQubeException {
 
         // formatted date
         final String date = new SimpleDateFormat(StringManager.DATE_PATTERN).format(new Date());
-        // url of SQ server
+        // server of SQ server
         final String sonarqubeUrl = "http://localhost:9000";
+        // token to access SonarQube
+        final String token = "noauth";
+
+        // SonarQube server.
+        final SonarQubeServer server = new ServerFactory(sonarqubeUrl, token).create();
 
         // generate report
-        final Report report = new ReportFactory(sonarqubeUrl, "noauth", projectId, reportAuthor, date).create();
+        final Report report = new ReportFactory(server, token, projectId, reportAuthor, date).create();
 
         // instantiate exporters
         final DocXExporter docXExporter = new DocXExporter();
@@ -115,9 +124,13 @@ public class ReportTask implements RequestHandler {
      * @throws IOException When a file writing goes wrong.
      * @throws BadSonarQubeRequestException Invoked request is not correct.
      * @throws UnknownQualityGateException Asked quality gate is unknown.
+     * @throws BadExportationDataTypeException Error on App API use.
+     * @throws XmlException Occurred on XML error.
+     * @throws OpenXML4JException Occurred on OpenXML error.
+     * @throws SonarQubeException Occurred on server side error.
      */
     public void handle(final Request request, final Response response)
-            throws IOException, BadSonarQubeRequestException, UnknownQualityGateException, BadExportationDataTypeException, XmlException, OpenXML4JException {
+            throws IOException, BadSonarQubeRequestException, UnknownQualityGateException, BadExportationDataTypeException, XmlException, OpenXML4JException, SonarQubeException {
 
         // Key of the project provided by the user through parameters
         final String projectKey = request.mandatoryParam("key");

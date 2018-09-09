@@ -99,7 +99,7 @@ public class CommonTest {
         profileMetaData.setName("BG");
         profileMetaData.setKey("BG");
         final QualityProfile qualityProfile = new QualityProfile(profileData, profileMetaData);
-        qualityProfile.setProjects((new Project[]{new Project("sonar-cnes-plugin", "sonar-cnes-plugin","","")}));
+        qualityProfile.setProjects((new Project[]{new Project("sonar-cnes-plugin", "sonar-cnes-plugin", "none","","")}));
         report.setQualityProfiles(Collections.singletonList(qualityProfile));
         final QualityGate qualityGate = new QualityGate();
         qualityGate.setName("CNES");
@@ -112,7 +112,7 @@ public class CommonTest {
         final Map<String, Language> languages = new HashMap<>();
         languages.put(language.getKey(), language);
 
-        final Project project = new Project("key", "Name", "Version", "Short description");
+        final Project project = new Project("key", "Name", "none","Version", "Short description");
         project.setQualityProfiles(new ProfileMetaData[0]);
         project.setLanguages(languages);
         report.setProject(project);
