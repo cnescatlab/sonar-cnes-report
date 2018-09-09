@@ -20,9 +20,6 @@ env:
   - sonarqube: 6.7.5
   - sonarqube: 7.0
   - sonarqube: 7.1
-  - sonarqube: 7.2
-  - sonarqube: 7.2.1
-  - sonarqube: 7.3
 
 before_install:
   - docker run -d -p 127.0.0.1:9000:9000/tcp sonarqube:${sonarqube}-alpine
