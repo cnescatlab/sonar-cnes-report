@@ -18,7 +18,6 @@
 /**
  * Exceptions' package for the plugin.
  * Contains exception classes to define program's specific errors.
- * @author lequal
  * @version 1.0
  */
 

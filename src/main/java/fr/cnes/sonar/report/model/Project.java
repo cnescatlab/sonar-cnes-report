@@ -24,7 +24,6 @@ import java.util.Map;
 
 /**
  * Represents a project
- * @author lequal
  */
 public class Project {
     /**

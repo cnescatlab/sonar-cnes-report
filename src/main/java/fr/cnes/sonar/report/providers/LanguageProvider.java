@@ -28,7 +28,6 @@ import java.util.Map;
 
 /**
  * Provides languages
- * @author lequal
  */
 public class LanguageProvider extends AbstractDataProvider {
 
@@ -71,10 +70,9 @@ public class LanguageProvider extends AbstractDataProvider {
     /**
      * Get all the languages of SonarQube
      * @return a map with all the languages
-     * @throws IOException when contacting the server
      * @throws BadSonarQubeRequestException when the server does not understand the request
      */
-    public Map<String, Language> getLanguages() throws IOException, BadSonarQubeRequestException {
+    public Map<String, Language> getLanguages() throws BadSonarQubeRequestException {
         // send a request to sonarqube server and return th response as a json object
         // if there is an error on server side this method throws an exception
         final JsonObject jo = request(String.format(getRequest(GET_LANGUAGES), getServer().getUrl()));

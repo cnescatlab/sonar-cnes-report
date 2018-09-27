@@ -18,7 +18,6 @@
 /**
  * Docx exporter's package for the plugin.
  * Defines classes used to export data to a Word document.
- * @author lequal
  * @version 1.0
  */
 

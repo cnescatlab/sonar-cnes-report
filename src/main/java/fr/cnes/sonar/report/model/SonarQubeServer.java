@@ -19,7 +19,6 @@ package fr.cnes.sonar.report.model;
 
 /**
  * Instance of SonarQube server
- * @author lequal
  */
 public class SonarQubeServer {
     /** URL of the SonarQube instance **/

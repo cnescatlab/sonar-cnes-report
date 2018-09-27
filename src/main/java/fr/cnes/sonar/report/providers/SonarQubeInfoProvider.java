@@ -21,12 +21,10 @@ import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.model.SonarQubeServer;
 
-import java.io.IOException;
 import java.util.logging.Level;
 
 /**
  * Provides info about SonarQube system.
- * @author lequal
  */
 public class SonarQubeInfoProvider extends AbstractDataProvider {
 
@@ -42,10 +40,9 @@ public class SonarQubeInfoProvider extends AbstractDataProvider {
     /**
      * Get the SonarQube version.
      * @return String containing the SonarQube version.
-     * @throws IOException when contacting the server.
      * @throws BadSonarQubeRequestException when the server does not understand the request.
      */
-    public String getSonarQubeVersion() throws IOException, BadSonarQubeRequestException {
+    public String getSonarQubeVersion() throws BadSonarQubeRequestException {
         // send a request to sonarqube server and return th response as a json object
         // if there is an error on server side this method throws an exception
         final JsonObject jsonObject = request(String.format(getRequest(GET_SONARQUBE_INFO_REQUEST), getServer().getUrl()));

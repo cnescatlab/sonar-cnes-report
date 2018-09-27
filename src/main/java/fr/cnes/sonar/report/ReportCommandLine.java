@@ -47,7 +47,6 @@ import java.util.logging.Logger;
 
 /**
  * Main entry point
- * @author lequal
  */
 public final class ReportCommandLine {
 

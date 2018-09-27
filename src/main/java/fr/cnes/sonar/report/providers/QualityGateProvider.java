@@ -33,7 +33,6 @@ import java.util.List;
 
 /**
  * Provides quality gates
- * @author lequal
  */
 public class QualityGateProvider extends AbstractDataProvider {
 
@@ -57,11 +56,10 @@ public class QualityGateProvider extends AbstractDataProvider {
     /**
      * Get all the quality gates.
      * @return Array containing all the issues.
-     * @throws IOException When connecting the server.
      * @throws BadSonarQubeRequestException A request is not recognized by the server.
      */
     public List<QualityGate> getQualityGates()
-            throws IOException, BadSonarQubeRequestException {
+            throws BadSonarQubeRequestException {
         // result list
         final List<QualityGate> res = new ArrayList<>();
 

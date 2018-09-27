@@ -15,15 +15,14 @@ package fr.cnes.sonar.tests;/*
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import fr.cnes.sonar.report.utils.Params;
 import fr.cnes.sonar.report.model.*;
+import fr.cnes.sonar.report.utils.Params;
 import org.junit.Before;
 
 import java.util.*;
 
 /**
  * Contains common code for tests
- * @author lequal
  */
 public class CommonTest {
 

@@ -19,7 +19,6 @@ package fr.cnes.sonar.report.exceptions;
 
 /**
  * A given parameter is not reliable
- * @author lequal
  */
 public class MissingParameterException extends Exception {
 

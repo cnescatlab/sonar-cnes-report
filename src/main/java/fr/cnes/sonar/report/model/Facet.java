@@ -22,7 +22,6 @@ import java.util.List;
 
 /**
  * A facet of sonarqube
- * @author lequal
  */
 public class Facet {
     /**

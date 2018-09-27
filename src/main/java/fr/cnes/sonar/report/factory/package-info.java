@@ -18,7 +18,6 @@
 /**
  * Factories' package for the plugin.
  * Contains factory classes to build entities.
- * @author lequal
  * @version 1.0
  */
 

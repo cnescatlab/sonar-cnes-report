@@ -28,7 +28,6 @@ import java.io.IOException;
 
 /**
  * Provides basic project's information
- * @author lequal
  */
 public class ProjectProvider extends AbstractDataProvider {
 
@@ -100,10 +99,9 @@ public class ProjectProvider extends AbstractDataProvider {
      * Check if a project exists on a SonarQube instance.
      * @param projectKey the key of the project.
      * @return True if the project exists.
-     * @throws IOException when contacting the server.
      * @throws BadSonarQubeRequestException when the server does not understand the request.
      */
-    public boolean hasProject(final String projectKey) throws IOException, BadSonarQubeRequestException {
+    public boolean hasProject(final String projectKey) throws BadSonarQubeRequestException {
         // send a request to sonarqube server and return th response as a json object
         // if there is an error on server side this method throws an exception
         final JsonObject jsonObject = request(String.format(getRequest(GET_PROJECT_REQUEST),

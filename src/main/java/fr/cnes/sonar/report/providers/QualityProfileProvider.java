@@ -22,14 +22,12 @@ import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.model.*;
 import fr.cnes.sonar.report.utils.StringManager;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * Provides quality gates
- * @author lequal
  */
 public class QualityProfileProvider extends AbstractDataProvider {
 
@@ -47,11 +45,10 @@ public class QualityProfileProvider extends AbstractDataProvider {
      * Get all the quality profiles.
      * @return Array containing all the quality profiles of a project.
      * @param pOrganization Specify organization in which the project is.
-     * @throws IOException When connecting the server.
      * @throws BadSonarQubeRequestException A request is not recognized by the server.
      */
     public List<QualityProfile> getQualityProfiles(final String pOrganization)
-            throws IOException, BadSonarQubeRequestException {
+            throws BadSonarQubeRequestException {
         // initializing returned list
         final List<QualityProfile> res = new ArrayList<>();
 

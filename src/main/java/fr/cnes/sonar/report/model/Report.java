@@ -23,7 +23,6 @@ import java.util.*;
 
 /**
  * Model of a report containing all information
- * @author lequal
  */
 public class Report {
     /**

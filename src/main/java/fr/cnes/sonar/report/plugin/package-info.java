@@ -17,7 +17,6 @@
 
 /**
  * Contain needed classes to use cnesreport as a SonarQube plugin.
- * @author lequal
  * @version 2.0
  */
 

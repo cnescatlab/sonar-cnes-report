@@ -22,7 +22,6 @@ import fr.cnes.sonar.report.utils.StringManager;
 
 /**
  * Contain all Quality Gate's details
- * @author lequal
  */
 public class QualityGate {
     /**

@@ -18,7 +18,6 @@
 /**
  * Exporters' package for the plugin.
  * Defines classes used to export data to a specific report's format.
- * @author lequal
  * @version 1.0
  */
 
