@@ -14,7 +14,6 @@ import java.io.IOException;
 
 /**
  * Exports the report in .docx format
- * @author lequal
  */
 public class XlsXExporter implements IExporter {
 

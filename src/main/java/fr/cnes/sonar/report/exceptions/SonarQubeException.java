@@ -19,7 +19,6 @@ package fr.cnes.sonar.report.exceptions;
 
 /**
  * Thrown when an error occurred when contacting SonarQube
- * @author lequal
  */
 public class SonarQubeException extends Exception {
 

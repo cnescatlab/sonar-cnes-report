@@ -26,7 +26,6 @@ import org.sonarqube.ws.client.WsResponse;
 /**
  * Manage http requests.
  *
- * @author lequal
  */
 public final class RequestManager {
 

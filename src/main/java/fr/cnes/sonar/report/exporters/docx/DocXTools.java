@@ -22,7 +22,6 @@ import fr.cnes.sonar.report.model.Value;
 import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
-import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.util.ImageUtils;
 import org.apache.poi.xwpf.usermodel.*;
 import org.apache.xmlbeans.XmlException;
@@ -37,7 +36,6 @@ import java.util.Map;
 
 /**
  * Different tools to manipulate docx
- * @author lequal
  */
 public final class DocXTools {
 
@@ -81,15 +79,13 @@ public final class DocXTools {
 
     /**
      * Fill the chart "camembert"
-     * @param opcPackage word document
      * @param document word document
      * @param facets resources as facets
-     * @throws OpenXML4JException ...
      * @throws IOException ...
      * @throws XmlException ...
      */
-    public static void fillCharts(OPCPackage opcPackage, XWPFDocument document, List<Facet> facets)
-            throws OpenXML4JException, IOException, XmlException {
+    public static void fillCharts(XWPFDocument document, List<Facet> facets)
+            throws IOException, XmlException {
 
         final List<XWPFChartSpace> chartSpaces = XWPFChartSpace.getChartSpaces(document);
         final List<Value> dataPerType = DataAdapter.getFacetValues(facets, TYPES);
@@ -236,7 +232,8 @@ public final class DocXTools {
             // construct here the new string by replacing each placeholder by its value
             String text = sb.toString();
             final List<String> pictures = new ArrayList<>();
-            String key, value;
+            String key;
+            String value;
             for (Map.Entry<String, String> nextValue : values.entrySet()) {
                 key = nextValue.getKey();
                 value = nextValue.getValue();

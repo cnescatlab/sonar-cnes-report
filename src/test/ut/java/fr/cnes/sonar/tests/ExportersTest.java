@@ -24,7 +24,6 @@ import org.junit.Test;
 
 /**
  * Test the creation of files from an abstract report
- * @author lequal
  */
 public class ExportersTest extends CommonTest {
 

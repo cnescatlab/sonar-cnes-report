@@ -18,7 +18,6 @@
 /**
  * Test package for the plugin.
  * Contains plugin's unit tests.
- * @author lequal
  * @version 1.0
  */
 

@@ -37,7 +37,6 @@ import java.util.Map;
 
 /**
  * Exports the report in .docx format
- * @author lequal
  */
 public class DocXExporter implements IExporter {
 
@@ -109,7 +108,7 @@ public class DocXExporter implements IExporter {
         ) {
 
             // Fill charts
-            DocXTools.fillCharts(opcPackage, document, report.getFacets());
+            DocXTools.fillCharts(document, report.getFacets());
 
             // Add issues
             final List<List<String>> issues = DataAdapter.getIssues(report);
@@ -140,7 +139,6 @@ public class DocXExporter implements IExporter {
             // close open resources
             document.write(out);
             out.close();
-            document.close();
         }
 
         return new File(path);

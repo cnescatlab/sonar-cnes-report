@@ -18,7 +18,6 @@
 /**
  * Tasks' package for the plugin.
  * Contains classes executing tasks when the web api is called.
- * @author lequal
  * @version 2.0
  */
 

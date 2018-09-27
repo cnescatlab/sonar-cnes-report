@@ -20,7 +20,6 @@ package fr.cnes.sonar.report.exporters.docx;
 import fr.cnes.sonar.report.model.Value;
 import org.apache.poi.POIXMLDocumentPart;
 import org.apache.poi.POIXMLTypeLoader;
-import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.PackagePart;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.xmlbeans.XmlException;
@@ -40,7 +39,6 @@ import java.util.logging.Logger;
 /**
  * Custom class to handle chart spaces
  * Complete the Apache POI framework
- * @author lequal
  */
 public class XWPFChartSpace {
     /**
@@ -75,10 +73,9 @@ public class XWPFChartSpace {
      * @return list of chart spaces
      * @throws IOException When reading files
      * @throws XmlException When reading files
-     * @throws OpenXML4JException When handling nodes
      */
     public static List<XWPFChartSpace> getChartSpaces(XWPFDocument document)
-            throws IOException, XmlException, OpenXML4JException {
+            throws IOException, XmlException {
         // gather charts documents
         final List<POIXMLDocumentPart> charts = new ArrayList<>();
         // results list to return at the end

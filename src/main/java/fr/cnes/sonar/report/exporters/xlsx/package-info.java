@@ -18,7 +18,6 @@
 /**
  * Xlsx exporter's package for the plugin.
  * Defines classes used to export data to an Excel format.
- * @author lequal
  * @version 1.0
  */
 

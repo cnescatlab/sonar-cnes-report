@@ -49,7 +49,6 @@ import java.util.Date;
 
 /**
  * Execute element to produce the report
- * @author lequal
  */
 public class ReportTask implements RequestHandler {
 

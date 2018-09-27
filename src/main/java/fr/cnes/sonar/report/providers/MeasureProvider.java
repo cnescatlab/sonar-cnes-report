@@ -23,14 +23,12 @@ import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.model.Measure;
 import fr.cnes.sonar.report.model.SonarQubeServer;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * Provides issue items
- * @author lequal
  */
 public class MeasureProvider extends AbstractDataProvider {
 
@@ -47,13 +45,9 @@ public class MeasureProvider extends AbstractDataProvider {
     /**
      * Get all the measures of a project
      * @return Array containing all the measures
-     * @throws IOException when contacting the server
      * @throws BadSonarQubeRequestException when the server does not understand the request
      */
-    public List<Measure> getMeasures() throws IOException, BadSonarQubeRequestException {
-        // results list
-        final List<Measure> res = new ArrayList<>();
-
+    public List<Measure> getMeasures() throws BadSonarQubeRequestException {
         // send a request to sonarqube server and return th response as a json object
         // if there is an error on server side this method throws an exception
         final JsonObject jo = request(String.format(getRequest(GET_MEASURES_REQUEST),
@@ -63,10 +57,9 @@ public class MeasureProvider extends AbstractDataProvider {
         final JsonElement measuresJE = jo.get(COMPONENT).getAsJsonObject().get(MEASURES);
         // put json in a list of measures
         final Measure[] tmp = (getGson().fromJson(measuresJE, Measure[].class));
-        // then add all measure to the results list
-        res.addAll(Arrays.asList(tmp));
 
+        // then add all measure to the results list
         // return the list
-        return res;
+        return new ArrayList<>(Arrays.asList(tmp));
     }
 }

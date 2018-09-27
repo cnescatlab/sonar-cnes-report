@@ -18,7 +18,6 @@
 /**
  * Data providers' package for the plugin.
  * Contains needed classes to access data.
- * @author lequal
  * @version 1.0
  */
 

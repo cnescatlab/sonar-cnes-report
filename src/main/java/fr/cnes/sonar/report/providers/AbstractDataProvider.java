@@ -32,7 +32,6 @@ import java.util.logging.Logger;
 
 /**
  * Generic interface for resources providers
- * @author lequal
  */
 public abstract class AbstractDataProvider {
 
@@ -262,11 +261,10 @@ public abstract class AbstractDataProvider {
      * Execute a given request
      * @param request Url for the request, for example http://sonarqube:1234/api/toto/list
      * @return Server's response as a JsonObject
-     * @throws IOException if there were an error contacting the server
      * @throws BadSonarQubeRequestException if SonarQube Server sent an error
      */
     public JsonObject request(final String request)
-            throws IOException, BadSonarQubeRequestException {
+            throws BadSonarQubeRequestException {
         // do the request to the server and return a string answer
         final String raw = stringRequest(request);
 

@@ -26,7 +26,6 @@ import java.util.*;
 
 /**
  * Prepares command line's arguments
- * @author lequal
  */
 public class ParamsFactory {
 
@@ -104,10 +103,7 @@ public class ParamsFactory {
         // contain the final result with correct utils
         final List<String> checked = new ArrayList<>();
         // contain raw resources to process
-        final List<String> raw = new ArrayList<>();
-
-        // fill out raw
-        raw.addAll(Arrays.asList(args));
+        final List<String> raw = new ArrayList<>(Arrays.asList(args));
 
         // construction of new utils
         final Iterator<String> it = raw.iterator();

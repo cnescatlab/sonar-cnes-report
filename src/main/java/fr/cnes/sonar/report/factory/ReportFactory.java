@@ -28,7 +28,6 @@ import java.io.IOException;
 
 /**
  * Construct the report from resources providers
- * @author lequal
  */
 public class ReportFactory {
 

@@ -33,7 +33,6 @@ import java.util.Map;
 
 /**
  * Provides issue items
- * @author lequal
  */
 public class IssuesProvider extends AbstractDataProvider {
 
@@ -87,11 +86,10 @@ public class IssuesProvider extends AbstractDataProvider {
      * Get issues depending on their resolved status
      * @param confirmed equals "true" if Unconfirmed and "false" if confirmed
      * @return List containing all the issues
-     * @throws IOException when connecting the server
      * @throws BadSonarQubeRequestException A request is not recognized by the server
      */
     private List<Issue> getIssuesByStatus(String confirmed)
-            throws IOException, BadSonarQubeRequestException {
+            throws BadSonarQubeRequestException {
         // results variable
         final List<Issue> res = new ArrayList<>();
 
@@ -184,20 +182,19 @@ public class IssuesProvider extends AbstractDataProvider {
 
         // for each issue we associate the corresponding programming language
         // by browsing the rules array
-        for(int i = 0 ; i < issues.length ; i++) {
-            rulesKey = issues[i].getRule();
+        for (Issue issue : issues) {
+            rulesKey = issue.getRule();
             rulesLanguage = findLanguageOf(rulesKey, rules);
-            issues[i].setLanguage(rulesLanguage);
+            issue.setLanguage(rulesLanguage);
         }
     }
 
     /**
      * Get all the issues of a project in a raw format (map)
      * @return Array containing all the issues as maps
-     * @throws IOException when connecting the server
      * @throws BadSonarQubeRequestException A request is not recognized by the server
      */
-    public List<Map> getRawIssues() throws IOException, BadSonarQubeRequestException {
+    public List<Map> getRawIssues() throws BadSonarQubeRequestException {
         // results variable
         final List<Map> res = new ArrayList<>();
 
@@ -246,12 +243,9 @@ public class IssuesProvider extends AbstractDataProvider {
     /**
      * Get all the stats on a project
      * @return A list of facets
-     * @throws IOException on resources processing error
      * @throws BadSonarQubeRequestException A request is not recognized by the server
      */
-    public List<Facet> getFacets() throws IOException, BadSonarQubeRequestException {
-        // results variable
-        final List<Facet> res = new ArrayList<>();
+    public List<Facet> getFacets() throws BadSonarQubeRequestException {
 
         // prepare the request
         final String request = String.format(getRequest(GET_FACETS_REQUEST),
@@ -260,9 +254,8 @@ public class IssuesProvider extends AbstractDataProvider {
         final JsonObject jo = request(request);
         // put wanted resources in facets array and list
         final Facet [] tmp = (getGson().fromJson(jo.get(FACETS), Facet[].class));
-        res.addAll(Arrays.asList(tmp));
 
         // return list of facets
-        return res;
+        return new ArrayList<>(Arrays.asList(tmp));
     }
 }

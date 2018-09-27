@@ -18,7 +18,6 @@
 /**
  * External data management package for the plugin.
  * Contains needed classes to manage external data as strings and parameters.
- * @author lequal
  * @version 1.0
  */
 

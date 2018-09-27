@@ -27,7 +27,6 @@ import java.util.List;
 
 /**
  * Construct the server instance information
- * @author lequal
  */
 public class ServerFactory {
 

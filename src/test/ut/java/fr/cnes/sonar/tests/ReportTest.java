@@ -23,7 +23,6 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * Check Report class
- * @author lequal
  */
 public class ReportTest {
 

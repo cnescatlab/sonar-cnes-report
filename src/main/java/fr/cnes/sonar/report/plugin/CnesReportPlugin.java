@@ -23,7 +23,6 @@ import org.sonar.api.config.PropertyDefinition;
 
 /**
  * This class is the entry point for all extensions. It is referenced in pom.xml.
- * @author lequal
  */
 public class CnesReportPlugin implements Plugin {
 

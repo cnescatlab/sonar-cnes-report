@@ -26,7 +26,6 @@ import java.util.logging.Logger;
 
 /**
  * Construct the correct providers based on SonarQube version.
- * @author lequal
  */
 public class ProviderFactory {
 

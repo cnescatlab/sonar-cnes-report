@@ -18,7 +18,6 @@
 /**
  * Page definition's package for the plugin.
  * Contains classes to declare web pages.
- * @author lequal
  * @version 2.0
  */
 

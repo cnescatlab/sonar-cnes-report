@@ -18,7 +18,6 @@
 /**
  * Web services' package for the plugin.
  * Define all available web services.
- * @author lequal
  * @version 2.0
  */
 

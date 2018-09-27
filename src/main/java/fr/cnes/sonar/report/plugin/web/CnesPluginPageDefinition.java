@@ -23,7 +23,6 @@ import org.sonar.api.web.page.PageDefinition;
 
 /**
  * Define web pages of the plugin
- * @author lequal
  */
 public class CnesPluginPageDefinition implements PageDefinition {
 

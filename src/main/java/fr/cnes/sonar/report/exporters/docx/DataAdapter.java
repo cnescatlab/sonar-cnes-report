@@ -24,7 +24,6 @@ import java.util.*;
 
 /**
  * Format resources in different structure to have an easier use
- * @author lequal
  */
 public final class DataAdapter {
 

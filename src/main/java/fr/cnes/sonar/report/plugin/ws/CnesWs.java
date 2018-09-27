@@ -21,7 +21,6 @@ import org.sonar.api.server.ws.WebService;
 
 /**
  * Expose CNES plugin api
- * @author lequal
  */
 public class CnesWs implements WebService {
 
