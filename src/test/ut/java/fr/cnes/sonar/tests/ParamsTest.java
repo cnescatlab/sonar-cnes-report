@@ -24,7 +24,6 @@ import org.junit.Test;
 
 /**
  * Tests for Params and ParamsFactory classes
- * @author garconb
  */
 public class ParamsTest {
 

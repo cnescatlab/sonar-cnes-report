@@ -24,7 +24,6 @@
 //
 ///**
 // * Contains common code for tests
-// * @author lequal
 // */
 //public class MasterTest {
 //
