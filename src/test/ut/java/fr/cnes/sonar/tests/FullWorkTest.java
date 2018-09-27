@@ -40,7 +40,6 @@
 //
 ///**
 // * Test the creation of a docx file from a template
-// * @author lequal
 // */
 //public class FullWorkTest extends MasterTest {
 //
