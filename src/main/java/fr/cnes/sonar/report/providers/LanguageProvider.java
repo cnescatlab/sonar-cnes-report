@@ -19,10 +19,10 @@ package fr.cnes.sonar.report.providers;
 
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Language;
 import fr.cnes.sonar.report.model.SonarQubeServer;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,11 +56,11 @@ public class LanguageProvider extends AbstractDataProvider {
      * Get the language corresponding to the given key
      * @param languageKey the key of the language
      * @return Language's name
-     * @throws IOException when contacting the server
      * @throws BadSonarQubeRequestException when the server does not understand the request
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
     public String getLanguage(final String languageKey)
-            throws IOException, BadSonarQubeRequestException {
+            throws BadSonarQubeRequestException, SonarQubeException {
         if(languages.isEmpty()){
             this.getLanguages();
         }
@@ -71,8 +71,9 @@ public class LanguageProvider extends AbstractDataProvider {
      * Get all the languages of SonarQube
      * @return a map with all the languages
      * @throws BadSonarQubeRequestException when the server does not understand the request
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
-    public Map<String, Language> getLanguages() throws BadSonarQubeRequestException {
+    public Map<String, Language> getLanguages() throws BadSonarQubeRequestException, SonarQubeException {
         // send a request to sonarqube server and return th response as a json object
         // if there is an error on server side this method throws an exception
         final JsonObject jo = request(String.format(getRequest(GET_LANGUAGES), getServer().getUrl()));

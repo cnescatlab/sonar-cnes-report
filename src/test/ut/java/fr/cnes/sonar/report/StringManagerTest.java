@@ -1,4 +1,4 @@
-package fr.cnes.sonar.tests;/*
+/*
  * This file is part of cnesreport.
  *
  * cnesreport is free software: you can redistribute it and/or modify
@@ -14,6 +14,8 @@ package fr.cnes.sonar.tests;/*
  * You should have received a copy of the GNU General Public License
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+package fr.cnes.sonar.report;
 
 import fr.cnes.sonar.report.utils.StringManager;
 import org.junit.Test;

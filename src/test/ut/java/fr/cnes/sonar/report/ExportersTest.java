@@ -1,4 +1,4 @@
-package fr.cnes.sonar.tests;/*
+/*
  * This file is part of cnesreport.
  *
  * cnesreport is free software: you can redistribute it and/or modify
@@ -14,6 +14,8 @@ package fr.cnes.sonar.tests;/*
  * You should have received a copy of the GNU General Public License
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+package fr.cnes.sonar.report;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exporters.JsonExporter;
@@ -41,7 +43,7 @@ public class ExportersTest extends CommonTest {
     public void docxExportTest() throws Exception {
         final DocXExporter de = new DocXExporter();
 
-        de.export(report, TARGET+"/test.docx", params.get("report.template"));
+        de.export(report, TARGET+"/test.docx", "");
     }
 
     /**
@@ -53,7 +55,7 @@ public class ExportersTest extends CommonTest {
     public void xlsxExportTest() throws Exception {
         final XlsXExporter xe = new XlsXExporter();
 
-        xe.export(report, TARGET+"/test.xlsx", params.get("issues.template"));
+        xe.export(report, TARGET+"/test.xlsx", "");
     }
 
     /**
@@ -89,7 +91,7 @@ public class ExportersTest extends CommonTest {
     public void docxExportBadDataTest() throws Exception {
         final DocXExporter de = new DocXExporter();
 
-        de.export(1, TARGET+"/test.docx", params.get("report.template"));
+        de.export(1, TARGET+"/test.docx", "");
     }
 
     /**
@@ -101,7 +103,7 @@ public class ExportersTest extends CommonTest {
     public void xlsxExportBadDataTest() throws Exception {
         final XlsXExporter xe = new XlsXExporter();
 
-        xe.export(2, TARGET+"/test.xlsx", params.get("issues.template"));
+        xe.export(2, TARGET+"/test.xlsx", "");
     }
 
     /**

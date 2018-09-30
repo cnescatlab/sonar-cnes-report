@@ -18,7 +18,7 @@
 /**
  * External data management package for the plugin.
  * Contains needed classes to manage external data as strings and parameters.
- * @version 1.0
+ * @version 2.0.0
  */
 
 package fr.cnes.sonar.report.utils;

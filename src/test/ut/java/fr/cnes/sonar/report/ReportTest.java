@@ -1,4 +1,4 @@
-package fr.cnes.sonar.tests;/*
+/*
  * This file is part of cnesreport.
  *
  * cnesreport is free software: you can redistribute it and/or modify
@@ -15,6 +15,8 @@ package fr.cnes.sonar.tests;/*
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package fr.cnes.sonar.report;
+
 import fr.cnes.sonar.report.model.Report;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,11 +27,6 @@ import static org.junit.Assert.assertEquals;
  * Check Report class
  */
 public class ReportTest {
-
-    /**
-     * Simple text for testing messages
-     */
-    private static final String TEST_STRING = "This is a test string.";
 
     /**
      * Tested entity

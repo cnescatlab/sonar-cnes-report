@@ -15,19 +15,10 @@
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.cnes.sonar.report.exceptions;
-
 /**
- * A given parameter does not exist
+ * Test package for the cnesreport app.
+ * Contains plugin's unit report.
+ * @version 2.0.0
  */
-public class UnknownParameterException extends Exception {
 
-    /**
-     * Constructor
-     * @param key key of the unknown parameter
-     */
-    public UnknownParameterException(final String key) {
-        super("Parameter " + key + " is unknown.");
-    }
-
-}
+package fr.cnes.sonar.report.factory;

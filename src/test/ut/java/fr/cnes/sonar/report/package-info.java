@@ -15,19 +15,10 @@
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.cnes.sonar.report.exceptions;
-
 /**
- * A given parameter is not correct
+ * Test package for the plugin.
+ * Contains plugin's unit report.
+ * @version 2.0.0
  */
-public class MalformedParameterException extends Exception {
 
-    /**
-     * Constructor
-     * @param key Key of the malformed parameter
-     */
-    public MalformedParameterException(final String key) {
-        super("Parameter " + key + " is incorrect.");
-    }
-
-}
+package fr.cnes.sonar.report;

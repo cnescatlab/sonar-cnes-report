@@ -19,13 +19,13 @@ package fr.cnes.sonar.report.providers;
 
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Facet;
 import fr.cnes.sonar.report.model.Issue;
 import fr.cnes.sonar.report.model.Rule;
 import fr.cnes.sonar.report.model.SonarQubeServer;
 import fr.cnes.sonar.report.utils.StringManager;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,22 +63,22 @@ public class IssuesProvider extends AbstractDataProvider {
     /**
      * Get all the real issues of a project
      * @return Array containing all the issues
-     * @throws IOException when connecting the server
      * @throws BadSonarQubeRequestException A request is not recognized by the server
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
     public List<Issue> getIssues()
-            throws IOException, BadSonarQubeRequestException {
+            throws BadSonarQubeRequestException, SonarQubeException {
         return getIssuesByStatus(CONFIRMED);
     }
 
     /**
      * Get all the unconfirmed issues of a project
      * @return Array containing all the issues
-     * @throws IOException when connecting the server
      * @throws BadSonarQubeRequestException A request is not recognized by the server
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
     public List<Issue> getUnconfirmedIssues()
-            throws IOException, BadSonarQubeRequestException {
+            throws BadSonarQubeRequestException, SonarQubeException {
         return getIssuesByStatus(UNCONFIRMED);
     }
 
@@ -87,9 +87,10 @@ public class IssuesProvider extends AbstractDataProvider {
      * @param confirmed equals "true" if Unconfirmed and "false" if confirmed
      * @return List containing all the issues
      * @throws BadSonarQubeRequestException A request is not recognized by the server
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
     private List<Issue> getIssuesByStatus(String confirmed)
-            throws BadSonarQubeRequestException {
+            throws BadSonarQubeRequestException, SonarQubeException {
         // results variable
         final List<Issue> res = new ArrayList<>();
 
@@ -193,8 +194,9 @@ public class IssuesProvider extends AbstractDataProvider {
      * Get all the issues of a project in a raw format (map)
      * @return Array containing all the issues as maps
      * @throws BadSonarQubeRequestException A request is not recognized by the server
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
-    public List<Map> getRawIssues() throws BadSonarQubeRequestException {
+    public List<Map> getRawIssues() throws BadSonarQubeRequestException, SonarQubeException {
         // results variable
         final List<Map> res = new ArrayList<>();
 
@@ -244,8 +246,9 @@ public class IssuesProvider extends AbstractDataProvider {
      * Get all the stats on a project
      * @return A list of facets
      * @throws BadSonarQubeRequestException A request is not recognized by the server
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
-    public List<Facet> getFacets() throws BadSonarQubeRequestException {
+    public List<Facet> getFacets() throws BadSonarQubeRequestException, SonarQubeException {
 
         // prepare the request
         final String request = String.format(getRequest(GET_FACETS_REQUEST),

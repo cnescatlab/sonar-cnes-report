@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.SonarQubeServer;
 import fr.cnes.sonar.report.utils.StringManager;
 
@@ -261,9 +262,10 @@ public abstract class AbstractDataProvider {
      * @param request Url for the request, for example http://sonarqube:1234/api/toto/list
      * @return Server's response as a JsonObject
      * @throws BadSonarQubeRequestException if SonarQube Server sent an error
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
     public JsonObject request(final String request)
-            throws BadSonarQubeRequestException {
+            throws BadSonarQubeRequestException, SonarQubeException {
         // do the request to the server and return a string answer
         final String raw = stringRequest(request);
 
@@ -293,8 +295,9 @@ public abstract class AbstractDataProvider {
      * Get the raw string response
      * @param request the raw server of the request
      * @return the server's response as a string
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
-    protected String stringRequest(final String request) {
+    protected String stringRequest(final String request) throws SonarQubeException {
         // prepare the request by replacing some relevant special characters
         // replace spaces
         String preparedRequest = request.replaceAll(" ", "%20");

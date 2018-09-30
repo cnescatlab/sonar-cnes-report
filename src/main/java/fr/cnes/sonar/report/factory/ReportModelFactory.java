@@ -25,8 +25,6 @@ import fr.cnes.sonar.report.model.SonarQubeServer;
 import fr.cnes.sonar.report.providers.*;
 import fr.cnes.sonar.report.utils.ReportConfiguration;
 
-import java.io.IOException;
-
 /**
  * Construct the report from resources providers.
  */
@@ -69,12 +67,11 @@ public class ReportModelFactory {
     /**
      * Create a report from program resources
      * @return A complete report resources model
-     * @throws IOException on json problem
      * @throws BadSonarQubeRequestException when a request to the server is not well-formed
      * @throws UnknownQualityGateException a quality gate is not correct
      * @throws SonarQubeException When an error occurred from SonarQube server.
      */
-    public Report create() throws IOException, BadSonarQubeRequestException, UnknownQualityGateException, SonarQubeException {
+    public Report create() throws BadSonarQubeRequestException, UnknownQualityGateException, SonarQubeException {
         // the new report to return
         final Report report = new Report();
 

@@ -19,6 +19,7 @@ package fr.cnes.sonar.report.providers;
 
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
 import fr.cnes.sonar.report.model.Project;
 import fr.cnes.sonar.report.model.QualityGate;
@@ -56,9 +57,10 @@ public class QualityGateProvider extends AbstractDataProvider {
      * Get all the quality gates.
      * @return Array containing all the issues.
      * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
     public List<QualityGate> getQualityGates()
-            throws BadSonarQubeRequestException {
+            throws BadSonarQubeRequestException, SonarQubeException {
         // result list
         final List<QualityGate> res = new ArrayList<>();
 
@@ -98,9 +100,10 @@ public class QualityGateProvider extends AbstractDataProvider {
      * @return The Quality Gate.
      * @throws UnknownQualityGateException When there is an error on a quality gate.
      * @throws BadSonarQubeRequestException When the request is incorrect.
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
     public QualityGate getProjectQualityGate()
-            throws UnknownQualityGateException, BadSonarQubeRequestException {
+            throws UnknownQualityGateException, BadSonarQubeRequestException, SonarQubeException {
 
         // get all the quality gates
         final List<QualityGate> qualityGates = getQualityGates();
@@ -162,9 +165,10 @@ public class QualityGateProvider extends AbstractDataProvider {
      * @return The project quality gate.
      * @throws BadSonarQubeRequestException Malformed request.
      * @throws UnknownQualityGateException Quality gate does not exist.
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
     private QualityGate getProjectQualityGateOld(final JsonObject jsonObject, final Iterator<QualityGate> iterator)
-            throws BadSonarQubeRequestException, UnknownQualityGateException {
+            throws BadSonarQubeRequestException, UnknownQualityGateException, SonarQubeException {
 
         QualityGate tmp;
         QualityGate res = null;
