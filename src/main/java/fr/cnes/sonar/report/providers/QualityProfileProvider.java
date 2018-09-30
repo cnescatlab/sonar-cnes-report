@@ -19,6 +19,7 @@ package fr.cnes.sonar.report.providers;
 
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.*;
 import fr.cnes.sonar.report.utils.StringManager;
 
@@ -46,9 +47,10 @@ public class QualityProfileProvider extends AbstractDataProvider {
      * @return Array containing all the quality profiles of a project.
      * @param pOrganization Specify organization in which the project is.
      * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
     public List<QualityProfile> getQualityProfiles(final String pOrganization)
-            throws BadSonarQubeRequestException {
+            throws BadSonarQubeRequestException, SonarQubeException {
         // initializing returned list
         final List<QualityProfile> res = new ArrayList<>();
 

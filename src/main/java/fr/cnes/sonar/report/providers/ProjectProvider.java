@@ -19,12 +19,11 @@ package fr.cnes.sonar.report.providers;
 
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.ProfileMetaData;
 import fr.cnes.sonar.report.model.Project;
 import fr.cnes.sonar.report.model.SonarQubeServer;
 import fr.cnes.sonar.report.utils.StringManager;
-
-import java.io.IOException;
 
 /**
  * Provides basic project's information
@@ -51,10 +50,10 @@ public class ProjectProvider extends AbstractDataProvider {
      * Get the project corresponding to the given key.
      * @param projectKey the key of the project.
      * @return A simple project.
-     * @throws IOException when contacting the server.
      * @throws BadSonarQubeRequestException when the server does not understand the request.
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
-    public Project getProject(final String projectKey) throws IOException, BadSonarQubeRequestException {
+    public Project getProject(final String projectKey) throws BadSonarQubeRequestException, SonarQubeException {
         // send a request to sonarqube server and return th response as a json object
         // if there is an error on server side this method throws an exception
         JsonObject jo = request(String.format(getRequest(GET_PROJECT_REQUEST),
@@ -100,8 +99,9 @@ public class ProjectProvider extends AbstractDataProvider {
      * @param projectKey the key of the project.
      * @return True if the project exists.
      * @throws BadSonarQubeRequestException when the server does not understand the request.
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
-    public boolean hasProject(final String projectKey) throws BadSonarQubeRequestException {
+    public boolean hasProject(final String projectKey) throws BadSonarQubeRequestException, SonarQubeException {
         // send a request to sonarqube server and return th response as a json object
         // if there is an error on server side this method throws an exception
         final JsonObject jsonObject = request(String.format(getRequest(GET_PROJECT_REQUEST),

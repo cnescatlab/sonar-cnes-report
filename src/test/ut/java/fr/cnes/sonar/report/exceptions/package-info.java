@@ -15,19 +15,10 @@
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.cnes.sonar.report.exceptions;
-
 /**
- * A given parameter is not reliable
+ * Test package for the cnesreport app.
+ * Contains plugin's unit report.
+ * @version 2.0.0
  */
-public class MissingParameterException extends Exception {
 
-    /**
-     * Constructor
-     * @param key Key of the missing parameter
-     */
-    public MissingParameterException(final String key) {
-        super("Parameter " + key + " is missing.");
-    }
-
-}
+package fr.cnes.sonar.report.exceptions;

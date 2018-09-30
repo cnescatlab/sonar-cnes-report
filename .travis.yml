@@ -10,7 +10,12 @@ jdk:
 
 env:
   - sonarqube: 5.6.7
+  - sonarqube: 6.0
+  - sonarqube: 6.1
+  - sonarqube: 6.2
   - sonarqube: 6.3.1
+  - sonarqube: 6.4
+  - sonarqube: 6.5
   - sonarqube: 6.6
   - sonarqube: 6.7
   - sonarqube: 6.7.1

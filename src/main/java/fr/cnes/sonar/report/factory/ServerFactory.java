@@ -18,6 +18,7 @@
 package fr.cnes.sonar.report.factory;
 
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.SonarQubeServer;
 import fr.cnes.sonar.report.providers.SonarQubeInfoProvider;
 
@@ -31,7 +32,7 @@ public class ServerFactory {
 
     /** List of SonarQube versions which are supported by cnesreport. */
     private static final List<String> SUPPORTED_VERSIONS = Arrays.asList(
-            "5.6.*", "6.7.*", "7.*");
+            "5.6.*", "6.*", "7.*");
 
     /** Url of the SonarQube server. */
     private String url;
@@ -53,8 +54,9 @@ public class ServerFactory {
      * Create a server instance from SonarQube API.
      * @return A complete report resources model.
      * @throws BadSonarQubeRequestException When a request to the server is not well-formed.
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
-    public SonarQubeServer create() throws BadSonarQubeRequestException {
+    public SonarQubeServer create() throws BadSonarQubeRequestException, SonarQubeException {
         // the new report to return
         final SonarQubeServer server = new SonarQubeServer();
 

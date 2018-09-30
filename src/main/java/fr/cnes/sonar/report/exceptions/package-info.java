@@ -18,7 +18,7 @@
 /**
  * Exceptions' package for the plugin.
  * Contains exception classes to define program's specific errors.
- * @version 1.0
+ * @version 2.0.0
  */
 
 package fr.cnes.sonar.report.exceptions;
