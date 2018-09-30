@@ -58,6 +58,10 @@ public final class XlsXTools {
      */
     private static final int ISSUE_STATUS_INDEX = 8;
     /**
+     * Column index for issue's status
+     */
+    private static final int ISSUE_COMMENTS_INDEX = 9;
+    /**
      * Status for false positive / wont fix
      */
     private static final String RESOLVED = "RESOLVED";
@@ -212,7 +216,7 @@ public final class XlsXTools {
             // Define the resources range including headers
             final AreaReference selectedDataRange = new AreaReference(
                     new CellReference(0, 0),
-                    new CellReference(issues.size(), 8));
+                    new CellReference(issues.size(), 9));
 
             // Set Range to the Table
             cttable.setRef(selectedDataRange.formatAsString());
@@ -240,6 +244,7 @@ public final class XlsXTools {
                     status = issue.getResolution();
                 }
                 row.createCell(ISSUE_STATUS_INDEX).setCellValue(status);
+                row.createCell(ISSUE_COMMENTS_INDEX).setCellValue(issue.getComments());
 
                 // go to the next line
                 numRow++;
