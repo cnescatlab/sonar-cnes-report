@@ -21,7 +21,6 @@ import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.model.SonarQubeServer;
 import fr.cnes.sonar.report.providers.SonarQubeInfoProvider;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -53,10 +52,9 @@ public class ServerFactory {
     /**
      * Create a server instance from SonarQube API.
      * @return A complete report resources model.
-     * @throws IOException On json problem.
      * @throws BadSonarQubeRequestException When a request to the server is not well-formed.
      */
-    public SonarQubeServer create() throws IOException, BadSonarQubeRequestException {
+    public SonarQubeServer create() throws BadSonarQubeRequestException {
         // the new report to return
         final SonarQubeServer server = new SonarQubeServer();
 

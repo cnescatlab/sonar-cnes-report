@@ -32,137 +32,44 @@ import java.util.logging.Logger;
  */
 public final class StringManager {
 
-    /**
-     * Message logged when parameters are correctly preprocessed
-     */
-    public static final String SUCCESSFULLY_PROCESSED_PARAMETERS =
-            "Successfully processed parameters.";
-    /**
-     * Just an empty string
-     */
+    /** Just an empty string. */
     public static final String EMPTY = "";
-    /**
-     * Just a tabulation
-     */
+    /** Just a tabulation. */
     public static final String TAB = "\t";
-    /**
-     * Just a new line
-     */
-    public static final String NEW_LINE = "\n";
-    /**
-     * Just a space
-     */
+    /** Just a space. */
     public static final String SPACE = " ";
-    /**
-     * Just a space for URI
-     */
+    /** Just a space for URI. */
     public static final String URI_SPACE = "%20";
-    /**
-     * Name of the property giving the author's name
-     */
-    public static final String REPORT_AUTHOR = "report.author";
-    /**
-     * Name of the property giving the date to print on the report
-     */
-    public static final String REPORT_DATE = "report.date";
-    /**
-     * Name of the property saying if we want (yes) to export configuration files or not (no)
-     */
-    public static final String REPORT_CONF = "report.conf";
-    /**
-     * Name of the property giving the path to the output
-     */
-    public static final String REPORT_PATH = "report.path";
-    /**
-     * Name of the property giving the locale
-     */
-    public static final String REPORT_LOCALE = "report.locale";
-    /**
-     * Name of the property giving the path to the docx template
-     */
-    public static final String REPORT_TEMPLATE = "report.template";
-    /**
-     * Name of the property giving the path to the xlsx template
-     */
-    public static final String ISSUES_TEMPLATE = "issues.template";
-    /**
-     * Date pattern
-     */
-    public static final String DATE_PATTERN = "yyyy-MM-dd";
-    /**
-     * Prefix of all parameters
-     */
-    public static final String PARAMETER_START = "--";
-    /**
-     * Name for properties' file about report
-     */
+    /** Name for properties' file about report. */
     public static final String REPORT_PROPERTIES = "report.properties";
-    /**
-     * Name of the property giving the server server
-     */
+    /** Name of the property giving the server server. */
     public static final String SONAR_URL = "sonar.url";
-    /**
-     * Name of the property giving the token to authenticate to SonarQube
-     */
+    /** Name of the property giving the token to authenticate to SonarQube. */
     public static final String SONAR_TOKEN = "sonar.token";
-    /**
-     * Name of the property giving the id of the project to analyze
-     */
-    public static final String SONAR_PROJECT_ID = "sonar.project.id";
-    /**
-     * Logged message when there are too much issues to export.
-     */
+    /** Logged message when there are too much issues to export. */
     public static final String ISSUES_OVERFLOW_MSG = "log.overflow.msg";
-    /**
-     * Just a quote with a backslash for regex
-     */
-    public static final String QUOTES = "\"";
-    /**
-     * Just the word rule
-     */
-    public static final String RULES = "rules";
-    /**
-     * Help message to display when a user misused this program
-     */
-    public static final String HELP_MESSAGE = "Welcome to Sonar CNES Report.\n" +
-            "Here are the list of parameters you can use:\n" +
-            "  > --sonar.server [mandatory]\n" +
-            "  > --sonar.token\n" +
-            "  > --sonar.project.id [mandatory]\n" +
-            "  > --report.author\n" +
-            "  > --report.date\n" +
-            "  > --report.path\n" +
-            "  > --report.conf [yes|no]\n" +
-            "  > --report.locale [fr_FR|en_US]\n" +
-            "  > --report.template\n" +
-            "  > --issues.template\n" +
-            "\nExample :\n" +
-            "java -jar sonar-report-cnes.jar --sonar.server http://sonarqube:9000" +
-            " --sonar.project.id cat";
+    /** Pattern to format the date. */
+    public static final String DATE_PATTERN = "yyyy-MM-dd";
+    /** Default path to the target diretory for report files. */
+    public static final String DEFAULT_OUTPUT = "report.path";
+    /** Default language for the report. */
+    public static final String DEFAULT_LANGUAGE = "report.locale";
+    /** Default name for the author. */
+    public static final String DEFAULT_AUTHOR = "report.author";
 
-    /**
-     * Logger for StringManager
-     */
+    /** Logger for StringManager. */
     private static final Logger LOGGER = Logger.getLogger(StringManager.class.getCanonicalName());
     
-    /**
-     * Contain all the properties related to the report
-     */
+    /** Contain all the properties related to the report. */
     private static Properties properties;
 
-    /**
-     * Contains internationalized fields
-     */
+    /** Contains internationalized fields. */
     private static ResourceBundle messages;
 
-    /**
-     * Define the language of the program
-     */
+    /** Define the language of the program. */
     private static Locale currentLocale;
 
-    /**
-     * Unique instance of this class (singleton)
-     */
+    /** Unique instance of this class (singleton). */
     private static StringManager ourInstance = null;
 
     //
@@ -201,7 +108,7 @@ public final class StringManager {
     }
 
     /**
-     * Private constructor to singletonize the class
+     * Private constructor to singletonize the class.
      */
     private StringManager() {}
 

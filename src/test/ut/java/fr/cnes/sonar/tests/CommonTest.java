@@ -16,7 +16,6 @@ package fr.cnes.sonar.tests;/*
  */
 
 import fr.cnes.sonar.report.model.*;
-import fr.cnes.sonar.report.utils.Params;
 import org.junit.Before;
 
 import java.util.*;

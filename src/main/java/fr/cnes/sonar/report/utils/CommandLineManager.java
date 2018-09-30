@@ -52,7 +52,7 @@ public class CommandLineManager {
             {"a", "author", Boolean.TRUE.toString(), "Name of the report writer."},
             {"d", "date", Boolean.TRUE.toString(), "Date for the report. Default: current date."},
             {"c", "disable-conf", Boolean.FALSE.toString(), "Disable export of quality configuration used during analysis."},
-            {"d", "disable-report", Boolean.FALSE.toString(), "Disable report generation."},
+            {"w", "disable-report", Boolean.FALSE.toString(), "Disable report generation."},
             {"e", "disable-spreadsheet", Boolean.FALSE.toString(), "Disable spreadsheet generation."},
             {"r", "template-report", Boolean.TRUE.toString(), "Path to the report template. Default: usage of internal template."},
             {"x", "template-spreadsheet", Boolean.TRUE.toString(), "Path to the spreadsheet template. Default: usage of internal template."}
@@ -170,10 +170,21 @@ public class CommandLineManager {
      * @return A string containing the value or an empty string.
      */
     public String getOptionValue(final String pOption) {
-        String result = "";
+        return this.getOptionValue(pOption, "");
+    }
+
+    /**
+     * Return the value of the corresponding option.
+     *
+     * @param pOption Name of the option.
+     * @param pDefault Default value of the option.
+     * @return A string containing the value or a default string.
+     */
+    public String getOptionValue(final String pOption, final String pDefault) {
+        String result = pDefault;
 
         if (null != commandLine) {
-            result = commandLine.getOptionValue(pOption);
+            result = commandLine.getOptionValue(pOption, pDefault);
         }
 
         return result;

@@ -26,7 +26,7 @@
 //import fr.cnes.sonar.report.exporters.XmlExporter;
 //import fr.cnes.sonar.report.exporters.docx.DocXExporter;
 //import fr.cnes.sonar.report.exporters.xlsx.XlsXExporter;
-//import fr.cnes.sonar.report.factory.ReportFactory;
+//import fr.cnes.sonar.report.factory.ReportModelFactory;
 //import fr.cnes.sonar.report.utils.StringManager;
 //import fr.cnes.sonar.report.model.Report;
 //import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
