@@ -7,10 +7,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * Exports the report in .docx format
@@ -69,9 +66,11 @@ public class XlsXExporter implements IExporter {
 
         // open the template
         try(
-                FileInputStream excelFile = new FileInputStream(file);
-                Workbook workbook = new XSSFWorkbook(excelFile);
-                FileOutputStream fileOut = new FileOutputStream(outputFilePath)) {
+            InputStream excelFile = file.exists() ?
+                    new FileInputStream(file) : getClass().getResourceAsStream("/template/issues-template.xlsx");
+            Workbook workbook = new XSSFWorkbook(excelFile);
+            FileOutputStream fileOut = new FileOutputStream(outputFilePath)
+        ) {
 
             // retrieve the sheet aiming to contain selected resources
             final XSSFSheet selectedSheet = (XSSFSheet) workbook.getSheet(ISSUES_SHEET_NAME);

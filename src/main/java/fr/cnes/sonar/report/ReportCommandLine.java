@@ -17,30 +17,22 @@
 
 package fr.cnes.sonar.report;
 
-import fr.cnes.sonar.report.exceptions.*;
-import fr.cnes.sonar.report.exporters.IExporter;
-import fr.cnes.sonar.report.exporters.JsonExporter;
-import fr.cnes.sonar.report.exporters.XmlExporter;
-import fr.cnes.sonar.report.exporters.docx.DocXExporter;
-import fr.cnes.sonar.report.exporters.xlsx.XlsXExporter;
+import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
+import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
+import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
 import fr.cnes.sonar.report.factory.ReportFactory;
+import fr.cnes.sonar.report.factory.ReportModelFactory;
 import fr.cnes.sonar.report.factory.ServerFactory;
-import fr.cnes.sonar.report.model.ProfileMetaData;
-import fr.cnes.sonar.report.model.QualityProfile;
 import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.model.SonarQubeServer;
-import fr.cnes.sonar.report.utils.Params;
-import fr.cnes.sonar.report.utils.ParamsFactory;
-import fr.cnes.sonar.report.utils.StringManager;
+import fr.cnes.sonar.report.utils.ReportConfiguration;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.xmlbeans.XmlException;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -63,42 +55,8 @@ public final class ReportCommandLine {
         (new File(org.apache.commons.io.FileUtils.getUserDirectory().getPath().concat("/.cnesreport/log"))).mkdirs();
     }
 
-	 /**
-     * Property for the word report filename
-     */
-    public static final String REPORT_FILENAME = "report.output";
-    /**
-     * Property for the excel report filename
-     */
-    public static final String ISSUES_FILENAME = "issues.output";
-    /**
-     * Pattern for the name of the directory containing configuration files
-     */
-    public static final String CONF_FOLDER_PATTERN = "%s/conf";
-    /**
-     * Error message returned when the program cannot create a folder because it already exists
-     */
-    public static final String CNES_MKDIR_ERROR = "Impossible to create the following directory: %s";
-    /**
-     * Logger of this class
-     */
-    private static final Logger LOGGER = Logger.getLogger(ReportCommandLine.class.getName());
-    /**
-     * Placeholder for the date of reporting
-     */
-    private static final String DATE = "DATE";
-    /**
-     * Placeholder for the name of the project
-     */
-    private static final String NAME = "NAME";
-    /**
-     * Pattern to format the date
-     */
-    private static final String DATE_PATTERN = "yyyy-MM-dd";
-    /**
-     * Name of the property to find the base of report location
-     */
-    public static final String REPORT_PATH = "report.path";
+    /** Logger of this class */
+    private static final Logger LOGGER = Logger.getLogger(ReportFactory.class.getName());
 
     /**
      * Private constructor to not be able to instantiate it.
@@ -106,169 +64,65 @@ public final class ReportCommandLine {
     private ReportCommandLine(){}
 
     /**
-     * Main method
-     * See HELP_MESSAGE for more information about using this program
-     * Entry point of the program
-     * @param args arguments that will be preprocessed
+     * Main method.
+     * See help message for more information about using this program.
+     * Entry point of the program.
+     * @param args Arguments that will be preprocessed.
      */
-    public static void main(String[] args)  {
+    public static void main(final String[] args)  {
         // main catches all exceptions
         try {
-            // preparing args
-            final Params params = new ParamsFactory().create(args);
+            // Log message.
+            String message;
 
-            // extract params
-            final String url = params.get("sonar.url");
-            final String token = params.get("sonar.token");
-            final String project = params.get("sonar.project.id");
-            final String author = params.get("report.author");
-            final String date = params.get("report.date");
-            final String reportPath = params.get(REPORT_PATH);
-            final String reportTemplate = params.get(StringManager.REPORT_TEMPLATE);
-            final String issuesTemplate = params.get(StringManager.ISSUES_TEMPLATE);
+            // Parse command line arguments.
+            final ReportConfiguration conf = ReportConfiguration.create(args);
+
+            // Display version information and exit.
+            if(conf.isVersion()) {
+                final String name = ReportCommandLine.class.getPackage().getImplementationTitle();
+                final String version = ReportCommandLine.class.getPackage().getImplementationVersion();
+                final String vendor = ReportCommandLine.class.getPackage().getImplementationVendor();
+                message = String.format("%s %s by %s", name, version, vendor);
+                LOGGER.info(message);
+                System.exit(0);
+            }
 
             // Print information about SonarQube.
-            LOGGER.info(String.format("SonarQube URL: %s", url));
+            message = String.format("SonarQube URL: %s", conf.getServer());
+            LOGGER.info(message);
 
             // Initialize connexion with SonarQube and retrieve primitive information
-            final SonarQubeServer server = new ServerFactory(url, token).create();
+            final SonarQubeServer server = new ServerFactory(conf.getServer(), conf.getToken()).create();
 
-            LOGGER.info(String.format("SonarQube online: %s", server.isUp()));
+            message = String.format("SonarQube online: %s", server.isUp());
+            LOGGER.info(message);
 
             if(!server.isUp()) {
                 throw new SonarQubeException("Impossible to reach SonarQube instance.");
             }
 
-            LOGGER.info(String.format("Detected SonarQube version: %s", server.getNormalizedVersion()));
+            message = String.format("Detected SonarQube version: %s", server.getNormalizedVersion());
+            LOGGER.info(message);
 
             if(!server.isSupported()) {
                 throw new SonarQubeException("SonarQube instance is not supported by cnesreport.");
             }
 
-            // generate report
-            report(server, token, project, author, date, reportPath, reportTemplate, issuesTemplate);
+            // Generate the model of the report.
+            final Report model = new ReportModelFactory(server, conf).create();
+            // Generate results files.
+            ReportFactory.report(conf, model);
 
-            LOGGER.info("Report generation: SUCCESS");
+            message = "Report generation: SUCCESS";
+            LOGGER.info(message);
 
         } catch (BadExportationDataTypeException | BadSonarQubeRequestException | IOException |
-                UnknownQualityGateException | OpenXML4JException | XmlException e) {
+                UnknownQualityGateException | OpenXML4JException | XmlException | SonarQubeException e) {
             // it logs all the stack trace
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
-        } catch (SonarQubeException e) {
-            LOGGER.severe(e.getMessage());
-        } catch (UnknownParameterException | MalformedParameterException | MissingParameterException e) {
-            // it logs all the stack trace
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            // prints the help
-            LOGGER.log(Level.INFO, StringManager.HELP_MESSAGE);
+            System.exit(-1);
         }
-    }
-
-    /**
-     * Generate report from simple parameters.
-     * @param server SonarQube server.
-     * @param token Token of the SonarQube user.
-     * @param project Project ID.
-     * @param author Author of the report.
-     * @param date Date of the report.
-     * @param reportPath Output path.
-     * @param reportTemplate Path to the general report template.
-     * @param issuesTemplate Path to the issues report template.
-     * @throws IOException Caused by I/O.
-     * @throws BadSonarQubeRequestException Caused by requests.
-     * @throws UnknownQualityGateException Caused by quality gates.
-     * @throws XmlException Caused by XML error.
-     * @throws BadExportationDataTypeException Caused by export.
-     * @throws OpenXML4JException Caused by Apache library.
-     * @throws SonarQubeException Occurred on server side error.
-     */
-    public static void report(final SonarQubeServer server, final String token, final String project,
-                              final String author, final String date, final String reportPath,
-                              final String reportTemplate, final String issuesTemplate)
-            throws IOException, BadSonarQubeRequestException, UnknownQualityGateException,
-            XmlException, BadExportationDataTypeException, OpenXML4JException, SonarQubeException {
-
-        // Files exporters : export the resources in the correct file type
-        final DocXExporter docXExporter = new DocXExporter();
-        final XmlExporter profileExporter = new XmlExporter();
-        final JsonExporter gateExporter = new JsonExporter();
-        final XlsXExporter issuesExporter = new XlsXExporter();
-
-        // full path to the configuration folder
-        final String confDirectory = String.format(CONF_FOLDER_PATTERN, reportPath);
-
-        // Producing the report
-        final Report superReport = new ReportFactory(server, token, project, author, date).create();
-
-        // create the configuration folder
-        final File configFolder = new File(confDirectory);
-        final boolean success = configFolder.mkdirs();
-        if (!success && !configFolder.exists()) {
-            // Directory creation failed
-            LOGGER.warning(String.format(CNES_MKDIR_ERROR, confDirectory));
-        }
-
-        // Export all
-        // export each linked quality profile
-        exportAllQualityProfiles(superReport, profileExporter, confDirectory);
-
-        // quality gate information
-        final String qualityGateName = superReport.getQualityGate().getName();
-        final String qualityGateConf = superReport.getQualityGate().getConf();
-        // export the quality gate
-        gateExporter.export(qualityGateConf, confDirectory, qualityGateName);
-
-        // prepare docx report's filename
-        final String docXFilename = formatFilename(REPORT_FILENAME,
-                superReport.getProjectName());
-        // export the full docx report
-        docXExporter.export(superReport, reportPath+"/"+docXFilename, reportTemplate);
-
-        // construct the xlsx filename by replacing date and name
-        final String xlsXFilename = formatFilename(ISSUES_FILENAME,
-                superReport.getProjectName());
-        // export the xlsx issues' list
-        issuesExporter.export(superReport, reportPath+"/"+xlsXFilename, issuesTemplate);
-    }
-
-    /**
-     * Export all quality profiles related to a given report as xml file depending on exporter.
-     * @param report Modeling data containing data to export.
-     * @param exporter Class given the way to export previous data.
-     * @param dir Directory for output.
-     * @throws XmlException Thrown on xml error.
-     * @throws BadExportationDataTypeException Thrown if the data does not correspond to exporter.
-     * @throws OpenXML4JException Thrown on OpenXML error.
-     * @throws IOException Thrown on files error.
-     */
-    public static void exportAllQualityProfiles(final Report report, final IExporter exporter, final String dir) throws
-            XmlException, BadExportationDataTypeException, OpenXML4JException, IOException {
-        for(ProfileMetaData metaData : report.getProject().getQualityProfiles()) {
-            final Iterator<QualityProfile> iterator =
-                    report.getQualityProfiles().iterator();
-            boolean goOn = true;
-            while(iterator.hasNext() && goOn) {
-                final QualityProfile qp = iterator.next();
-                if(qp.getKey().equals(metaData.getKey())) {
-                    exporter.export(qp.getConf(), dir, qp.getKey());
-                    goOn = false;
-                }
-            }
-        }
-    }
-
-    /**
-     * Format a given filename pattern
-     * Add the date and the project's name
-     * @param propertyName Name of pattern's property
-     * @param projectName Name of the current project
-     * @return a formatted filename
-     */
-    public static String formatFilename(String propertyName, String projectName) {
-        // construct the filename by replacing date and name
-        return StringManager.getProperty(propertyName)
-                .replaceAll(DATE, new SimpleDateFormat(DATE_PATTERN).format(new Date()))
-                .replaceAll(NAME, projectName);
     }
 
 }

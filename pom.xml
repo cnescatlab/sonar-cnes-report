@@ -172,6 +172,8 @@
                     <archive>
                         <manifest>
                             <mainClass>fr.cnes.sonar.report.ReportCommandLine</mainClass>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
                     </archive>
                     <descriptorRefs>

@@ -20,7 +20,6 @@ package fr.cnes.sonar.report.exporters;
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.model.Issue;
 import fr.cnes.sonar.report.model.Report;
-import fr.cnes.sonar.report.utils.ParamsFactory;
 
 import java.io.File;
 import java.util.List;
@@ -31,10 +30,8 @@ import java.util.logging.Logger;
  */
 public class ConsoleExporter implements IExporter {
 
-    /**
-     * logger
-     */
-    private static final Logger LOGGER = Logger.getLogger(ParamsFactory.class.getCanonicalName());
+    /** Default logger. */
+    private final Logger LOGGER = Logger.getLogger(ConsoleExporter.class.getName());
 
     /**
      * Overridden export for console
@@ -56,14 +53,19 @@ public class ConsoleExporter implements IExporter {
 
         // get issues
         final List<Issue> issues = report.getIssues();
-        LOGGER.info("key\t" + "project\t" + "component\t" + "type\t" + "severity\t" +
-                "message\t" + "line\t" + "status\t" + "\t");
+        String message = "key\tproject\tcomponent\ttype\tseverity\tmessage\tline\tstatus\t";
+        LOGGER.info(message);
+
         // log all issues
         for(Issue issue : issues) {
-            LOGGER.info(issue.toString());
+            message = issue.toString();
+            LOGGER.info(message);
         }
+
         // log number of issues
-        LOGGER.info("Nombre total de violations : " + issues.size());
+        message = String.format("Nombre total de violations : %s", issues.size());
+        LOGGER.info(message);
+
         return null;
     }
 }

@@ -17,107 +17,168 @@
 
 package fr.cnes.sonar.report.factory;
 
-import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
-import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
+import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
+import fr.cnes.sonar.report.exporters.IExporter;
+import fr.cnes.sonar.report.exporters.JsonExporter;
+import fr.cnes.sonar.report.exporters.XmlExporter;
+import fr.cnes.sonar.report.exporters.docx.DocXExporter;
+import fr.cnes.sonar.report.exporters.xlsx.XlsXExporter;
+import fr.cnes.sonar.report.model.ProfileMetaData;
+import fr.cnes.sonar.report.model.QualityProfile;
 import fr.cnes.sonar.report.model.Report;
-import fr.cnes.sonar.report.model.SonarQubeServer;
-import fr.cnes.sonar.report.providers.*;
+import fr.cnes.sonar.report.utils.ReportConfiguration;
+import fr.cnes.sonar.report.utils.StringManager;
+import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
+import org.apache.xmlbeans.XmlException;
 
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.logging.Logger;
 
-/**
- * Construct the report from resources providers
- */
 public class ReportFactory {
 
-    /**
-     * SonarQube server.
-     */
-    private SonarQubeServer server;
-    /**
-     * Token of the SonarQube user.
-     */
-    private String token;
-    /**
-     * Id of the project to report.
-     */
-    private String project;
-    /**
-     * Author of the project to report.
-     */
-    private String author;
-    /**
-     * Date of the reporting.
-     */
-    private String date;
+    /** Property for the word report filename. */
+    private static final String REPORT_FILENAME = "report.output";
+    /** Property for the excel report filename. */
+    private static final String ISSUES_FILENAME = "issues.output";
+    /** Pattern for the name of the directory containing configuration files. */
+    private static final String CONF_FOLDER_PATTERN = "%s/conf";
+    /** Error message returned when the program cannot create a folder because it already exists. */
+    private static final String CNES_MKDIR_ERROR = "Impossible to create the following directory: %s";
+    /** Placeholder for the base directory of reporting. */
+    private static final String BASEDIR = "BASEDIR";
+    /** Placeholder for the date of reporting. */
+    private static final String DATE = "DATE";
+    /** Placeholder for the name of the project. */
+    private static final String NAME = "NAME";
+    /** Logger of this class. */
+    private static final Logger LOGGER = Logger.getLogger(ReportFactory.class.getName());
 
     /**
-     * Complete constructor
-     * @param pServer Value for SQ server.
-     * @param pToken Value for token.
-     * @param pProject Value for project id.
-     * @param pAuthor Name of the author.
-     * @param pDate Date of the reporting.
+     * Private constructor.
      */
-    public ReportFactory(final SonarQubeServer pServer, final String pToken, final String pProject, final String pAuthor, final String pDate) {
-        this.server = pServer;
-        this.token = pToken;
-        this.project = pProject;
-        this.author = pAuthor;
-        this.date = pDate;
+    private ReportFactory() {}
+
+    /**
+     * Generate report from simple parameters.
+     * @param configuration Contains all configuration details.
+     * @param model Contains the report as a Java object model.
+     * @throws IOException Caused by I/O.
+     * @throws XmlException Caused by XML error.
+     * @throws BadExportationDataTypeException Caused by export.
+     * @throws OpenXML4JException Caused by Apache library.
+     */
+    public static void report(final ReportConfiguration configuration, final Report model)
+            throws IOException, XmlException, BadExportationDataTypeException, OpenXML4JException {
+
+        // Files exporters : export the resources in the correct file type
+        final DocXExporter docXExporter = new DocXExporter();
+        final XmlExporter profileExporter = new XmlExporter();
+        final JsonExporter gateExporter = new JsonExporter();
+        final XlsXExporter issuesExporter = new XlsXExporter();
+
+        // Export analysis configuration if requested.
+        if(configuration.isEnableConf()) {
+            createConfigurationFiles(configuration, model, profileExporter, gateExporter);
+        }
+
+        // Export issues and metrics in report if requested.
+        if(configuration.isEnableReport()) {
+            // prepare docx report's filename
+            final String docXFilename = formatFilename(REPORT_FILENAME, configuration.getOutput(), model.getProjectName());
+            // export the full docx report
+            docXExporter.export(model, docXFilename, configuration.getTemplateReport());
+        }
+
+        // Export issues in spreadsheet if requested.
+        if(configuration.isEnableSpreadsheet()) {
+            // construct the xlsx filename by replacing date and name
+            final String xlsXFilename = formatFilename(ISSUES_FILENAME, configuration.getOutput(), model.getProjectName());
+            // export the xlsx issues' list
+            issuesExporter.export(model, xlsXFilename, configuration.getTemplateSpreadsheet());
+        }
     }
 
     /**
-     * Create a report from program resources
-     * @return A complete report resources model
-     * @throws IOException on json problem
-     * @throws BadSonarQubeRequestException when a request to the server is not well-formed
-     * @throws UnknownQualityGateException a quality gate is not correct
-     * @throws SonarQubeException When an error occurred from SonarQube server.
+     * Generate files containing analysis configuration.
+     * @param configuration Contains all configuration details.
+     * @param model Contains the report as a Java object model.
+     * @param profileExporter Exporter for quality profiles.
+     * @param gateExporter Exporter for quality gates.
+     * @throws IOException Caused by I/O.
+     * @throws XmlException Caused by XML error.
+     * @throws BadExportationDataTypeException Caused by export.
+     * @throws OpenXML4JException Caused by Apache library.
      */
-    public Report create() throws IOException, BadSonarQubeRequestException, UnknownQualityGateException, SonarQubeException {
-        // the new report to return
-        final Report report = new Report();
+    private static void createConfigurationFiles(final ReportConfiguration configuration, final Report model,
+                                                 final XmlExporter profileExporter, final JsonExporter gateExporter)
+            throws XmlException, BadExportationDataTypeException, OpenXML4JException, IOException {
 
-        // instantiation of providers
-        final ProviderFactory providerFactory = new ProviderFactory(this.server, this.token, this.project);
-        final IssuesProvider issuesProvider = providerFactory.create(IssuesProvider.class);
-        final MeasureProvider measureProvider = providerFactory.create(MeasureProvider.class);
-        final ProjectProvider projectProvider = providerFactory.create(ProjectProvider.class);
-        final QualityProfileProvider qualityProfileProvider = providerFactory.create(QualityProfileProvider.class);
-        final QualityGateProvider qualityGateProvider = providerFactory.create(QualityGateProvider.class);
-        final LanguageProvider languageProvider = providerFactory.create(LanguageProvider.class);
+        // full path to the configuration folder
+        final String confDirectory = String.format(CONF_FOLDER_PATTERN, configuration.getOutput());
 
-        // author's setting
-        report.setProjectAuthor(this.author);
-        // date setting
-        report.setProjectDate(this.date);
-
-        if(!projectProvider.hasProject(this.project)) {
-            throw new SonarQubeException(String.format("Unknown project '%s' on SonarQube instance.", this.project));
+        // create the configuration folder
+        final File configFolder = new File(confDirectory);
+        final boolean success = configFolder.mkdirs();
+        if (!success && !configFolder.exists()) {
+            // Directory creation failed
+            final String message = String.format(CNES_MKDIR_ERROR, confDirectory);
+            LOGGER.warning(message);
         }
 
-        // measures's setting
-        report.setMeasures(measureProvider.getMeasures());
-        // set report basic data
-        report.setProject(projectProvider.getProject(projectProvider.getProjectKey()));
-        // project's name's setting
-        report.setProjectName(report.getProject().getName());
-        // formatted issues, unconfirmed issues and raw issues' setting
-        report.setIssues(issuesProvider.getIssues());
-        report.setUnconfirmed(issuesProvider.getUnconfirmedIssues());
-        report.setRawIssues(issuesProvider.getRawIssues());
-        // facets's setting
-        report.setFacets(issuesProvider.getFacets());
-        // quality profile's setting
-        report.setQualityProfiles(qualityProfileProvider.getQualityProfiles(report.getProject().getOrganization()));
-        // quality gate's setting
-        report.setQualityGate(qualityGateProvider.getProjectQualityGate());
-        // languages' settings
-        report.getProject().setLanguages(languageProvider.getLanguages());
+        // Export all
+        // export each linked quality profile
+        exportAllQualityProfiles(model, profileExporter, confDirectory);
 
-        return report;
+        // quality gate information
+        final String qualityGateName = model.getQualityGate().getName();
+        final String qualityGateConf = model.getQualityGate().getConf();
+        // export the quality gate
+        gateExporter.export(qualityGateConf, confDirectory, qualityGateName);
+    }
+
+    /**
+     * Export all quality profiles related to a given report as xml file depending on exporter.
+     * @param report Modeling data containing data to export.
+     * @param exporter Class given the way to export previous data.
+     * @param dir Directory for output.
+     * @throws XmlException Thrown on xml error.
+     * @throws BadExportationDataTypeException Thrown if the data does not correspond to exporter.
+     * @throws OpenXML4JException Thrown on OpenXML error.
+     * @throws IOException Thrown on files error.
+     */
+    private static void exportAllQualityProfiles(final Report report, final IExporter exporter, final String dir)
+            throws XmlException, BadExportationDataTypeException, OpenXML4JException, IOException {
+        for(ProfileMetaData metaData : report.getProject().getQualityProfiles()) {
+            final Iterator<QualityProfile> iterator =
+                    report.getQualityProfiles().iterator();
+            boolean goOn = true;
+            while(iterator.hasNext() && goOn) {
+                final QualityProfile qp = iterator.next();
+                if(qp.getKey().equals(metaData.getKey())) {
+                    exporter.export(qp.getConf(), dir, qp.getKey());
+                    goOn = false;
+                }
+            }
+        }
+    }
+
+    /**
+     * Format a given filename pattern.
+     * Add the date and the project's name
+     * @param propertyName Name of pattern's property
+     * @param projectName Name of the current project
+     * @return a formatted filename
+     */
+    private static String formatFilename(final String propertyName, final String baseDir, final String projectName) {
+        // construct the filename by replacing date and name
+        return StringManager.getProperty(propertyName)
+                .replaceFirst(BASEDIR, baseDir)
+                .replaceAll(DATE, new SimpleDateFormat(StringManager.DATE_PATTERN).format(new Date()))
+                .replaceAll(NAME, projectName);
     }
 
 }

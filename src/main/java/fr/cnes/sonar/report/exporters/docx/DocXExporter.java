@@ -26,10 +26,7 @@ import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.xmlbeans.XmlException;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -102,7 +99,8 @@ public class DocXExporter implements IExporter {
         // open excel file from the path given in the parameters
         final File file = new File(filename);
         try (
-            FileInputStream fileInputStream = new FileInputStream(file);
+            InputStream fileInputStream = file.exists() ?
+                    new FileInputStream(file) : getClass().getResourceAsStream("/template/code-analysis-template.docx");
             OPCPackage opcPackage = OPCPackage.open(fileInputStream);
             XWPFDocument document = new XWPFDocument(opcPackage)
         ) {

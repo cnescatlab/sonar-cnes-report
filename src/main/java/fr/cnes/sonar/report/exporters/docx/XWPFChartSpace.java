@@ -34,17 +34,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Custom class to handle chart spaces
  * Complete the Apache POI framework
  */
 public class XWPFChartSpace {
-    /**
-     * Logger of this class
-     */
-    private static final Logger LOGGER = Logger.getLogger(XWPFChartSpace.class.getName());
 
     /**
      * Encapsulated POI version of chart space

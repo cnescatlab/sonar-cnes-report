@@ -153,8 +153,7 @@ public abstract class AbstractDataProvider {
     /**
      * Logger for the class
      */
-    protected static final Logger LOGGER =
-            Logger.getLogger(AbstractDataProvider.class.getCanonicalName());
+    protected static final Logger LOGGER = Logger.getLogger(AbstractDataProvider.class.getCanonicalName());
 
     /**
      * Contain all the properties related to requests
