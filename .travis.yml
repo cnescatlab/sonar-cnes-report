@@ -8,7 +8,6 @@ services:
 addons:
   sonarcloud:
     organization: "lequal"
-    if: sonarqube = none
 
 jdk:
   - oraclejdk8
@@ -16,21 +15,6 @@ jdk:
 env:
   - sonarqube: none
   - sonarqube: 5.6.7
-  - sonarqube: 6.0
-  - sonarqube: 6.1
-  - sonarqube: 6.2
-  - sonarqube: 6.3.1
-  - sonarqube: 6.4
-  - sonarqube: 6.5
-  - sonarqube: 6.6
-  - sonarqube: 6.7
-  - sonarqube: 6.7.1
-  - sonarqube: 6.7.2
-  - sonarqube: 6.7.3
-  - sonarqube: 6.7.4
-  - sonarqube: 6.7.5
-  - sonarqube: 7.0
-  - sonarqube: 7.1
 
 before_install:
   - if [ $sonarqube != "none" ]; then
@@ -40,10 +24,11 @@ before_install:
     fi
 
 script:
-  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
   - if [ $sonarqube != "none" ]; then
+    mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.host.url=http://127.0.0.1:9000
     chmod +x src/test/it/run-test.sh;
     src/test/it/run-test.sh;
+    else mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar;
     fi
 
 cache:
