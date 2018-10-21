@@ -7,13 +7,11 @@ import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
 import fr.cnes.sonar.report.model.SonarQubeServer;
 import org.junit.Test;
 
-import java.io.IOException;
-
 public class ReportModelFactoryTest extends CommonTest {
 
-    @Test(expected = BadSonarQubeRequestException.class)
+    @Test(expected = SonarQubeException.class)
     public void createTest()
-            throws BadSonarQubeRequestException, SonarQubeException, UnknownQualityGateException, IOException {
+            throws BadSonarQubeRequestException, SonarQubeException, UnknownQualityGateException {
         SonarQubeServer sonarQubeServer = new SonarQubeServer();
         ReportModelFactory reportModelFactory = new ReportModelFactory(sonarQubeServer, conf);
         reportModelFactory.create();
