@@ -25,7 +25,6 @@ import java.io.IOException;
 
 /**
  * Exports the report in .xml format
- * @author lequal
  */
 public class XmlExporter implements IExporter {
     /**

@@ -23,7 +23,6 @@ import java.util.*;
 
 /**
  * Model of a report containing all information
- * @author lequal
  */
 public class Report {
     /**
@@ -86,7 +85,7 @@ public class Report {
         this.measures = new ArrayList<>();
         this.rawIssues = new ArrayList<>();
         this.project = new Project(StringManager.EMPTY, StringManager.EMPTY,
-                StringManager.EMPTY,StringManager.EMPTY);
+                StringManager.EMPTY,StringManager.EMPTY,StringManager.EMPTY);
     }
 
     /**

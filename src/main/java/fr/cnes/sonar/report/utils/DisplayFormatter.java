@@ -22,8 +22,6 @@ import java.util.logging.LogRecord;
 
 /**
  * Format log message to be displayed on the console.
- *
- * @author begarco
  */
 public class DisplayFormatter extends Formatter {
 

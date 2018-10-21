@@ -19,7 +19,6 @@ package fr.cnes.sonar.report.model;
 
 /**
  * A simple pair
- * @author lequal
  */
 public class Value {
     /**

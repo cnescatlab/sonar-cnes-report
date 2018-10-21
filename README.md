@@ -16,7 +16,7 @@ This program is free software; you can redistribute it and/or modify it under th
 
 #### Example
 ````
-java -jar sonar-report-cnes.jar --sonar.token xuixgehubezxbefuiez87fre987 --sonar.url http://sonarqube:9000 --sonar.project.id my-project-id --report.template ./template.docx --report.locale fr_FR
+java -jar cnesreport.jar --sonar.token xuixgehubezxbefuiez87fre987 --sonar.url http://sonarqube:9000 --sonar.project.id my-project-id --report.template ./template.docx --report.locale fr_FR
 ````
 
 ### Features
@@ -27,9 +27,121 @@ java -jar sonar-report-cnes.jar --sonar.token xuixgehubezxbefuiez87fre987 --sona
 - Get a dynamic pivot table with all issues
 - Export in french or english
 
-### Resources
-- Command parameters
-- Architecture
+### Compatibility matrix
+<table>
+ <tr>
+  <td><b>SonarQube / cnesreport</b></td>
+  <td><b>1.1.0</b></td>
+  <td><b>1.2.0</b></td>
+  <td><b>1.2.1</b></td>
+  <td><b>2.0.0</b></td>
+ </tr>
+ <tr>
+  <td><b>3.7.x (LTS)</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><b>4.5.x (LTS)</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+ </tr>
+  <tr>
+  <td><b>5.6.x (LTS)</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>X</td>
+ </tr>
+ <tr>
+  <td><b>6.0.x</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>X</td>
+ </tr>
+ <tr>
+  <td><b>6.1.x</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>X</td>
+ </tr>
+ <tr>
+  <td><b>6.2.x</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>X</td>
+ </tr>
+ <tr>
+  <td><b>6.3.x</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>X</td>
+ </tr>
+ <tr>
+  <td><b>6.4.x</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>X</td>
+ </tr>
+ <tr>
+  <td><b>6.5.x</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>X</td>
+ </tr>
+ <tr>
+  <td><b>6.6.x</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>X</td>
+ </tr>
+ <tr>
+  <td><b>6.7.x (LTS)</b></td>
+  <td>X</td>
+  <td>X</td>
+  <td>X</td>
+  <td>X</td>
+ </tr>
+ <tr>
+  <td><b>7.0</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>X</td>
+ </tr>
+ <tr>
+  <td><b>7.1</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>X</td>
+ </tr>
+ <tr>
+  <td><b>7.2</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>X</td>
+ </tr>
+ <tr>
+  <td><b>7.3</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>X</td>
+ </tr>
+</table>
 
 ### How to contribute
 If you experienced a problem with the plugin please open an issue. Inside this issue please explain us how to reproduce this issue and paste the log.
