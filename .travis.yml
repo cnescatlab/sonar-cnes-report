@@ -31,17 +31,14 @@ env:
   - sonarqube: 7.0
   - sonarqube: 7.1
 
-before_install:
+script:
   - if [ $sonarqube != "none" ]; then
+    mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package;
+    chmod +x src/test/it/run-test.sh;
     docker run -d -p 127.0.0.1:9000:9000/tcp sonarqube:${sonarqube}-alpine;
     echo "Waiting 5 minutes for SonarQube...";
     sleep 300;
-    fi
-
-script:
-  - if [ $sonarqube != "none" ]; then
-    mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.host.url=http://127.0.0.1:9000 -Dsonar.login=admin -Dsonar.password=admin;
-    chmod +x src/test/it/run-test.sh;
+    mvn sonar:sonar -Dsonar.host.url=http://127.0.0.1:9000 -Dsonar.login=admin -Dsonar.password=admin -Dsonar.organization=default-organization -Dsonar.branch.name= ;
     src/test/it/run-test.sh;
     else mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar;
     fi
