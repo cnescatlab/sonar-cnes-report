@@ -29,7 +29,7 @@ import java.util.logging.Logger;
 public class CommandLineManager {
 
     /** Default logger. */
-    private final Logger LOGGER = Logger.getLogger(CommandLineManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CommandLineManager.class.getName());
 
     /** Possible options definition. */
     private Options options;

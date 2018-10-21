@@ -63,7 +63,7 @@ public class ProjectProvider extends AbstractDataProvider {
         final Project project = (getGson().fromJson(jo, Project.class));
         ProfileMetaData[] metaData;
 
-        if(server.getNormalizedVersion().matches("5.*")) {
+        if(server.getNormalizedVersion().matches("5.*|6.[012].*")) {
             // retrieve quality profiles for SQ 5.X versions
             jo = request(String.format(getRequest(GET_PROJECT_QUALITY_PROFILES_REQUEST),
                     getServer().getUrl(), projectKey));

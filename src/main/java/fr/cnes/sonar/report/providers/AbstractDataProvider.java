@@ -204,11 +204,6 @@ public abstract class AbstractDataProvider {
     }
 
     /**
-     * Singleton which execute concrete http requests
-     */
-    private RequestManager requestManager;
-
-    /**
      * Constructor.
      *  @param server SonarQube server.
      * @param token String representing the user token.
@@ -223,8 +218,6 @@ public abstract class AbstractDataProvider {
         this.token = token;
         // get project key
         this.projectKey = project;
-        // set network tool to execute request
-        this.requestManager = RequestManager.getInstance();
     }
 
     /**

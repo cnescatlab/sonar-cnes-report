@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 public class ConsoleExporter implements IExporter {
 
     /** Default logger. */
-    private final Logger LOGGER = Logger.getLogger(ConsoleExporter.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ConsoleExporter.class.getName());
 
     /**
      * Overridden export for console
