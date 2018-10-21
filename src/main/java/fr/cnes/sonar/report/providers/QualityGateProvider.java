@@ -119,7 +119,7 @@ public class QualityGateProvider extends AbstractDataProvider {
         // search for the good quality gate
         final Iterator<QualityGate> iterator = qualityGates.iterator();
 
-        if(server.getNormalizedVersion().matches("5.*")) { // Special code for SonarQube v5.*
+        if(server.getNormalizedVersion().matches("5.*|6.[012].*")) { // Special code for SonarQube v5.*
             res = getProjectQualityGateOld(jsonObject, iterator);
         } else { // code for new SonarQube versions
             res = getProjectQualityGateNew(jsonObject, iterator);
