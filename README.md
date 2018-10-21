@@ -1,22 +1,57 @@
 # Sonar CNES Report
 [![Build Status](https://travis-ci.org/lequal/sonar-cnes-report.svg?branch=master)](https://travis-ci.org/lequal/sonar-cnes-report)
-![SonarQube Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonar%3Asonar-cnes-report&metric=alert_status)
-![SonarQube Bugs](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonar%3Asonar-cnes-report&metric=bugs)
-![SonarQube Coverage](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonar%3Asonar-cnes-report&metric=coverage)
-![SonarQube Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonar%3Asonar-cnes-report&metric=sqale_index)
+![SonarQube Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonar%3Acnesreport&metric=alert_status)
+![SonarQube Bugs](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonar%3Acnesreport&metric=bugs)
+![SonarQube Coverage](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonar%3Acnesreport&metric=coverage)
+![SonarQube Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonar%3Acnesreport&metric=sqale_index)
 
 SonarQube is an open platform to manage code quality. This program can export code analysis from a SonarQube server as a docx file, xlsx file and text files.
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
 
 ### Quickstart
-- Setup a SonarQube instance
-- Run an analysis
-- Execute the program in command line
+- Setup a SonarQube instance.
+- Run an analysis with sonar-scanner, maven, gradle, msbuild, etc.
+- Execute cnesreport thanks to the command line.
 
-#### Example
+#### Get help
+Use `java -jar cnesreport.jar -h` to get the following help about cnesreport:
 ````
-java -jar cnesreport.jar --sonar.token xuixgehubezxbefuiez87fre987 --sonar.url http://sonarqube:9000 --sonar.project.id my-project-id --report.template ./template.docx --report.locale fr_FR
+usage: java -jar cnesreport.jar [-a <arg>] [-c] [-d <arg>] [-e] [-h] [-l <arg>] [-o <arg>] [-p <arg>] [-r <arg>] 
+       [-s <arg>] [-t <arg>] [-v] [-w] [-x <arg>]
+Generate editable reports for SonarQube projects.
+
+ -a,--author <arg>                 Name of the report writer.
+ -c,--disable-conf                 Disable export of quality configuration used during analysis.
+ -d,--date <arg>                   Date for the report. Default: current date.
+ -e,--disable-spreadsheet          Disable spreadsheet generation.
+ -h,--help                         Display this message.
+ -l,--language <arg>               Language of the report. Values: en_US, fr_FR. Default: en_US.
+ -o,--output <arg>                 Output path for exported resources.
+ -p,--project <arg>                SonarQube key of the targeted project.
+ -r,--template-report <arg>        Path to the report template. Default: usage of internal template.
+ -s,--server <arg>                 Complete URL of the targeted SonarQube server.
+ -t,--token <arg>                  SonarQube token of the SonarQube user who has permissions on the project.
+ -v,--version                      Display current version.
+ -w,--disable-report               Disable report generation.
+ -x,--template-spreadsheet <arg>   Path to the spreadsheet template. Default: usage of internal template.
+
+
+Please report issues at https://github.com/lequal/sonar-cnes-report/issues
+````
+
+#### Examples
+
+##### Simplest usage
+This is the minimal usage of cnesreport. This example export (report + spreadsheet + configuration) the public project `projectId` from SonarQube server `http://localhost:9000`. This will use default internal templates.
+````
+java -jar cnesreport.jar -p projectId
+````
+
+##### Advanced usage
+If you are using a secured instance of SonarQube, you can provide a SonarQube authentication token thanks to `-t` option and specify the url of the SonarQube instance with `-s`. The internal template for the text report will be replace by the one given through `-r` option.
+````
+java -jar cnesreport.jar -t xuixg5hub345xbefu -s https://example.org:9000 -p projectId -r ./template.docx
 ````
 
 ### Features
