@@ -8,7 +8,7 @@ import org.junit.Test;
 public class ServerFactoryTest {
 
     @Test
-    public void createTest() throws BadSonarQubeRequestException, SonarQubeException {
+    public void createTest() throws BadSonarQubeRequestException {
         try {
             ServerFactory serverFactory = new ServerFactory("http://biiiiiim", "noauth");
             serverFactory.create();
