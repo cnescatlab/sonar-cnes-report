@@ -19,7 +19,6 @@ package fr.cnes.sonar.report.model;
 
 /**
  * An analyzed language of sonarqube
- * @author lequal
  */
 public class Language {
     /** Language's key */

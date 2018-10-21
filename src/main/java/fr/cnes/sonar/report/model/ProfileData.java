@@ -22,7 +22,6 @@ import java.util.List;
 
 /**
  * Contain all rules of the profile
- * @author lequal
  */
 public class ProfileData {
     /**

@@ -24,7 +24,6 @@ import java.util.List;
 
 /**
  * Represents a violation of a rule
- * @author lequal
  */
 public class Issue {
 
@@ -76,6 +75,10 @@ public class Issue {
      * Issue's programming language
      */
     private String language;
+    /**
+     * Issue's comments
+     */
+    private Comment[] comments;
 
     /**
      * Default constructor
@@ -93,6 +96,7 @@ public class Issue {
         this.type = "";
         this.effort = "0";
         this.language = "";
+        this.comments = new Comment[0];
     }
 
     /**
@@ -101,10 +105,17 @@ public class Issue {
      */
     @Override
     public String toString() {
-        return key + StringManager.TAB + project + StringManager.TAB +
-                component + StringManager.TAB + type + StringManager.TAB +
-                severity + StringManager.TAB + message + StringManager.TAB + line +
-                StringManager.TAB + status + StringManager.TAB + StringManager.TAB;
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(key).append(StringManager.TAB);
+        stringBuilder.append(project).append(StringManager.TAB);
+        stringBuilder.append(component).append(StringManager.TAB);
+        stringBuilder.append(type).append(StringManager.TAB);
+        stringBuilder.append(severity).append(StringManager.TAB);
+        stringBuilder.append(message).append(StringManager.TAB);
+        stringBuilder.append(line).append(StringManager.TAB);
+        stringBuilder.append(status).append(StringManager.TAB);
+        stringBuilder.append(getComments()).append(StringManager.TAB);
+        return stringBuilder.toString();
     }
 
     /**
@@ -315,5 +326,19 @@ public class Issue {
      */
     public void setLanguage(String pLanguage) {
         this.language = pLanguage;
+    }
+
+    /**
+     * Get comments as a String with one comment per line.
+     * @return A simple String.
+     */
+    public String getComments() {
+        final StringBuilder coms = new StringBuilder();
+
+        for(final Comment comment : this.comments) {
+            coms.append("[").append(comment.getLogin()).append("] ").append(comment.getMarkdown()).append("\n");
+        }
+
+        return coms.toString();
     }
 }

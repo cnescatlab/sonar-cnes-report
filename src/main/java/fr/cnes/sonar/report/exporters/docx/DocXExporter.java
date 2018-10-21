@@ -19,17 +19,14 @@ package fr.cnes.sonar.report.exporters.docx;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exporters.IExporter;
-import fr.cnes.sonar.report.utils.StringManager;
 import fr.cnes.sonar.report.model.Report;
+import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.xmlbeans.XmlException;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +34,6 @@ import java.util.Map;
 
 /**
  * Exports the report in .docx format
- * @author lequal
  */
 public class DocXExporter implements IExporter {
 
@@ -103,13 +99,14 @@ public class DocXExporter implements IExporter {
         // open excel file from the path given in the parameters
         final File file = new File(filename);
         try (
-            FileInputStream fileInputStream = new FileInputStream(file);
+            InputStream fileInputStream = file.exists() ?
+                    new FileInputStream(file) : getClass().getResourceAsStream("/template/code-analysis-template.docx");
             OPCPackage opcPackage = OPCPackage.open(fileInputStream);
             XWPFDocument document = new XWPFDocument(opcPackage)
         ) {
 
             // Fill charts
-            DocXTools.fillCharts(opcPackage, document, report.getFacets());
+            DocXTools.fillCharts(document, report.getFacets());
 
             // Add issues
             final List<List<String>> issues = DataAdapter.getIssues(report);
@@ -140,7 +137,6 @@ public class DocXExporter implements IExporter {
             // close open resources
             document.write(out);
             out.close();
-            document.close();
         }
 
         return new File(path);

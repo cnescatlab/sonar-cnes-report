@@ -16,9 +16,9 @@
  */
 
 /**
- * Contain needed classes to use cnesreport as a SonarQube plugin.
- * @author lequal
- * @version 2.0
+ * Test package for the plugin.
+ * Contains plugin's unit report.
+ * @version 2.0.0
  */
 
-package fr.cnes.sonar.report.plugin;
+package fr.cnes.sonar.report;
