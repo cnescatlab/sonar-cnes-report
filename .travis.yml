@@ -3,14 +3,14 @@ sudo: required
 install: true
 
 services:
-- docker
+  - docker
 
 addons:
   sonarcloud:
     organization: "lequal"
 
 jdk:
-- oraclejdk8
+  - oraclejdk8
 
 env:
   - sonarqube: none

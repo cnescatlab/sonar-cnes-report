@@ -6,7 +6,7 @@
 
     <groupId>fr.cnes.sonar</groupId>
     <artifactId>cnesreport</artifactId>
-    <version>2.0.0-dev</version>
+    <version>2.0.0</version>
 
     <name>SonarQube CNES Report App</name>
     <description>CNES app for SonarQube that allows users to export analysis reports as OpenXML.</description>
@@ -126,25 +126,6 @@
             <artifactId>sonar-testing-harness</artifactId>
             <version>${sonar.apiVersion}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.sonarsource.sslr-squid-bridge</groupId>
-            <artifactId>sslr-squid-bridge</artifactId>
-            <version>${sonar.sslr-squid-bridge.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.codehaus.sonar</groupId>
-                    <artifactId>sonar-plugin-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.codehaus.sonar.sslr</groupId>
-                    <artifactId>sslr-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.picocontainer</groupId>
-                    <artifactId>picocontainer</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
