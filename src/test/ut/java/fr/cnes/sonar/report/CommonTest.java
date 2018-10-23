@@ -1,4 +1,4 @@
-package fr.cnes.sonar.tests;/*
+/*
  * This file is part of cnesreport.
  *
  * cnesreport is free software: you can redistribute it and/or modify
@@ -15,42 +15,61 @@ package fr.cnes.sonar.tests;/*
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import fr.cnes.sonar.report.utils.Params;
+package fr.cnes.sonar.report;
+
 import fr.cnes.sonar.report.model.*;
+import fr.cnes.sonar.report.utils.ReportConfiguration;
 import org.junit.Before;
 
 import java.util.*;
 
 /**
- * Contains common code for tests
- * @author lequal
+ * Contains common code for report
  */
-public class CommonTest {
+public abstract class CommonTest {
 
     /**
-     * Severity for stubbed violations
+     * Severity for stubbed violations.
      */
     private static final String MAJOR = "MAJOR";
     /**
-     * Stubbed report for tests
+     * Stubbed report for report.
      */
     protected Report report;
     /**
-     * stubbed parameters for testing
+     * Stubbed sonarqube server for report.
      */
-    protected Params params;
+    protected SonarQubeServer sonarQubeServer;
+    /**
+     * stubbed parameters for testing.
+     */
+    protected ReportConfiguration conf;
 
     /**
-     * Setting of all stubbed resources before launching a test
+     * Setting of all stubbed resources before launching a test.
      */
     @Before
     public void before() {
         report = new Report();
-        params = new Params();
+        conf = ReportConfiguration.create(new String[]{
+                "-s", "http://sonarqube:9000",
+                "-p", "cnesreport",
+                "-a", "Lequal",
+                "-d", new Date().toString(),
+                "-o", "./target",
+                "-l", "en_US",
+                "-r", "src/main/resources/template/code-analysis-template.docx",
+                "-x", "src/main/resources/template/issues-template.xlsx"
+        });
 
-        report.setProjectName("GENIUS");
+        report.setProjectName("CNES Report");
         report.setProjectDate(new Date().toString());
         report.setProjectAuthor("Lequal");
+
+        sonarQubeServer = new SonarQubeServer();
+        sonarQubeServer.setStatus("UP");
+        sonarQubeServer.setUrl("http://biiiiiiiiiiiiim");
+        sonarQubeServer.setVersion("6.7.5", true);
 
         final List<Issue> issues = new ArrayList<>();
         final Issue i1 = new Issue();
@@ -99,7 +118,7 @@ public class CommonTest {
         profileMetaData.setName("BG");
         profileMetaData.setKey("BG");
         final QualityProfile qualityProfile = new QualityProfile(profileData, profileMetaData);
-        qualityProfile.setProjects((new Project[]{new Project("sonar-cnes-plugin", "sonar-cnes-plugin","","")}));
+        qualityProfile.setProjects((new Project[]{new Project("sonar-cnes-plugin", "sonar-cnes-plugin", "none","","")}));
         report.setQualityProfiles(Collections.singletonList(qualityProfile));
         final QualityGate qualityGate = new QualityGate();
         qualityGate.setName("CNES");
@@ -112,7 +131,7 @@ public class CommonTest {
         final Map<String, Language> languages = new HashMap<>();
         languages.put(language.getKey(), language);
 
-        final Project project = new Project("key", "Name", "Version", "Short description");
+        final Project project = new Project("key", "Name", "none","Version", "Short description");
         project.setQualityProfiles(new ProfileMetaData[0]);
         project.setLanguages(languages);
         report.setProject(project);
@@ -126,15 +145,5 @@ public class CommonTest {
         measures.add(new Measure("alert_status", "1.0"));
         measures.add(new Measure("security_rating", "1.0"));
         report.setMeasures(measures);
-
-        params.put("sonar.url", "http://sonarqube:9000");
-        params.put("sonar.project.id", "sonar-report-cnes");
-        params.put("project.name", "Sonar Report CNES");
-        params.put("report.author", "Lequal");
-        params.put("report.date", new Date().toString());
-        params.put("report.path", "./target");
-        params.put("report.locale", "en_US");
-        params.put("report.template", "src/main/resources/template/code-analysis-template.docx");
-        params.put("issues.template", "src/main/resources/template/issues-template.xlsx");
     }
 }

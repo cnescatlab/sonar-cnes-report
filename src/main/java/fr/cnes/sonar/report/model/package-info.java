@@ -18,8 +18,7 @@
 /**
  * Data providers' package for the plugin.
  * Contains needed classes to access data.
- * @author lequal
- * @version 1.0
+ * @version 2.0.0
  */
 
 package fr.cnes.sonar.report.model;

@@ -17,6 +17,7 @@
 
 package fr.cnes.sonar.report.providers;
 
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.commons.lang.StringUtils;
 import org.sonarqube.ws.client.GetRequest;
@@ -26,7 +27,6 @@ import org.sonarqube.ws.client.WsResponse;
 /**
  * Manage http requests.
  *
- * @author lequal
  */
 public final class RequestManager {
 
@@ -53,11 +53,12 @@ public final class RequestManager {
 
     /**
      * Execute a get http request
-     * @param url url to request
+     * @param url server to request
      * @param token token to authenticate to SonarQube
      * @return response as string
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
-    public String get(final String url, final String token) {
+    public String get(final String url, final String token) throws SonarQubeException {
         String baseUrl = StringUtils.substringBeforeLast(url, "/");
         String path = StringUtils.substringAfterLast(url, "/");
         final HttpConnector.Builder builder = HttpConnector.newBuilder()
@@ -67,8 +68,12 @@ public final class RequestManager {
             builder.credentials(token, null);
         }
         final HttpConnector httpConnector = builder.build();
-        WsResponse response = httpConnector.call(new GetRequest(path));
-        response.failIfNotSuccessful();
+        WsResponse response;
+        try {
+            response = httpConnector.call(new GetRequest(path));
+        } catch (Exception e) {
+            throw new SonarQubeException("Impossible to reach SonarQube instance.");
+        }
         return response.content();
     }
 }

@@ -25,7 +25,6 @@ import java.io.IOException;
 
 /**
  * Exports the report in .json format
- * @author lequal
  */
 public class JsonExporter implements IExporter {
     /**

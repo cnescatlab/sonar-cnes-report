@@ -19,15 +19,15 @@ package fr.cnes.sonar.report.providers;
 
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Language;
+import fr.cnes.sonar.report.model.SonarQubeServer;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Provides languages
- * @author lequal
  */
 public class LanguageProvider extends AbstractDataProvider {
 
@@ -42,13 +42,13 @@ public class LanguageProvider extends AbstractDataProvider {
     private Map<String, Language> languages;
 
     /**
-     * Complete constructor
-     * @param url String representing the server address.
-     * @param token String representing the user token.
-     * @param project The id of the project to report.
+     * Complete constructor.
+     * @param pServer SonarQube server.
+     * @param pToken String representing the user token.
+     * @param pProject The id of the project to report.
      */
-    public LanguageProvider(final String url, final String token, final String project) {
-        super(url, token, project);
+    public LanguageProvider(final SonarQubeServer pServer, final String pToken, final String pProject) {
+        super(pServer, pToken, pProject);
         languages = new HashMap<>();
     }
 
@@ -56,11 +56,11 @@ public class LanguageProvider extends AbstractDataProvider {
      * Get the language corresponding to the given key
      * @param languageKey the key of the language
      * @return Language's name
-     * @throws IOException when contacting the server
      * @throws BadSonarQubeRequestException when the server does not understand the request
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
     public String getLanguage(final String languageKey)
-            throws IOException, BadSonarQubeRequestException {
+            throws BadSonarQubeRequestException, SonarQubeException {
         if(languages.isEmpty()){
             this.getLanguages();
         }
@@ -70,13 +70,13 @@ public class LanguageProvider extends AbstractDataProvider {
     /**
      * Get all the languages of SonarQube
      * @return a map with all the languages
-     * @throws IOException when contacting the server
      * @throws BadSonarQubeRequestException when the server does not understand the request
+     * @throws SonarQubeException When SonarQube server is not callable.
      */
-    public Map<String, Language> getLanguages() throws IOException, BadSonarQubeRequestException {
+    public Map<String, Language> getLanguages() throws BadSonarQubeRequestException, SonarQubeException {
         // send a request to sonarqube server and return th response as a json object
         // if there is an error on server side this method throws an exception
-        final JsonObject jo = request(String.format(getRequest(GET_LANGUAGES), getUrl()));
+        final JsonObject jo = request(String.format(getRequest(GET_LANGUAGES), getServer().getUrl()));
         final Language[] languagesList = getGson().fromJson(jo.get(LANGUAGES_FIELD),
                 Language[].class);
 
