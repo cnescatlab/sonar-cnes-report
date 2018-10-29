@@ -41,21 +41,21 @@ public final class RequestManager {
      * System property for proxy host
      */
     public static final String STR_PROXY_HOST = "https.proxyHost";
-    
+
     /**
      * System property for proxy port
      */
     public static final String STR_PROXY_PORT = "https.proxyPort";
-    
+
     /**
      * System property for proxy user
      */
     public static final String STR_PROXY_USER = "https.proxyUser";
-    
+
     /**
      * System property for proxy password
      */
-    public static final String STR_PROXY_PASSWORD = "https.proxyPassword";
+    public static final String STR_PROXY_PASS = "https.proxyPassword";
 
     /**
      * Use of private constructor to singletonize this class
@@ -81,49 +81,51 @@ public final class RequestManager {
      * @throws SonarQubeException When SonarQube server is not callable.
      */
     public String get(final String url, final String token) throws SonarQubeException {
-        String baseUrl = StringUtils.substringBeforeLast(url, "/");
-        String path = StringUtils.substringAfterLast(url, "/");
+        // Initialize connexion information.
+        final String baseUrl = StringUtils.substringBeforeLast(url, "/");
+        final String path = StringUtils.substringAfterLast(url, "/");
+        final String proxyHost = System.getProperty(STR_PROXY_HOST, StringManager.EMPTY);
+        final String proxyPort = System.getProperty(STR_PROXY_PORT, StringManager.EMPTY);
+        final String proxyUser = System.getProperty(STR_PROXY_USER, StringManager.EMPTY);
+        final String proxyPass = System.getProperty(STR_PROXY_PASS, StringManager.EMPTY);
+
+        // Initialize http connector builder.
         final HttpConnector.Builder builder = HttpConnector.newBuilder()
-            .userAgent("cnesreport")
-            .url(baseUrl);
+                .userAgent("cnesreport")
+                .url(baseUrl);
+
+        // Set SonarQube authentication token.
         if(!StringManager.getProperty(StringManager.SONAR_TOKEN).equals(token)) {
             builder.credentials(token, null);
         }
-        if (System.getProperty(STR_PROXY_HOST) != null) 
-        {
-        	
-        	int proxyPort = -1;
-        	try 
-        	{
-        		proxyPort = Integer.parseInt(
-        				System.getProperty(STR_PROXY_PORT));
-        	} catch (NumberFormatException wrongPort) 
-        	{
-        		proxyPort = 80;
-        	}
-        	
-        	Proxy proxy = new Proxy(
-        		Proxy.Type.HTTP, 
-        		new InetSocketAddress(
-        			System.getProperty(STR_PROXY_HOST), 
-        			proxyPort));
-        	
-        	builder.proxy(proxy);
-        	if (System.getProperty(STR_PROXY_USER) != null)
-        	{
-	        	builder.proxyCredentials(
-	        		System.getProperty(STR_PROXY_USER),
-	        		System.getProperty(STR_PROXY_PASSWORD));
-        	}
+
+        // Set proxy settings.
+        if(!proxyHost.isEmpty()) {
+            int proxyUsedPort;
+            try {
+                proxyUsedPort = Integer.valueOf(proxyPort);
+            } catch (NumberFormatException wrongPort) {
+                proxyUsedPort = 80;
+            }
+
+            final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyUsedPort));
+
+            builder.proxy(proxy);
+
+            if(!proxyUser.isEmpty()) {
+                builder.proxyCredentials(proxyUser, proxyPass);
+            }
         }
+
+        // Execute the request.
         final HttpConnector httpConnector = builder.build();
         WsResponse response;
         try {
             response = httpConnector.call(new GetRequest(path));
         } catch (Exception e) {
-            throw new SonarQubeException("Impossible to reach SonarQube instance, error: " + 
-            	e.getMessage());
+            throw new SonarQubeException("Impossible to reach SonarQube instance.", e);
         }
+
         return response.content();
     }
 }
