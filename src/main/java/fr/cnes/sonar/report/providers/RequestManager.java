@@ -19,18 +19,16 @@ package fr.cnes.sonar.report.providers;
 
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.utils.StringManager;
-
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.sonarqube.ws.client.GetRequest;
 import org.sonarqube.ws.client.HttpConnector;
 import org.sonarqube.ws.client.WsResponse;
 
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+
 /**
  * Manage http requests.
- *
  */
 public final class RequestManager {
 

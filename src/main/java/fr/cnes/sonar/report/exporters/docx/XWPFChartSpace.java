@@ -18,8 +18,8 @@
 package fr.cnes.sonar.report.exporters.docx;
 
 import fr.cnes.sonar.report.model.Value;
-import org.apache.poi.POIXMLDocumentPart;
-import org.apache.poi.POIXMLTypeLoader;
+import org.apache.poi.ooxml.POIXMLDocumentPart;
+import org.apache.poi.ooxml.POIXMLTypeLoader;
 import org.apache.poi.openxml4j.opc.PackagePart;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.xmlbeans.XmlException;
