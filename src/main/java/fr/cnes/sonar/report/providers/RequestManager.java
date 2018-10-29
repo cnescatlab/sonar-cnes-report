@@ -19,6 +19,10 @@ package fr.cnes.sonar.report.providers;
 
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.utils.StringManager;
+
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+
 import org.apache.commons.lang.StringUtils;
 import org.sonarqube.ws.client.GetRequest;
 import org.sonarqube.ws.client.HttpConnector;
@@ -34,6 +38,26 @@ public final class RequestManager {
      * Instance of the singleton
      */
     private static RequestManager ourInstance = null;
+
+    /**
+     * System property for proxy host
+     */
+    public static final String STR_PROXY_HOST = "https.proxyHost";
+    
+    /**
+     * System property for proxy port
+     */
+    public static final String STR_PROXY_PORT = "https.proxyPort";
+    
+    /**
+     * System property for proxy user
+     */
+    public static final String STR_PROXY_USER = "https.proxyUser";
+    
+    /**
+     * System property for proxy password
+     */
+    public static final String STR_PROXY_PASSWORD = "https.proxyPassword";
 
     /**
      * Use of private constructor to singletonize this class
@@ -67,12 +91,40 @@ public final class RequestManager {
         if(!StringManager.getProperty(StringManager.SONAR_TOKEN).equals(token)) {
             builder.credentials(token, null);
         }
+        if (System.getProperty(STR_PROXY_HOST) != null) 
+        {
+        	
+        	int proxyPort = -1;
+        	try 
+        	{
+        		proxyPort = Integer.parseInt(
+        				System.getProperty(STR_PROXY_PORT));
+        	} catch (NumberFormatException wrongPort) 
+        	{
+        		proxyPort = 80;
+        	}
+        	
+        	Proxy proxy = new Proxy(
+        		Proxy.Type.HTTP, 
+        		new InetSocketAddress(
+        			System.getProperty(STR_PROXY_HOST), 
+        			proxyPort));
+        	
+        	builder.proxy(proxy);
+        	if (System.getProperty(STR_PROXY_USER) != null)
+        	{
+	        	builder.proxyCredentials(
+	        		System.getProperty(STR_PROXY_USER),
+	        		System.getProperty(STR_PROXY_PASSWORD));
+        	}
+        }
         final HttpConnector httpConnector = builder.build();
         WsResponse response;
         try {
             response = httpConnector.call(new GetRequest(path));
         } catch (Exception e) {
-            throw new SonarQubeException("Impossible to reach SonarQube instance.");
+            throw new SonarQubeException("Impossible to reach SonarQube instance, error: " + 
+            	e.getMessage());
         }
         return response.content();
     }
