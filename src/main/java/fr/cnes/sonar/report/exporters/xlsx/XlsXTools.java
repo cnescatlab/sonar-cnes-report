@@ -1,6 +1,7 @@
 package fr.cnes.sonar.report.exporters.xlsx;
 
 import fr.cnes.sonar.report.model.Issue;
+import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -93,7 +94,8 @@ public final class XlsXTools {
             // Define the resources range including headers
             final AreaReference allDataRange = new AreaReference(
                     new CellReference(0, 0),
-                    new CellReference(list.size(), headers.size() - 1));
+                    new CellReference(list.size(), headers.size() - 1),
+                    SpreadsheetVersion.EXCEL2007);
 
             // Set Range to the Table
             cttable.setRef(allDataRange.formatAsString());
@@ -216,7 +218,8 @@ public final class XlsXTools {
             // Define the resources range including headers
             final AreaReference selectedDataRange = new AreaReference(
                     new CellReference(0, 0),
-                    new CellReference(issues.size(), 9));
+                    new CellReference(issues.size(), 9),
+                    SpreadsheetVersion.EXCEL2007);
 
             // Set Range to the Table
             cttable.setRef(selectedDataRange.formatAsString());
