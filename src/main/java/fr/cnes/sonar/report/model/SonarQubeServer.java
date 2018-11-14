@@ -63,6 +63,9 @@ public class SonarQubeServer {
      */
     public void setUrl(final String url) {
         this.url = url;
+        if(this.url.endsWith("/")) {
+            this.url = this.url.substring(0, this.url.length() - 1);
+        }
     }
 
     /**
