@@ -102,9 +102,6 @@ public final class StringManager {
                 }
             }
         }
-
-        // load internationalized strings, french by default
-        changeLocale("fr","FR");
     }
 
     /**
