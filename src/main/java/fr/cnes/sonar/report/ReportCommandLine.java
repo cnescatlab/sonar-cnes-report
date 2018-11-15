@@ -81,8 +81,7 @@ public final class ReportCommandLine {
 
             // Set the language of the report.
             // assumes the language is set with language_country
-            String[] locale = conf.getLanguage().split("_");
-            StringManager.changeLocale(locale[0], locale[1]);
+            StringManager.changeLocale(conf.getLanguage());
 
             // Display version information and exit.
             if(conf.isVersion()) {
