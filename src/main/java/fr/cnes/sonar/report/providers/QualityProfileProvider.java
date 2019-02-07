@@ -98,6 +98,17 @@ public class QualityProfileProvider extends AbstractDataProvider {
                 jo = request(request);
                 // convert json to Rule objects
                 final Rule [] tmp = (getGson().fromJson(jo.get(RULES), Rule[].class));
+
+                // Redefine the rule's severity, based on the active Quality Profile (not only the default one)
+                for (Rule r: tmp) {
+                    // If the rule is active in the Quality Profile
+                    if(jo.get("actives").getAsJsonObject().has(r.getKey())) {
+                        // Retrieve the severity set in the Quality Profile, and override the rule's default severity
+                        String severity = jo.get("actives").getAsJsonObject().get(r.getKey()).getAsJsonArray().get(0).getAsJsonObject().get("severity").toString();
+                        r.setSeverity(severity.replaceAll("\"",""));
+                    }
+                }
+
                 // add rules to the result list
                 rules.addAll(Arrays.asList(tmp));
 
