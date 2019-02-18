@@ -104,8 +104,8 @@ public class QualityProfileProvider extends AbstractDataProvider {
                     // If the rule is active in the Quality Profile
                     if(jo.get("actives").getAsJsonObject().has(r.getKey())) {
                         // Retrieve the severity set in the Quality Profile, and override the rule's default severity
-                        String severity = jo.get("actives").getAsJsonObject().get(r.getKey()).getAsJsonArray().get(0).getAsJsonObject().get("severity").toString();
-                        r.setSeverity(severity.replaceAll("\"",""));
+                        String severity = jo.get("actives").getAsJsonObject().get(r.getKey()).getAsJsonArray().get(0).getAsJsonObject().get("severity").getAsString();
+                        r.setSeverity(severity);
                     }
                 }
 
