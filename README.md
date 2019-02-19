@@ -14,6 +14,9 @@ This program is free software; you can redistribute it and/or modify it under th
 - Run an analysis with sonar-scanner, maven, gradle, msbuild, etc.
 - Execute cnesreport thanks to the command line.
 
+#### Installation
+**cnesreport** does not need any installation. It is a portable Java application you can copy and run according to following examples. The only requirement is an **up-to-date JRE (>1.8)**.
+
 #### Get help
 Use `java -jar cnesreport.jar -h` to get the following help about cnesreport:
 ````
@@ -40,6 +43,9 @@ Generate editable reports for SonarQube projects.
 Please report issues at https://github.com/lequal/sonar-cnes-report/issues
 ````
 
+#### Get logs
+You can have more detailed logs in the hidden directory `.cnesreport` which should be created in your home directory at first launch.
+
 #### Examples
 
 ##### Simplest usage
@@ -53,6 +59,24 @@ If you are using a secured instance of SonarQube, you can provide a SonarQube au
 ````
 java -jar cnesreport.jar -t xuixg5hub345xbefu -s https://example.org:9000 -p projectId -r ./template.docx
 ````
+
+##### Enterprise features available for all
+As this application is used in many enterprise contexts, we have added the ability to go through proxy. The **cnesreport** application use system proxy configuration so that you have no fanciful parameter to set.
+
+To use the proxy feature be sure to set following properties:
+- `https.proxyHost`
+- `https.proxyPort`
+- `https.proxyUser`
+- `https.proxyPassword`
+
+###### Example
+If your JRE's proxy is not set, you can use Java flags as follow:
+```bash
+java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42 
+-Dhttps.proxyUser=jerry -Dhttps.proxyPassword=siegel
+-jar cnesreport.jar -t xuixg5hub345xbefu -s https://example.org:9000 -p projectId
+
+```
 
 ### Features
 - Export code analysis as a set of files
