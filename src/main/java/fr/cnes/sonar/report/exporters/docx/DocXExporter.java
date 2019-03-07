@@ -31,12 +31,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Exports the report in .docx format
  */
 public class DocXExporter implements IExporter {
 
+    /** Logger for DocXExporter. */
+    private static final Logger LOGGER = Logger.getLogger(StringManager.class.getCanonicalName());
     /**
      * Placeholder for the table containing detailed issues
      */
@@ -98,6 +102,12 @@ public class DocXExporter implements IExporter {
 
         // open excel file from the path given in the parameters
         final File file = new File(filename);
+
+        // Check if template file exists
+        if(!file.exists() && !filename.isEmpty()) {
+            LOGGER.log(Level.WARNING, "Unable to find provided DOCX template file (using default one instead) : " + file.getAbsolutePath());
+        }
+
         try (
             InputStream fileInputStream = file.exists() ?
                     new FileInputStream(file) : getClass().getResourceAsStream("/template/code-analysis-template.docx");

@@ -276,7 +276,14 @@ public abstract class AbstractDataProvider {
         }
 
         // get the json object version
-        final JsonObject jsonObject = json.getAsJsonObject();
+        final JsonObject jsonObject;
+
+        try {
+            jsonObject = json.getAsJsonObject();
+        } catch (NullPointerException e) {
+            throw new BadSonarQubeRequestException("Empty server response, reason might be : " +
+                    "server certificate not in JRE/JDK truststore, ...");
+        }
 
         // verify if an error occurred
         isErrorFree(jsonObject);
@@ -289,8 +296,9 @@ public abstract class AbstractDataProvider {
      * @param request the raw server of the request
      * @return the server's response as a string
      * @throws SonarQubeException When SonarQube server is not callable.
+     * @throws BadSonarQubeRequestException if SonarQube Server sent an error
      */
-    protected String stringRequest(final String request) throws SonarQubeException {
+    protected String stringRequest(final String request) throws SonarQubeException, BadSonarQubeRequestException {
         // prepare the request by replacing some relevant special characters
         // replace spaces
         String preparedRequest = request.replaceAll(" ", "%20");

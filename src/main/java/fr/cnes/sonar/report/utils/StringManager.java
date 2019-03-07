@@ -152,7 +152,12 @@ public final class StringManager {
      */
     public static void changeLocale(String language) {
         String[] locale = language.split("_");
-        changeLocale(locale[0], locale[1]);
+
+        try {
+            changeLocale(locale[0], locale[1]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            LOGGER.log(Level.SEVERE, "Unable to change the locale due to malformed command line parameter : " + language, e);
+        }
     }
 
     /**
