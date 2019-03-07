@@ -3,17 +3,22 @@ package fr.cnes.sonar.report.exporters.xlsx;
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exporters.IExporter;
 import fr.cnes.sonar.report.model.Report;
+import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Exports the report in .docx format
  */
 public class XlsXExporter implements IExporter {
 
+    /** Logger for XlsXExporter. */
+    private static final Logger LOGGER = Logger.getLogger(StringManager.class.getCanonicalName());
     /**
      * Name of the tab containing formatted issues
      */
@@ -63,6 +68,11 @@ public class XlsXExporter implements IExporter {
 
         // open excel file from the path given in the parameters
         final File file = new File(filename);
+
+        // Check if template file exists
+        if(!file.exists() && !filename.isEmpty()) {
+            LOGGER.log(Level.WARNING, "Unable to find provided XLSX template file (using default one instead) : " + file.getAbsolutePath());
+        }
 
         // open the template
         try(

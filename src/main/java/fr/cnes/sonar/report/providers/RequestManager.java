@@ -17,6 +17,7 @@
 
 package fr.cnes.sonar.report.providers;
 
+import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.commons.lang3.StringUtils;
@@ -36,7 +37,6 @@ public final class RequestManager {
      * Instance of the singleton
      */
     private static RequestManager ourInstance = null;
-
     /**
      * System property for proxy host
      */
@@ -79,8 +79,9 @@ public final class RequestManager {
      * @param token token to authenticate to SonarQube
      * @return response as string
      * @throws SonarQubeException When SonarQube server is not callable.
+     * @throws BadSonarQubeRequestException if SonarQube Server sent an error
      */
-    public String get(final String url, final String token) throws SonarQubeException {
+    public String get(final String url, final String token) throws SonarQubeException, BadSonarQubeRequestException {
         // Initialize connexion information.
         final String baseUrl = StringUtils.substringBeforeLast(url, "/");
         final String path = StringUtils.substringAfterLast(url, "/");
@@ -124,6 +125,16 @@ public final class RequestManager {
             response = httpConnector.call(new GetRequest(path));
         } catch (Exception e) {
             throw new SonarQubeException("Impossible to reach SonarQube instance.", e);
+        }
+
+        // Throws exception with advice to cnesreport user
+        switch (response.code()) {
+            case 401:
+                throw new BadSonarQubeRequestException("Unauthorized error sent by SonarQube server (code 401), please provide a valid authentication token to cnesreport.");
+            case 403:
+                throw new BadSonarQubeRequestException("Insufficient privileges error sent by SonarQube serve (code 403), please check your permissions in SonarQube configuration.");
+            case 404:
+                throw new BadSonarQubeRequestException("Unknown URL error sent by SonarQube serve (code 404), please check cnesreport compatibility with your SonarQube server version.");
         }
 
         return response.content();
