@@ -132,9 +132,9 @@ public final class RequestManager {
             case 401:
                 throw new BadSonarQubeRequestException("Unauthorized error sent by SonarQube server (code 401), please provide a valid authentication token to cnesreport.");
             case 403:
-                throw new BadSonarQubeRequestException("Insufficient privileges error sent by SonarQube serve (code 403), please check your permissions in SonarQube configuration.");
+                throw new BadSonarQubeRequestException("Insufficient privileges error sent by SonarQube server (code 403), please check your permissions in SonarQube configuration.");
             case 404:
-                throw new BadSonarQubeRequestException("Unknown URL error sent by SonarQube serve (code 404), please check cnesreport compatibility with your SonarQube server version.");
+                throw new BadSonarQubeRequestException("Unknown URL error sent by SonarQube server (code 404), please check cnesreport compatibility with your SonarQube server version.");
         }
 
         return response.content();
