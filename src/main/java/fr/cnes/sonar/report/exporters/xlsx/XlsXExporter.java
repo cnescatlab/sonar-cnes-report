@@ -43,6 +43,14 @@ public class XlsXExporter implements IExporter {
      * Name for the table containing all raw resources
      */
     private static final String ALL_TABLE_NAME = "all";
+    /**
+     * Name for the tab containing metrics
+     */
+    private static final String METRICS_SHEET_NAME = "Metrics";
+    /**
+     * Name for the table containing metrics
+     */
+    private static final String METRICS_TABLE_NAME = "metrics";
 
     /**
      * Overridden export for XlsX
@@ -91,6 +99,9 @@ public class XlsXExporter implements IExporter {
             // retrieve the sheet aiming to contain selected resources
             final XSSFSheet allDataSheet = (XSSFSheet) workbook.getSheet(ALL_DETAILS_SHEET_NAME);
 
+            // retrieve the sheet with metrics
+            final XSSFSheet metricsSheet = (XSSFSheet) workbook.getSheet(METRICS_SHEET_NAME);
+
             // write selected resources in the file
             XlsXTools.addSelectedData(report.getIssues(), selectedSheet, SELECTED_TABLE_NAME);
 
@@ -99,6 +110,9 @@ public class XlsXExporter implements IExporter {
 
             // write all raw resources in the third sheet
             XlsXTools.addListOfMap(allDataSheet, report.getRawIssues(), ALL_TABLE_NAME);
+
+            // write all metrics in the metric sheet
+            XlsXTools.addListOfMap(metricsSheet, report.getComponents(), METRICS_TABLE_NAME);
 
             // write output as file
             workbook.write(fileOut);
