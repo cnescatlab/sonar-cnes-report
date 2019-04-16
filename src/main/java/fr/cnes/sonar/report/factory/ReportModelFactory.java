@@ -83,6 +83,7 @@ public class ReportModelFactory {
         final QualityProfileProvider qualityProfileProvider = providerFactory.create(QualityProfileProvider.class);
         final QualityGateProvider qualityGateProvider = providerFactory.create(QualityGateProvider.class);
         final LanguageProvider languageProvider = providerFactory.create(LanguageProvider.class);
+        final ComponentProvider componentProvider = providerFactory.create(ComponentProvider.class);
 
         // author's setting
         report.setProjectAuthor(this.author);
@@ -95,6 +96,8 @@ public class ReportModelFactory {
 
         // measures's setting
         report.setMeasures(measureProvider.getMeasures());
+        // metrics' by component setting
+        report.setComponents(componentProvider.getComponents());
         // set report basic data
         report.setProject(projectProvider.getProject(projectProvider.getProjectKey()));
         // project's name's setting

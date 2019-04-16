@@ -93,6 +93,10 @@ public abstract class AbstractDataProvider {
      */
     protected static final String GET_MEASURES_REQUEST = "GET_MEASURES_REQUEST";
     /**
+     *  Name of the request for getting components
+     */
+    protected static final String GET_COMPONENTS_REQUEST = "GET_COMPONENTS_REQUEST";
+    /**
      *  Name of the request for getting a specific project
      */
     protected static final String GET_PROJECT_REQUEST = "GET_PROJECT_REQUEST";
@@ -123,6 +127,10 @@ public abstract class AbstractDataProvider {
      */
     protected static final String ISSUES = "issues";
     /**
+     * Field to search in json to get the paging section
+     */
+    protected static final String PAGING = "paging";
+    /**
      * Field to search in json to get the total page's number
      */
     protected static final String TOTAL = "total";
@@ -150,6 +158,10 @@ public abstract class AbstractDataProvider {
      * Field to search in json to get rules
      */
     protected static final String RULES = "rules";
+    /**
+     * Field to search in json to get components
+     */
+    protected static final String COMPONENTS = "components";
 
     /**
      * Logger for the class
