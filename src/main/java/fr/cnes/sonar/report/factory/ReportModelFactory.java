@@ -98,6 +98,7 @@ public class ReportModelFactory {
         report.setMeasures(measureProvider.getMeasures());
         // metrics' by component setting
         report.setComponents(componentProvider.getComponents());
+        report.setMetricsStats(componentProvider.getMetricStats());
         // set report basic data
         report.setProject(projectProvider.getProject(projectProvider.getProjectKey()));
         // project's name's setting
