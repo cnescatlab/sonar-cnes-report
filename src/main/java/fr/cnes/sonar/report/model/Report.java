@@ -73,6 +73,10 @@ public class Report {
      * List of components in the project and their metrics
      */
     private List<Map> components;
+    /**
+     * Maps of metrics stats
+     */
+    private Map metricsStats;
 
     /**
      * Default constructor
@@ -119,6 +123,9 @@ public class Report {
 
         return lFacets;
     }
+
+    public void setMetricsStats(Map metricsStats){ this.metricsStats = metricsStats; }
+    public Map getMetricsStats(){return metricsStats; }
 
     /**
      * Getter for components

@@ -22,8 +22,10 @@ import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Component;
 import fr.cnes.sonar.report.model.SonarQubeServer;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,17 +37,23 @@ public class ComponentProvider extends AbstractDataProvider {
      * @param token   String representing the user token.
      * @param project The id of the component to report.
      */
+
+    ArrayList<Map> components;
     public ComponentProvider(final SonarQubeServer server, final String token, final String project) {
         super(server, token, project);
+        components =  new ArrayList<>();
     }
 
+    /**
+    * Getter for components, retrieve all component from a project and their metrics
+     * @return components List of components
+    */
     public List<Map> getComponents() throws BadSonarQubeRequestException, SonarQubeException {
         int page = 1;
-        ArrayList<Map> components = new ArrayList<>();
         JsonObject jo;
 
         // For each page, we get the components
-        boolean goOn = true;
+        boolean goOn = components.size() == 0;
         while(goOn){
             // Send request to server
             jo = request(String.format(getRequest(GET_COMPONENTS_REQUEST),
@@ -66,6 +74,60 @@ public class ComponentProvider extends AbstractDataProvider {
         }
 
         return components;
+    }
+
+    /**
+     * Get min value for a specified metrics
+     * */
+    private double getMinMetric(String metric){
+        double min = Double.valueOf((String)components.get(0).get(metric));
+        for(Map c:components){
+            min = Math.min(min, Double.valueOf((String)c.get(metric)));
+        }
+        return min;
+    }
+
+    /**
+     * Get max value for a specified metrics
+     * */
+    private double getMaxMetric(String metric){
+        double max = Double.valueOf((String)components.get(0).get(metric));
+        for(Map c:components){
+            max = Math.max(max, Double.valueOf((String)c.get(metric)));
+        }
+        return max;
+    }
+
+    /**
+     * Get mean value for a specified metrics
+     * */
+    private double getMeanMetric(String metric){
+        double sum = 0;
+        for(Map c:components){
+            sum += Double.valueOf((String)c.get(metric));
+        }
+        // Return mean with 2 digits
+        return Math.floor(100 * sum / (double) components.size()) / 100.;
+    }
+
+
+    /**
+     * Generate a map with all metrics stats (for numerical metrics)
+     * */
+    public Map<String, Double> getMetricStats(){
+        if(components.size() == 0) return new HashMap<>();
+        Map<String, Double> map = new HashMap();
+        Object[] metrics = components.get(0).keySet().toArray();
+
+        for(Object metric:metrics){
+            if (NumberUtils.isCreatable(components.get(0).get(metric.toString()).toString())) {
+                map.put("min" + metric.toString(), getMinMetric(metric.toString()));
+                map.put("max" + metric.toString(), getMaxMetric(metric.toString()));
+                map.put("mean" + metric.toString(), getMeanMetric(metric.toString()));
+            }
+        }
+
+        return map;
     }
 
 }
