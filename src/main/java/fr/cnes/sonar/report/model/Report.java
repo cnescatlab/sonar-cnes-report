@@ -123,8 +123,16 @@ public class Report {
 
         return lFacets;
     }
-
+    /**
+     * Getter for metrics stats
+     * @param metricsStats maps with min, max, mean all numerical metric
+     */
     public void setMetricsStats(Map metricsStats){ this.metricsStats = metricsStats; }
+
+    /**
+     * Setter for components
+     * @return maps with min, max, mean all numerical metric
+     */
     public Map getMetricsStats(){return metricsStats; }
 
     /**

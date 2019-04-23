@@ -189,7 +189,7 @@ public final class DataAdapter {
      */
     private static final String MAINTAINABILITY_PLACEHOLDER = "XX-MAINTAINABILITY-XX";
     /**
-     * Placeholder for NCLOC rate
+     * Placeholder for coverage rate
      */
     private static final String COVERAGE_PLACEHOLDER = "XX-COVERAGE-XX";
     /**
@@ -229,7 +229,7 @@ public final class DataAdapter {
      */
     private static final String SQALE_RATING = "sqale_rating";
     /**
-     * Field in json response for NCLOC
+     * Field in json response for coverage
      */
     private static final String COVERAGE = "coverage";
     /**
