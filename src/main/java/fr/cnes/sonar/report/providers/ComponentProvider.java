@@ -113,14 +113,23 @@ public class ComponentProvider extends AbstractDataProvider {
 
     /**
      * Generate a map with all metrics stats (for numerical metrics)
+     * Generate a map with `min<metric name>`, `max<metric name>`, `mean<metric name>`
+     * as keys and min, max or mean as value (converted in double)
+     * @return map with min, max and mean of each numerical metric in the project
      * */
     public Map<String, Double> getMetricStats(){
         if(components.size() == 0) return new HashMap<>();
+
+
         Map<String, Double> map = new HashMap();
+        // Use first component to gets all metrics names
         Object[] metrics = components.get(0).keySet().toArray();
 
+        // for each metric
         for(Object metric:metrics){
+            // if metric is numerical
             if (NumberUtils.isCreatable(components.get(0).get(metric.toString()).toString())) {
+                // Get min, max and mean of this metric on the current project
                 map.put("min" + metric.toString(), getMinMetric(metric.toString()));
                 map.put("max" + metric.toString(), getMaxMetric(metric.toString()));
                 map.put("mean" + metric.toString(), getMeanMetric(metric.toString()));
