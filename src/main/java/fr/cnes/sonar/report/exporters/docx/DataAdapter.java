@@ -70,20 +70,20 @@ public final class DataAdapter {
     private static final String MINCOMPLEXITY_PLACEHOLDER = "XX-MINCOMPLEXITY-XX";
     private static final String MAXCOMPLEXITY_PLACEHOLDER = "XX-MAXCOMPLEXITY-XX";
     private static final String MEANCOMPLEXITY_PLACEHOLDER= "XX-MEANCOMPLEXITY-XX";
-    /*
+    /**
     * Key to get complexity in metricstats
-    * */
+    */
     private static final String MINCOMPLEXITY_STATKEY = "mincomplexity";
     private static final String MAXCOMPLEXITY_STATKEY = "maxcomplexity";
     private static final String MEANCOMPLEXITY_STATKEY = "meancomplexity";
     /**
-     * Placeholders for NCLOC metrics
+     * Placeholders for NCLOC metrics (number of line of codes)
      */
     private static final String MINNCLOC_PLACEHOLDER = "XX-MINNCLOC-XX";
     private static final String MAXNCLOC_PLACEHOLDER = "XX-MAXNCLOC-XX";
     private static final String MEANNCLOC_PLACEHOLDER= "XX-MEANNCLOC-XX";
     /**
-     * Key to get NCLOC in metricstats
+     * Key to get number of line of codes in metricstats
      */
     private static final String MINNCLOC_STATKEY = "minncloc";
     private static final String MAXNCLOC_STATKEY = "maxncloc";
@@ -113,13 +113,13 @@ public final class DataAdapter {
     private static final String MAXDUPLICATION_STATKEY = "maxduplicated_lines_density";
     private static final String MEANDUPLICATION_STATKEY = "meanduplicated_lines_density";
     /**
-     * Placeholders for bugs metrics
+     * Placeholders for cognitive complexity metrics
      */
     private static final String MINCOGNITIVECOMPLEXITY_PLACEHOLDER = "XX-MINCOGNITIVECOMPLEXITY-XX";
     private static final String MAXCOGNITIVECOMPLEXITY_PLACEHOLDER = "XX-MAXCOGNITIVECOMPLEXITY-XX";
     private static final String MEANCOGNITIVECOMPLEXITY_PLACEHOLDER = "XX-MEANCOGNITIVECOMPLEXITY-XX";
     /**
-     * Key to get bugs in metricstats
+     * Key to get cognitive complexity in metricstats
      */
     private static final String MINCOGNITIVECOMPLEXITY_STATKEY = "mincognitive_complexity";
     private static final String MAXCOGNITIVECOMPLEXITY_STATKEY = "maxcognitive_complexity";
@@ -441,8 +441,8 @@ public final class DataAdapter {
         replacementValues.put(
                 QUALITYPROFILEFILE_PLACEHOLDER,
                 report.getQualityProfilesFilename());
-        // complexity metrics
         try {
+            // complexity metrics
             replacementValues.put(
                     MINCOMPLEXITY_PLACEHOLDER,
                     report.getMetricsStats().get(MINCOMPLEXITY_STATKEY).toString()
@@ -456,7 +456,7 @@ public final class DataAdapter {
                     report.getMetricsStats().get(MEANCOMPLEXITY_STATKEY).toString()
             );
 
-            // coverage metrics
+            // number of line of codes metrics
             replacementValues.put(
                     MINNCLOC_PLACEHOLDER,
                     report.getMetricsStats().get(MINNCLOC_STATKEY).toString()
@@ -484,7 +484,7 @@ public final class DataAdapter {
                     report.getMetricsStats().get(MEANCOMMENTDENSITY_STATKEY).toString()
             );
 
-            //code smells
+            // duplications
             replacementValues.put(
                     MINDUPLICATION_PLACEHOLDER,
                     report.getMetricsStats().get(MINDUPLICATION_STATKEY).toString()
@@ -498,7 +498,7 @@ public final class DataAdapter {
                     report.getMetricsStats().get(MEANDUPLICATION_STATKEY).toString()
             );
 
-            //bugs
+            // cognitive complexity
             replacementValues.put(
                     MINCOGNITIVECOMPLEXITY_PLACEHOLDER,
                     report.getMetricsStats().get(MINCOGNITIVECOMPLEXITY_STATKEY).toString()
