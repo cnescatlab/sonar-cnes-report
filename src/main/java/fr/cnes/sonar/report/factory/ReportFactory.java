@@ -18,6 +18,7 @@
 package fr.cnes.sonar.report.factory;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
+import fr.cnes.sonar.report.exporters.CSVExporter;
 import fr.cnes.sonar.report.exporters.IExporter;
 import fr.cnes.sonar.report.exporters.JsonExporter;
 import fr.cnes.sonar.report.exporters.XmlExporter;
@@ -42,6 +43,8 @@ public class ReportFactory {
 
     /** Property for the word report filename. */
     private static final String REPORT_FILENAME = "report.output";
+    /** Property for the CSV report filename. */
+    private static final String CSV_FILENAME = "csv.output";
     /** Property for the excel report filename. */
     private static final String ISSUES_FILENAME = "issues.output";
     /** Pattern for the name of the directory containing configuration files. */
@@ -79,6 +82,13 @@ public class ReportFactory {
         final XmlExporter profileExporter = new XmlExporter();
         final JsonExporter gateExporter = new JsonExporter();
         final XlsXExporter issuesExporter = new XlsXExporter();
+        final CSVExporter testExporter = new CSVExporter();
+
+        // Export issues in report if requested
+        if(configuration.isEnableCSV()) {
+            final String CSVFilename = formatFilename(CSV_FILENAME, configuration.getOutput(), model.getProjectName());
+            testExporter.export(model, CSVFilename, model.getProjectName());
+        }
 
         // Export analysis configuration if requested.
         if(configuration.isEnableConf()) {
