@@ -1,5 +1,6 @@
 package fr.cnes.sonar.report.exporters;
 
+import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exporters.xlsx.XlsXTools;
 import fr.cnes.sonar.report.model.Report;
 import org.apache.commons.csv.CSVFormat;
@@ -14,7 +15,12 @@ import java.util.Map;
 
 public class CSVExporter implements IExporter {
     @Override
-    public File export(Object data, String path, String filename) throws IOException{
+    public File export(Object data, String path, String filename) throws IOException, BadExportationDataTypeException {
+
+        if (!(data instanceof Report)) {
+            throw new BadExportationDataTypeException();
+        }
+
         final String filePath = path;
         final Report report = (Report) data;
 
