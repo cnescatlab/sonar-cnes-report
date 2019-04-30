@@ -73,54 +73,7 @@ public final class ReportCommandLine {
     public static void main(final String[] args)  {
         // main catches all exceptions
         try {
-            // Log message.
-            String message;
-
-            // Parse command line arguments.
-            final ReportConfiguration conf = ReportConfiguration.create(args);
-
-            // Set the language of the report.
-            // assumes the language is set with language_country
-            StringManager.changeLocale(conf.getLanguage());
-
-            // Display version information and exit.
-            if(conf.isVersion()) {
-                final String name = ReportCommandLine.class.getPackage().getImplementationTitle();
-                final String version = ReportCommandLine.class.getPackage().getImplementationVersion();
-                final String vendor = ReportCommandLine.class.getPackage().getImplementationVendor();
-                message = String.format("%s %s by %s", name, version, vendor);
-                LOGGER.info(message);
-                System.exit(0);
-            }
-
-            // Print information about SonarQube.
-            message = String.format("SonarQube URL: %s", conf.getServer());
-            LOGGER.info(message);
-
-            // Initialize connexion with SonarQube and retrieve primitive information
-            final SonarQubeServer server = new ServerFactory(conf.getServer(), conf.getToken()).create();
-
-            message = String.format("SonarQube online: %s", server.isUp());
-            LOGGER.info(message);
-
-            if(!server.isUp()) {
-                throw new SonarQubeException("Impossible to reach SonarQube instance.");
-            }
-
-            message = String.format("Detected SonarQube version: %s", server.getNormalizedVersion());
-            LOGGER.info(message);
-
-            if(!server.isSupported()) {
-                throw new SonarQubeException("SonarQube instance is not supported by cnesreport.");
-            }
-
-            // Generate the model of the report.
-            final Report model = new ReportModelFactory(server, conf).create();
-            // Generate results files.
-            ReportFactory.report(conf, model);
-
-            message = "Report generation: SUCCESS";
-            LOGGER.info(message);
+            execute(args);
 
         } catch (BadExportationDataTypeException | BadSonarQubeRequestException | IOException |
                 UnknownQualityGateException | OpenXML4JException | XmlException | SonarQubeException e) {
@@ -128,6 +81,58 @@ public final class ReportCommandLine {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             System.exit(-1);
         }
+    }
+
+    public static void execute(final String[] args) throws BadExportationDataTypeException , BadSonarQubeRequestException , IOException,
+    UnknownQualityGateException, OpenXML4JException, XmlException, SonarQubeException{
+        // Log message.
+        String message;
+
+        // Parse command line arguments.
+        final ReportConfiguration conf = ReportConfiguration.create(args);
+
+        // Set the language of the report.
+        // assumes the language is set with language_country
+        StringManager.changeLocale(conf.getLanguage());
+
+        // Display version information and exit.
+        if(conf.isVersion()) {
+            final String name = ReportCommandLine.class.getPackage().getImplementationTitle();
+            final String version = ReportCommandLine.class.getPackage().getImplementationVersion();
+            final String vendor = ReportCommandLine.class.getPackage().getImplementationVendor();
+            message = String.format("%s %s by %s", name, version, vendor);
+            LOGGER.info(message);
+            System.exit(0);
+        }
+
+        // Print information about SonarQube.
+        message = String.format("SonarQube URL: %s", conf.getServer());
+        LOGGER.info(message);
+
+        // Initialize connexion with SonarQube and retrieve primitive information
+        final SonarQubeServer server = new ServerFactory(conf.getServer(), conf.getToken()).create();
+
+        message = String.format("SonarQube online: %s", server.isUp());
+        LOGGER.info(message);
+
+        if(!server.isUp()) {
+            throw new SonarQubeException("Impossible to reach SonarQube instance.");
+        }
+
+        message = String.format("Detected SonarQube version: %s", server.getNormalizedVersion());
+        LOGGER.info(message);
+
+        if(!server.isSupported()) {
+            throw new SonarQubeException("SonarQube instance is not supported by cnesreport.");
+        }
+
+        // Generate the model of the report.
+        final Report model = new ReportModelFactory(server, conf).create();
+        // Generate results files.
+        ReportFactory.report(conf, model);
+
+        message = "Report generation: SUCCESS";
+        LOGGER.info(message);
     }
 
 }

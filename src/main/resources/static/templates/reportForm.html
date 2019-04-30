@@ -19,7 +19,7 @@
     <div id="nonav" class="page-simple" style="width:100%; margin-left: 10%; margin-right: 10%;">
         <div>
             <h1 class="maintenance-title text-center">Generate a report</h1>
-            <form id="generation-form">
+            <form id="generation-form" action="../../api/cnesreport/report" method="get">
                 <div class="big-spacer-bottom">
                     <label for="key" id="keyLabel" class="login-label" style="display: block;"><strong>Project key</strong></label>
                     <select id="key"
@@ -45,7 +45,8 @@
                         <img src="../../static/cnesreport/images/loader.gif" alt="Working..."/>
                     </div>
                     <div class="text-center overflow-hidden">
-                        <input id="generation" name="generation" type="button" value="Generate">
+                        <input id="generation" name="generation" type="submit" value="Generate"><br />
+                        <em style="color:grey;">This operation may take some time, please wait while the report is being generated.</em>
                     </div>
                 </div>
             </form>
