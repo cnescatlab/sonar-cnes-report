@@ -74,7 +74,14 @@ window.registerExtension('cnesreport/report', function (options) {
             { key: key, author: author }
         ).then(function (response) {
             // on success log generation
-            //TODO
+
+            var blob = new Blob([response], {type: 'application/zip'});
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = "export.zip";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
             setEnabled(true);
         }).catch(function (error) {
             // log error
@@ -119,7 +126,7 @@ window.registerExtension('cnesreport/report', function (options) {
         $('#template').load('../../static/cnesreport/templates/reportForm.html', function(){
             // set generation button action
             // set its action on click
-            document.querySelector('#generation').onclick = function () {
+            /*document.querySelector('#generation').onclick = function () {
 
                 // hide loading
                 $('#loading').hide();
@@ -135,12 +142,12 @@ window.registerExtension('cnesreport/report', function (options) {
                     setEnabled(false);
 
                     // show loading
-                    $('#loading').show();
+                    //$('#loading').show();
 
                     // request the creation of the report
-                    produceReport(key, author);
+                    //produceReport(key, author);
                 }
-            };
+            };*/
 
             // fill out project's drop down list
             initProjectsDropDownList();
