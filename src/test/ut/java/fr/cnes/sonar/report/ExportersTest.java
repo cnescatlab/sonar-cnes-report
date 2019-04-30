@@ -97,7 +97,7 @@ public class ExportersTest extends CommonTest {
     }
     /**
      * Assert that there are no exception in a normal use
-     * of MardownExporter
+     * of CSVExporter
      * @throws Exception ...
      */
     @Test
@@ -157,7 +157,7 @@ public class ExportersTest extends CommonTest {
 
     /**
      * Assert that there are bad data type exception in case
-     * of using bad resource to export for XmlExporter
+     * of using bad resource to export for CSVExporter
      * @throws Exception ...
      */
     @Test(expected = BadExportationDataTypeException.class)
@@ -169,7 +169,7 @@ public class ExportersTest extends CommonTest {
 
     /**
      * Assert that there are bad data type exception in case
-     * of using bad resource to export for XmlExporter
+     * of using bad resource to export for MarkdownExporter
      * @throws Exception ...
      */
     @Test(expected = BadExportationDataTypeException.class)
