@@ -17,6 +17,7 @@
 
 package fr.cnes.sonar.report.exporters.docx;
 
+import fr.cnes.sonar.report.factory.ReportFactory;
 import fr.cnes.sonar.report.model.Facet;
 import fr.cnes.sonar.report.model.Value;
 import fr.cnes.sonar.report.utils.StringManager;
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * Different tools to manipulate docx

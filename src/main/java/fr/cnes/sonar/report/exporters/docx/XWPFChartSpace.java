@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Custom class to handle chart spaces
@@ -50,6 +51,8 @@ public class XWPFChartSpace {
      * {@link PackagePart} to save the current ChartSpaceDocument
      */
     private PackagePart packagePart;
+
+    private static final Logger LOGGER = Logger.getLogger(XWPFChartSpace.class.getName());
 
     /**
      * Basic constructor based on ChartSpaceDocumentImpl
@@ -85,11 +88,18 @@ public class XWPFChartSpace {
 
         // get chart spaces inside previous parts
         for(POIXMLDocumentPart p : charts) {
-            final InputStream inputStream = p.getPackagePart().getInputStream();
-            final ChartSpaceDocumentImpl c = (ChartSpaceDocumentImpl)
-                    XmlObject.Factory.parse(inputStream,
-                    POIXMLTypeLoader.DEFAULT_XML_OPTIONS);
-            result.add(new XWPFChartSpace(c,p.getPackagePart()));
+            try {
+                final InputStream inputStream = p.getPackagePart().getInputStream();
+                final ChartSpaceDocumentImpl c = (ChartSpaceDocumentImpl)
+                        XmlObject.Factory.parse(inputStream,
+                                POIXMLTypeLoader.DEFAULT_XML_OPTIONS);
+
+                result.add(new XWPFChartSpace(c, p.getPackagePart()));
+            }
+            catch (ClassCastException e){
+                e.printStackTrace();
+                LOGGER.warning("Error while getting charts, can't convert XMLObject into ChartSpaceDocumentImpl");
+            }
         }
 
         return result;
