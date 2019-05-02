@@ -19,76 +19,6 @@ window.registerExtension('cnesreport/report', function (options) {
     // let's create a flag telling if the page is still displayed
     var isDisplayedReporting = true;
 
-    /**
-     * Verify that the fields are correct.
-     * @returns {boolean} true if all is good
-     */
-    var checkForm = function () {
-        // check the field key
-        // get it
-        var key = document.forms["generation-form"]["key"].value;
-        // check if void
-        if (key === "") {
-            // log error
-            //TODO
-            // abort the process
-            return false;
-        }
-
-        return true;
-    };
-
-    /**
-     *  Lock or unlock the form
-     *  @param isEnabled true to unlock, false to lock the form
-     */
-    var setEnabled = function (isEnabled) {
-        // retrieve the form
-        var form = document.getElementById("generation-form");
-        // get all the components of the form
-        var elements = form.elements;
-        // change all components readOnly field to (un)lock them
-        for (var i = 0, len = elements.length; i < len; i++) {
-            elements[i].readOnly = !isEnabled;
-            elements[i].disabled = !isEnabled;
-        }
-
-        if(isEnabled) {
-            // hide loading when button are enabled
-            $('#loading').hide();
-        } else {
-            // show loading otherwise
-            $('#loading').show();
-        }
-    };
-
-    /**
-     * Generate the report
-     * @param key
-     * @param author
-     */
-    var produceReport = function (key, author) {
-        // http GET request to the cnes web service
-        window.SonarRequest.getJSON(
-            '/api/cnesreport/report',
-            { key: key, author: author }
-        ).then(function (response) {
-            // on success log generation
-
-            var blob = new Blob([response], {type: 'application/zip'});
-            var link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = "export.zip";
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            setEnabled(true);
-        }).catch(function (error) {
-            // log error
-            //TODO
-            setEnabled(true);
-        });
-    };
 
     /**
      *  Get projects list from the server and fill out the combo box
@@ -109,10 +39,7 @@ window.registerExtension('cnesreport/report', function (options) {
                 // we add it to the drop down list
                 $('#key').append(option);
             });
-        }).catch(function (response) {
-            // log error
-            //TODO
-        });
+        })
     };
 
     // once the request is done, and the page is still displayed (not closed already)
@@ -124,31 +51,6 @@ window.registerExtension('cnesreport/report', function (options) {
         options.el.appendChild(template);
         // retrieve template from html
         $('#template').load('../../static/cnesreport/templates/reportForm.html', function(){
-            // set generation button action
-            // set its action on click
-            /*document.querySelector('#generation').onclick = function () {
-
-                // hide loading
-                $('#loading').hide();
-
-                // validation of the form
-                if(checkForm()) {
-
-                    // Get form values
-                    var key = document.forms["generation-form"]["key"].value;
-                    var author = document.forms["generation-form"]["author"].value;
-
-                    // lock the form
-                    setEnabled(false);
-
-                    // show loading
-                    //$('#loading').show();
-
-                    // request the creation of the report
-                    //produceReport(key, author);
-                }
-            };*/
-
             // fill out project's drop down list
             initProjectsDropDownList();
         });
