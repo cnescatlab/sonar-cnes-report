@@ -36,7 +36,7 @@ import org.sonar.api.server.ws.Response;
 import java.io.File;
 import java.io.IOException;
 
-public class exportTask implements RequestHandler {
+public class ExportTask implements RequestHandler {
 
     // Sonarqube configuration
     private final Configuration config;
@@ -45,7 +45,7 @@ public class exportTask implements RequestHandler {
      * public constructor
      * @param config sonarqube configuration
      */
-    exportTask(Configuration config){
+    ExportTask(Configuration config){
         this.config = config;
     }
 

@@ -42,6 +42,10 @@ script:
     src/test/it/run-test.sh;
     else mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar;
     fi
+  - mvn clean package;
+    mvn sonar:sonar;
+    mvn sonar-packaging:check;
+    mvn sonar-packaging:sonar-plugin
 
 cache:
   directories:
