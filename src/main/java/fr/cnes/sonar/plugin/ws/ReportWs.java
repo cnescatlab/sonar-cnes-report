@@ -58,7 +58,7 @@ public class ReportWs implements WebService {
         report.setSince(PluginStringManager.getProperty("plugin.since"));
 
         // Bind webservice to export task
-        report.setHandler(new exportTask(config));
+        report.setHandler(new ExportTask(config));
 
         // Adding key argument
         WebService.NewParam keyParam = report.createParam(PluginStringManager.getProperty("api.report.args.key"));

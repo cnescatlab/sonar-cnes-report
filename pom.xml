@@ -137,13 +137,6 @@
             <version>5.3.1</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <!-- https://mvnrepository.com/artifact/org.sonarsource.sonarqube/sonar-testing-harness -->
-            <groupId>org.sonarsource.sonarqube</groupId>
-            <artifactId>sonar-testing-harness</artifactId>
-            <version>${sonar.apiVersion}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
