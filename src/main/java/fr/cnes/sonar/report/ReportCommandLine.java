@@ -73,6 +73,7 @@ public final class ReportCommandLine {
     public static void main(final String[] args)  {
         // main catches all exceptions
         try {
+            // We use different method because it can be called outside main (for example, in from ReportSonarPlugin)
             execute(args);
 
         } catch (BadExportationDataTypeException | BadSonarQubeRequestException | IOException |
