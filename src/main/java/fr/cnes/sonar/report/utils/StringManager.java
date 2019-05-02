@@ -94,7 +94,6 @@ public final class StringManager {
             }
             input = classLoader.getResourceAsStream("plugin.properties");
             if(input!=null) {
-                System.out.println(input);
                 // load properties from the stream in an adapted structure
                 properties.load(input);
             }
