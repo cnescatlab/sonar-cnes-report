@@ -344,7 +344,10 @@ public final class DataAdapter {
         // Get the issues' id
         final Map<String, Long> items = report.getIssuesFacets();
 
-        for (Map.Entry<String, Long> v : items.entrySet()) { // construct each issues
+        Map<String,Long> sortedItems =  new TreeMap<>(new RuleComparator(report));
+        sortedItems.putAll(items);
+
+        for (Map.Entry<String, Long> v : sortedItems.entrySet()) { // construct each issues
             final List<String> issue = new ArrayList<>();
             final Rule rule = report.getRule(v.getKey());
             if(rule!=null) { // if the rule is found, fill information
@@ -678,4 +681,35 @@ public final class DataAdapter {
         return result;
     }
 
+}
+
+/**
+ * RuleComparator is used to compare 2 issues to sort them by severityq
+ */
+class RuleComparator implements Comparator<String>{
+    Report report;
+
+    RuleComparator(Report report){
+        System.out.println(report);
+        this.report = report;
+    }
+
+    public int compare(String o1, String o2) {
+        if(o1.isEmpty() || o2.isEmpty())return 0;
+
+        int compare = report
+                .getRule(o1)
+                .getType()
+                .compareTo(
+                report.getRule(o2).getType()
+        );
+        if (compare == 0) compare = report.getRule(o1).getSeverity().compareTo(
+                report.getRule(o2).getSeverity()
+        );
+        if (compare == 0) compare = report.getRule(o1).getKey().compareTo(
+                report.getRule(o2).getKey()
+        );
+
+        return compare;
+    }
 }
