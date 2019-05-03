@@ -25,6 +25,9 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * String manager for cnes-report in plugin mode
+ */
 public class PluginStringManager {
     private static Properties properties = new Properties();
     protected static final Logger LOGGER = Logger.getLogger(PluginStringManager.class.getCanonicalName());
@@ -39,8 +42,7 @@ public class PluginStringManager {
                 // load properties from the stream in an adapted structure
                 properties.load(input);
             }
-        } catch (
-        IOException e) {
+        } catch (IOException e) {
             // it logs all the stack trace
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
