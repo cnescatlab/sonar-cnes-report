@@ -17,7 +17,7 @@
 
 package fr.cnes.sonar.plugin.ws;
 
-import fr.cnes.sonar.plugin.PluginStringManager;
+import fr.cnes.sonar.plugin.tools.PluginStringManager;
 import org.sonar.api.config.Configuration;
 import org.sonar.api.server.ws.WebService;
 

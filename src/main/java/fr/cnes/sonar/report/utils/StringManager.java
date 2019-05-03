@@ -57,8 +57,6 @@ public final class StringManager {
     /** Default name for the author. */
     public static final String DEFAULT_AUTHOR = "report.author";
 
-    public static final String PLUGIN_HOMEPAGE = "homepage.url";
-
     /** Logger for StringManager. */
     private static final Logger LOGGER = Logger.getLogger(StringManager.class.getCanonicalName());
     
@@ -88,11 +86,6 @@ public final class StringManager {
         try {
             // load properties file as a stream
             input = classLoader.getResourceAsStream(StringManager.REPORT_PROPERTIES);
-            if(input!=null) {
-                // load properties from the stream in an adapted structure
-                properties.load(input);
-            }
-            input = classLoader.getResourceAsStream("plugin.properties");
             if(input!=null) {
                 // load properties from the stream in an adapted structure
                 properties.load(input);
