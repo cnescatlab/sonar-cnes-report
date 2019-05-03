@@ -17,7 +17,7 @@
 
 package fr.cnes.sonar.plugin.ws;
 
-import fr.cnes.sonar.plugin.PluginStringManager;
+import fr.cnes.sonar.plugin.tools.PluginStringManager;
 import fr.cnes.sonar.plugin.tools.FileTools;
 import fr.cnes.sonar.plugin.tools.ZipFolder;
 import fr.cnes.sonar.report.ReportCommandLine;

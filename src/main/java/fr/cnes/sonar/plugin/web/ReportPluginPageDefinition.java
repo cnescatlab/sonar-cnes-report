@@ -17,7 +17,7 @@
 
 package fr.cnes.sonar.plugin.web;
 
-import fr.cnes.sonar.plugin.PluginStringManager;
+import fr.cnes.sonar.plugin.tools.PluginStringManager;
 import org.sonar.api.web.page.Context;
 import org.sonar.api.web.page.Page;
 import org.sonar.api.web.page.PageDefinition;
