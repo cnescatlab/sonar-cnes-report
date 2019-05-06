@@ -41,6 +41,7 @@ script:
     sleep 300;
     mvn sonar:sonar -Dsonar.host.url=http://127.0.0.1:9000 -Dsonar.login=admin -Dsonar.password=admin -Dsonar.organization=default-organization -Dsonar.branch.name= ;
     src/test/it/run-test.sh;
+    wget http://127.0.0.1:9000/api/cnesreport/report?key=fr.cnes.sonar%3Acnesreport&author=travis-ci&token=noauth;
     else mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar;
     fi
 
