@@ -70,6 +70,11 @@ public class ReportWs implements WebService {
         authorParam.setDescription(PluginStringManager.getProperty("api.report.args.description.author"));
         authorParam.setRequired(true);
 
+        // Adding token argument
+        WebService.NewParam tokenParam = report.createParam(PluginStringManager.getProperty("api.report.args.token"));
+        tokenParam.setDescription(PluginStringManager.getProperty("api.report.args.description.token"));
+        tokenParam.setRequired(true);
+
     }
 }
 

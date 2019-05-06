@@ -39,7 +39,19 @@ window.registerExtension('cnesreport/report', function (options) {
                 // we add it to the drop down list
                 $('#key').append(option);
             });
-        })
+        });
+
+        window.SonarRequest.post(
+                            '/api/user_tokens/revoke', {name: "cnes-report"}
+                ).then(function(){
+                    window.SonarRequest.postJSON(
+                        '/api/user_tokens/generate', {name: "cnes-report"}
+                    ).then(function (response) {
+                        $('#token_cnesreport').val(response.token)
+                    });
+
+                })
+                
     };
 
     // once the request is done, and the page is still displayed (not closed already)

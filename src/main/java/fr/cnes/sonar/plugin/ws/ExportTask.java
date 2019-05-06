@@ -75,7 +75,8 @@ public class ExportTask implements RequestHandler {
                 "-o", outputDirectory.getAbsolutePath(),
                 "-s", config.get("sonar.core.serverBaseURL").orElse(PluginStringManager.getProperty("plugin.defaultHost")),
                 "-p", request.getParam(PluginStringManager.getProperty("api.report.args.key")).getValue(),
-                "-a", request.getParam(PluginStringManager.getProperty("api.report.args.author")).getValue()
+                "-a", request.getParam(PluginStringManager.getProperty("api.report.args.author")).getValue(),
+                "-t", request.getParam(PluginStringManager.getProperty("api.report.args.token")).getValue()
         });
 
         // generate zip output and send it
