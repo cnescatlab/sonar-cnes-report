@@ -38,33 +38,32 @@ public class ComponentProvider extends AbstractDataProvider {
      * @param project The id of the component to report.
      */
 
-    ArrayList<Map> components;
+    ArrayList<Map> componentsList;
     public ComponentProvider(final SonarQubeServer server, final String token, final String project) {
         super(server, token, project);
-        components =  new ArrayList<>();
+        componentsList =  new ArrayList<>();
     }
 
     /**
-    * Getter for components, retrieve all component from a project and their metrics
-     * @return components List of components
+    * Getter for componentsList, retrieve all component from a project and their metrics
+     * @return componentsList List of componentsList
     */
     public List<Map> getComponents() throws BadSonarQubeRequestException, SonarQubeException {
         int page = 1;
         JsonObject jo;
 
         // For each page, we get the components
-        boolean goOn = components.size() == 0;
+        boolean goOn = componentsList.size() == 0;
         while(goOn){
             // Send request to server
             jo = request(String.format(getRequest(GET_COMPONENTS_REQUEST),
                     getServer().getUrl(), getProjectKey(), page, getRequest(MAX_PER_PAGE_SONARQUBE)));
 
             // Get components from response
-            final Component[] tmp = (getGson().fromJson(jo.get(COMPONENTS), Component[].class));
-
+            final Component[] tmp = getGson().fromJson(jo.get(COMPONENTS), Component[].class);
             for (Component c:tmp) {
                 Map map = c.toMap();
-                components.add(map);
+                componentsList.add(map);
             }
 
             // Check if we reach the end
@@ -73,16 +72,19 @@ public class ComponentProvider extends AbstractDataProvider {
             page++;
         }
 
-        return components;
+        return componentsList;
     }
 
     /**
      * Get min value for a specified metrics
      * */
     private double getMinMetric(String metric){
-        double min = Double.valueOf((String)components.get(0).get(metric));
-        for(Map c:components){
-            min = Math.min(min, Double.valueOf((String)c.get(metric)));
+        double min = Double.MAX_VALUE;
+        for(Map c: componentsList){
+            final String rawValue = (String)c.get(metric);
+            if(rawValue!=null){
+                min = Math.min(min, Double.valueOf(rawValue));
+            }
         }
         return min;
     }
@@ -91,9 +93,12 @@ public class ComponentProvider extends AbstractDataProvider {
      * Get max value for a specified metrics
      * */
     private double getMaxMetric(String metric){
-        double max = Double.valueOf((String)components.get(0).get(metric));
-        for(Map c:components){
-            max = Math.max(max, Double.valueOf((String)c.get(metric)));
+        double max = -Double.MAX_VALUE;
+        for(Map c: componentsList){
+            final String rawValue = (String)c.get(metric);
+            if(rawValue!=null){
+                max = Math.max(max, Double.valueOf(rawValue));
+            }
         }
         return max;
     }
@@ -103,11 +108,21 @@ public class ComponentProvider extends AbstractDataProvider {
      * */
     private double getMeanMetric(String metric){
         double sum = 0;
-        for(Map c:components){
-            sum += Double.valueOf((String)c.get(metric));
+        double size = 0;
+        for(Map c: componentsList){
+            final String rawValue = (String)c.get(metric);
+            if(rawValue!=null){
+                sum += Double.valueOf(rawValue);
+                size++;
+            }
         }
         // Return mean with 2 digits
-        return Math.floor(100 * sum / (double) components.size()) / 100.;
+        if(size>0){
+            return Math.floor(100 * sum / size) / 100.;
+        }
+        else {
+            return 0;
+        }
     }
 
 
@@ -118,17 +133,17 @@ public class ComponentProvider extends AbstractDataProvider {
      * @return map with min, max and mean of each numerical metric in the project
      * */
     public Map<String, Double> getMetricStats(){
-        if(components.size() == 0) return new HashMap<>();
+        if(componentsList.size() == 0) return new HashMap<>();
 
 
         Map<String, Double> map = new HashMap();
         // Use first component to gets all metrics names
-        Object[] metrics = components.get(0).keySet().toArray();
+        Object[] metrics = componentsList.get(0).keySet().toArray();
 
         // for each metric
         for(Object metric:metrics){
             // if metric is numerical
-            if (NumberUtils.isCreatable(components.get(0).get(metric.toString()).toString())) {
+            if (isCountableMetric(metric.toString())) {
                 // Get min, max and mean of this metric on the current project
                 map.put("min" + metric.toString(), getMinMetric(metric.toString()));
                 map.put("max" + metric.toString(), getMaxMetric(metric.toString()));
@@ -137,6 +152,18 @@ public class ComponentProvider extends AbstractDataProvider {
         }
 
         return map;
+    }
+
+
+    private boolean isCountableMetric(String metric){
+        // Get first non-null value of metrics
+        int i=0;
+        while(i<componentsList.size() && componentsList.get(i) == null){
+            ++i;
+        }
+
+        // If we didn't reach the end and we find a numerical value
+        return i<componentsList.size() && NumberUtils.isCreatable(componentsList.get(i).get(metric).toString());
     }
 
 }

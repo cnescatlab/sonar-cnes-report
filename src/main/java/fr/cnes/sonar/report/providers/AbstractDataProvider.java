@@ -93,7 +93,7 @@ public abstract class AbstractDataProvider {
      */
     protected static final String GET_MEASURES_REQUEST = "GET_MEASURES_REQUEST";
     /**
-     *  Name of the request for getting components
+     *  Name of the request for getting componentsList
      */
     protected static final String GET_COMPONENTS_REQUEST = "GET_COMPONENTS_REQUEST";
     /**
