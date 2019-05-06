@@ -690,7 +690,6 @@ class RuleComparator implements Comparator<String>{
     Report report;
 
     RuleComparator(Report report){
-        System.out.println(report);
         this.report = report;
     }
 
