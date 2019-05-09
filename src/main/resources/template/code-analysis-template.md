@@ -28,7 +28,7 @@ XX-QUALITYGATE-XX | XX-RELIABILITY-XX | XX-SECURITY-XX | XX-MAINTAINABILITY-XX |
 ## Metrics
 
 \ | Cyclomatic Complexity | Cognitive Complexity | Lines of code per file | Coverage | Comment density (%) | Duplication (%)
-:---|:---:|:---:|:---:|:---:|:---:
+:---|:---:|:---:|:---:|:---:|:---:|:---:
 Min | XX-MINCOMPLEXITY-XX | XX-MINCOGNITIVECOMPLEXITY-XX | XX-MINNCLOC-XX | XX-MINCOVERAGE-XX | XX-MINCOMMENTDENSITY-XX | XX-MINDUPLICATION-XX
 Max | XX-MAXCOMPLEXITY-XX | XX-MAXCOGNITIVECOMPLEXITY-XX | XX-MAXNCLOC-XX | XX-MAXCOVERAGE-XX | XX-MAXCOMMENTDENSITY-XX | XX-MAXDUPLICATION-XX
 
