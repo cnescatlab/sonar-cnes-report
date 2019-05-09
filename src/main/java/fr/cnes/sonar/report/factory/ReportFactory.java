@@ -84,17 +84,6 @@ public class ReportFactory {
         final CSVExporter csvExporter = new CSVExporter();
         final MarkdownExporter markdownExporter =  new MarkdownExporter();
 
-        // Export in markdown if requested
-        if (configuration.isEnableMarkdown()) {
-            final String MDFilename = formatFilename(MD_FILENAME, configuration.getOutput(), model.getProjectName());
-            markdownExporter.export(model, MDFilename, model.getProjectName());
-        }
-        
-        // Export issues in report if requested
-        if(configuration.isEnableCSV()) {
-            final String CSVFilename = formatFilename(CSV_FILENAME, configuration.getOutput(), model.getProjectName());
-            csvExporter.export(model, CSVFilename, model.getProjectName());
-        }
 
         // Export analysis configuration if requested.
         if(configuration.isEnableConf()) {
@@ -115,6 +104,18 @@ public class ReportFactory {
             final String xlsXFilename = formatFilename(ISSUES_FILENAME, configuration.getOutput(), model.getProjectName());
             // export the xlsx issues' list
             issuesExporter.export(model, xlsXFilename, configuration.getTemplateSpreadsheet());
+        }
+
+        // Export in markdown if requested
+        if (configuration.isEnableMarkdown()) {
+            final String MDFilename = formatFilename(MD_FILENAME, configuration.getOutput(), model.getProjectName());
+            markdownExporter.export(model, MDFilename, model.getProjectName());
+        }
+
+        // Export issues in report if requested
+        if(configuration.isEnableCSV()) {
+            final String CSVFilename = formatFilename(CSV_FILENAME, configuration.getOutput(), model.getProjectName());
+            csvExporter.export(model, CSVFilename, model.getProjectName());
         }
     }
 
