@@ -104,29 +104,6 @@ public class ComponentProvider extends AbstractDataProvider {
     }
 
     /**
-     * Get mean value for a specified metrics
-     * */
-    private double getMeanMetric(String metric){
-        double sum = 0;
-        double size = 0;
-        for(Map c: componentsList){
-            final String rawValue = (String)c.get(metric);
-            if(rawValue!=null){
-                sum += Double.valueOf(rawValue);
-                size++;
-            }
-        }
-        // Return mean with 2 digits
-        if(size>0){
-            return Math.floor(100 * sum / size) / 100.;
-        }
-        else {
-            return 0;
-        }
-    }
-
-
-    /**
      * Generate a map with all metrics stats (for numerical metrics)
      * Generate a map with `min<metric name>`, `max<metric name>`, `mean<metric name>`
      * as keys and min, max or mean as value (converted in double)
@@ -147,7 +124,6 @@ public class ComponentProvider extends AbstractDataProvider {
                 // Get min, max and mean of this metric on the current project
                 map.put("min" + metric.toString(), getMinMetric(metric.toString()));
                 map.put("max" + metric.toString(), getMaxMetric(metric.toString()));
-                map.put("mean" + metric.toString(), getMeanMetric(metric.toString()));
             }
         }
 
