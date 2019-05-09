@@ -69,61 +69,61 @@ public final class DataAdapter {
      */
     private static final String MINCOMPLEXITY_PLACEHOLDER = "XX-MINCOMPLEXITY-XX";
     private static final String MAXCOMPLEXITY_PLACEHOLDER = "XX-MAXCOMPLEXITY-XX";
-    private static final String MEANCOMPLEXITY_PLACEHOLDER= "XX-MEANCOMPLEXITY-XX";
     /**
     * Key to get complexity in metricstats
     */
     private static final String MINCOMPLEXITY_STATKEY = "mincomplexity";
     private static final String MAXCOMPLEXITY_STATKEY = "maxcomplexity";
-    private static final String MEANCOMPLEXITY_STATKEY = "meancomplexity";
     /**
      * Placeholders for NCLOC metrics (number of line of codes)
      */
     private static final String MINNCLOC_PLACEHOLDER = "XX-MINNCLOC-XX";
     private static final String MAXNCLOC_PLACEHOLDER = "XX-MAXNCLOC-XX";
-    private static final String MEANNCLOC_PLACEHOLDER= "XX-MEANNCLOC-XX";
     /**
      * Key to get number of line of codes in metricstats
      */
     private static final String MINNCLOC_STATKEY = "minncloc";
     private static final String MAXNCLOC_STATKEY = "maxncloc";
-    private static final String MEANNCLOC_STATKEY = "meanncloc";
     /**
      * Placeholders for comment density metrics
      */
     private static final String MINCOMMENTDENSITY_PLACEHOLDER = "XX-MINCOMMENTDENSITY-XX";
     private static final String MAXCOMMENTDENSITY_PLACEHOLDER = "XX-MAXCOMMENTDENSITY-XX";
-    private static final String MEANCOMMENTDENSITY_PLACEHOLDER= "XX-MEANCOMMENTDENSITY-XX";
     /**
      * Key to get comment_lines_density in metricstats
      */
     private static final String MINCOMMENTDENSITY_STATKEY = "mincomment_lines_density";
     private static final String MAXCOMMENTDENSITY_STATKEY = "maxcomment_lines_density";
-    private static final String MEANCOMMENTDENSITY_STATKEY = "meancomment_lines_density";
     /**
      * Placeholders for duplications metrics
      */
     private static final String MINDUPLICATION_PLACEHOLDER = "XX-MINDUPLICATION-XX";
     private static final String MAXDUPLICATION_PLACEHOLDER = "XX-MAXDUPLICATION-XX";
-    private static final String MEANDUPLICATION_PLACEHOLDER = "XX-MEANDUPLICATION-XX";
     /**
      * Key to get duplications in metricstats
      */
     private static final String MINDUPLICATION_STATKEY = "minduplicated_lines_density";
     private static final String MAXDUPLICATION_STATKEY = "maxduplicated_lines_density";
-    private static final String MEANDUPLICATION_STATKEY = "meanduplicated_lines_density";
     /**
      * Placeholders for cognitive complexity metrics
      */
     private static final String MINCOGNITIVECOMPLEXITY_PLACEHOLDER = "XX-MINCOGNITIVECOMPLEXITY-XX";
     private static final String MAXCOGNITIVECOMPLEXITY_PLACEHOLDER = "XX-MAXCOGNITIVECOMPLEXITY-XX";
-    private static final String MEANCOGNITIVECOMPLEXITY_PLACEHOLDER = "XX-MEANCOGNITIVECOMPLEXITY-XX";
     /**
      * Key to get cognitive complexity in metricstats
      */
     private static final String MINCOGNITIVECOMPLEXITY_STATKEY = "mincognitive_complexity";
     private static final String MAXCOGNITIVECOMPLEXITY_STATKEY = "maxcognitive_complexity";
-    private static final String MEANCOGNITIVEOMPLEXITY_STATKEY = "meancognitive_complexity";
+    /**
+     * Placeholders for coverage metrics
+     */
+    private static final String MINCOVERAGE_PLACEHOLDER = "XX-MINCOVERAGE-XX";
+    private static final String MAXCOVERAGE_PLACEHOLDER = "XX-MAXCOVERAGE-XX";
+    /**
+     * Key to get coverage in metricstats
+     */
+    private static final String MINCOVERAGE_STATKEY = "mincoverage";
+    private static final String MAXCOVERAGE_STATKEY = "maxcoverage";
     /**
      * extension for xml file
      */
@@ -454,10 +454,6 @@ public final class DataAdapter {
                     MAXCOMPLEXITY_PLACEHOLDER,
                     report.getMetricsStats().get(MAXCOMPLEXITY_STATKEY).toString()
             );
-            replacementValues.put(
-                    MEANCOMPLEXITY_PLACEHOLDER,
-                    report.getMetricsStats().get(MEANCOMPLEXITY_STATKEY).toString()
-            );
 
             // number of line of codes metrics
             replacementValues.put(
@@ -467,10 +463,6 @@ public final class DataAdapter {
             replacementValues.put(
                     MAXNCLOC_PLACEHOLDER,
                     report.getMetricsStats().get(MAXNCLOC_STATKEY).toString()
-            );
-            replacementValues.put(
-                    MEANNCLOC_PLACEHOLDER,
-                    report.getMetricsStats().get(MEANNCLOC_STATKEY).toString()
             );
 
             //comment density
@@ -482,10 +474,6 @@ public final class DataAdapter {
                     MAXCOMMENTDENSITY_PLACEHOLDER,
                     report.getMetricsStats().get(MAXCOMMENTDENSITY_STATKEY).toString()
             );
-            replacementValues.put(
-                    MEANCOMMENTDENSITY_PLACEHOLDER,
-                    report.getMetricsStats().get(MEANCOMMENTDENSITY_STATKEY).toString()
-            );
 
             // duplications
             replacementValues.put(
@@ -495,10 +483,6 @@ public final class DataAdapter {
             replacementValues.put(
                     MAXDUPLICATION_PLACEHOLDER,
                     report.getMetricsStats().get(MAXDUPLICATION_STATKEY).toString()
-            );
-            replacementValues.put(
-                    MEANDUPLICATION_PLACEHOLDER,
-                    report.getMetricsStats().get(MEANDUPLICATION_STATKEY).toString()
             );
 
             // cognitive complexity
@@ -510,28 +494,29 @@ public final class DataAdapter {
                     MAXCOGNITIVECOMPLEXITY_PLACEHOLDER,
                     report.getMetricsStats().get(MAXCOGNITIVECOMPLEXITY_STATKEY).toString()
             );
+
+            // coverage
             replacementValues.put(
-                    MEANCOGNITIVECOMPLEXITY_PLACEHOLDER,
-                    report.getMetricsStats().get(MEANCOGNITIVEOMPLEXITY_STATKEY).toString()
+                    MINCOVERAGE_PLACEHOLDER,
+                    report.getMetricsStats().get(MINCOVERAGE_STATKEY).toString()
+            );
+            replacementValues.put(
+                    MAXCOVERAGE_PLACEHOLDER,
+                    report.getMetricsStats().get(MAXCOVERAGE_STATKEY).toString()
             );
         }
         catch (NullPointerException e){
             ArrayList<String> placeholders = new ArrayList<>();
             placeholders.add(MINCOMMENTDENSITY_PLACEHOLDER);
             placeholders.add(MAXCOMMENTDENSITY_PLACEHOLDER);
-            placeholders.add(MEANCOMMENTDENSITY_PLACEHOLDER);
             placeholders.add(MINCOMPLEXITY_PLACEHOLDER);
             placeholders.add(MAXCOMPLEXITY_PLACEHOLDER);
-            placeholders.add(MEANCOMPLEXITY_PLACEHOLDER);
             placeholders.add(MINNCLOC_PLACEHOLDER);
             placeholders.add(MAXNCLOC_PLACEHOLDER);
-            placeholders.add(MEANNCLOC_PLACEHOLDER);
             placeholders.add(MINCOGNITIVECOMPLEXITY_PLACEHOLDER);
             placeholders.add(MAXCOGNITIVECOMPLEXITY_PLACEHOLDER);
-            placeholders.add(MEANCOGNITIVECOMPLEXITY_PLACEHOLDER);
             placeholders.add(MINCOGNITIVECOMPLEXITY_PLACEHOLDER);
             placeholders.add(MAXCOGNITIVECOMPLEXITY_PLACEHOLDER);
-            placeholders.add(MEANCOGNITIVECOMPLEXITY_PLACEHOLDER);
             for(String placeholder: placeholders){
                 replacementValues.put(
                         placeholder,
