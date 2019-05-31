@@ -91,7 +91,7 @@ public class DocXExporter implements IExporter {
      * @throws XmlException ...
      */
     @Override
-    public File export(Object data, String path, String filename)
+    public File export(final Object data, final String path, final String filename)
             throws BadExportationDataTypeException, OpenXML4JException, IOException, XmlException {
         // check resources type
         if (!(data instanceof Report)) {
@@ -151,6 +151,5 @@ public class DocXExporter implements IExporter {
 
         return new File(path);
     }
-
 
 }
