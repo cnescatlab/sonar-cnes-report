@@ -34,7 +34,7 @@ script:
     echo "Starting docker";
     docker run --name sonarqube_${sonarqube}-alpine -d -p 127.0.0.1:9000:9000/tcp sonarqube:${sonarqube}-alpine;
     echo "Inject plugin";
-    docker cp target/cnesreport-plugin.jar sonarqube_${sonarqube}-alpine:/opt/sonarqube/extensions/plugins/;
+    docker cp target/cnesreport-*.jar sonarqube_${sonarqube}-alpine:/opt/sonarqube/extensions/plugins/;
     docker exec sonarqube_${sonarqube}-alpine chmod 777 /opt/sonarqube/extensions/plugins/cnesreport-plugin.jar;
     docker restart sonarqube_${sonarqube}-alpine;
     echo "Waiting 5 minutes for SonarQube...";
