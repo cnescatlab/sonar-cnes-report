@@ -17,14 +17,20 @@
 
 package fr.cnes.sonar.plugin.tools;
 
+import fr.cnes.sonar.report.factory.ReportFactory;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class ZipFolder {
+    private ZipFolder(){
+        throw new IllegalStateException("Utility class");
+    }
     /**
      * Create a zip file from a directory
      *
@@ -34,12 +40,13 @@ public class ZipFolder {
      * @param zipFilePath output path
      * @throws IOException
      */
-    public static void pack(String sourceDirPath, String zipFilePath) throws IOException {
+    public static <Stream> void pack(String sourceDirPath, String zipFilePath) throws IOException {
         Path p = Files.createFile(Paths.get(zipFilePath));
+        java.util.stream.Stream<Path> file = null;
         try (ZipOutputStream zs = new ZipOutputStream(Files.newOutputStream(p))) {
             Path pp = Paths.get(sourceDirPath);
-            Files.walk(pp)
-                    .filter(path -> !Files.isDirectory(path))
+            file = Files.walk(pp);
+            file.filter(path -> !path.toFile().isDirectory())
                     .forEach(path -> {
                         ZipEntry zipEntry = new ZipEntry(pp.relativize(path).toString());
                         try {
@@ -47,9 +54,15 @@ public class ZipFolder {
                             Files.copy(path, zs);
                             zs.closeEntry();
                         } catch (IOException e) {
-                            System.err.println(e);
+                            Logger LOGGER = Logger.getLogger(ZipFolder.class.getName());
+                            LOGGER.warning(e.getMessage());
                         }
                     });
+            file.close();
+        }
+        catch(IOException e){
+            if(file!=null)
+                file.close();
         }
     }
 }
