@@ -173,6 +173,9 @@
                 <artifactId>sonar-packaging-maven-plugin</artifactId>
                 <version>${sonar-packaging-maven-plugin.version}</version>
                 <extensions>true</extensions>
+                <configuration>
+                    <jarName>sonar-cnes-report</jarName>
+                </configuration>
             </plugin>
 
             <plugin>
