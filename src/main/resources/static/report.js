@@ -48,6 +48,13 @@ window.registerExtension('cnesreport/report', function (options) {
                         '/api/user_tokens/generate', {name: "cnes-report"}
                     ).then(function (response) {
                         $('#token_cnesreport').val(response.token)
+                        window.SonarRequest.getJSON(
+                            '/api/users/search',
+                            {"q":response.login}
+                        ).then(function (response) {
+                            // on success
+                            $('#author').val(response.users[0].name);
+                        });
                     });
 
                 })

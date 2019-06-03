@@ -30,6 +30,9 @@ import java.util.logging.Logger;
  */
 public class PluginStringManager {
     private static Properties properties = new Properties();
+    private PluginStringManager(){
+        throw new IllegalStateException("Utility class");
+    }
     protected static final Logger LOGGER = Logger.getLogger(PluginStringManager.class.getCanonicalName());
     static {
 

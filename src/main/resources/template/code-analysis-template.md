@@ -2,7 +2,7 @@
 ## XX-PROJECTNAME-XX 
 #### Version XX-VERSION-XX 
 
-*By: XX-AUTHOR-XX*
+**By: XX-AUTHOR-XX**
 
 *Date: XX-DATE-XX*
 

@@ -35,6 +35,7 @@ import org.sonar.api.server.ws.Response;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 public class ExportTask implements RequestHandler {
 
@@ -67,7 +68,7 @@ public class ExportTask implements RequestHandler {
         final File outputDirectory = File.createTempFile("cnesreport", Long.toString(System.nanoTime()));
 
         // Last line create file instead of folder, we delete file to put folder at the same place later
-        outputDirectory.delete();
+        Files.delete(outputDirectory.toPath());
 
         // Start generation, re-using standalone script
         ReportCommandLine.execute(new String[]{
@@ -86,7 +87,7 @@ public class ExportTask implements RequestHandler {
 
 
         // Some cleaning
-        zip.delete();
+        Files.delete(zip.toPath());
         FileTools.deleteFolder(outputDirectory);
     }
 }

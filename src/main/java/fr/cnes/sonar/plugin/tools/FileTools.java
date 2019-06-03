@@ -19,9 +19,14 @@ package fr.cnes.sonar.plugin.tools;
 
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 public class FileTools {
 
+    private FileTools(){
+        throw new IllegalStateException("Utility class");
+    }
     /**
      * Delete a folder
      * WARNING: Recursive call, maybe it's not a good idea for large folder with lots of subfolder.
@@ -34,8 +39,18 @@ public class FileTools {
         for(String f: files != null ? files : new String[0]){
             toDelete = new File(f);
             if (toDelete.isDirectory()) deleteFolder(toDelete);
-            else toDelete.delete();
+            else {
+                try {
+                    Files.delete(toDelete.toPath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        folder.delete();
+        try {
+            Files.delete(folder.toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
