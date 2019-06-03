@@ -29,8 +29,6 @@ script:
   - if [ $sonarqube != "none" ]; then
     mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package;
     chmod +x src/test/it/run-test.sh;mvn clean package;
-    mvn sonar-packaging:check;
-    mvn sonar-packaging:sonar-plugin;
     echo "Starting docker";
     docker run --name sonarqube_${sonarqube}-alpine -d -p 127.0.0.1:9000:9000/tcp sonarqube:${sonarqube}-alpine;
     echo "Inject plugin";
