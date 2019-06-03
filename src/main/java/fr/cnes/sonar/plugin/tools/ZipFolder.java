@@ -17,8 +17,6 @@
 
 package fr.cnes.sonar.plugin.tools;
 
-import fr.cnes.sonar.report.factory.ReportFactory;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -58,9 +56,8 @@ public class ZipFolder {
                             LOGGER.warning(e.getMessage());
                         }
                     });
-            file.close();
         }
-        catch(IOException e){
+        finally {
             if(file!=null)
                 file.close();
         }

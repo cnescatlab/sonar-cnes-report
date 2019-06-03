@@ -21,6 +21,7 @@ package fr.cnes.sonar.plugin.tools;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.logging.Logger;
 
 public class FileTools {
 
@@ -43,14 +44,17 @@ public class FileTools {
                 try {
                     Files.delete(toDelete.toPath());
                 } catch (IOException e) {
-                    e.printStackTrace();
+
+                    Logger LOGGER = Logger.getLogger(FileTools.class.getName());
+                    LOGGER.warning(e.getMessage());
                 }
             }
         }
         try {
             Files.delete(folder.toPath());
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger LOGGER = Logger.getLogger(FileTools.class.getName());
+            LOGGER.warning(e.getMessage());
         }
     }
 }
