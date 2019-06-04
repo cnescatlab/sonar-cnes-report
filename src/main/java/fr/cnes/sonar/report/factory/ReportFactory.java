@@ -18,9 +18,7 @@
 package fr.cnes.sonar.report.factory;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
-import fr.cnes.sonar.report.exporters.IExporter;
-import fr.cnes.sonar.report.exporters.JsonExporter;
-import fr.cnes.sonar.report.exporters.XmlExporter;
+import fr.cnes.sonar.report.exporters.*;
 import fr.cnes.sonar.report.exporters.docx.DocXExporter;
 import fr.cnes.sonar.report.exporters.xlsx.XlsXExporter;
 import fr.cnes.sonar.report.model.ProfileMetaData;
@@ -42,6 +40,10 @@ public class ReportFactory {
 
     /** Property for the word report filename. */
     private static final String REPORT_FILENAME = "report.output";
+    /** Property for the CSV report filename. */
+    private static final String CSV_FILENAME = "csv.output";
+    /** Property for the CSV report filename. */
+    private static final String MD_FILENAME = "markdown.output";
     /** Property for the excel report filename. */
     private static final String ISSUES_FILENAME = "issues.output";
     /** Pattern for the name of the directory containing configuration files. */
@@ -79,6 +81,9 @@ public class ReportFactory {
         final XmlExporter profileExporter = new XmlExporter();
         final JsonExporter gateExporter = new JsonExporter();
         final XlsXExporter issuesExporter = new XlsXExporter();
+        final CSVExporter csvExporter = new CSVExporter();
+        final MarkdownExporter markdownExporter =  new MarkdownExporter();
+
 
         // Export analysis configuration if requested.
         if(configuration.isEnableConf()) {
@@ -99,6 +104,18 @@ public class ReportFactory {
             final String xlsXFilename = formatFilename(ISSUES_FILENAME, configuration.getOutput(), model.getProjectName());
             // export the xlsx issues' list
             issuesExporter.export(model, xlsXFilename, configuration.getTemplateSpreadsheet());
+        }
+
+        // Export in markdown if requested
+        if (configuration.isEnableMarkdown()) {
+            final String MDFilename = formatFilename(MD_FILENAME, configuration.getOutput(), model.getProjectName());
+            markdownExporter.export(model, MDFilename, model.getProjectName());
+        }
+
+        // Export issues in report if requested
+        if(configuration.isEnableCSV()) {
+            final String CSVFilename = formatFilename(CSV_FILENAME, configuration.getOutput(), model.getProjectName());
+            csvExporter.export(model, CSVFilename, model.getProjectName());
         }
     }
 

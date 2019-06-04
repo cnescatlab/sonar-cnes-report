@@ -18,7 +18,9 @@
 package fr.cnes.sonar.report;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
+import fr.cnes.sonar.report.exporters.CSVExporter;
 import fr.cnes.sonar.report.exporters.JsonExporter;
+import fr.cnes.sonar.report.exporters.MarkdownExporter;
 import fr.cnes.sonar.report.exporters.XmlExporter;
 import fr.cnes.sonar.report.exporters.docx.DocXExporter;
 import fr.cnes.sonar.report.exporters.xlsx.XlsXExporter;
@@ -83,6 +85,29 @@ public class ExportersTest extends CommonTest {
     }
 
     /**
+     * Assert that there are no exception in a normal use
+     * of MardownExporter
+     * @throws Exception ...
+     */
+    @Test
+    public void mdExportTest() throws Exception {
+        final MarkdownExporter xe = new MarkdownExporter();
+
+        xe.export(report, TARGET+"test.md", "test.md");
+    }
+    /**
+     * Assert that there are no exception in a normal use
+     * of CSVExporter
+     * @throws Exception ...
+     */
+    @Test
+    public void csvExportTest() throws Exception {
+        final CSVExporter xe = new CSVExporter();
+
+        xe.export(report, TARGET+"test.csv", "test.csv");
+    }
+
+    /**
      * Assert that there are bad data type exception in case
      * of using bad resource to export for DocxExporter
      * @throws Exception ...
@@ -128,6 +153,30 @@ public class ExportersTest extends CommonTest {
         final XmlExporter xe = new XmlExporter();
 
         xe.export(4, TARGET, "test.json");
+    }
+
+    /**
+     * Assert that there are bad data type exception in case
+     * of using bad resource to export for CSVExporter
+     * @throws Exception ...
+     */
+    @Test(expected = BadExportationDataTypeException.class)
+    public void csvExportBadDataTest() throws Exception {
+        final CSVExporter xe = new CSVExporter();
+
+        xe.export(4,TARGET+"test.csv", "test.csv");
+    }
+
+    /**
+     * Assert that there are bad data type exception in case
+     * of using bad resource to export for MarkdownExporter
+     * @throws Exception ...
+     */
+    @Test(expected = BadExportationDataTypeException.class)
+    public void mdExportBadDataTest() throws Exception {
+        final MarkdownExporter xe = new MarkdownExporter();
+
+        xe.export(4,TARGET+"test.md", "test.md");
     }
 
 }

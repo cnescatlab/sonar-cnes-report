@@ -49,6 +49,10 @@ public class ReportConfiguration {
     private boolean enableReport;
     /** Options for e. */
     private boolean enableSpreadsheet;
+    /** Options for f. */
+    private boolean enableCSV;
+    /** Options for m. */
+    private boolean enableMarkdown;
     /** Options for r. */
     private String templateReport;
     /** Options for x. */
@@ -75,7 +79,8 @@ public class ReportConfiguration {
                                 final String token, final String project, final String output,
                                 final String language, final String author, final String date,
                                 final boolean enableConf, final boolean enableReport,
-                                final boolean enableSpreadsheet, final String templateReport,
+                                final boolean enableSpreadsheet, final boolean enableCSV,
+                                final boolean enableMarkdown, String templateReport,
                                 final String templateSpreadsheet) {
         this.help = help;
         this.version = version;
@@ -89,6 +94,8 @@ public class ReportConfiguration {
         this.enableConf = enableConf;
         this.enableReport = enableReport;
         this.enableSpreadsheet = enableSpreadsheet;
+        this.enableCSV = enableCSV;
+        this.enableMarkdown = enableMarkdown;
         this.templateReport = templateReport;
         this.templateSpreadsheet = templateSpreadsheet;
     }
@@ -119,6 +126,8 @@ public class ReportConfiguration {
                 !commandLineManager.hasOption("c"),
                 !commandLineManager.hasOption("w"),
                 !commandLineManager.hasOption("e"),
+                !commandLineManager.hasOption("f"), // Why f? Because every "logic" options like "c" are already used
+                !commandLineManager.hasOption("m"),
                 commandLineManager.getOptionValue("r", StringManager.EMPTY),
                 commandLineManager.getOptionValue("x", StringManager.EMPTY));
     }
@@ -162,6 +171,10 @@ public class ReportConfiguration {
     public boolean isEnableConf() {
         return enableConf;
     }
+
+    public boolean isEnableCSV(){ return enableCSV; }
+
+    public boolean isEnableMarkdown(){ return enableMarkdown; }
 
     public boolean isEnableReport() {
         return enableReport;

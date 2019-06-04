@@ -6,10 +6,11 @@
 
     <groupId>fr.cnes.sonar</groupId>
     <artifactId>cnesreport</artifactId>
-    <version>2.1.0</version>
+    <version>2.2.0</version>
+    <packaging>sonar-plugin</packaging>
 
-    <name>SonarQube CNES Report App</name>
-    <description>CNES app for SonarQube that allows users to export analysis reports as OpenXML.</description>
+    <name>SonarQube CNES Report</name>
+    <description>CNES app/plugin for SonarQube that allows users to export analysis reports as OpenXML, Markdown and CSV.</description>
     <organization>
         <name>CNES</name>
         <url>https://cnes.fr/</url>
@@ -28,12 +29,22 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <sonar.apiVersion>6.7.5</sonar.apiVersion>
         <jdk.min.version>1.8</jdk.min.version>
-        <pluginUrl>https://cnes.fr</pluginUrl>
-        <pluginOrganizationName>CNES</pluginOrganizationName>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <junit.version>4.12</junit.version>
+        <jacoco.version>0.8.0</jacoco.version>
+        <sonar.apiVersion>6.5</sonar.apiVersion>
+        <sonar-packaging-maven-plugin.version>1.18.0.372</sonar-packaging-maven-plugin.version>
+        <sonar.pluginKey>cnesreport</sonar.pluginKey>
+        <sonar.pluginUrl>https://github.com/lequal/sonar-cnes-report</sonar.pluginUrl>
+        <sonar.pluginOrganizationName>CNES</sonar.pluginOrganizationName>
+        <sonar.sources>src/main/java</sonar.sources>
+        <sonar.test>src/test/java</sonar.test>
+        <sonar.skipDependenciesPackaging>true</sonar.skipDependenciesPackaging>
+        <sonar.useChildFirstClassLoader>true</sonar.useChildFirstClassLoader>
+        <sonar.pluginClass>fr.cnes.sonar.plugin.ReportSonarPlugin</sonar.pluginClass>
+        <app.mainClass>fr.cnes.sonar.report.ReportCommandLine</app.mainClass>
     </properties>
 
     <licenses>
@@ -48,18 +59,29 @@
         <developer>
             <id>begarco</id>
             <name>Benoît Garçon</name>
-            <email>benoit.garcon@outlook.com</email>
-            <organization>CNES</organization>
-            <organizationUrl>https://cnes.fr/</organizationUrl>
+        </developer>
+        <developer>
+            <id>Sancretor</id>
+            <name>Alexis Chatillon</name>
+        </developer>
+        <developer>
+            <id>louisjdmartin</id>
+            <name>Louis Martin</name>
         </developer>
     </developers>
 
     <dependencies>
-
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.5</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.25</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.sonarsource.sonarqube</groupId>
@@ -78,18 +100,21 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.6</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <!-- https://mvnrepository.com/artifact/commons-cli/commons-cli -->
             <groupId>commons-cli</groupId>
             <artifactId>commons-cli</artifactId>
             <version>1.4</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.8.1</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <!-- packaged with the plugin -->
@@ -113,10 +138,15 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <!-- openxml generation -->
             <groupId>org.apache.poi</groupId>
-            <artifactId>ooxml-schemas</artifactId>
-            <version>1.4</version>
+            <artifactId>poi-ooxml-schemas</artifactId>
+            <version>4.1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>ooxml-security</artifactId>
+            <version>1.1</version>
             <scope>compile</scope>
         </dependency>
         <!-- unit report -->
@@ -127,17 +157,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.3.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <!-- https://mvnrepository.com/artifact/org.sonarsource.sonarqube/sonar-testing-harness -->
-            <groupId>org.sonarsource.sonarqube</groupId>
-            <artifactId>sonar-testing-harness</artifactId>
-            <version>${sonar.apiVersion}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -145,33 +167,107 @@
     <build>
         <testSourceDirectory>src/test/ut/java</testSourceDirectory>
         <plugins>
+
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.1.0</version>
+                <groupId>org.sonarsource.sonar-packaging-maven-plugin</groupId>
+                <artifactId>sonar-packaging-maven-plugin</artifactId>
+                <version>${sonar-packaging-maven-plugin.version}</version>
+                <extensions>true</extensions>
                 <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>fr.cnes.sonar.report.ReportCommandLine</mainClass>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <finalName>cnesreport</finalName>
-                    <appendAssemblyId>false</appendAssemblyId>
+                    <jarName>sonar-cnes-report</jarName>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
                 <executions>
                     <execution>
-                        <id>make-assembly</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>single</goal>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>${app.mainClass}</mainClass>
+                                </transformer>
+                            </transformers>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <!--<minimizeJar>true</minimizeJar>-->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>${jdk.min.version}</source>
+                    <target>${jdk.min.version}</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <!-- UTF-8 bundles are not supported by Java, so they must be converted during build -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>native2ascii-maven-plugin</artifactId>
+                <version>1.0-beta-1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>native2ascii</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Sets the path to the file which contains the execution data. -->
+                            <dataFile>target/jacoco.exec</dataFile>
+                            <!-- Sets the output directory for the code coverage report. -->
+                            <outputDirectory>target/jacoco-ut</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 </project>

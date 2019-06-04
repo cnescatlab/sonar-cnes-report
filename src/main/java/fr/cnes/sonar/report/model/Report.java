@@ -69,6 +69,14 @@ public class Report {
      * List of unconfirmed issues in the project like false positives and wont fix
      */
     private List<Issue> unconfirmed;
+    /**
+     * List of components in the project and their metrics
+     */
+    private List<Map> components;
+    /**
+     * Maps of metrics stats
+     */
+    private Map metricsStats;
 
     /**
      * Default constructor
@@ -84,6 +92,7 @@ public class Report {
         this.facets = new ArrayList<>();
         this.measures = new ArrayList<>();
         this.rawIssues = new ArrayList<>();
+        this.components = new ArrayList<>();
         this.project = new Project(StringManager.EMPTY, StringManager.EMPTY,
                 StringManager.EMPTY,StringManager.EMPTY,StringManager.EMPTY);
     }
@@ -114,6 +123,29 @@ public class Report {
 
         return lFacets;
     }
+    /**
+     * Getter for metrics stats
+     * @param metricsStats maps with min, max, mean all numerical metric
+     */
+    public void setMetricsStats(Map metricsStats){ this.metricsStats = metricsStats; }
+
+    /**
+     * Setter for components
+     * @return maps with min, max, mean all numerical metric
+     */
+    public Map getMetricsStats(){return metricsStats; }
+
+    /**
+     * Getter for components
+     * @return components
+     */
+    public List<Map> getComponents() {return new ArrayList<>(components); }
+
+    /**
+     * Setteer for components
+     * @param components
+     */
+    public void setComponents(List<Map> components){ this.components = new ArrayList<>(components); }
 
     /**
      * Get issues

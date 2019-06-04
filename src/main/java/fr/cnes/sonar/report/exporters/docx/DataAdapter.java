@@ -63,6 +63,67 @@ public final class DataAdapter {
      * Placeholder for quality profile's filenames
      */
     private static final String QUALITYPROFILEFILE_PLACEHOLDER = "XX-QUALITYPROFILEFILE-XX";
+
+    /**
+     * Placeholders for complexity metrics
+     */
+    private static final String MINCOMPLEXITY_PLACEHOLDER = "XX-MINCOMPLEXITY-XX";
+    private static final String MAXCOMPLEXITY_PLACEHOLDER = "XX-MAXCOMPLEXITY-XX";
+    /**
+    * Key to get complexity in metricstats
+    */
+    private static final String MINCOMPLEXITY_STATKEY = "mincomplexity";
+    private static final String MAXCOMPLEXITY_STATKEY = "maxcomplexity";
+    /**
+     * Placeholders for NCLOC metrics (number of line of codes)
+     */
+    private static final String MINNCLOC_PLACEHOLDER = "XX-MINNCLOC-XX";
+    private static final String MAXNCLOC_PLACEHOLDER = "XX-MAXNCLOC-XX";
+    /**
+     * Key to get number of line of codes in metricstats
+     */
+    private static final String MINNCLOC_STATKEY = "minncloc";
+    private static final String MAXNCLOC_STATKEY = "maxncloc";
+    /**
+     * Placeholders for comment density metrics
+     */
+    private static final String MINCOMMENTDENSITY_PLACEHOLDER = "XX-MINCOMMENTDENSITY-XX";
+    private static final String MAXCOMMENTDENSITY_PLACEHOLDER = "XX-MAXCOMMENTDENSITY-XX";
+    /**
+     * Key to get comment_lines_density in metricstats
+     */
+    private static final String MINCOMMENTDENSITY_STATKEY = "mincomment_lines_density";
+    private static final String MAXCOMMENTDENSITY_STATKEY = "maxcomment_lines_density";
+    /**
+     * Placeholders for duplications metrics
+     */
+    private static final String MINDUPLICATION_PLACEHOLDER = "XX-MINDUPLICATION-XX";
+    private static final String MAXDUPLICATION_PLACEHOLDER = "XX-MAXDUPLICATION-XX";
+    /**
+     * Key to get duplications in metricstats
+     */
+    private static final String MINDUPLICATION_STATKEY = "minduplicated_lines_density";
+    private static final String MAXDUPLICATION_STATKEY = "maxduplicated_lines_density";
+    /**
+     * Placeholders for cognitive complexity metrics
+     */
+    private static final String MINCOGNITIVECOMPLEXITY_PLACEHOLDER = "XX-MINCOGNITIVECOMPLEXITY-XX";
+    private static final String MAXCOGNITIVECOMPLEXITY_PLACEHOLDER = "XX-MAXCOGNITIVECOMPLEXITY-XX";
+    /**
+     * Key to get cognitive complexity in metricstats
+     */
+    private static final String MINCOGNITIVECOMPLEXITY_STATKEY = "mincognitive_complexity";
+    private static final String MAXCOGNITIVECOMPLEXITY_STATKEY = "maxcognitive_complexity";
+    /**
+     * Placeholders for coverage metrics
+     */
+    private static final String MINCOVERAGE_PLACEHOLDER = "XX-MINCOVERAGE-XX";
+    private static final String MAXCOVERAGE_PLACEHOLDER = "XX-MAXCOVERAGE-XX";
+    /**
+     * Key to get coverage in metricstats
+     */
+    private static final String MINCOVERAGE_STATKEY = "mincoverage";
+    private static final String MAXCOVERAGE_STATKEY = "maxcoverage";
     /**
      * extension for xml file
      */
@@ -283,7 +344,10 @@ public final class DataAdapter {
         // Get the issues' id
         final Map<String, Long> items = report.getIssuesFacets();
 
-        for (Map.Entry<String, Long> v : items.entrySet()) { // construct each issues
+        Map<String,Long> sortedItems =  new TreeMap<>(new RuleComparator(report));
+        sortedItems.putAll(items);
+
+        for (Map.Entry<String, Long> v : sortedItems.entrySet()) { // construct each issues
             final List<String> issue = new ArrayList<>();
             final Rule rule = report.getRule(v.getKey());
             if(rule!=null) { // if the rule is found, fill information
@@ -380,6 +444,88 @@ public final class DataAdapter {
         replacementValues.put(
                 QUALITYPROFILEFILE_PLACEHOLDER,
                 report.getQualityProfilesFilename());
+        try {
+            // complexity metrics
+            replacementValues.put(
+                    MINCOMPLEXITY_PLACEHOLDER,
+                    report.getMetricsStats().get(MINCOMPLEXITY_STATKEY).toString()
+            );
+            replacementValues.put(
+                    MAXCOMPLEXITY_PLACEHOLDER,
+                    report.getMetricsStats().get(MAXCOMPLEXITY_STATKEY).toString()
+            );
+
+            // number of line of codes metrics
+            replacementValues.put(
+                    MINNCLOC_PLACEHOLDER,
+                    report.getMetricsStats().get(MINNCLOC_STATKEY).toString()
+            );
+            replacementValues.put(
+                    MAXNCLOC_PLACEHOLDER,
+                    report.getMetricsStats().get(MAXNCLOC_STATKEY).toString()
+            );
+
+            //comment density
+            replacementValues.put(
+                    MINCOMMENTDENSITY_PLACEHOLDER,
+                    report.getMetricsStats().get(MINCOMMENTDENSITY_STATKEY).toString()
+            );
+            replacementValues.put(
+                    MAXCOMMENTDENSITY_PLACEHOLDER,
+                    report.getMetricsStats().get(MAXCOMMENTDENSITY_STATKEY).toString()
+            );
+
+            // duplications
+            replacementValues.put(
+                    MINDUPLICATION_PLACEHOLDER,
+                    report.getMetricsStats().get(MINDUPLICATION_STATKEY).toString()
+            );
+            replacementValues.put(
+                    MAXDUPLICATION_PLACEHOLDER,
+                    report.getMetricsStats().get(MAXDUPLICATION_STATKEY).toString()
+            );
+
+            // cognitive complexity
+            replacementValues.put(
+                    MINCOGNITIVECOMPLEXITY_PLACEHOLDER,
+                    report.getMetricsStats().get(MINCOGNITIVECOMPLEXITY_STATKEY).toString()
+            );
+            replacementValues.put(
+                    MAXCOGNITIVECOMPLEXITY_PLACEHOLDER,
+                    report.getMetricsStats().get(MAXCOGNITIVECOMPLEXITY_STATKEY).toString()
+            );
+
+            // coverage
+            replacementValues.put(
+                    MINCOVERAGE_PLACEHOLDER,
+                    report.getMetricsStats().get(MINCOVERAGE_STATKEY).toString()
+            );
+            replacementValues.put(
+                    MAXCOVERAGE_PLACEHOLDER,
+                    report.getMetricsStats().get(MAXCOVERAGE_STATKEY).toString()
+            );
+        }
+        catch (NullPointerException e){
+            ArrayList<String> placeholders = new ArrayList<>();
+            placeholders.add(MINCOMMENTDENSITY_PLACEHOLDER);
+            placeholders.add(MAXCOMMENTDENSITY_PLACEHOLDER);
+            placeholders.add(MINCOMPLEXITY_PLACEHOLDER);
+            placeholders.add(MAXCOMPLEXITY_PLACEHOLDER);
+            placeholders.add(MINNCLOC_PLACEHOLDER);
+            placeholders.add(MAXNCLOC_PLACEHOLDER);
+            placeholders.add(MINCOGNITIVECOMPLEXITY_PLACEHOLDER);
+            placeholders.add(MAXCOGNITIVECOMPLEXITY_PLACEHOLDER);
+            placeholders.add(MINCOGNITIVECOMPLEXITY_PLACEHOLDER);
+            placeholders.add(MAXCOGNITIVECOMPLEXITY_PLACEHOLDER);
+            for(String placeholder: placeholders){
+                replacementValues.put(
+                        placeholder,
+                        "unknown"
+                );
+            }
+        }
+
+
         // Synthesis placeholders
         for (Measure m : report.getMeasures()) {
             final String placeholder = getPlaceHolderName(m.getMetric());
@@ -520,4 +666,34 @@ public final class DataAdapter {
         return result;
     }
 
+}
+
+/**
+ * RuleComparator is used to compare 2 issues to sort them by severityq
+ */
+class RuleComparator implements Comparator<String>{
+    Report report;
+
+    RuleComparator(Report report){
+        this.report = report;
+    }
+
+    public int compare(String o1, String o2) {
+        if(o1.isEmpty() || o2.isEmpty())return 0;
+
+        int compare = report
+                .getRule(o1)
+                .getType()
+                .compareTo(
+                report.getRule(o2).getType()
+        );
+        if (compare == 0) compare = report.getRule(o1).getSeverity().compareTo(
+                report.getRule(o2).getSeverity()
+        );
+        if (compare == 0) compare = report.getRule(o1).getKey().compareTo(
+                report.getRule(o2).getKey()
+        );
+
+        return compare;
+    }
 }

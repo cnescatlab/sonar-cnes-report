@@ -9,10 +9,22 @@ SonarQube is an open platform to manage code quality. This program can export co
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
 
+This tool can be used in standalone as a JAR executable (with the command line) or as a Sonarqube plugin.
+
 ### Quickstart
 - Setup a SonarQube instance.
 - Run an analysis with sonar-scanner, maven, gradle, msbuild, etc.
-- Execute cnesreport thanks to the command line.
+- Execute cnesreport:
+   - In standalone, thanks to command line
+   - In plugin mode, copy jar in `/opt/sonarqube/plugins`, restart sonarqube, then click on "CNES Report" link.
+
+#### Installation
+##### Standalone mode
+**cnesreport** does not need any installation. It is a portable Java application you can copy and run according to following examples. The only requirement is an **up-to-date JRE (>1.8)**.
+
+##### Plugin mode (Since 2.2.0)
+- Copy the sonar-cnes-report.jar in the plugin folder of sonarqube (On linux path should be like `/opt/sonarqube/plugins`)
+- Restart sonarqube (On linux: `sudo service sonar restart`)
 
 #### Installation
 **cnesreport** does not need any installation. It is a portable Java application you can copy and run according to following examples. The only requirement is an **up-to-date JRE (>1.8)**.
@@ -54,7 +66,9 @@ This is the minimal usage of cnesreport. This example export (report + spreadshe
 java -jar cnesreport.jar -p projectId
 ````
 
-##### Advanced usage
+If you have installed cnes-report in your sonarqube: open web interface, click on "CNES Report" then choose a project.
+
+##### Advanced usage (standalone)
 If you are using a secured instance of SonarQube, you can provide a SonarQube authentication token thanks to `-t` option and specify the url of the SonarQube instance with `-s`. The internal template for the text report will be replace by the one given through `-r` option.
 ````
 java -jar cnesreport.jar -t xuixg5hub345xbefu -s https://example.org:9000 -p projectId -r ./template.docx
@@ -94,9 +108,13 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td><b>1.2.0</b></td>
   <td><b>1.2.1</b></td>
   <td><b>2.0.0</b></td>
+  <td><b>2.1.0</b></td>
+  <td><b>2.2.0</b></td>
  </tr>
  <tr>
   <td><b>3.7.x (LTS)</b></td>
+  <td>-</td>
+  <td>-</td>
   <td>-</td>
   <td>-</td>
   <td>-</td>
@@ -108,6 +126,8 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>-</td>
   <td>-</td>
+  <td>-</td>
+  <td>-</td>
  </tr>
   <tr>
   <td><b>5.6.x (LTS)</b></td>
@@ -115,6 +135,8 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>-</td>
   <td>X</td>
+  <td>X</td>
+  <td>-</td>
  </tr>
  <tr>
   <td><b>6.0.x</b></td>
@@ -122,6 +144,8 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>-</td>
   <td>X</td>
+  <td>X</td>
+  <td>-</td>
  </tr>
  <tr>
   <td><b>6.1.x</b></td>
@@ -129,6 +153,8 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>-</td>
   <td>X</td>
+  <td>X</td>
+  <td>-</td>
  </tr>
  <tr>
   <td><b>6.2.x</b></td>
@@ -136,6 +162,8 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>-</td>
   <td>X</td>
+  <td>X</td>
+  <td>-</td>
  </tr>
  <tr>
   <td><b>6.3.x</b></td>
@@ -143,6 +171,8 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>-</td>
   <td>X</td>
+  <td>X</td>
+  <td>-</td>
  </tr>
  <tr>
   <td><b>6.4.x</b></td>
@@ -150,12 +180,16 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>-</td>
   <td>X</td>
+  <td>X</td>
+  <td>-</td>
  </tr>
  <tr>
   <td><b>6.5.x</b></td>
   <td>-</td>
   <td>-</td>
   <td>-</td>
+  <td>X</td>
+  <td>X</td>
   <td>X</td>
  </tr>
  <tr>
@@ -164,9 +198,13 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>-</td>
   <td>X</td>
+  <td>X</td>
+  <td>X</td>
  </tr>
  <tr>
   <td><b>6.7.x (LTS)</b></td>
+  <td>X</td>
+  <td>X</td>
   <td>X</td>
   <td>X</td>
   <td>X</td>
@@ -178,12 +216,16 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>-</td>
   <td>X</td>
+  <td>X</td>
+  <td>X</td>
  </tr>
  <tr>
   <td><b>7.1</b></td>
   <td>-</td>
   <td>-</td>
   <td>-</td>
+  <td>X</td>
+  <td>X</td>
   <td>X</td>
  </tr>
  <tr>
@@ -192,12 +234,16 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>-</td>
   <td>X</td>
+  <td>X</td>
+  <td>X</td>
  </tr>
  <tr>
   <td><b>7.3</b></td>
   <td>-</td>
   <td>-</td>
   <td>-</td>
+  <td>X</td>
+  <td>X</td>
   <td>X</td>
  </tr>
 </table>
