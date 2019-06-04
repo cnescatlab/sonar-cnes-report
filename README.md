@@ -5,7 +5,7 @@
 [![SonarQube Coverage](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonar%3Acnesreport&metric=coverage)](https://sonarcloud.io/component_measures?id=fr.cnes.sonar%3Acnesreport&metric=Coverage)
 [![SonarQube Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonar%3Acnesreport&metric=sqale_index)](https://sonarcloud.io/component_measures?id=fr.cnes.sonar%3Acnesreport&metric=Maintainability)
 
-SonarQube is an open platform to manage code quality. This program can export code analysis from a SonarQube server as a docx file, xlsx file and text files.
+SonarQube is an open platform to manage code quality. This program can export code analysis from a SonarQube server as a docx, xlsx, csv, markdown,  and text files.
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
 
@@ -40,8 +40,10 @@ Generate editable reports for SonarQube projects.
  -c,--disable-conf                 Disable export of quality configuration used during analysis.
  -d,--date <arg>                   Date for the report. Default: current date.
  -e,--disable-spreadsheet          Disable spreadsheet generation.
+ -f,--disable-csv                  Disable csv generation.
  -h,--help                         Display this message.
  -l,--language <arg>               Language of the report. Values: en_US, fr_FR. Default: en_US.
+ -m,--disable-markdown             Disable markdown generation.
  -o,--output <arg>                 Output path for exported resources.
  -p,--project <arg>                SonarQube key of the targeted project.
  -r,--template-report <arg>        Path to the report template. Default: usage of internal template.
