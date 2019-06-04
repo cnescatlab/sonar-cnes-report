@@ -26,6 +26,9 @@ This tool can be used in standalone as a JAR executable (with the command line) 
 - Copy the sonar-cnes-report.jar in the plugin folder of sonarqube (On linux path should be like `/opt/sonarqube/plugins`)
 - Restart sonarqube (On linux: `sudo service sonar restart`)
 
+#### Installation
+**cnesreport** does not need any installation. It is a portable Java application you can copy and run according to following examples. The only requirement is an **up-to-date JRE (>1.8)**.
+
 #### Get help
 Use `java -jar cnesreport.jar -h` to get the following help about cnesreport:
 ````
