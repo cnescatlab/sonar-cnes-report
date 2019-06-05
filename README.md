@@ -44,6 +44,7 @@ Generate editable reports for SonarQube projects.
  -h,--help                         Display this message.
  -l,--language <arg>               Language of the report. Values: en_US, fr_FR. Default: en_US.
  -m,--disable-markdown             Disable markdown generation.
+ -n,--template-markdown <arg>      Path to the report template in markdown. Default: usage of internal template.
  -o,--output <arg>                 Output path for exported resources.
  -p,--project <arg>                SonarQube key of the targeted project.
  -r,--template-report <arg>        Path to the report template. Default: usage of internal template.
