@@ -57,6 +57,8 @@ public class ReportConfiguration {
     private String templateReport;
     /** Options for x. */
     private String templateSpreadsheet;
+    /** Options for n. */
+    private String templateMarkdown;
 
     /**
      * Private constructor, use create method instead.
@@ -81,7 +83,7 @@ public class ReportConfiguration {
                                 final boolean enableConf, final boolean enableReport,
                                 final boolean enableSpreadsheet, final boolean enableCSV,
                                 final boolean enableMarkdown, String templateReport,
-                                final String templateSpreadsheet) {
+                                final String templateSpreadsheet, final String templateMarkdown) {
         this.help = help;
         this.version = version;
         this.server = server;
@@ -98,6 +100,7 @@ public class ReportConfiguration {
         this.enableMarkdown = enableMarkdown;
         this.templateReport = templateReport;
         this.templateSpreadsheet = templateSpreadsheet;
+        this.templateMarkdown = templateMarkdown;
     }
 
     /**
@@ -129,7 +132,8 @@ public class ReportConfiguration {
                 !commandLineManager.hasOption("f"), // Why f? Because every "logic" options like "c" are already used
                 !commandLineManager.hasOption("m"),
                 commandLineManager.getOptionValue("r", StringManager.EMPTY),
-                commandLineManager.getOptionValue("x", StringManager.EMPTY));
+                commandLineManager.getOptionValue("x", StringManager.EMPTY),
+                commandLineManager.getOptionValue("n", StringManager.EMPTY));
     }
 
     public boolean isHelp() {
@@ -191,5 +195,8 @@ public class ReportConfiguration {
     public String getTemplateSpreadsheet() {
         return templateSpreadsheet;
     }
-    
+
+    public String getTemplateMarkdown(){
+        return templateMarkdown;
+    }
 }

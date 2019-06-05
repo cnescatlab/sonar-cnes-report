@@ -109,7 +109,7 @@ public class ReportFactory {
         // Export in markdown if requested
         if (configuration.isEnableMarkdown()) {
             final String MDFilename = formatFilename(MD_FILENAME, configuration.getOutput(), model.getProjectName());
-            markdownExporter.export(model, MDFilename, model.getProjectName());
+            markdownExporter.export(model, MDFilename, configuration.getTemplateMarkdown());
         }
 
         // Export issues in report if requested
