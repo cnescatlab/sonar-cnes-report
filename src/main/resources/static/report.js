@@ -29,16 +29,9 @@ window.registerExtension('cnesreport/report', function (options) {
         ).then(function (response) {
             // on success
             // we put each quality gate in the list
-            $.each(response, function (i, item) {
-                // we create a new option for each quality gate
-                // in the json response
-                var option = $('<option>', {
-                                 value: item.k,
-                                 text : item.nm + ' [' + item.k + ']'
-                             });
-                // we add it to the drop down list
-                $('#key').append(option);
-            });
+            for (i=0;i<response.length;++i){
+                document.getElementById("key").innerHTML += "<option value='"+response[i].k+"'>"+response[i].nm+"</option>"
+            }
         });
 
         window.SonarRequest.post(
@@ -47,13 +40,13 @@ window.registerExtension('cnesreport/report', function (options) {
                     window.SonarRequest.postJSON(
                         '/api/user_tokens/generate', {name: "cnes-report"}
                     ).then(function (response) {
-                        $('#token_cnesreport').val(response.token)
+                        document.getElementById("token_cnesreport").value = response.token;
                         window.SonarRequest.getJSON(
                             '/api/users/search',
                             {"q":response.login}
                         ).then(function (response) {
                             // on success
-                            $('#author').val(response.users[0].name);
+                            document.getElementById("author").value = response.users[0].name;
                         });
                     });
 
@@ -69,10 +62,45 @@ window.registerExtension('cnesreport/report', function (options) {
         template.setAttribute("id", "template");
         options.el.appendChild(template);
         // retrieve template from html
-        $('#template').load('../../static/cnesreport/templates/reportForm.html', function(){
-            // fill out project's drop down list
-            initProjectsDropDownList();
-        });
+
+        const reportForm = `
+         <div class="page-wrapper-simple"><div class="page-simple">
+           <h1 class="maintenance-title text-center">Generate a report</h1>
+           <form id="generation-form" action="../../api/cnesreport/report" method="get">
+            <div class='forminput'>
+               <label for="key" id="keyLabel" class="login-label" style="display: block;"><strong>Project key</strong></label>
+               <select id="key"
+                       name="key"
+                       class="login-input" required></select>
+             </div>     <div class='forminput'>
+               <label for="author" id="authorLabel" class="login-label" style="display: block;"><strong>Author</strong></label>
+               <input   type="text"
+                        id="author"
+                        name="author"
+                        class="login-input"
+                        maxlength="255"
+                        required
+                        placeholder="Report's author">
+               <input type="hidden" name="token" id="token_cnesreport" value="noauth"/>
+
+               <div id="loading" class="text-center overflow-hidden" style="margin-bottom: 1em; display: none;">
+                   <img src="../../static/cnesreport/images/loader.gif" alt="Working..."/>
+               </div>
+            </div><br />
+               <input id="generation" name="generation" type="submit" value="Generate"><br />
+               <em style="color:grey;">This operation may take some time, please wait while the report is being generated.</em>
+
+           </form>
+         </div></div>
+           <style>
+                .forminput select, .forminput input{
+                    width:100%;
+                }
+           </style>
+           `;
+         document.getElementById("template").innerHTML=reportForm
+         initProjectsDropDownList();
+
 
     }
 
