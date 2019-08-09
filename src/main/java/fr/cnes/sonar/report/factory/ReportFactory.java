@@ -190,7 +190,7 @@ public class ReportFactory {
      * @param projectName Name of the current project
      * @return a formatted filename
      */
-    private static String formatFilename(final String propertyName, final String baseDir, final String projectName) {
+    public static String formatFilename(final String propertyName, final String baseDir, final String projectName) {
         // construct the filename by replacing date and name
         return StringManager.getProperty(propertyName)
                 .replaceFirst(BASEDIR, baseDir)

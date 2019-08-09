@@ -25,6 +25,7 @@ import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
+import fr.cnes.sonar.report.factory.ReportFactory;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.xmlbeans.XmlException;
@@ -59,10 +60,14 @@ public class ExportTask implements RequestHandler {
     public void handle(Request request, Response response) throws BadExportationDataTypeException, BadSonarQubeRequestException, IOException,
             UnknownQualityGateException, OpenXML4JException, XmlException, SonarQubeException {
 
+        // Get project key
+        String projectKey = request.getParam(PluginStringManager.getProperty("api.report.args.key")).getValue();
+
         // Getting stream and change headers
         Response.Stream stream = response.stream();
         stream.setMediaType("application/zip");
-
+        String filename = ReportFactory.formatFilename("zip.report.output", "", projectKey);
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + '"');
 
         // Get a temp folder
         final File outputDirectory = File.createTempFile("cnesreport", Long.toString(System.nanoTime()));
@@ -75,7 +80,7 @@ public class ExportTask implements RequestHandler {
                 "report",
                 "-o", outputDirectory.getAbsolutePath(),
                 "-s", config.get("sonar.core.serverBaseURL").orElse(PluginStringManager.getProperty("plugin.defaultHost")),
-                "-p", request.getParam(PluginStringManager.getProperty("api.report.args.key")).getValue(),
+                "-p", projectKey,
                 "-a", request.getParam(PluginStringManager.getProperty("api.report.args.author")).getValue(),
                 "-t", request.getParam(PluginStringManager.getProperty("api.report.args.token")).getValue()
         });
