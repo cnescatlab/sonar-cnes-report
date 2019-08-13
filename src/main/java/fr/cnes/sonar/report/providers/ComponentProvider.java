@@ -120,7 +120,6 @@ public class ComponentProvider extends AbstractDataProvider {
 
         // for each metric
         for(Object metric: XlsXTools.extractHeader(componentsList)){
-        //for(Object metric:metrics){
             // if metric is numerical
             if (isCountableMetric(metric.toString())) {
                 // Get min, max and mean of this metric on the current project
