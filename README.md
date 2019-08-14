@@ -32,7 +32,7 @@ This tool can be used in standalone as a JAR executable (with the command line) 
 #### Get help
 Use `java -jar cnesreport.jar -h` to get the following help about cnesreport:
 ````
-usage: java -jar cnesreport.jar [-a <arg>] [-c] [-d <arg>] [-e] [-h] [-l <arg>] [-o <arg>] [-p <arg>] [-r <arg>] 
+usage: java -jar cnesreport.jar [-a <arg>] [-c] [-d <arg>] [-e] [-h] [-l <arg>] [-o <arg>] [-p <arg>] [-r <arg>]
        [-s <arg>] [-t <arg>] [-v] [-w] [-x <arg>]
 Generate editable reports for SonarQube projects.
 
@@ -89,7 +89,7 @@ To use the proxy feature be sure to set following properties:
 ###### Example
 If your JRE's proxy is not set, you can use Java flags as follow:
 ```bash
-java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42 
+java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
 -Dhttps.proxyUser=jerry -Dhttps.proxyPassword=siegel
 -jar cnesreport.jar -t xuixg5hub345xbefu -s https://example.org:9000 -p projectId
 
@@ -107,15 +107,17 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
 <table>
  <tr>
   <td><b>SonarQube / cnesreport</b></td>
-  <td><b>1.1.0</b></td>
-  <td><b>1.2.0</b></td>
-  <td><b>1.2.1</b></td>
-  <td><b>2.0.0</b></td>
-  <td><b>2.1.0</b></td>
-  <td><b>2.2.0</b></td>
+  <td><b>1.1.0<br/>Standalone only</b></td>
+  <td><b>1.2.0<br/>Standalone only</b></td>
+  <td><b>1.2.1<br/>Standalone only</b></td>
+  <td><b>2.0.0<br/>Standalone only</b></td>
+  <td><b>2.1.0<br/>Standalone only</b></b></td>
+  <td><b>2.2.0<br/>Standalone + Plugin</b></td>
+  <td><b>3.0.0<br/>Standalone + Plugin</b></b></td>
  </tr>
  <tr>
   <td><b>3.7.x (LTS)</b></td>
+  <td>-</td>
   <td>-</td>
   <td>-</td>
   <td>-</td>
@@ -131,6 +133,7 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>-</td>
   <td>-</td>
+  <td>-</td>
  </tr>
   <tr>
   <td><b>5.6.x (LTS)</b></td>
@@ -139,6 +142,7 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>X</td>
   <td>X</td>
+  <td>-</td>
   <td>-</td>
  </tr>
  <tr>
@@ -149,6 +153,7 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>X</td>
   <td>X</td>
   <td>-</td>
+  <td>-</td>
  </tr>
  <tr>
   <td><b>6.1.x</b></td>
@@ -158,6 +163,7 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>X</td>
   <td>X</td>
   <td>-</td>
+  <td>-</td>
  </tr>
  <tr>
   <td><b>6.2.x</b></td>
@@ -166,6 +172,7 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>X</td>
   <td>X</td>
+  <td>-</td>
   <td>-</td>
  </tr>
  <tr>
@@ -185,6 +192,7 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>X</td>
   <td>X</td>
   <td>-</td>
+  <td>-</td>
  </tr>
  <tr>
   <td><b>6.5.x</b></td>
@@ -194,6 +202,7 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>X</td>
   <td>X</td>
   <td>X</td>
+  <td>-</td>
  </tr>
  <tr>
   <td><b>6.6.x</b></td>
@@ -203,9 +212,11 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>X</td>
   <td>X</td>
   <td>X</td>
+  <td>X</td>
  </tr>
  <tr>
   <td><b>6.7.x (LTS)</b></td>
+  <td>X</td>
   <td>X</td>
   <td>X</td>
   <td>X</td>
@@ -220,6 +231,7 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>X</td>
   <td>X</td>
+  <td>(standalone only)</td>
   <td>X</td>
  </tr>
  <tr>
@@ -229,6 +241,7 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>X</td>
   <td>X</td>
+  <td>(standalone only)</td>
   <td>X</td>
  </tr>
  <tr>
@@ -238,6 +251,7 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>X</td>
   <td>X</td>
+  <td>(standalone only)</td>
   <td>X</td>
  </tr>
  <tr>
@@ -247,6 +261,37 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>X</td>
   <td>X</td>
+  <td>(standalone only)</td>
+  <td>X</td>
+ </tr>
+ <tr>
+  <td><b>7.7</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>X</td>
+  <td>X</td>
+  <td>(standalone only)</td>
+  <td>X</td>
+ </tr>
+ <tr>
+  <td><b>7.8</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>X</td>
+  <td>X</td>
+  <td>(standalone only)</td>
+  <td>X</td>
+ </tr>
+ <tr>
+  <td><b>7.9.x (LTS)</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>X</td>
+  <td>X</td>
+  <td>(standalone only)</td>
   <td>X</td>
  </tr>
 </table>
