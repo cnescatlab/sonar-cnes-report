@@ -106,7 +106,7 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
 ### Compatibility matrix
 <table>
  <tr>
-  <td><b>SonarQube / cnesreport</b></td>
+  <td><b>cnesreport <br>\<br> SonarQube</b></td>
   <td><b>1.1.0<br/>Standalone only</b></td>
   <td><b>1.2.0<br/>Standalone only</b></td>
   <td><b>1.2.1<br/>Standalone only</b></td>
@@ -142,7 +142,7 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>X</td>
   <td>X</td>
-  <td>-</td>
+  <td>(standalone only)</td>
   <td>-</td>
  </tr>
  <tr>
@@ -152,7 +152,7 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>X</td>
   <td>X</td>
-  <td>-</td>
+  <td>(standalone only)</td>
   <td>-</td>
  </tr>
  <tr>
@@ -162,7 +162,7 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>X</td>
   <td>X</td>
-  <td>-</td>
+  <td>(standalone only)</td>
   <td>-</td>
  </tr>
  <tr>
@@ -172,7 +172,7 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>X</td>
   <td>X</td>
-  <td>-</td>
+  <td>(standalone only)</td>
   <td>-</td>
  </tr>
  <tr>
@@ -182,6 +182,7 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>X</td>
   <td>X</td>
+  <td>(standalone only)</td>
   <td>-</td>
  </tr>
  <tr>
@@ -191,7 +192,7 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td>-</td>
   <td>X</td>
   <td>X</td>
-  <td>-</td>
+  <td>(standalone only)</td>
   <td>-</td>
  </tr>
  <tr>
