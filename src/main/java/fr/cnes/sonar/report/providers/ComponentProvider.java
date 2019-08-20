@@ -116,7 +116,6 @@ public class ComponentProvider extends AbstractDataProvider {
 
         Map<String, Double> map = new HashMap();
         // Use first component to gets all metrics names
-        Object[] metrics = componentsList.get(0).keySet().toArray();
 
         // for each metric
         for(Object metric: XlsXTools.extractHeader(componentsList)){

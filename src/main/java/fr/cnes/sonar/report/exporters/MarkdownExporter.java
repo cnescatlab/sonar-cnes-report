@@ -122,7 +122,6 @@ public class MarkdownExporter implements IExporter {
             // Saving output
             try(FileWriter fileWriter = new FileWriter(path)){
               fileWriter.write(output);
-              fileWriter.close();
             }
             return file;
         }
