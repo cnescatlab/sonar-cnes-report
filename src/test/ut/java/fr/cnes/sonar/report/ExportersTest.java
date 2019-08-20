@@ -24,6 +24,7 @@ import fr.cnes.sonar.report.exporters.MarkdownExporter;
 import fr.cnes.sonar.report.exporters.XmlExporter;
 import fr.cnes.sonar.report.exporters.docx.DocXExporter;
 import fr.cnes.sonar.report.exporters.xlsx.XlsXExporter;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -45,7 +46,7 @@ public class ExportersTest extends CommonTest {
     public void docxExportTest() throws Exception {
         final DocXExporter de = new DocXExporter();
 
-        de.export(report, TARGET+"/test.docx", "");
+        Assert.assertNotNull(de.export(report, TARGET+"/test.docx", ""));
     }
 
     /**
@@ -57,7 +58,7 @@ public class ExportersTest extends CommonTest {
     public void xlsxExportTest() throws Exception {
         final XlsXExporter xe = new XlsXExporter();
 
-        xe.export(report, TARGET+"/test.xlsx", "");
+        Assert.assertNotNull(xe.export(report, TARGET+"/test.xlsx", ""));
     }
 
     /**
@@ -69,7 +70,7 @@ public class ExportersTest extends CommonTest {
     public void jsonExportTest() throws Exception {
         final JsonExporter je = new JsonExporter();
 
-        je.export("{field:'value'}", TARGET, "test.xml");
+        Assert.assertNotNull(je.export("{field:'value'}", TARGET, "test.xml"));
     }
 
     /**
@@ -81,7 +82,7 @@ public class ExportersTest extends CommonTest {
     public void xmlExportTest() throws Exception {
         final XmlExporter xe = new XmlExporter();
 
-        xe.export("<tag>value</tag>", TARGET, "test.json");
+        Assert.assertNotNull(xe.export("<tag>value</tag>", TARGET, "test.json"));
     }
 
     /**
@@ -93,7 +94,7 @@ public class ExportersTest extends CommonTest {
     public void mdExportTest() throws Exception {
         final MarkdownExporter xe = new MarkdownExporter();
 
-        xe.export(report, TARGET+"test.md", "test.md");
+        Assert.assertNotNull(xe.export(report, TARGET+"test.md", "test.md"));
     }
     /**
      * Assert that there are no exception in a normal use
@@ -104,7 +105,7 @@ public class ExportersTest extends CommonTest {
     public void csvExportTest() throws Exception {
         final CSVExporter xe = new CSVExporter();
 
-        xe.export(report, TARGET+"test.csv", "test.csv");
+        Assert.assertNotNull(xe.export(report, TARGET+"test.csv", "test.csv"));
     }
 
     /**

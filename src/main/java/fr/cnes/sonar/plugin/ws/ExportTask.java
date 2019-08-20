@@ -25,6 +25,7 @@ import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
+import fr.cnes.sonar.report.factory.ReportFactory;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.xmlbeans.XmlException;
@@ -32,6 +33,7 @@ import org.sonar.api.config.Configuration;
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.RequestHandler;
 import org.sonar.api.server.ws.Response;
+import org.sonar.api.utils.text.JsonWriter;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,13 +58,14 @@ public class ExportTask implements RequestHandler {
      * @param response
      */
     @Override
-    public void handle(Request request, Response response) throws BadExportationDataTypeException, BadSonarQubeRequestException, IOException,
-            UnknownQualityGateException, OpenXML4JException, XmlException, SonarQubeException {
+    public void handle(Request request, Response response) throws BadExportationDataTypeException, IOException,
+            UnknownQualityGateException, OpenXML4JException, XmlException, SonarQubeException{
+
+        // Get project key
+        String projectKey = request.getParam(PluginStringManager.getProperty("api.report.args.key")).getValue();
 
         // Getting stream and change headers
         Response.Stream stream = response.stream();
-        stream.setMediaType("application/zip");
-
 
         // Get a temp folder
         final File outputDirectory = File.createTempFile("cnesreport", Long.toString(System.nanoTime()));
@@ -71,23 +74,38 @@ public class ExportTask implements RequestHandler {
         Files.delete(outputDirectory.toPath());
 
         // Start generation, re-using standalone script
-        ReportCommandLine.execute(new String[]{
-                "report",
-                "-o", outputDirectory.getAbsolutePath(),
-                "-s", config.get("sonar.core.serverBaseURL").orElse(PluginStringManager.getProperty("plugin.defaultHost")),
-                "-p", request.getParam(PluginStringManager.getProperty("api.report.args.key")).getValue(),
-                "-a", request.getParam(PluginStringManager.getProperty("api.report.args.author")).getValue(),
-                "-t", request.getParam(PluginStringManager.getProperty("api.report.args.token")).getValue()
-        });
-
-        // generate zip output and send it
-        ZipFolder.pack(outputDirectory.getAbsolutePath(), outputDirectory.getAbsolutePath() + ".zip");
-        File zip = new File(outputDirectory.getAbsolutePath() + ".zip");
-        FileUtils.copyFile(zip, stream.output());
+        try {
+            ReportCommandLine.execute(new String[]{
+                    "report",
+                    "-o", outputDirectory.getAbsolutePath(),
+                    "-s", config.get("sonar.core.serverBaseURL").orElse(PluginStringManager.getProperty("plugin.defaultHost")),
+                    "-p", projectKey,
+                    "-a", request.getParam(PluginStringManager.getProperty("api.report.args.author")).getValue(),
+                    "-t", request.getParam(PluginStringManager.getProperty("api.report.args.token")).getValue()
+            });
 
 
-        // Some cleaning
-        Files.delete(zip.toPath());
+            stream.setMediaType("application/zip");
+            String filename = ReportFactory.formatFilename("zip.report.output", "", projectKey);
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + '"');
+
+
+            // generate zip output and send it
+            ZipFolder.pack(outputDirectory.getAbsolutePath(), outputDirectory.getAbsolutePath() + ".zip");
+            File zip = new File(outputDirectory.getAbsolutePath() + ".zip");
+            FileUtils.copyFile(zip, stream.output());
+
+            // Some cleaning
+            Files.delete(zip.toPath());
+        } catch (BadSonarQubeRequestException e) {
+            try(JsonWriter jsonWriter = response.newJsonWriter()){
+                jsonWriter.beginObject();
+                jsonWriter.prop("error", PluginStringManager.getProperty("api.tokenerror"));
+                jsonWriter.endObject();
+            }
+
+        }
+
         FileTools.deleteFolder(outputDirectory);
     }
 }

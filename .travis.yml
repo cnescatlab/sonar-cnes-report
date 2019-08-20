@@ -14,27 +14,30 @@ jdk:
 
 env:
   - sonarqube: none
-  - sonarqube: 6.5
-  - sonarqube: 6.6
-  - sonarqube: 6.7
-  - sonarqube: 6.7.1
-  - sonarqube: 6.7.2
-  - sonarqube: 6.7.3
-  - sonarqube: 6.7.4
-  - sonarqube: 6.7.5
-  - sonarqube: 7.0
-  - sonarqube: 7.1
+  - sonarqube: 6.6-alpine
+  - sonarqube: 6.7-alpine
+  - sonarqube: 6.7.1-alpine
+  - sonarqube: 6.7.2-alpine
+  - sonarqube: 6.7.3-alpine
+  - sonarqube: 6.7.4-alpine
+  - sonarqube: 6.7.5-alpine
+  - sonarqube: 7.0-alpine
+  - sonarqube: 7.1-alpine
+  - sonarqube: 7.7-community
+  - sonarqube: 7.8-community
+  - sonarqube: 7.9-community
+  - sonarqube: lts
 
 script:
   - if [ $sonarqube != "none" ]; then
     mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package;
     chmod +x src/test/it/run-test.sh;mvn clean package;
     echo "Starting docker";
-    docker run --name sonarqube_${sonarqube}-alpine -d -p 127.0.0.1:9000:9000/tcp sonarqube:${sonarqube}-alpine;
+    docker run --name sonarqube_${sonarqube} -d -p 127.0.0.1:9000:9000/tcp sonarqube:${sonarqube};
     echo "Inject plugin";
-    docker cp target/sonar-cnes-report.jar sonarqube_${sonarqube}-alpine:/opt/sonarqube/extensions/plugins/;
-    docker exec sonarqube_${sonarqube}-alpine chmod 777 /opt/sonarqube/extensions/plugins/sonar-cnes-report.jar;
-    docker restart sonarqube_${sonarqube}-alpine;
+    docker cp target/sonar-cnes-report.jar sonarqube_${sonarqube}:/opt/sonarqube/extensions/plugins/;
+    docker exec sonarqube_${sonarqube} chmod 777 /opt/sonarqube/extensions/plugins/sonar-cnes-report.jar;
+    docker restart sonarqube_${sonarqube};
     echo "Waiting 5 minutes for SonarQube...";
     sleep 300;
     mvn sonar:sonar -Dsonar.host.url=http://127.0.0.1:9000 -Dsonar.login=admin -Dsonar.password=admin -Dsonar.organization=default-organization -Dsonar.branch.name= ;
@@ -50,3 +53,14 @@ cache:
 
 notifications:
   email: false
+
+deploy:
+  provider: releases
+  api_key:
+    secure: PFc97cepts1tQHmAWMIoLUVFo3aP6o6sVVg6B+30YjguyO6SrnFf/uE+zem1ogP6S3NOcMY0xtfBM4QSHoOTWVp1C5nk7SPzvXUs/diP5J7B58Z8OhMl0vkjz2Xa4GQx6ndK07DgMUeJyxexTBatJJ47E1Y+xLHqkSbcCCALfD4LfRvAM902t9nHBcRUPONmbAX6fj2z5TRTc9AveWwwgAbfHPjsh2WvuEQ0bSttKIYO08rm4GfXiqcwcfUtBwRLij+tQEYmyj+D5ie1jfJZe61FEF9rH1bS44ARr3BMqm1Ezm6rIEYG+4f1h5xZnXjX50uYIlShH9me28+XPr7FCopOwJyim/cT4Lviypw6dki4FRtRig93+Gjj42rLXSQaL4VtA1p+KscCBrG3C4QCbIOEixtN8n/WDd1U90x3GX8X+iPxApw5pWJ/Svc7ggjh9f0WvpsFGlFowqQBsP0GrGwdDoNeu5qaHA6G1AIHses6EUcq/WZ6ZAy/cbQCNjICPIzXYSV8pBCKjnnXZWZfciZWH3Q/EghCnyyjCGLpYV2cEtHgGx50rGWQVyPHmKZZ6/B2CETWPtxpg//yXPRsTII0ssBbgFZgmeiW6Hl+TQv6AEoLK4YJhPod8XEenYKwanct2zGbOH6YH6emM0vE3HN3ldfHNRHtyhPyGsefsc0=
+  file: sonar-cnes-report.jar
+  skip_cleanup: true
+  draft: true
+  on:
+    branch: master
+    condition: $sonarqube = none
