@@ -100,13 +100,11 @@ public class ExportTask implements RequestHandler {
         } catch (BadSonarQubeRequestException e) {
             try(JsonWriter jsonWriter = response.newJsonWriter()){
                 jsonWriter.beginObject();
-                jsonWriter.prop("error", "This project can't be exported, please check your token.");
+                jsonWriter.prop("error", PluginStringManager.getProperty("api.tokenerror"));
                 jsonWriter.endObject();
             }
 
         }
-
-
 
         FileTools.deleteFolder(outputDirectory);
     }

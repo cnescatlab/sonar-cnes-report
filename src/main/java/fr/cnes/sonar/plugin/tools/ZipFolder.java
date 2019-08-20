@@ -38,7 +38,7 @@ public class ZipFolder {
      * @param zipFilePath output path
      * @throws IOException
      */
-    public static <Stream> void pack(String sourceDirPath, String zipFilePath) throws IOException {
+    public static void pack(String sourceDirPath, String zipFilePath) throws IOException {
         Path p = Files.createFile(Paths.get(zipFilePath));
         java.util.stream.Stream<Path> file = null;
         try (ZipOutputStream zs = new ZipOutputStream(Files.newOutputStream(p))) {
