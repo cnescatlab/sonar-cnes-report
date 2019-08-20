@@ -20,6 +20,7 @@ package fr.cnes.sonar.report.providers;
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
+import fr.cnes.sonar.report.exporters.xlsx.XlsXTools;
 import fr.cnes.sonar.report.model.Component;
 import fr.cnes.sonar.report.model.SonarQubeServer;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -115,10 +116,9 @@ public class ComponentProvider extends AbstractDataProvider {
 
         Map<String, Double> map = new HashMap();
         // Use first component to gets all metrics names
-        Object[] metrics = componentsList.get(0).keySet().toArray();
 
         // for each metric
-        for(Object metric:metrics){
+        for(Object metric: XlsXTools.extractHeader(componentsList)){
             // if metric is numerical
             if (isCountableMetric(metric.toString())) {
                 // Get min, max and mean of this metric on the current project
@@ -134,7 +134,7 @@ public class ComponentProvider extends AbstractDataProvider {
     private boolean isCountableMetric(String metric){
         // Get first non-null value of metrics
         int i=0;
-        while(i<componentsList.size() && componentsList.get(i) == null){
+        while(i<componentsList.size() && (componentsList.get(i) == null || componentsList.get(i).get(metric) == null)){
             ++i;
         }
 

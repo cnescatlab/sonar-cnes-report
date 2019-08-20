@@ -1,7 +1,6 @@
 package fr.cnes.sonar.report.factory;
 
 import fr.cnes.sonar.report.CommonTest;
-import fr.cnes.sonar.report.model.SonarQubeServer;
 import fr.cnes.sonar.report.providers.*;
 import org.junit.Assert;
 import org.junit.Test;

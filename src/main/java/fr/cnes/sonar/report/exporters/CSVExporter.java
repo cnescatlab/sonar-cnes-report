@@ -43,28 +43,27 @@ public class CSVExporter implements IExporter {
         // Opening file
         File file = new File(filePath);
         FileWriter outputfile = new FileWriter(file);
-        CSVPrinter csvPrinter = new CSVPrinter(outputfile, CSVFormat.EXCEL.withDelimiter('\t'));
+        try(CSVPrinter csvPrinter = new CSVPrinter(outputfile, CSVFormat.EXCEL.withDelimiter('\t'))){
 
-        List<Map> allIssues = report.getRawIssues();
+          List<Map> allIssues = report.getRawIssues();
 
-        // Extracting headers
-        List<String> headers = XlsXTools.extractHeader(allIssues);
+          // Extracting headers
+          List<String> headers = XlsXTools.extractHeader(allIssues);
 
-        // Writing headers
-        csvPrinter.printRecord(headers);
+          // Writing headers
+          csvPrinter.printRecord(headers);
 
-        // Writing lines
-        List<String> line;
-        for(Map<String, String> issue:allIssues){
-            line = new ArrayList<>();
-            for(String col: headers){
-                line.add(issue.get(col));
-            }
-            csvPrinter.printRecord(line);
+          // Writing lines
+          List<String> line;
+          for(Map<String, String> issue:allIssues){
+              line = new ArrayList<>();
+              for(String col: headers){
+                  line.add(issue.get(col));
+              }
+              csvPrinter.printRecord(line);
+          }
         }
 
-        // closing file
-        csvPrinter.close();
         return file;
     }
 }
