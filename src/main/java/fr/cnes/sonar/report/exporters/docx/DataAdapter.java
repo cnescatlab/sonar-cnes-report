@@ -679,20 +679,28 @@ class RuleComparator implements Comparator<String>{
     }
 
     public int compare(String o1, String o2) {
-        if(o1.isEmpty() || o2.isEmpty())return 0;
+        int compare;
 
-        int compare = report
-                .getRule(o1)
-                .getType()
-                .compareTo(
-                report.getRule(o2).getType()
-        );
-        if (compare == 0) compare = report.getRule(o1).getSeverity().compareTo(
-                report.getRule(o2).getSeverity()
-        );
-        if (compare == 0) compare = report.getRule(o1).getKey().compareTo(
-                report.getRule(o2).getKey()
-        );
+        if(o1.isEmpty() || o2.isEmpty())return 0;
+        if(report.getRule(o1) == null || report.getRule(o1) == null)return 0;
+
+        try {
+            compare = report
+                    .getRule(o1)
+                    .getType()
+                    .compareTo(
+                            report.getRule(o2).getType()
+                    );
+            if (compare == 0) compare = report.getRule(o1).getSeverity().compareTo(
+                    report.getRule(o2).getSeverity()
+            );
+            if (compare == 0) compare = report.getRule(o1).getKey().compareTo(
+                    report.getRule(o2).getKey()
+            );
+        }
+        catch (NullPointerException e){
+            compare = 0;
+        }
 
         return compare;
     }
