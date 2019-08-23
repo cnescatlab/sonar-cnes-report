@@ -113,7 +113,7 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td><b>2.0.0<br/>Standalone only</b></td>
   <td><b>2.1.0<br/>Standalone only</b></b></td>
   <td><b>2.2.0<br/>Standalone + Plugin</b></td>
-  <td><b>3.0.0<br/>Standalone + Plugin</b></b></td>
+  <td><b>3.0.x<br/>Standalone + Plugin</b></b></td>
  </tr>
  <tr>
   <td><b>3.7.x (LTS)</b></td>
