@@ -247,7 +247,7 @@ public final class DataAdapter {
     /**
      * List of possible issue types
      */
-    private static final String[] ISSUE_TYPES = {"VULNERABILITY", "BUG", "CODE_SMELL"};
+    private static final String[] ISSUE_TYPES = {"VULNERABILITY", "BUG", "CODE_SMELL", "SECURITY_HOTSPOT"};
     /**
      * List of possible issue severities
      */
@@ -669,7 +669,7 @@ public final class DataAdapter {
 }
 
 /**
- * RuleComparator is used to compare 2 issues to sort them by severityq
+ * RuleComparator is used to compare 2 issues to sort them by type & severity
  */
 class RuleComparator implements Comparator<String>{
     Report report;
@@ -679,27 +679,33 @@ class RuleComparator implements Comparator<String>{
     }
 
     public int compare(String o1, String o2) {
-        int compare;
+        int compare = 0;
 
-        if(o1.isEmpty() || o2.isEmpty())return 0;
-        if(report.getRule(o1) == null || report.getRule(o1) == null)return 0;
+        if(o1.isEmpty() || o2.isEmpty())compare = 1;
 
-        try {
+        //If rule is removed in quality gate, the issue is send to the end of list
+        if(report.getRule(o1) == null){compare = 1;}
+        else if(report.getRule(o2) == null){compare = -1;}
+
+        if (compare == 0){
             compare = report
                     .getRule(o1)
                     .getType()
                     .compareTo(
                             report.getRule(o2).getType()
                     );
-            if (compare == 0) compare = report.getRule(o1).getSeverity().compareTo(
+        }
+
+        if (compare == 0) {
+            compare = report.getRule(o1).getSeverity().compareTo(
                     report.getRule(o2).getSeverity()
             );
-            if (compare == 0) compare = report.getRule(o1).getKey().compareTo(
+        }
+
+        if (compare == 0){
+            compare = report.getRule(o1).getKey().compareTo(
                     report.getRule(o2).getKey()
             );
-        }
-        catch (NullPointerException e){
-            compare = 0;
         }
 
         return compare;
