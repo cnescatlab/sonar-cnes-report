@@ -94,9 +94,7 @@ public class ExportTask implements RequestHandler {
             ZipFolder.pack(outputDirectory.getAbsolutePath(), outputDirectory.getAbsolutePath() + ".zip");
             File zip = new File(outputDirectory.getAbsolutePath() + ".zip");
             FileUtils.copyFile(zip, stream.output());
-
-            // Some cleaning
-            Files.delete(zip.toPath());
+            zip.delete();
         } catch (BadSonarQubeRequestException e) {
             try(JsonWriter jsonWriter = response.newJsonWriter()){
                 jsonWriter.beginObject();

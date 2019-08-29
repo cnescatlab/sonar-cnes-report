@@ -50,6 +50,7 @@ public class ZipFolder {
                         try {
                             zs.putNextEntry(zipEntry);
                             Files.copy(path, zs);
+                            Files.deleteIfExists(path);
                             zs.closeEntry();
                         } catch (IOException e) {
                             Logger LOGGER = Logger.getLogger(ZipFolder.class.getName());
@@ -58,8 +59,9 @@ public class ZipFolder {
                     });
         }
         finally {
-            if(file!=null)
+            if(file!=null) {
                 file.close();
+            }
         }
     }
 }
