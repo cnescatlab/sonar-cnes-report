@@ -46,7 +46,8 @@ public class FileTools {
                 try {
                     Files.deleteIfExists(toDelete.toPath());
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Logger LOGGER = Logger.getLogger(FileTools.class.getName());
+                    LOGGER.warning(e.getMessage());
                 }
             }
         }

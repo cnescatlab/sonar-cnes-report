@@ -56,7 +56,7 @@ public class CSVExporter implements IExporter {
           // Writing lines
           List<String> line;
           Object tmpCol;
-          String tmpString;
+          StringBuilder tmpString;
           for(Map<String, String> issue:allIssues){
               line = new ArrayList<>();
               for(String col: headers){
@@ -64,11 +64,11 @@ public class CSVExporter implements IExporter {
 
                   // Sometimes it returns an array of string (e.g: for comments)
                   if(tmpCol instanceof ArrayList){
-                      tmpString = new String();
+                      tmpString = new StringBuilder();
                       for(Object comment: (ArrayList)tmpCol){
-                          tmpString += comment.toString() + " / ";
+                          tmpString.append(comment).append(" / ");
                       }
-                      line.add(tmpString);
+                      line.add(tmpString.toString());
                   }
                   else if(tmpCol == null){
                       line.add("-");

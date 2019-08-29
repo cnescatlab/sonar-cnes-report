@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Test the creation of files from an abstract report
@@ -41,9 +42,16 @@ public class ExportersTest extends CommonTest {
      */
     private static final String TARGET = "./target/test";
     @Before
-    public void prepare(){
+    public void prepare() throws IOException {
         File f = new File(TARGET);
+        File emptyFolder = new File(TARGET + "/emptyfolder");
+        File notEmptyFolder = new File(TARGET + "/emptyfolder");
+        File file = new File(TARGET + "/emptyfolder/file.txt");
         f.mkdir();
+        emptyFolder.mkdir();
+        notEmptyFolder.mkdir();
+        file.createNewFile();
+
     }
     /**
      * Assert that there are no exception in a normal use
@@ -188,6 +196,7 @@ public class ExportersTest extends CommonTest {
         xe.export(4,TARGET+"test.md", "test.md");
     }
 
+    @Test
     public void testDeleteFolder(){
         FileTools.deleteFolder(new File(TARGET));
         File f = new File(TARGET);
