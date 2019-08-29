@@ -63,15 +63,20 @@ public class CSVExporter implements IExporter {
                   tmpCol = issue.get(col);
 
                   // Sometimes it returns an array of string (e.g: for comments)
-                  if(tmpCol instanceof String) {
-                      line.add(issue.get(tmpCol));
-                  }
-                  else if(tmpCol instanceof ArrayList){
+                  if(tmpCol instanceof ArrayList){
                       tmpString = new String();
                       for(Object comment: (ArrayList)tmpCol){
-                          tmpString += comment.toString() + "\n";
+                          tmpString += comment.toString() + " / ";
                       }
                       line.add(tmpString);
+                  }
+                  else if(tmpCol == null){
+                      line.add("-");
+                  }
+                  // Sometimes it returns boolean or int
+                  // This case work with String and every object that can be converted into string
+                  else{
+                      line.add(tmpCol.toString());
                   }
               }
               csvPrinter.printRecord(line);

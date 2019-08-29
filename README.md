@@ -16,7 +16,7 @@ This tool can be used in standalone as a JAR executable (with the command line) 
 - Run an analysis with sonar-scanner, maven, gradle, msbuild, etc.
 - Execute cnesreport:
    - In standalone, thanks to command line
-   - In plugin mode, copy jar in `/opt/sonarqube/plugins`, restart sonarqube, then click on "CNES Report" link.
+   - In plugin mode, copy jar in `/opt/sonarqube/plugins`, restart sonarqube, then click on "More" > "CNES Report".
 
 #### Installation
 ##### Standalone mode
