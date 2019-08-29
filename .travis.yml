@@ -11,6 +11,7 @@ addons:
 
 jdk:
   - oraclejdk8
+  - oraclejdk11
 
 env:
   - sonarqube: none
