@@ -196,6 +196,10 @@ public class ExportersTest extends CommonTest {
         xe.export(4,TARGET+"test.md", "test.md");
     }
 
+    /**
+     * Assert that we can delete a folder
+     *
+     */
     @Test
     public void testDeleteFolder(){
         FileTools.deleteFolder(new File(TARGET));

@@ -94,6 +94,15 @@ public abstract class CommonTest {
         i2.setType("SECURITY");
         report.setIssues(issues);
 
+        List<Map> rawIssues = new ArrayList<>();
+        Map issue1 = new HashMap();
+        issue1.put("Comments", new ArrayList<String>());
+        issue1.put("ToReview", true);
+        issue1.put("someNumber", 1.0);
+        rawIssues.add(issue1);
+
+        report.setRawIssues(rawIssues);
+
         final List<Facet> facets = new ArrayList<>();
         final Facet rules = new Facet();
         rules.setProperty("rules");
