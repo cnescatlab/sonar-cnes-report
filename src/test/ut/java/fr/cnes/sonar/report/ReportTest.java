@@ -67,10 +67,18 @@ public class ReportTest {
         ReportCommandLine.execute(new String[0]);
     }
 
+    String TARGET = "./target/zip";
+    @Before
+    public void before(){
+        File zip = new File(TARGET+".zip");
+        if(zip.exists()){
+            zip.delete();
+        }
+    }
+
     @Test
     public void zipFolderTest() throws IOException
     {
-        String TARGET = "./target/zip";
         File f = new File(TARGET);
         File emptyFolder = new File(TARGET + "/emptyfolder");
         File notEmptyFolder = new File(TARGET + "/emptyfolder");

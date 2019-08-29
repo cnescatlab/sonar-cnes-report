@@ -101,6 +101,14 @@ public abstract class CommonTest {
         issue1.put("someNumber", 1.0);
         rawIssues.add(issue1);
 
+        Map issue2 = new HashMap();
+        List list = new ArrayList();
+        list.add("Element 1");
+        list.add("Element 2");
+        issue2.put("Comments", list);
+        issue2.put("someNumber", 2.0);
+        rawIssues.add(issue2);
+
         report.setRawIssues(rawIssues);
 
         final List<Facet> facets = new ArrayList<>();
