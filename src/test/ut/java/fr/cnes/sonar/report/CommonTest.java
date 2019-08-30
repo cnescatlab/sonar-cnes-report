@@ -17,6 +17,7 @@
 
 package fr.cnes.sonar.report;
 
+import fr.cnes.sonar.report.exporters.xlsx.XlsXTools;
 import fr.cnes.sonar.report.model.*;
 import fr.cnes.sonar.report.utils.ReportConfiguration;
 import org.junit.Before;
@@ -74,8 +75,6 @@ public abstract class CommonTest {
         final List<Issue> issues = new ArrayList<>();
         final Issue i1 = new Issue();
         final Issue i2 = new Issue();
-        issues.add(i1);
-        issues.add(i2);
         i1.setComponent("a");
         i1.setKey("z");
         i1.setLine("15");
@@ -92,6 +91,11 @@ public abstract class CommonTest {
         i2.setSeverity(MAJOR);
         i2.setStatus("OPEN");
         i2.setType("SECURITY");
+        // Adding multiple time to test comparator (DataAdapted.RuleComparator)
+        issues.add(i1);
+        issues.add(i2);
+        issues.add(i1);
+        issues.add(i2);
         report.setIssues(issues);
 
         List<Map> rawIssues = new ArrayList<>();
@@ -156,11 +160,32 @@ public abstract class CommonTest {
         final List<Measure> measures = new ArrayList<>();
         measures.add(new Measure("reliability_rating", "1.0"));
         measures.add(new Measure("duplicated_lines_density", "1.0"));
-        measures.add(new Measure("sqale_rating", "1.0"));
+        measures.add(new Measure("sqale_rating", "2.0"));
         measures.add(new Measure("coverage", "1.0"));
         measures.add(new Measure("ncloc", "1.0"));
         measures.add(new Measure("alert_status", "1.0"));
-        measures.add(new Measure("security_rating", "1.0"));
+        measures.add(new Measure("security_rating", "3.0"));
         report.setMeasures(measures);
+
+
+        Map<String, Double> metricStats = new HashMap();
+        // Use first component to gets all metrics names
+
+        // for each metric
+        metricStats.put("mincomplexity", 0.0);
+        metricStats.put("maxcomplexity", 1.0);
+        metricStats.put("minncloc", 0.0);
+        metricStats.put("maxncloc", 1.0);
+        metricStats.put("mincomment_lines_density", 0.0);
+        metricStats.put("maxcomment_lines_density", 1.0);
+        metricStats.put("minduplicated_lines_density", 0.0);
+        metricStats.put("maxduplicated_lines_density", 1.0);
+        metricStats.put("mincognitive_complexity", 0.0);
+        metricStats.put("maxcognitive_complexity", 1.0);
+        metricStats.put("mincoverage", 0.0);
+        metricStats.put("maxcoverage", 1.0);
+
+
+        report.setMetricsStats(metricStats);
     }
 }

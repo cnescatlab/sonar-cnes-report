@@ -54,8 +54,8 @@ public class CommandLineManager {
             {"c", "disable-conf", Boolean.FALSE.toString(), "Disable export of quality configuration used during analysis."},
             {"w", "disable-report", Boolean.FALSE.toString(), "Disable report generation."},
             {"e", "disable-spreadsheet", Boolean.FALSE.toString(), "Disable spreadsheet generation."},
-            {"f", "disable-csv", Boolean.TRUE.toString(), "Disable CSV generation"},
-            {"m", "disable-markdown", Boolean.TRUE.toString(), "Disable Markdown generation"},
+            {"f", "disable-csv", Boolean.FALSE.toString(), "Disable CSV generation"},
+            {"m", "disable-markdown", Boolean.FALSE.toString(), "Disable Markdown generation"},
             {"n", "template-markdown", Boolean.TRUE.toString(), "Path to the report template in markdown. Default: usage of internal template."},
             {"r", "template-report", Boolean.TRUE.toString(), "Path to the report template. Default: usage of internal template."},
             {"x", "template-spreadsheet", Boolean.TRUE.toString(), "Path to the spreadsheet template. Default: usage of internal template."}
