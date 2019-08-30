@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class ReportModelFactoryTest extends CommonTest {
 
-    @Test(expected = BadSonarQubeRequestException.class)
+    @Test(expected = SonarQubeException.class)
     public void createTest()
             throws BadSonarQubeRequestException, SonarQubeException, UnknownQualityGateException {
         SonarQubeServer sonarQubeServer = new SonarQubeServer();
