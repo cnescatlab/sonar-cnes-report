@@ -35,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 
 public class ReportFactory {
 
@@ -193,7 +194,7 @@ public class ReportFactory {
     public static String formatFilename(final String propertyName, final String baseDir, final String projectName) {
         // construct the filename by replacing date and name
         return StringManager.getProperty(propertyName)
-                .replaceFirst(BASEDIR, baseDir)
+                .replaceFirst(BASEDIR, Matcher.quoteReplacement(baseDir))
                 .replaceAll(DATE, new SimpleDateFormat(StringManager.DATE_PATTERN).format(new Date()))
                 .replaceAll(NAME, projectName);
     }
