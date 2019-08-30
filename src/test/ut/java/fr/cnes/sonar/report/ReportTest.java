@@ -81,8 +81,8 @@ public class ReportTest {
     {
         File f = new File(TARGET);
         File emptyFolder = new File(TARGET + "/emptyfolder");
-        File notEmptyFolder = new File(TARGET + "/emptyfolder");
-        File file = new File(TARGET + "/emptyfolder/file.txt");
+        File notEmptyFolder = new File(TARGET + "/notemptyfolder");
+        File file = new File(TARGET + "/notemptyfolder/file.txt");
 
         f.mkdir();
         emptyFolder.mkdir();

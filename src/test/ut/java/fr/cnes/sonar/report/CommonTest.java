@@ -183,7 +183,7 @@ public abstract class CommonTest {
         metricStats.put("mincognitive_complexity", 0.0);
         metricStats.put("maxcognitive_complexity", 1.0);
         metricStats.put("mincoverage", 0.0);
-        metricStats.put("maxcoverage", 1.0);
+        // Max coverage is not included to raise a NullPointerException
 
 
         report.setMetricsStats(metricStats);
