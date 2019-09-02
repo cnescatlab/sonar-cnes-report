@@ -77,7 +77,7 @@ public final class ReportCommandLine {
             execute(args);
 
         } catch (BadExportationDataTypeException | BadSonarQubeRequestException | IOException |
-                UnknownQualityGateException | OpenXML4JException | XmlException | SonarQubeException e) {
+                UnknownQualityGateException | OpenXML4JException | XmlException | SonarQubeException | IllegalStateException e) {
             // it logs all the stack trace
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             System.exit(-1);
@@ -91,6 +91,9 @@ public final class ReportCommandLine {
 
         // Parse command line arguments.
         final ReportConfiguration conf = ReportConfiguration.create(args);
+        if(conf.getProject().isEmpty()){
+            throw new IllegalStateException("Please provide a project with the -p argument, you can also use -h argument to display help.");
+        }
 
         // Set the language of the report.
         // assumes the language is set with language_country

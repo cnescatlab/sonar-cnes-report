@@ -17,6 +17,7 @@
 
 package fr.cnes.sonar.report;
 
+import fr.cnes.sonar.plugin.tools.FileTools;
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exporters.CSVExporter;
 import fr.cnes.sonar.report.exporters.JsonExporter;
@@ -25,7 +26,11 @@ import fr.cnes.sonar.report.exporters.XmlExporter;
 import fr.cnes.sonar.report.exporters.docx.DocXExporter;
 import fr.cnes.sonar.report.exporters.xlsx.XlsXExporter;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Test the creation of files from an abstract report
@@ -35,8 +40,19 @@ public class ExportersTest extends CommonTest {
     /**
      * Path to the export folder
      */
-    private static final String TARGET = "./target";
+    private static final String TARGET = "./target/test";
+    @Before
+    public void prepare() throws IOException {
+        File f = new File(TARGET);
+        File emptyFolder = new File(TARGET + "/emptyfolder");
+        File notEmptyFolder = new File(TARGET + "/notemptyfolder");
+        File file = new File(TARGET + "/notemptyfolder/file.txt");
+        f.mkdir();
+        emptyFolder.mkdir();
+        notEmptyFolder.mkdir();
+        file.createNewFile();
 
+    }
     /**
      * Assert that there are no exception in a normal use
      * of DocxExporter
@@ -94,7 +110,7 @@ public class ExportersTest extends CommonTest {
     public void mdExportTest() throws Exception {
         final MarkdownExporter xe = new MarkdownExporter();
 
-        Assert.assertNotNull(xe.export(report, TARGET+"test.md", "test.md"));
+        Assert.assertNotNull(xe.export(report, TARGET+"/test.md", "test.md"));
     }
     /**
      * Assert that there are no exception in a normal use
@@ -105,7 +121,7 @@ public class ExportersTest extends CommonTest {
     public void csvExportTest() throws Exception {
         final CSVExporter xe = new CSVExporter();
 
-        Assert.assertNotNull(xe.export(report, TARGET+"test.csv", "test.csv"));
+        Assert.assertNotNull(xe.export(report, TARGET+"/test.csv", "test.csv"));
     }
 
     /**
@@ -180,4 +196,14 @@ public class ExportersTest extends CommonTest {
         xe.export(4,TARGET+"test.md", "test.md");
     }
 
+    /**
+     * Assert that we can delete a folder
+     *
+     */
+    @Test
+    public void testDeleteFolder(){
+        FileTools.deleteFolder(new File(TARGET));
+        File f = new File(TARGET);
+        Assert.assertFalse(f.exists());
+    }
 }

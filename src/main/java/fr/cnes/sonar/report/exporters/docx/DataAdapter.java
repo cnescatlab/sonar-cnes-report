@@ -539,6 +539,11 @@ public final class DataAdapter {
             replacementValues.put(
                     placeholder,
                     value);
+
+            // Sometime, project did not have coverage
+            if (replacementValues.get(COVERAGE_PLACEHOLDER) == null){
+                replacementValues.put(COVERAGE_PLACEHOLDER, QUESTION_MARK);
+            }
         }
         return replacementValues;
     }

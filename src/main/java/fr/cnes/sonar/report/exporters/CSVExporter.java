@@ -55,10 +55,29 @@ public class CSVExporter implements IExporter {
 
           // Writing lines
           List<String> line;
+          Object tmpCol;
+          StringBuilder tmpString;
           for(Map<String, String> issue:allIssues){
               line = new ArrayList<>();
               for(String col: headers){
-                  line.add(issue.get(col));
+                  tmpCol = issue.get(col);
+
+                  // Sometimes it returns an array of string (e.g: for comments)
+                  if(tmpCol instanceof ArrayList){
+                      tmpString = new StringBuilder();
+                      for(Object comment: (ArrayList)tmpCol){
+                          tmpString.append(comment).append(" / ");
+                      }
+                      line.add(tmpString.toString());
+                  }
+                  else if(tmpCol == null){
+                      line.add("-");
+                  }
+                  // Sometimes it returns boolean or int
+                  // This case work with String and every object that can be converted into string
+                  else{
+                      line.add(tmpCol.toString());
+                  }
               }
               csvPrinter.printRecord(line);
           }
