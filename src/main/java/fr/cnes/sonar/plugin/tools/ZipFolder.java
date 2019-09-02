@@ -40,10 +40,9 @@ public class ZipFolder {
      */
     public static void pack(String sourceDirPath, String zipFilePath) throws IOException {
         Path p = Files.createFile(Paths.get(zipFilePath));
-        java.util.stream.Stream<Path> file = null;
-        try (ZipOutputStream zs = new ZipOutputStream(Files.newOutputStream(p))) {
-            Path pp = Paths.get(sourceDirPath);
-            file = Files.walk(pp);
+        Path pp = Paths.get(sourceDirPath);
+        try (ZipOutputStream zs = new ZipOutputStream(Files.newOutputStream(p)); java.util.stream.Stream<Path> file = Files.walk(pp);) {
+
             file.filter(path -> !path.toFile().isDirectory())
                     .forEach(path -> {
                         ZipEntry zipEntry = new ZipEntry(pp.relativize(path).toString());
@@ -57,11 +56,6 @@ public class ZipFolder {
                             LOGGER.warning(e.getMessage());
                         }
                     });
-        }
-        finally {
-            if(file!=null) {
-                file.close();
-            }
         }
     }
 }

@@ -32,6 +32,10 @@ import static org.junit.Assert.assertTrue;
  * Check Report class
  */
 public class ReportTest {
+    /**
+     * Define target folder for test
+     */
+    private String TARGET = "./target/zip";
 
     /**
      * Tested entity
@@ -44,6 +48,11 @@ public class ReportTest {
     @Before
     public void prepare() {
         report = new Report();
+
+        File zip = new File(TARGET+".zip");
+        if(zip.exists()){
+            zip.delete();
+        }
     }
 
     /**
@@ -65,15 +74,6 @@ public class ReportTest {
     @Test (expected = IllegalStateException.class)
     public void emptyExecuteTest() throws Exception{
         ReportCommandLine.execute(new String[0]);
-    }
-
-    String TARGET = "./target/zip";
-    @Before
-    public void before(){
-        File zip = new File(TARGET+".zip");
-        if(zip.exists()){
-            zip.delete();
-        }
     }
 
     @Test
