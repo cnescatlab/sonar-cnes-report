@@ -16,7 +16,7 @@ This tool can be used in standalone as a JAR executable (with the command line) 
 - Run an analysis with sonar-scanner, maven, gradle, msbuild, etc.
 - Execute cnesreport:
    - In standalone, thanks to command line
-   - In plugin mode, copy jar in `/opt/sonarqube/plugins`, restart sonarqube, then click on "CNES Report" link.
+   - In plugin mode, copy jar in `/opt/sonarqube/plugins`, restart sonarqube, then click on "More" > "CNES Report".
 
 #### Installation
 ##### Standalone mode
@@ -113,7 +113,7 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
   <td><b>2.0.0<br/>Standalone only</b></td>
   <td><b>2.1.0<br/>Standalone only</b></b></td>
   <td><b>2.2.0<br/>Standalone + Plugin</b></td>
-  <td><b>3.0.x<br/>Standalone + Plugin</b></b></td>
+  <td><b>3.x.x<br/>Standalone + Plugin</b></b></td>
  </tr>
  <tr>
   <td><b>3.7.x (LTS)</b></td>
@@ -301,6 +301,17 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
 If you experienced a problem with the plugin please open an issue. Inside this issue please explain us how to reproduce this issue and paste the log.
 
 If you want to do a PR, please put inside of it the reason of this pull request. If this pull request fix an issue please insert the number of the issue or explain inside of the PR how to reproduce this issue.
+
+### Notice about plugin mode
+- You can access to the plugin with the web api (`/api/cnesreport/report`) or
+with the web UI (`/extension/cnesreport/report` / "More" > "CNES Report").
+
+- Plugin mode is made to provide an easier usage than standalone usage. If you need to 
+use advanced features you should use plugin in standalone.
+
+- During execution, the plugin mode use the `${SONARQUBE_HOME}/temp` folder. It writes some files,
+zip these files and send them to client. Files are deleted after download. If you interrupt plugin
+during execution (bug, stopping sonar, etc.) you may check this folder to remove useless files.
 
 ### License
 Copyright 2017 LEQUAL.

@@ -17,16 +17,25 @@
 
 package fr.cnes.sonar.report;
 
+import fr.cnes.sonar.plugin.tools.ZipFolder;
 import fr.cnes.sonar.report.model.Report;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.IOException;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Check Report class
  */
 public class ReportTest {
+    /**
+     * Define target folder for test
+     */
+    private String TARGET = "./target/zip";
 
     /**
      * Tested entity
@@ -39,6 +48,11 @@ public class ReportTest {
     @Before
     public void prepare() {
         report = new Report();
+
+        File zip = new File(TARGET+".zip");
+        if(zip.exists()){
+            zip.delete();
+        }
     }
 
     /**
@@ -57,4 +71,26 @@ public class ReportTest {
         assert(report.getMeasures().isEmpty());
     }
 
+    @Test (expected = IllegalStateException.class)
+    public void emptyExecuteTest() throws Exception{
+        ReportCommandLine.execute(new String[0]);
+    }
+
+    @Test
+    public void zipFolderTest() throws IOException
+    {
+        File f = new File(TARGET);
+        File emptyFolder = new File(TARGET + "/emptyfolder");
+        File notEmptyFolder = new File(TARGET + "/notemptyfolder");
+        File file = new File(TARGET + "/notemptyfolder/file.txt");
+
+        f.mkdir();
+        emptyFolder.mkdir();
+        notEmptyFolder.mkdir();
+        file.createNewFile();
+
+        ZipFolder.pack(TARGET,TARGET+".zip");
+        File zip = new File(TARGET+".zip");
+        assertTrue(zip.exists());
+    }
 }

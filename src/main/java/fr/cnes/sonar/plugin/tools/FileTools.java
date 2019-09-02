@@ -35,23 +35,24 @@ public class FileTools {
      * @param folder
      */
     public static void deleteFolder(File folder){
-        String[] files =  folder.list();
-        File toDelete;
-        for(String f: files != null ? files : new String[0]){
-            toDelete = new File(f);
-            if (toDelete.isDirectory()) deleteFolder(toDelete);
+        File[] files =  folder.listFiles();
+
+        for(File toDelete: files != null ? files : new File[0]){
+
+            if (toDelete.isDirectory()) {
+                deleteFolder(toDelete);
+            }
             else {
                 try {
-                    Files.delete(toDelete.toPath());
+                    Files.deleteIfExists(toDelete.toPath());
                 } catch (IOException e) {
-
                     Logger LOGGER = Logger.getLogger(FileTools.class.getName());
                     LOGGER.warning(e.getMessage());
                 }
             }
         }
         try {
-            Files.delete(folder.toPath());
+            Files.deleteIfExists(folder.toPath());
         } catch (IOException e) {
             Logger LOGGER = Logger.getLogger(FileTools.class.getName());
             LOGGER.warning(e.getMessage());
