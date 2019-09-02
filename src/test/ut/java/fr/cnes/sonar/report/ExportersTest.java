@@ -59,7 +59,7 @@ public class ExportersTest extends CommonTest {
     public void consoleExportTest() throws Exception {
         final ConsoleExporter ce = new ConsoleExporter();
 
-        ce.export(report, null, null);
+        Assert.assertNull(ce.export(report, null, null));
     }
 
     /**
