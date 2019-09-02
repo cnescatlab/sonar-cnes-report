@@ -64,10 +64,14 @@ public class LanguageProvider extends AbstractDataProvider {
         if(languages.isEmpty()){
             this.getLanguages();
         }
+        String languageName;
         if(this.languages.get(languageKey) != null) {
-            return this.languages.get(languageKey).getName();
+            languageName = this.languages.get(languageKey).getName();
         }
-        else return "?";
+        else {
+            languageName = "?";
+        }
+        return languageName;
     }
 
     /**

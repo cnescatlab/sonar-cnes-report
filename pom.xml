@@ -45,10 +45,6 @@
         <sonar.useChildFirstClassLoader>true</sonar.useChildFirstClassLoader>
         <sonar.pluginClass>fr.cnes.sonar.plugin.ReportSonarPlugin</sonar.pluginClass>
         <app.mainClass>fr.cnes.sonar.report.ReportCommandLine</app.mainClass>
-        <!-- Can't be tested with unit test, should be tested on sonarqube with Integration test (tested by Travis) -->
-        <sonar.coverage.exclusions>
-            /src/main/java/fr/cnes/sonar/plugin/ws/ExportTask.java
-        </sonar.coverage.exclusions>
     </properties>
 
     <licenses>
