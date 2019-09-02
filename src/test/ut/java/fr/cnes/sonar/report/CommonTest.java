@@ -17,6 +17,7 @@
 
 package fr.cnes.sonar.report;
 
+import fr.cnes.sonar.report.exporters.docx.DataAdapter;
 import fr.cnes.sonar.report.exporters.xlsx.XlsXTools;
 import fr.cnes.sonar.report.model.*;
 import fr.cnes.sonar.report.utils.ReportConfiguration;
@@ -51,7 +52,7 @@ public abstract class CommonTest {
      */
     @Before
     public void before() {
-        report = new Report();
+        report = new StubReport();
         conf = ReportConfiguration.create(new String[]{
                 "-s", "http://sonarqube:9000",
                 "-p", "cnesreport",
@@ -75,6 +76,7 @@ public abstract class CommonTest {
         final List<Issue> issues = new ArrayList<>();
         final Issue i1 = new Issue();
         final Issue i2 = new Issue();
+        final Issue i3 = new Issue();
         i1.setComponent("a");
         i1.setKey("z");
         i1.setLine("15");
@@ -83,6 +85,15 @@ public abstract class CommonTest {
         i1.setSeverity(MAJOR);
         i1.setStatus("OPEN");
         i1.setType("BUG");
+        i1.setRule("squid4321");
+        i3.setComponent("a");
+        i3.setKey("z");
+        i3.setLine("15");
+        i3.setMessage("azerty");
+        i3.setProject("genius");
+        i3.setSeverity(MAJOR);
+        i3.setStatus("OPEN");
+        i3.setType("BUG");
         i2.setComponent("b");
         i2.setKey("x");
         i2.setLine("23");
@@ -91,10 +102,18 @@ public abstract class CommonTest {
         i2.setSeverity(MAJOR);
         i2.setStatus("OPEN");
         i2.setType("SECURITY");
-        // Adding multiple time to test comparator (DataAdapted.RuleComparator)
+        i2.setRule("abcd:dcba");
+        // Adding multiple time to test comparator (DataAdapter.RuleComparator)
+        Issue issue;
+        for(int i=1;i<10;i++){
+            issue = new Issue();
+            issue.setRule("squid:1234");
+            issue.setMessage("ISSUES");
+            issue.setSeverity(MAJOR);
+            issue.setKey("key");
+        }
         issues.add(i1);
-        issues.add(i2);
-        issues.add(i1);
+        issues.add(i3);
         issues.add(i2);
         report.setIssues(issues);
 
