@@ -19,10 +19,7 @@ package fr.cnes.sonar.report;
 
 import fr.cnes.sonar.plugin.tools.FileTools;
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
-import fr.cnes.sonar.report.exporters.CSVExporter;
-import fr.cnes.sonar.report.exporters.JsonExporter;
-import fr.cnes.sonar.report.exporters.MarkdownExporter;
-import fr.cnes.sonar.report.exporters.XmlExporter;
+import fr.cnes.sonar.report.exporters.*;
 import fr.cnes.sonar.report.exporters.docx.DocXExporter;
 import fr.cnes.sonar.report.exporters.xlsx.XlsXExporter;
 import org.junit.Assert;
@@ -53,6 +50,18 @@ public class ExportersTest extends CommonTest {
         file.createNewFile();
 
     }
+    /**
+     * Assert that there are no exception in a normal use
+     * of consolexporter
+     * @throws Exception ...
+     */
+    @Test
+    public void consoleExportTest() throws Exception {
+        final ConsoleExporter ce = new ConsoleExporter();
+
+        Assert.assertNull(ce.export(report, null, null));
+    }
+
     /**
      * Assert that there are no exception in a normal use
      * of DocxExporter
