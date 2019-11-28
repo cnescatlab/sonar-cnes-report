@@ -1,5 +1,5 @@
+dist: xenial
 language: java
-sudo: required
 install: true
 
 services:
@@ -10,8 +10,8 @@ addons:
     organization: "lequal"
 
 jdk:
-  - oraclejdk8
-  - oraclejdk11
+  - openjdk8
+  - openjdk11
 
 env:
   - sonarqube: none
