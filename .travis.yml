@@ -10,7 +10,7 @@ addons:
     organization: "lequal"
 
 jdk:
-  - oraclejdk9
+  - oraclejdk10
   - oraclejdk11
 
 env:
