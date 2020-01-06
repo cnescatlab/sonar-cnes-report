@@ -22,7 +22,7 @@ window.registerExtension("cnesreport/report", function(options) {
   var getSonarVersion = function() {
     window.SonarRequest.getJSON("/api/system/status").then(function(response) {
       console.log(response);
-      if (parseFloat(response.version) > 8.0) {
+      if (parseFloat(response.version) >= 8.0) {
         initProjectsDropDownList();
       } else {
         initProjectsDropDownListOld();
