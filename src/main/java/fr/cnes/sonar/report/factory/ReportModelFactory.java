@@ -43,6 +43,10 @@ public class ReportModelFactory {
      */
     private String project;
     /**
+     * Branch of the project to report.
+     */
+    private String branch;
+    /**
      * Author of the project to report.
      */
     private String author;
@@ -60,6 +64,7 @@ public class ReportModelFactory {
         this.server = pServer;
         this.token = pConfiguration.getToken();
         this.project = pConfiguration.getProject();
+        this.branch = pConfiguration.getBranch();
         this.author = pConfiguration.getAuthor();
         this.date = pConfiguration.getDate();
     }
@@ -76,7 +81,8 @@ public class ReportModelFactory {
         final Report report = new Report();
 
         // instantiation of providers
-        final ProviderFactory providerFactory = new ProviderFactory(this.server, this.token, this.project);
+        final ProviderFactory providerFactory = new ProviderFactory(this.server, this.token, this.project,
+                this.branch);
         final IssuesProvider issuesProvider = providerFactory.create(IssuesProvider.class);
         final MeasureProvider measureProvider = providerFactory.create(MeasureProvider.class);
         final ProjectProvider projectProvider = providerFactory.create(ProjectProvider.class);
@@ -90,7 +96,7 @@ public class ReportModelFactory {
         // date setting
         report.setProjectDate(this.date);
 
-        if(!projectProvider.hasProject(this.project)) {
+        if(!projectProvider.hasProject(this.project, this.branch)) {
             throw new SonarQubeException(String.format("Unknown project '%s' on SonarQube instance.", this.project));
         }
 
@@ -100,7 +106,7 @@ public class ReportModelFactory {
         report.setComponents(componentProvider.getComponents());
         report.setMetricsStats(componentProvider.getMetricStats());
         // set report basic data
-        report.setProject(projectProvider.getProject(projectProvider.getProjectKey()));
+        report.setProject(projectProvider.getProject(projectProvider.getProjectKey(), projectProvider.getBranch()));
         // project's name's setting
         report.setProjectName(report.getProject().getName());
         // formatted issues, unconfirmed issues and raw issues' setting

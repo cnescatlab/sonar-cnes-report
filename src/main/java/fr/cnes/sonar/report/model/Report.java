@@ -94,7 +94,7 @@ public class Report {
         this.rawIssues = new ArrayList<>();
         this.components = new ArrayList<>();
         this.project = new Project(StringManager.EMPTY, StringManager.EMPTY,
-                StringManager.EMPTY,StringManager.EMPTY,StringManager.EMPTY);
+                StringManager.EMPTY,StringManager.EMPTY,StringManager.EMPTY, StringManager.EMPTY);
     }
 
     /**

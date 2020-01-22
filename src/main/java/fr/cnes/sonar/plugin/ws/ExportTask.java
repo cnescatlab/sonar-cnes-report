@@ -26,6 +26,7 @@ import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
 import fr.cnes.sonar.report.factory.ReportFactory;
+import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.xmlbeans.XmlException;
@@ -38,6 +39,9 @@ import org.sonar.api.utils.text.JsonWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ExportTask implements RequestHandler {
 
@@ -75,15 +79,17 @@ public class ExportTask implements RequestHandler {
 
         // Start generation, re-using standalone script
         try {
+            final Request.StringParam pBranch =
+                    request.getParam(PluginStringManager.getProperty("api.report.args.branch"));
             ReportCommandLine.execute(new String[]{
                     "report",
                     "-o", outputDirectory.getAbsolutePath(),
                     "-s", config.get("sonar.core.serverBaseURL").orElse(PluginStringManager.getProperty("plugin.defaultHost")),
                     "-p", projectKey,
+                    "-b", pBranch.isPresent()?pBranch.getValue(): StringManager.NO_BRANCH,
                     "-a", request.getParam(PluginStringManager.getProperty("api.report.args.author")).getValue(),
                     "-t", request.getParam(PluginStringManager.getProperty("api.report.args.token")).getValue()
             });
-
 
             stream.setMediaType("application/zip");
             String filename = ReportFactory.formatFilename("zip.report.output", "", projectKey);

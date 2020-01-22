@@ -35,6 +35,10 @@ public class Project {
      */
     private String name;
     /**
+     * Branch of the project
+     */
+    private String branch;
+    /**
      * Name of the organization
      */
     private String organization;
@@ -64,7 +68,7 @@ public class Project {
      * @param pDescription Project's description
      */
     public Project(final String pKey, final String pName, final String pOrganization,
-                   final String pVersion, final String pDescription) {
+                   final String pVersion, final String pDescription, final String pBranch) {
         this.key = pKey;
         this.name = pName;
         this.organization = pOrganization;
@@ -72,6 +76,7 @@ public class Project {
         this.description = pDescription;
         this.qualityProfiles = new ProfileMetaData[0];
         this.languages = new HashMap<>();
+        this.branch=pBranch;
     }
 
     /**
@@ -104,6 +109,22 @@ public class Project {
      */
     public void setName(final String pName) {
         this.name = pName;
+    }
+
+    /**
+     * Getter for branch
+     * @return branch
+     */
+    public String getBranch() {
+        return branch;
+    }
+
+    /**
+     * Setter for branch
+     * @param pBranch value
+     */
+    public void setBranch(final String pBranch) {
+        this.branch = pBranch;
     }
 
     /**

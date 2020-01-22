@@ -16,10 +16,11 @@ public class ProviderFactoryTest extends CommonTest {
 
     private static final String TOKEN = "token";
     private static final String PROJECT = "project";
+    private static final String BRANCH = "branch";
 
     @Test
     public void createTest() {
-        final ProviderFactory providerFactory = new ProviderFactory(sonarQubeServer, TOKEN, PROJECT);
+        final ProviderFactory providerFactory = new ProviderFactory(sonarQubeServer, TOKEN, PROJECT, BRANCH);
         Assert.assertNotNull(providerFactory);
 
         AbstractDataProvider provider = providerFactory.create(IssuesProvider.class);

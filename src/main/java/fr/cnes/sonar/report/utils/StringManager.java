@@ -38,6 +38,8 @@ public final class StringManager {
     public static final String TAB = "\t";
     /** Just a space. */
     public static final String SPACE = " ";
+    /** Placeholder for no-branch. */
+    public static final String NO_BRANCH = "%";
     /** Just a space for URI. */
     public static final String URI_SPACE = "%20";
     /** Name for properties' file about report. */
