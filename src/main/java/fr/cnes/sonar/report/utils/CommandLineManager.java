@@ -47,7 +47,7 @@ public class CommandLineManager {
             {"s", "server", Boolean.TRUE.toString(), "Complete URL of the targeted SonarQube server."},
             {"t", "token", Boolean.TRUE.toString(), "SonarQube token of the SonarQube user who has permissions on the project."},
             {"p", "project", Boolean.TRUE.toString(), "SonarQube key of the targeted project."},
-            {"b", "branch", Boolean.TRUE.toString(), "Branch of the targeted project. Works only with Developer Edition or branch-plugin."},
+            {"b", "branch", Boolean.TRUE.toString(), "Branch of the targeted project. Requires Developer Edition or sonarqube-community-branch-plugin."},
             {"o", "output", Boolean.TRUE.toString(), "Output path for exported resources."},
             {"l", "language", Boolean.TRUE.toString(), "Language of the report. Values: en_US, fr_FR. Default: en_US."},
             {"a", "author", Boolean.TRUE.toString(), "Name of the report writer."},
