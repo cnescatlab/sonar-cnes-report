@@ -79,7 +79,7 @@ java -jar cnesreport.jar -t xuixg5hub345xbefu -s https://example.org:9000 -p pro
 ````
 
 ##### Export of a specific project branch (standalone)
-If you are using a commercial edition of sonarqube or the [sonarqube-community-branch-plugin](https://github.com/mc1arke/sonarqube-community-branch-plugin) you want to export the report for a specific branch of your project using the -b option. 
+If you are using a commercial edition of sonarqube or the [sonarqube-community-branch-plugin](https://github.com/mc1arke/sonarqube-community-branch-plugin) you can export the report for a specific branch of your project using the -b option. 
 ````
 java -jar cnesreport.jar -p projectId -b dev
 ````
