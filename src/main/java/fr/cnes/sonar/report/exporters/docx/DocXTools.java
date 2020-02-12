@@ -25,6 +25,8 @@ import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.ss.util.ImageUtils;
 import org.apache.poi.xwpf.usermodel.*;
 import org.apache.xmlbeans.XmlException;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
+
 
 import java.awt.*;
 import java.io.IOException;
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * Different tools to manipulate docx
@@ -63,6 +66,7 @@ public final class DocXTools {
      * placeholder for chart displaying number of issues by severity
      */
     private static final String SEVERITY_TABLE_PLACEHOLDER = "$SEVERITY";
+
     /**
      * facet's name for number of issues by severity
      */
@@ -71,6 +75,10 @@ public final class DocXTools {
      * facet's name for number of issues by type
      */
     private static final String TYPES = "types";
+    /**
+     * Default font size
+     */
+    private static int DEFAULT_FONT_SIZE = 12;
 
     /**
      * Private constructor to hide the public one
@@ -94,6 +102,7 @@ public final class DocXTools {
         // browse chart list to find placeholders (based on locale) in title
         // and provide them adapted resources
         for (XWPFChartSpace chartSpace : chartSpaces) {
+        	
             final String currentChartTitle = chartSpace.getTitle();
             // fill the pie chart with issues count by severity
             if(currentChartTitle.contains(SEVERITY_TABLE_PLACEHOLDER)) {
@@ -103,8 +112,10 @@ public final class DocXTools {
             } else if(currentChartTitle.contains(TYPE_TABLE_PLACEHOLDER)) {
                 chartSpace.setValues(dataPerType);
                 chartSpace.setTitle(StringManager.string(CHART_TYPE_TITLE));
-            }
+            }            
+
         }
+        
     }
 
     /**
@@ -202,8 +213,11 @@ public final class DocXTools {
         return elements;
     }
 
+ 
+
     /**
-     * Replace placeholders inside a paragraph by values given in a map
+     * Replace placeholders inside a paragraph by values given in a map.
+     * Conserve word style.
      * @param paragraph paragraph to modify, style will be the default paragraph style
      * @param values a map indexed by placeholders
      * @throws IOException When opening pictures
@@ -211,65 +225,60 @@ public final class DocXTools {
      */
     private static void replaceInParagraph(XWPFParagraph paragraph, Map<String,String> values)
             throws IOException, InvalidFormatException {
-        // Concatenate all runs' content in a single string
-        final StringBuilder sb = new StringBuilder();
+        
+        
         final List<XWPFRun> runs = paragraph.getRuns();
-        int pos;
-        for (XWPFRun r : runs){
-            pos = r.getTextPosition();
-            if(r.getText(pos) != null) {
-                sb.append(r.getText(pos));
+         String text;
+        final List<String> pictures = new ArrayList<String>();
+        String key;
+        String value;
+        ClassLoader classloader;
+        InputStream is;
+        Dimension dim;
+        // For all Run
+        for (XWPFRun currentRun : runs){
+            // if there are matter to work on
+            if(currentRun.getText(0) != null) {            
+
+                // construct here the new string by replacing each placeholder by its value
+                text = currentRun.getText(0);
+                
+                pictures.clear();
+                for (Map.Entry<String, String> nextValue : values.entrySet()) {
+                    key = nextValue.getKey();
+                    value = nextValue.getValue();
+
+                    // if we try to replace by a png picture
+                    if(value.endsWith(PNG_EXTENSION) && text.contains(key)) {
+                        // we save the filename
+                        pictures.add(value);
+                        value = StringManager.EMPTY;
+                    }
+                    // finally we concatenate
+                    text = text.replaceAll(key, value);
+                }
+                // Replace le text
+                currentRun.setText(text,0);
+
+                // add images if we have something to add
+                if(!pictures.isEmpty()) {
+                    // browse picture list previously filled out
+
+                    for(String filename : pictures) {
+                        classloader = Thread.currentThread().getContextClassLoader();
+                        is = classloader.getResourceAsStream(IMG_FOLDER +filename);
+                        // height and width are retrieve from here
+                        dim = ImageUtils.getImageDimension(is, XWPFDocument.PICTURE_TYPE_PNG);
+                        currentRun.addPicture(is, XWPFDocument.PICTURE_TYPE_PNG,
+                                filename, dim.width, dim.height);
+                        // close picture
+                        is.close();
+                    }
+                }
             }
         }
 
-        // if there are matter to work on
-        if(sb.length()!=0) {
-            // delete all runs to replace it by one single run
-            for(int i = runs.size() - 1; i >= 0; i--) {
-                paragraph.removeRun(i);
-            }
 
-            // construct here the new string by replacing each placeholder by its value
-            String text = sb.toString();
-            final List<String> pictures = new ArrayList<>();
-            String key;
-            String value;
-            for (Map.Entry<String, String> nextValue : values.entrySet()) {
-                key = nextValue.getKey();
-                value = nextValue.getValue();
-
-                // if we try to replace by a png picture
-                if(value.endsWith(PNG_EXTENSION) && text.contains(key)) {
-                    // we save the filename
-                    pictures.add(value);
-                    value = StringManager.EMPTY;
-                }
-                // finally we concatenate
-                text = text.replaceAll(key, value);
-            }
-
-            // Add new run with updated text
-            final XWPFRun run = paragraph.createRun();
-            run.setText(text);
-            // add images if we have something to add
-            if(!pictures.isEmpty()) {
-                // browse picture list previously filled out
-                ClassLoader classloader;
-                InputStream is;
-                Dimension dim;
-                for(String filename : pictures) {
-                    classloader = Thread.currentThread().getContextClassLoader();
-                    is = classloader.getResourceAsStream(IMG_FOLDER +filename);
-                    // height and width are retrieve from here
-                    dim = ImageUtils.getImageDimension(is, XWPFDocument.PICTURE_TYPE_PNG);
-                    run.addPicture(is, XWPFDocument.PICTURE_TYPE_PNG,
-                            filename, dim.width, dim.height);
-                    // close picture
-                    is.close();
-                }
-            }
-            paragraph.addRun(run);
-        }
     }
 
     /**
@@ -302,40 +311,37 @@ public final class DocXTools {
                 }
             }
 
-            // if the table does not exist, we create one at the bottom of the document
-            if (!found) {
-                table = document.createTable();
-            // otherwise we clear the table
-            } else {
-                if(table!=null) {
-                    for (int i = table.getNumberOfRows() - 1; i >= 0; --i) {
+            // if the table does not exist don't fill
+            if (found) {
+                // we clear the table                
+            	for (int i = table.getNumberOfRows() - 1; i >= 0; --i) {
                         table.removeRow(i);
-                    }
+                
                 }
-            }
-
-            // create the top line (header) and fill it
-            XWPFTableRow row = table.createRow();
-            for(String field : header) {
-                row.createCell().setText(field);
-            }
-
-            // create resources rows
-            for(int i = 0 ; i < data.size() ; i++) {
-                table.createRow();
-            }
-
-            // fill resources rows
-            for(int iLine = 0 ; iLine < data.size() ; iLine++) {
-                row = table.getRow(iLine+1);
-                final List<String> line = data.get(iLine);
-
-                for (int iCell = 0; iCell < line.size(); iCell++) {
-                    if(iCell>=row.getTableCells().size()) {
-                        row.createCell();
-                    }
-                    row.getCell(iCell).setText(line.get(iCell));
-                }
+	            
+	            // create the top line (header) and fill it
+	            XWPFTableRow row = table.createRow();
+	            for(String field : header) {
+	                row.createCell().setText(field);
+	            }
+	
+	            // create resources rows
+	            for(int i = 0 ; i < data.size() ; i++) {
+	                table.createRow();
+	            }
+	
+	            // fill resources rows
+	            for(int iLine = 0 ; iLine < data.size() ; iLine++) {
+	                row = table.getRow(iLine+1);
+	                final List<String> line = data.get(iLine);
+	
+	                for (int iCell = 0; iCell < line.size(); iCell++) {
+	                    if(iCell>=row.getTableCells().size()) {
+	                        row.createCell();
+	                    }
+	                    row.getCell(iCell).setText(line.get(iCell));
+	                }
+	            }
             }
         }
     }
