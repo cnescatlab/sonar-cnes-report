@@ -1,5 +1,5 @@
-dist: xenial
 language: java
+sudo: required
 install: true
 
 services:
@@ -10,8 +10,8 @@ addons:
     organization: "lequal"
 
 jdk:
-  - openjdk8
-  - openjdk11
+  - oraclejdk8
+  - oraclejdk11
 
 env:
   - sonarqube: none
@@ -49,8 +49,8 @@ script:
 
 cache:
   directories:
-  - '$HOME/.m2/repository'
-  - '$HOME/.sonar/cache'
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
 
 notifications:
   email: false
