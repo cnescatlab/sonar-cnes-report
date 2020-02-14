@@ -8,6 +8,9 @@ services:
 addons:
   sonarcloud:
     organization: "lequal"
+    token:
+      secure: "alIypi5kcdqBeX8z1z82iFHwUrNZ1ICke2rUn6eZNyiBxnOBXMqWGUtTZYtkmYMBLZK06pTJ/jtgdyWOwfdw5zZ59cQwylOhWhXK9QRmPJzdeQWPxbRDVbd+c7LWTXOA0WBh96Htzjoz1kd6SaheozsAfxEhhiekvE6gaMMk0ac+hufeUFF80KUDaoY92cu/xqHmWYn4srVvLpSO6WYzAAlCaPu6ugv009qHai0CyURSNqV8KQO+lBiNNrYUf3v1/LffelMA92w0/hqID89l2mWH4rOa5jx97wfc3Ae7pB3MFvG+qTKk24enYAJG8U+HkDkIt8R13w0Cj55wKno9S0LAKIND59BiayiWyhrCjOd2M/KUYwtF/VkqZwZNepoYQe7AY7bHNkZ52Npum/+6c79fMMn4mxDsSjt6PFcBWd0bVpkpDKlimRe7NZ3mh7plobPU8mwzeCE2Rrsw6aKaU0MHR9EFEsI1pfgrjCDdHjnIgrPOYXHY5dkwUkybXin2QJu4pCYWuTg57MAdvnvaydoZxDcChm6VLmQrKUpRFvzyOyWlbRtq/SVWc6mLPzrCucaIB4zK1GKTeDCku+OAfznuA0w4OrDAF/U9DWQl+/mR7MZuD2NMjYO4zk9R5prDqDbvYgh/vvKygnk3oHo2eUDvknw6CbvRueDpplfgIwE="
+    
 
 jdk:
   - openjdk8
