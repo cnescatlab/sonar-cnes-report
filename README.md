@@ -37,7 +37,7 @@ usage: java -jar cnesreport.jar [-a <arg>] [-b <arg>] [-c] [-d <arg>] [-e] [-h] 
 Generate editable reports for SonarQube projects.
 
  -a,--author <arg>                 Name of the report writer.
- -b,--branch <arg>                 Branch of the targeted project. Requires Developer Edition or sonarqube-community-branch-plugin.
+ -b,--branch <arg>                 Branch of the targeted project. Requires Developer Edition or sonarqube-community-branch-plugin. Default: usage of main branch.
  -c,--disable-conf                 Disable export of quality configuration used during analysis.
  -d,--date <arg>                   Date for the report. Default: current date.
  -e,--disable-spreadsheet          Disable spreadsheet generation.
