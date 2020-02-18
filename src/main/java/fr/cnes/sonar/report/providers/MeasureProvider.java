@@ -38,9 +38,11 @@ public class MeasureProvider extends AbstractDataProvider {
      * @param pServer SonarQube server..
      * @param pToken String representing the user token.
      * @param pProject The id of the project to report.
+     * @param pBranch The branch of the project to report.
      */
-    public MeasureProvider(final SonarQubeServer pServer, final String pToken, final String pProject) {
-        super(pServer, pToken, pProject);
+    public MeasureProvider(final SonarQubeServer pServer, final String pToken, final String pProject,
+            final String pBranch) {
+        super(pServer, pToken, pProject, pBranch);
     }
 
     /**
@@ -53,7 +55,7 @@ public class MeasureProvider extends AbstractDataProvider {
         // send a request to sonarqube server and return th response as a json object
         // if there is an error on server side this method throws an exception
         final JsonObject jo = request(String.format(getRequest(GET_MEASURES_REQUEST),
-                getServer().getUrl(), getProjectKey()));
+                getServer().getUrl(), getProjectKey(), getBranch()));
 
         // json element containing measure information
         final JsonElement measuresJE = jo.get(COMPONENT).getAsJsonObject().get(MEASURES);

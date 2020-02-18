@@ -194,6 +194,11 @@ public abstract class AbstractDataProvider {
     protected String projectKey;
 
     /**
+     * The branch of the project
+     */
+    protected String branch;
+
+    /**
      * Name of the used quality gate
      */
     protected String qualityGateName;
@@ -217,7 +222,27 @@ public abstract class AbstractDataProvider {
 
     /**
      * Constructor.
-     *  @param server SonarQube server.
+     * @param server SonarQube server.
+     * @param token String representing the user token.
+     * @param project The id of the project to report.
+     * @param branch The branch of the project to report.
+     */
+    AbstractDataProvider(final SonarQubeServer server, final String token, final String project, final String branch) {
+        // json tool
+        this.gson = new Gson();
+        // get sonar server
+        this.server = server;
+        // get user token
+        this.token = token;
+        // get project key
+        this.projectKey = project;
+        // get branch
+        this.branch = branch;
+    }
+
+    /**
+     * Constructor.
+     * @param server SonarQube server.
      * @param token String representing the user token.
      * @param project The id of the project to report.
      */
@@ -383,6 +408,22 @@ public abstract class AbstractDataProvider {
      */
     public void setProjectKey(final String pProjectKey) {
         this.projectKey = pProjectKey;
+    }
+
+    /**
+     * Branch of the project to report or "%" if branch was not set (default)
+     * @return the project branch as a String
+     */
+    public String getBranch() {
+        return branch;
+    }
+
+    /**
+     * Setter of branch
+     * @param branch value to give
+     */
+    public void setBranch(final String branch) {
+        this.branch = branch;
     }
 
     /**

@@ -29,11 +29,12 @@ This tool can be used in standalone as a JAR executable (with the command line) 
 #### Get help
 Use `java -jar cnesreport.jar -h` to get the following help about cnesreport:
 ````
-usage: java -jar cnesreport.jar [-a <arg>] [-c] [-d <arg>] [-e] [-h] [-l <arg>] [-o <arg>] [-p <arg>] [-r <arg>]
+usage: java -jar cnesreport.jar [-a <arg>] [-b <arg>] [-c] [-d <arg>] [-e] [-h] [-l <arg>] [-o <arg>] [-p <arg>] [-r <arg>]
        [-s <arg>] [-t <arg>] [-v] [-w] [-x <arg>]
 Generate editable reports for SonarQube projects.
 
  -a,--author <arg>                 Name of the report writer.
+ -b,--branch <arg>                 Branch of the targeted project. Requires Developer Edition or sonarqube-community-branch-plugin. Default: usage of main branch.
  -c,--disable-conf                 Disable export of quality configuration used during analysis.
  -d,--date <arg>                   Date for the report. Default: current date.
  -e,--disable-spreadsheet          Disable spreadsheet generation.
@@ -72,6 +73,12 @@ If you have installed cnes-report in your sonarqube: open web interface, click o
 If you are using a secured instance of SonarQube, you can provide a SonarQube authentication token thanks to `-t` option and specify the url of the SonarQube instance with `-s`. The internal template for the text report will be replace by the one given through `-r` option.
 ````
 java -jar cnesreport.jar -t xuixg5hub345xbefu -s https://example.org:9000 -p projectId -r ./template.docx
+````
+
+##### Export of a specific project branch (standalone)
+If you are using a commercial edition of sonarqube or the [sonarqube-community-branch-plugin](https://github.com/mc1arke/sonarqube-community-branch-plugin) you can export the report for a specific branch of your project using the -b option. 
+````
+java -jar cnesreport.jar -p projectId -b dev
 ````
 
 ##### Enterprise features available for all

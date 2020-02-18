@@ -40,24 +40,27 @@ public class ProjectProvider extends AbstractDataProvider {
      * @param pServer SonarQube server..
      * @param pToken String representing the user token.
      * @param pProject The id of the project to report.
+     * @param pBranch The branch of the project to report.
      */
-    public ProjectProvider(final SonarQubeServer pServer, final String pToken, final String pProject) {
-        super(pServer, pToken, pProject);
+    public ProjectProvider(final SonarQubeServer pServer, final String pToken, final String pProject,
+            final String pBranch) {
+        super(pServer, pToken, pProject, pBranch);
         languageProvider = new LanguageProvider(pServer, pToken, pProject);
     }
 
     /**
      * Get the project corresponding to the given key.
      * @param projectKey the key of the project.
+     * @param branch the branch of the project.
      * @return A simple project.
      * @throws BadSonarQubeRequestException when the server does not understand the request.
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    public Project getProject(final String projectKey) throws BadSonarQubeRequestException, SonarQubeException {
+    public Project getProject(final String projectKey, final String branch) throws BadSonarQubeRequestException, SonarQubeException {
         // send a request to sonarqube server and return th response as a json object
         // if there is an error on server side this method throws an exception
         JsonObject jo = request(String.format(getRequest(GET_PROJECT_REQUEST),
-                getServer().getUrl(), projectKey));
+                getServer().getUrl(), projectKey, branch));
 
         // put json in a Project class
         final Project project = (getGson().fromJson(jo, Project.class));
@@ -97,15 +100,16 @@ public class ProjectProvider extends AbstractDataProvider {
     /**
      * Check if a project exists on a SonarQube instance.
      * @param projectKey the key of the project.
+     * @param branch the branch of the project.
      * @return True if the project exists.
      * @throws BadSonarQubeRequestException when the server does not understand the request.
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    public boolean hasProject(final String projectKey) throws BadSonarQubeRequestException, SonarQubeException {
+    public boolean hasProject(final String projectKey, final String branch) throws BadSonarQubeRequestException, SonarQubeException {
         // send a request to sonarqube server and return th response as a json object
         // if there is an error on server side this method throws an exception
         final JsonObject jsonObject = request(String.format(getRequest(GET_PROJECT_REQUEST),
-                getServer().getUrl(), projectKey));
+                getServer().getUrl(), projectKey, branch));
 
         // Retrieve project key if the project exists or null.
         final String project = jsonObject.get("key").getAsString();
