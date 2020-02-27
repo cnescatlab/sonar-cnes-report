@@ -108,12 +108,19 @@ public class CommandLineManager {
         }
 
         // If help option is present we print it.
-        if (!areOptionsCorrect || commandLine.hasOption("h")) {
-            helpFormatter.printHelp(128, "java -jar cnesreport.jar",
-                    "Generate editable reports for SonarQube projects.\n\n", options,
-                    "\n\nPlease report issues at https://github.com/lequal/sonar-cnes-report/issues", true);
+        if (!areOptionsCorrect) {
+            printHelp();
+            throw new IllegalArgumentException("Illegal command line arguments");
+        } else if (commandLine.hasOption("h")) {
+            printHelp();
             System.exit(0);
         }
+    }
+
+    private void printHelp() {
+        helpFormatter.printHelp(128, "java -jar cnesreport.jar",
+                "Generate editable reports for SonarQube projects.\n\n", options,
+                "\n\nPlease report issues at https://github.com/lequal/sonar-cnes-report/issues", true);
     }
 
     /**
