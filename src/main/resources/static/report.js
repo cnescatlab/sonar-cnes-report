@@ -15,55 +15,97 @@
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-window.registerExtension('cnesreport/report', function (options) {
-    // let's create a flag telling if the page is still displayed
-    var isDisplayedReporting = true;
+window.registerExtension("cnesreport/report", function(options) {
+  // let's create a flag telling if the page is still displayed
+  var isDisplayedReporting = true;
 
+  var getSonarVersion = function() {
+    window.SonarRequest.getJSON("/api/system/status").then(function(response) {
+      console.log(response);
+      if (parseFloat(response.version) >= 8.0) {
+        initProjectsDropDownList();
+      } else {
+        initProjectsDropDownListOld();
+      }
+    });
+  };
 
-    /**
-     *  Get projects list from the server and fill out the combo box
-     */
-    var initProjectsDropDownList = function() {
-        window.SonarRequest.getJSON(
-            '/api/projects/index'
-        ).then(function (response) {
-            // on success
-            // we put each quality gate in the list
-            for (i=0;i<response.length;++i){
-                document.getElementById("key").innerHTML += "<option value='"+response[i].k+"'>"+response[i].nm+"</option>"
-            }
+  var initProjectsDropDownList = function() {
+    window.SonarRequest.getJSON("/api/projects/search").then(function(
+      response
+    ) {
+      // on success
+      // we put each quality gate in the list
+      for (i = 0; i < response.components.length; ++i) {
+        document.getElementById("key").innerHTML +=
+          "<option value='" +
+          response.components[i].key +
+          "'>" +
+          response.components[i].name +
+          "</option>";
+      }
+    });
+
+    window.SonarRequest.post("/api/user_tokens/revoke", {
+      name: "cnes-report"
+    }).then(function() {
+      window.SonarRequest.postJSON("/api/user_tokens/generate", {
+        name: "cnes-report"
+      }).then(function(response) {
+        document.getElementById("token_cnesreport").value = response.token;
+        window.SonarRequest.getJSON("/api/users/search", {
+          q: response.login
+        }).then(function(response) {
+          // on success
+          document.getElementById("author").value = response.users[0].name;
         });
+      });
+    });
+  };
 
-        window.SonarRequest.post(
-                            '/api/user_tokens/revoke', {name: "cnes-report"}
-                ).then(function(){
-                    window.SonarRequest.postJSON(
-                        '/api/user_tokens/generate', {name: "cnes-report"}
-                    ).then(function (response) {
-                        document.getElementById("token_cnesreport").value = response.token;
-                        window.SonarRequest.getJSON(
-                            '/api/users/search',
-                            {"q":response.login}
-                        ).then(function (response) {
-                            // on success
-                            document.getElementById("author").value = response.users[0].name;
-                        });
-                    });
+  /**
+   *  Get projects list from the server and fill out the combo box
+   */
+  var initProjectsDropDownListOld = function() {
+    window.SonarRequest.getJSON("/api/projects/index").then(function(response) {
+      // on success
+      // we put each quality gate in the list
+      for (i = 0; i < response.length; ++i) {
+        document.getElementById("key").innerHTML +=
+          "<option value='" +
+          response[i].k +
+          "'>" +
+          response[i].nm +
+          "</option>";
+      }
+    });
 
-                })
-                
-    };
+    window.SonarRequest.post("/api/user_tokens/revoke", {
+      name: "cnes-report"
+    }).then(function() {
+      window.SonarRequest.postJSON("/api/user_tokens/generate", {
+        name: "cnes-report"
+      }).then(function(response) {
+        document.getElementById("token_cnesreport").value = response.token;
+        window.SonarRequest.getJSON("/api/users/search", {
+          q: response.login
+        }).then(function(response) {
+          // on success
+          document.getElementById("author").value = response.users[0].name;
+        });
+      });
+    });
+  };
 
-    // once the request is done, and the page is still displayed (not closed already)
-    if (isDisplayedReporting) {
+  // once the request is done, and the page is still displayed (not closed already)
+  if (isDisplayedReporting) {
+    // Add html template
+    var template = document.createElement("div");
+    template.setAttribute("id", "template");
+    options.el.appendChild(template);
+    // retrieve template from html
 
-        // Add html template
-        var template = document.createElement("div");
-        template.setAttribute("id", "template");
-        options.el.appendChild(template);
-        // retrieve template from html
-
-        const reportForm = `
+    const reportForm = `
          <div class="page-wrapper-simple"><div class="page-simple">
            <h1 class="maintenance-title text-center">Generate a report</h1>
            <form id="generation-form" action="../../api/cnesreport/report" method="get">
@@ -98,17 +140,15 @@ window.registerExtension('cnesreport/report', function (options) {
                 }
            </style>
            `;
-         document.getElementById("template").innerHTML=reportForm
-         initProjectsDropDownList();
+    document.getElementById("template").innerHTML = reportForm;
+    getSonarVersion();
+  }
 
-
-    }
-
-    // return a function, which is called when the page is being closed
-    return function () {
-        // we unset the `isDisplayedReporting` flag to ignore to Web API calls finished after the page is closed
-        isDisplayedReporting = false;
-        // clean elements of this page
-        options.el.textContent = '';
-    };
+  // return a function, which is called when the page is being closed
+  return function() {
+    // we unset the `isDisplayedReporting` flag to ignore to Web API calls finished after the page is closed
+    isDisplayedReporting = false;
+    // clean elements of this page
+    options.el.textContent = "";
+  };
 });

@@ -17,7 +17,7 @@ jdk:
   - openjdk11
 
 env:
-  - sonarqube: none
+  # - sonarqube: none
   - sonarqube: 6.6-alpine
   - sonarqube: 6.7-alpine
   - sonarqube: 6.7.1-alpine

@@ -6,7 +6,7 @@
 
     <groupId>fr.cnes.sonar</groupId>
     <artifactId>cnesreport</artifactId>
-    <version>3.1.0</version>
+    <version>3.1.8</version>
     <packaging>sonar-plugin</packaging>
 
     <name>SonarQube CNES Report</name>
