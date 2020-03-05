@@ -1,8 +1,11 @@
 target
 .idea
+.vscode
+.classpath
+.project
+.settings
 .scannerwork
 *.iml
 classes
-conf
-node_modules
-node
+node_modules/
+node/
