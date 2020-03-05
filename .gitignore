@@ -4,3 +4,5 @@ target
 *.iml
 classes
 conf
+node_modules
+node
