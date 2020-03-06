@@ -35,11 +35,11 @@ script:
     echo "Waiting up to 5 minutes for SonarQube...";
     counter=0;
     limit=300;
-    status_code=$(curl -w %{http_code} -s -o /dev/null "http://127.0.0.1:9000/projects");
-    while [[ 200 -ne $status_code && $counter -le $limit ]]; do
+    status_sonar=$(curl -s "http://localhost:9000/api/system/status" | grep "\"status\":\"UP\"" > /dev/null; echo $?);
+    while [[ 0 -ne $status_sonar && $counter -le $limit ]]; do
         sleep 1;
         counter=$(( $counter + 1 ));
-        status_code=$(curl -w %{http_code} -s -o /dev/null "http://127.0.0.1:9000/projects");
+        status_sonar=$(curl -s "http://localhost:9000/api/system/status" | grep "\"status\":\"UP\"" > /dev/null; echo $?);
     done;
     mvn sonar:sonar -Dsonar.host.url=http://127.0.0.1:9000 -Dsonar.login=admin -Dsonar.password=admin -Dsonar.organization=default-organization -Dsonar.branch.name= ;
     src/test/it/run-test.sh;
