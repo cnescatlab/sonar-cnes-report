@@ -20,7 +20,7 @@ This tool can be used in standalone as a JAR executable (with the command line) 
 
 #### Installation
 ##### Standalone mode
-**cnesreport** does not need any installation. It is a portable Java application you can copy and run according to following examples. The only requirement is an **up-to-date JRE (>1.8)**.
+**cnesreport** does not need any installation. It is a portable Java application you can copy and run according to following examples. The only requirement is an **up-to-date JRE (>=1.11)**.
 
 ##### Plugin mode (Since 2.2.0)
 - Copy the sonar-cnes-report.jar in the plugin folder of sonarqube (On linux path should be like `/opt/sonarqube/plugins`)
@@ -108,195 +108,53 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
 - Export in french or english
 
 ### Compatibility matrix
+
+For legacy versions, check the wiki page here : [Note on legacy versions](https://github.com/lequal/sonar-cnes-report/wiki#note-on-legacy-versions)
+
 <table>
  <tr>
   <td><b>cnesreport <br>\<br> SonarQube</b></td>
-  <td><b>1.1.0<br/>Standalone only</b></td>
-  <td><b>1.2.0<br/>Standalone only</b></td>
-  <td><b>1.2.1<br/>Standalone only</b></td>
-  <td><b>2.0.0<br/>Standalone only</b></td>
-  <td><b>2.1.0<br/>Standalone only</b></b></td>
+  <td><b>2.0.0<br/>Standalone</b></td>
+  <td><b>2.1.0<br/>Standalone</b></b></td>
   <td><b>2.2.0<br/>Standalone + Plugin</b></td>
-  <td><b>3.x.x<br/>Standalone + Plugin</b></b></td>
- </tr>
- <tr>
-  <td><b>3.7.x (LTS)</b></td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
- </tr>
- <tr>
-  <td><b>4.5.x (LTS)</b></td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
- </tr>
-  <tr>
-  <td><b>5.6.x (LTS)</b></td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>X</td>
-  <td>X</td>
-  <td>(standalone only)</td>
-  <td>-</td>
- </tr>
- <tr>
-  <td><b>6.0.x</b></td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>X</td>
-  <td>X</td>
-  <td>(standalone only)</td>
-  <td>-</td>
- </tr>
- <tr>
-  <td><b>6.1.x</b></td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>X</td>
-  <td>X</td>
-  <td>(standalone only)</td>
-  <td>-</td>
- </tr>
- <tr>
-  <td><b>6.2.x</b></td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>X</td>
-  <td>X</td>
-  <td>(standalone only)</td>
-  <td>-</td>
- </tr>
- <tr>
-  <td><b>6.3.x</b></td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>X</td>
-  <td>X</td>
-  <td>(standalone only)</td>
-  <td>-</td>
- </tr>
- <tr>
-  <td><b>6.4.x</b></td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>X</td>
-  <td>X</td>
-  <td>(standalone only)</td>
-  <td>-</td>
- </tr>
- <tr>
-  <td><b>6.5.x</b></td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>X</td>
-  <td>X</td>
-  <td>X</td>
-  <td>-</td>
- </tr>
- <tr>
-  <td><b>6.6.x</b></td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>X</td>
-  <td>X</td>
-  <td>X</td>
-  <td>X</td>
- </tr>
- <tr>
-  <td><b>6.7.x (LTS)</b></td>
-  <td>X</td>
-  <td>X</td>
-  <td>X</td>
-  <td>X</td>
-  <td>X</td>
-  <td>X</td>
-  <td>X</td>
- </tr>
- <tr>
-  <td><b>7.0</b></td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>X</td>
-  <td>X</td>
-  <td>(standalone only)</td>
-  <td>X</td>
- </tr>
- <tr>
-  <td><b>7.1</b></td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>X</td>
-  <td>X</td>
-  <td>(standalone only)</td>
-  <td>X</td>
- </tr>
- <tr>
-  <td><b>7.2</b></td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>X</td>
-  <td>X</td>
-  <td>(standalone only)</td>
-  <td>X</td>
- </tr>
- <tr>
-  <td><b>7.3</b></td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>X</td>
-  <td>X</td>
-  <td>(standalone only)</td>
-  <td>X</td>
- </tr>
- <tr>
-  <td><b>7.7</b></td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>X</td>
-  <td>X</td>
-  <td>(standalone only)</td>
-  <td>X</td>
- </tr>
- <tr>
-  <td><b>7.8</b></td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>X</td>
-  <td>X</td>
-  <td>(standalone only)</td>
-  <td>X</td>
+  <td><b>3.0.x<br/>Standalone + Plugin</b></b></td>
+  <td><b>3.1.0<br/>Standalone + Plugin</b></b></td>
+  <td><b>3.2.0<br/>Standalone + Plugin</b></b></td>
  </tr>
  <tr>
   <td><b>7.9.x (LTS)</b></td>
+  <td>X</td>
+  <td>X</td>
+  <td>(Standalone only)</td>
+  <td>X</td>
+  <td>X</td>
+  <td>X</td>
+ </tr>
+ <tr>
+  <td><b>8.0</b></td>
+  <td>-</td>
+  <td>-</td>
   <td>-</td>
   <td>-</td>
   <td>-</td>
   <td>X</td>
+ </tr>
+ <tr>
+  <td><b>8.1</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
   <td>X</td>
-  <td>(standalone only)</td>
+ </tr>
+ <tr>
+  <td><b>8.2</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
   <td>X</td>
  </tr>
 </table>
@@ -312,6 +170,8 @@ with the web UI (`/extension/cnesreport/report` / "More" > "CNES Report").
 
 - Plugin mode is made to provide an easier usage than standalone usage. If you need to 
 use advanced features you should use plugin in standalone.
+
+- Plugin mode is compatible with SonarQube branch feature.
 
 - During execution, the plugin mode use the `${SONARQUBE_HOME}/temp` folder. It writes some files,
 zip these files and send them to client. Files are deleted after download. If you interrupt plugin
