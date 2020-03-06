@@ -30,16 +30,16 @@ script:
     docker run --name sonarqube_${sonarqube} -d -p 127.0.0.1:9000:9000/tcp sonarqube:${sonarqube};
     echo "Inject plugin";
     docker cp target/sonar-cnes-report.jar sonarqube_${sonarqube}:/opt/sonarqube/extensions/plugins/;
-    docker exec sonarqube_${sonarqube} chmod 777 /opt/sonarqube/extensions/plugins/sonar-cnes-report.jar;
+    docker exec -u root sonarqube_${sonarqube} chmod 777 /opt/sonarqube/extensions/plugins/sonar-cnes-report.jar;
     docker restart sonarqube_${sonarqube};
     echo "Waiting up to 5 minutes for SonarQube...";
     counter=0;
-    limit=15;
-    status_code=$(curl -w %{http_code} -s -o /dev/null "http://localhost:9000/projects");
+    limit=300;
+    status_code=$(curl -w %{http_code} -s -o /dev/null "http://127.0.0.1:9000/projects");
     while [[ 200 -ne $status_code && $counter -le $limit ]]; do
         sleep 1;
         counter=$(( $counter + 1 ));
-        status_code=$(curl -w %{http_code} -s -o /dev/null "http://localhost:9000/projects");
+        status_code=$(curl -w %{http_code} -s -o /dev/null "http://127.0.0.1:9000/projects");
     done;
     mvn sonar:sonar -Dsonar.host.url=http://127.0.0.1:9000 -Dsonar.login=admin -Dsonar.password=admin -Dsonar.organization=default-organization -Dsonar.branch.name= ;
     src/test/it/run-test.sh;
