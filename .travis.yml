@@ -40,7 +40,7 @@ script:
         sleep 1;
         counter=$(( $counter + 1 ));
         status_code=$(curl -w %{http_code} -s -o /dev/null "http://localhost:9000/projects");
-    done
+    done;
     mvn sonar:sonar -Dsonar.host.url=http://127.0.0.1:9000 -Dsonar.login=admin -Dsonar.password=admin -Dsonar.organization=default-organization -Dsonar.branch.name= ;
     src/test/it/run-test.sh;
     wget "http://localhost:9000/api/cnesreport/report?key=fr.cnes.sonar%3Acnesreport&author=travis-ci&token=noauth";
