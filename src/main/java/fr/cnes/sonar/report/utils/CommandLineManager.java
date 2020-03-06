@@ -100,11 +100,9 @@ public class CommandLineManager {
             // Parse the command line.
             commandLine = parser.parse(options, pArgs);
             areOptionsCorrect = checkOptionsUse(commandLine);
-        } catch (UnrecognizedOptionException e) {
-            LOGGER.warning(e.getLocalizedMessage());
-            areOptionsCorrect = false;
         } catch (ParseException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
+	    areOptionsCorrect = false;
         }
 
         // If help option is present we print it.
