@@ -75,6 +75,10 @@ public class ReportWs implements WebService {
         tokenParam.setDescription(PluginStringManager.getProperty("api.report.args.description.token"));
         tokenParam.setRequired(true);
 
+        // Adding branch argument
+        WebService.NewParam branchParam = report.createParam(PluginStringManager.getProperty("api.report.args.branch"));
+        branchParam.setDescription(PluginStringManager.getProperty("api.report.args.description.branch"));
+        branchParam.setRequired(false);
     }
 }
 

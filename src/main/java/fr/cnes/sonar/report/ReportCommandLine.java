@@ -57,7 +57,7 @@ public final class ReportCommandLine {
     }
 
     /** Logger of this class */
-    private static final Logger LOGGER = Logger.getLogger(ReportFactory.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ReportCommandLine.class.getName());
 
     /**
      * Private constructor to not be able to instantiate it.
@@ -77,7 +77,8 @@ public final class ReportCommandLine {
             execute(args);
 
         } catch (BadExportationDataTypeException | BadSonarQubeRequestException | IOException |
-                UnknownQualityGateException | OpenXML4JException | XmlException | SonarQubeException | IllegalStateException e) {
+                UnknownQualityGateException | OpenXML4JException | XmlException | SonarQubeException |
+                IllegalStateException | IllegalArgumentException e) {
             // it logs all the stack trace
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             System.exit(-1);

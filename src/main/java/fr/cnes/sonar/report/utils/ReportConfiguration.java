@@ -35,6 +35,8 @@ public class ReportConfiguration {
     private String token;
     /** Options for p. */
     private String project;
+    /** Options for b. */
+    private String branch;
     /** Options for o. */
     private String output;
     /** Options for l. */
@@ -76,6 +78,7 @@ public class ReportConfiguration {
      * @param enableSpreadsheet Value for e option.
      * @param templateReport Value for r option.
      * @param templateSpreadsheet Value for x option.
+     * @param branch Value for b option.
      */
     private ReportConfiguration(final boolean help, final boolean version, final String server,
                                 final String token, final String project, final String output,
@@ -83,7 +86,7 @@ public class ReportConfiguration {
                                 final boolean enableConf, final boolean enableReport,
                                 final boolean enableSpreadsheet, final boolean enableCSV,
                                 final boolean enableMarkdown, String templateReport,
-                                final String templateSpreadsheet, final String templateMarkdown) {
+                                final String templateSpreadsheet, final String templateMarkdown, final String branch) {
         this.help = help;
         this.version = version;
         this.server = server;
@@ -101,6 +104,7 @@ public class ReportConfiguration {
         this.templateReport = templateReport;
         this.templateSpreadsheet = templateSpreadsheet;
         this.templateMarkdown = templateMarkdown;
+        this.branch = branch;
     }
 
     /**
@@ -116,6 +120,7 @@ public class ReportConfiguration {
         commandLineManager.parse(pArgs);
 
         // Final result to return.
+        final String branch = commandLineManager.getOptionValue("b", StringManager.NO_BRANCH);
         return new ReportConfiguration(
                 commandLineManager.hasOption("h"),
                 commandLineManager.hasOption("v"),
@@ -133,7 +138,9 @@ public class ReportConfiguration {
                 !commandLineManager.hasOption("m"),
                 commandLineManager.getOptionValue("r", StringManager.EMPTY),
                 commandLineManager.getOptionValue("x", StringManager.EMPTY),
-                commandLineManager.getOptionValue("n", StringManager.EMPTY));
+                commandLineManager.getOptionValue("n", StringManager.EMPTY),
+                branch.isEmpty()?StringManager.NO_BRANCH:branch
+        );
     }
 
     public boolean isHelp() {
@@ -154,6 +161,10 @@ public class ReportConfiguration {
 
     public String getProject() {
         return project;
+    }
+
+    public String getBranch() {
+        return branch;
     }
 
     public String getOutput() {

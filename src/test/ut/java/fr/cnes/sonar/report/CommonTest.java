@@ -17,8 +17,6 @@
 
 package fr.cnes.sonar.report;
 
-import fr.cnes.sonar.report.exporters.docx.DataAdapter;
-import fr.cnes.sonar.report.exporters.xlsx.XlsXTools;
 import fr.cnes.sonar.report.model.*;
 import fr.cnes.sonar.report.utils.ReportConfiguration;
 import org.junit.Before;
@@ -34,6 +32,18 @@ public abstract class CommonTest {
      * Severity for stubbed violations.
      */
     private static final String MAJOR = "MAJOR";
+    /**
+     * Project key.
+     */
+    protected static final String PROJECT_KEY = "cnesreport";
+    /**
+     * Branch name.
+     */
+    protected static final String BRANCH = "master";
+    /**
+     * Quality Gate name.
+     */
+    protected static final String QUALITY_GATE_NAME = "CNES";
     /**
      * Stubbed report for report.
      */
@@ -55,8 +65,9 @@ public abstract class CommonTest {
         report = new StubReport();
         conf = ReportConfiguration.create(new String[]{
                 "-s", "http://sonarqube:9000",
-                "-p", "cnesreport",
+                "-p", PROJECT_KEY,
                 "-a", "Lequal",
+                "-b", BRANCH,
                 "-d", new Date().toString(),
                 "-o", "./target",
                 "-l", "en_US",
@@ -158,10 +169,10 @@ public abstract class CommonTest {
         profileMetaData.setName("BG");
         profileMetaData.setKey("BG");
         final QualityProfile qualityProfile = new QualityProfile(profileData, profileMetaData);
-        qualityProfile.setProjects((new Project[]{new Project("sonar-cnes-plugin", "sonar-cnes-plugin", "none","","")}));
+        qualityProfile.setProjects((new Project[]{new Project("sonar-cnes-plugin", "sonar-cnes-plugin", "none", "", "", "")}));
         report.setQualityProfiles(Collections.singletonList(qualityProfile));
         final QualityGate qualityGate = new QualityGate();
-        qualityGate.setName("CNES");
+        qualityGate.setName(QUALITY_GATE_NAME);
         report.setQualityGate(qualityGate);
 
         final Language language = new Language();
@@ -171,7 +182,7 @@ public abstract class CommonTest {
         final Map<String, Language> languages = new HashMap<>();
         languages.put(language.getKey(), language);
 
-        final Project project = new Project("key", "Name", "none","Version", "Short description");
+        final Project project = new Project("key", "Name", "none","Version", "Short description", "");
         project.setQualityProfiles(new ProfileMetaData[0]);
         project.setLanguages(languages);
         report.setProject(project);

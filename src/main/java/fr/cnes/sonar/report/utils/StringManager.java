@@ -38,6 +38,8 @@ public final class StringManager {
     public static final String TAB = "\t";
     /** Just a space. */
     public static final String SPACE = " ";
+    /** Placeholder for no-branch. */
+    public static final String NO_BRANCH = "%";
     /** Just a space for URI. */
     public static final String URI_SPACE = "%20";
     /** Name for properties' file about report. */
@@ -65,9 +67,6 @@ public final class StringManager {
 
     /** Contains internationalized fields. */
     private static ResourceBundle messages;
-
-    /** Define the language of the program. */
-    private static Locale currentLocale;
 
     /** Unique instance of this class (singleton). */
     private static StringManager ourInstance = null;
@@ -141,7 +140,7 @@ public final class StringManager {
      */
     public static synchronized void changeLocale(final String language, final String country) {
         // change locale
-        currentLocale = new Locale(language,country);
+        Locale currentLocale = new Locale(language,country);
         // reload messages
         messages = ResourceBundle.getBundle("messages", currentLocale);
     }

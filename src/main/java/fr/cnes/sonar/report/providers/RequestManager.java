@@ -134,7 +134,9 @@ public final class RequestManager {
             case 403:
                 throw new BadSonarQubeRequestException("Insufficient privileges error sent by SonarQube server (code 403), please check your permissions in SonarQube configuration.");
             case 404:
-                throw new BadSonarQubeRequestException("Unknown URL error sent by SonarQube server (code 404), please check cnesreport compatibility with your SonarQube server version.");
+                throw new BadSonarQubeRequestException(String.format("Not found error sent by SonarQube server (code 404, URL %s, Error %s), please check cnesreport compatibility with your SonarQube server version.",response.requestUrl(), response.content()));
+            default:
+                break;
         }
 
         return response.content();

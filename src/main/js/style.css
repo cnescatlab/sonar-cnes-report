@@ -1,0 +1,11 @@
+.forminput select, .forminput input{
+    width:100%;
+}
+
+.login-label{
+    display: block;
+}
+
+.info-message{
+    color:grey;
+}

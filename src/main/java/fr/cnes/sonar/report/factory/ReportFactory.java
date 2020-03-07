@@ -195,8 +195,8 @@ public class ReportFactory {
         // construct the filename by replacing date and name
         return StringManager.getProperty(propertyName)
                 .replaceFirst(BASEDIR, Matcher.quoteReplacement(baseDir))
-                .replaceAll(DATE, new SimpleDateFormat(StringManager.DATE_PATTERN).format(new Date()))
-                .replaceAll(NAME, projectName);
+                .replace(DATE, new SimpleDateFormat(StringManager.DATE_PATTERN).format(new Date()))
+                .replace(NAME, projectName);
     }
 
 }

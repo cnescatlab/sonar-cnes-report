@@ -48,9 +48,11 @@ public class QualityGateProvider extends AbstractDataProvider {
      * @param pServer SonarQube server.
      * @param pToken String representing the user token.
      * @param pProject The id of the project to report.
+     * @param pBranch The branch of the project to report.
      */
-    public QualityGateProvider(final SonarQubeServer pServer, final String pToken, final String pProject) {
-        super(pServer, pToken, pProject);
+    public QualityGateProvider(final SonarQubeServer pServer, final String pToken, final String pProject,
+            final String pBranch) {
+        super(pServer, pToken, pProject, pBranch);
     }
 
     /**
@@ -76,18 +78,16 @@ public class QualityGateProvider extends AbstractDataProvider {
         for (QualityGate i : tmp) {
             // request the criteria
             request = String.format(getRequest(GET_QUALITY_GATES_DETAILS_REQUEST),
-                    getServer().getUrl(), i.getName().replaceAll(" ", "%20"));
+                    getServer().getUrl(), i.getName().replace(" ", "%20"));
             // perform previous request
             jo = request(request);
 
             // put it in configuration field
             i.setConf(jo.toString());
+            
             // check if it is the default quality gate
-            if (i.getId().equals(defaultQG)) {
-                i.setDefault(true);
-            } else {
-                i.setDefault(false);
-            }
+            i.setDefault(i.getId().equals(defaultQG));
+
             // add the quality gate to the result list
             res.add(i);
         }
@@ -109,7 +109,7 @@ public class QualityGateProvider extends AbstractDataProvider {
         final List<QualityGate> qualityGates = getQualityGates();
         // request the criteria
         String request = String.format(getRequest(GET_QUALITY_GATE_REQUEST),
-                getServer().getUrl(), getProjectKey());
+                getServer().getUrl(), getProjectKey(), getBranch());
         // Final quality gate result.
         QualityGate res;
 

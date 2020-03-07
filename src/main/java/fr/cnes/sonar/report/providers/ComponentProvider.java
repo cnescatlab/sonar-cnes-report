@@ -37,11 +37,12 @@ public class ComponentProvider extends AbstractDataProvider {
      * @param server  SonarQube server.
      * @param token   String representing the user token.
      * @param project The id of the component to report.
+     * @param project The branch of the component to report.
      */
-
     ArrayList<Map> componentsList;
-    public ComponentProvider(final SonarQubeServer server, final String token, final String project) {
-        super(server, token, project);
+    public ComponentProvider(final SonarQubeServer server, final String token, final String project,
+            final String branch) {
+        super(server, token, project, branch);
         componentsList =  new ArrayList<>();
     }
 
@@ -54,11 +55,11 @@ public class ComponentProvider extends AbstractDataProvider {
         JsonObject jo;
 
         // For each page, we get the components
-        boolean goOn = componentsList.size() == 0;
+        boolean goOn = componentsList.isEmpty();
         while(goOn){
             // Send request to server
             jo = request(String.format(getRequest(GET_COMPONENTS_REQUEST),
-                    getServer().getUrl(), getProjectKey(), page, getRequest(MAX_PER_PAGE_SONARQUBE)));
+                    getServer().getUrl(), getProjectKey(), page, getRequest(MAX_PER_PAGE_SONARQUBE), getBranch()));
 
             // Get components from response
             final Component[] tmp = getGson().fromJson(jo.get(COMPONENTS), Component[].class);
@@ -111,19 +112,19 @@ public class ComponentProvider extends AbstractDataProvider {
      * @return map with min, max and mean of each numerical metric in the project
      * */
     public Map<String, Double> getMetricStats(){
-        if(componentsList.size() == 0) return new HashMap<>();
-
-
-        Map<String, Double> map = new HashMap();
+        
+        Map<String, Double> map = new HashMap<>();
         // Use first component to gets all metrics names
 
-        // for each metric
-        for(Object metric: XlsXTools.extractHeader(componentsList)){
-            // if metric is numerical
-            if (isCountableMetric(metric.toString())) {
-                // Get min, max and mean of this metric on the current project
-                map.put("min" + metric.toString(), getMinMetric(metric.toString()));
-                map.put("max" + metric.toString(), getMaxMetric(metric.toString()));
+        if(! componentsList.isEmpty()) {
+            // for each metric
+            for(Object metric: XlsXTools.extractHeader(componentsList)){
+                // if metric is numerical
+                if (isCountableMetric(metric.toString())) {
+                    // Get min, max and mean of this metric on the current project
+                    map.put("min" + metric.toString(), getMinMetric(metric.toString()));
+                    map.put("max" + metric.toString(), getMaxMetric(metric.toString()));
+                }
             }
         }
 
