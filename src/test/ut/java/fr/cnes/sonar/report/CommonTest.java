@@ -17,8 +17,6 @@
 
 package fr.cnes.sonar.report;
 
-import fr.cnes.sonar.report.exporters.docx.DataAdapter;
-import fr.cnes.sonar.report.exporters.xlsx.XlsXTools;
 import fr.cnes.sonar.report.model.*;
 import fr.cnes.sonar.report.utils.ReportConfiguration;
 import org.junit.Before;
