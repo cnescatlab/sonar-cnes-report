@@ -78,18 +78,16 @@ public class QualityGateProvider extends AbstractDataProvider {
         for (QualityGate i : tmp) {
             // request the criteria
             request = String.format(getRequest(GET_QUALITY_GATES_DETAILS_REQUEST),
-                    getServer().getUrl(), i.getName().replaceAll(" ", "%20"));
+                    getServer().getUrl(), i.getName().replace(" ", "%20"));
             // perform previous request
             jo = request(request);
 
             // put it in configuration field
             i.setConf(jo.toString());
+            
             // check if it is the default quality gate
-            if (i.getId().equals(defaultQG)) {
-                i.setDefault(true);
-            } else {
-                i.setDefault(false);
-            }
+            i.setDefault(i.getId().equals(defaultQG));
+
             // add the quality gate to the result list
             res.add(i);
         }

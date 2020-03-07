@@ -338,7 +338,7 @@ public abstract class AbstractDataProvider {
     protected String stringRequest(final String request) throws SonarQubeException, BadSonarQubeRequestException {
         // prepare the request by replacing some relevant special characters
         // replace spaces
-        String preparedRequest = request.replaceAll(" ", "%20");
+        String preparedRequest = request.replace(" ", "%20");
         // replace + characters
         preparedRequest = preparedRequest.replaceAll("\\+", "%2B");
 

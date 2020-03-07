@@ -57,7 +57,7 @@ public final class ReportCommandLine {
     }
 
     /** Logger of this class */
-    private static final Logger LOGGER = Logger.getLogger(ReportFactory.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ReportCommandLine.class.getName());
 
     /**
      * Private constructor to not be able to instantiate it.

@@ -39,9 +39,6 @@ import org.sonar.api.utils.text.JsonWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class ExportTask implements RequestHandler {
 

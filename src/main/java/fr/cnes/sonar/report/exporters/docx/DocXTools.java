@@ -25,7 +25,6 @@ import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.ss.util.ImageUtils;
 import org.apache.poi.xwpf.usermodel.*;
 import org.apache.xmlbeans.XmlException;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTR;
 
 
 import java.awt.*;
@@ -75,10 +74,6 @@ public final class DocXTools {
      * facet's name for number of issues by type
      */
     private static final String TYPES = "types";
-    /**
-     * Default font size
-     */
-    private static int DEFAULT_FONT_SIZE = 12;
 
     /**
      * Private constructor to hide the public one
@@ -229,7 +224,7 @@ public final class DocXTools {
         
         final List<XWPFRun> runs = paragraph.getRuns();
          String text;
-        final List<String> pictures = new ArrayList<String>();
+        final List<String> pictures = new ArrayList<>();
         String key;
         String value;
         ClassLoader classloader;
@@ -268,8 +263,8 @@ public final class DocXTools {
                         classloader = Thread.currentThread().getContextClassLoader();
                         is = classloader.getResourceAsStream(IMG_FOLDER +filename);
                         // height and width are retrieve from here
-                        dim = ImageUtils.getImageDimension(is, XWPFDocument.PICTURE_TYPE_PNG);
-                        currentRun.addPicture(is, XWPFDocument.PICTURE_TYPE_PNG,
+                        dim = ImageUtils.getImageDimension(is, Document.PICTURE_TYPE_PNG);
+                        currentRun.addPicture(is, Document.PICTURE_TYPE_PNG,
                                 filename, dim.width, dim.height);
                         // close picture
                         is.close();

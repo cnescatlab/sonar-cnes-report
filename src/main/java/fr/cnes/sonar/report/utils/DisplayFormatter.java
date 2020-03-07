@@ -28,17 +28,17 @@ public class DisplayFormatter extends Formatter {
     /**
      * All printed message should comply to this format.
      */
-    private final String FORMAT_DEFAULT = "[%s] %s\n";
+    private static final String FORMAT_DEFAULT = "[%s] %s\n";
 
     /**
      * Following format is only for INFO level: we just print the message.
      */
-    private final String FORMAT_INFO = "%s\n";
+    private static final String FORMAT_INFO = "%s\n";
 
     /**
      * Following format is only for SEVERE level: we just print the message.
      */
-    private final String FORMAT_SEVERE = "[ERROR] %s\n";
+    private static final String FORMAT_SEVERE = "[ERROR] %s\n";
 
     /**
      * Inherited method to format messages.
