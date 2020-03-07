@@ -7,6 +7,9 @@ const webpack = require('webpack');
 const config = require('./webpack.config');
 const getClientEnvironment = require('./env');
 
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const autoprefixer = require("autoprefixer");
+
 // Get environment variables to inject into our app.
 const env = getClientEnvironment();
 
@@ -31,26 +34,39 @@ config.plugins = [
   // This helps ensure the builds are consistent if source hasn't changed:
   new webpack.optimize.OccurrenceOrderPlugin(),
 
-  // Try to dedupe duplicated modules, if any:
-  new webpack.optimize.DedupePlugin()
+  new webpack.LoaderOptionsPlugin({
+    options: {
+      context: __dirname,
+      postcss: [
+        autoprefixer({
+          browsers: [
+            "last 3 Chrome versions",
+            "last 3 Firefox versions",
+            "last 3 Safari versions",
+            "last 3 Edge versions",
+            "IE 11"
+          ]
+        })
+      ]
+    }
+  })
 ];
 
 if (!noUglify) {
-  config.plugins.push(
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        screw_ie8: true, // React doesn't support IE8
-        warnings: false
-      },
-      mangle: {
-        screw_ie8: true
-      },
-      output: {
-        comments: false,
-        screw_ie8: true
-      }
-    })
-  );
+  config.optimization = {
+    minimizer: [
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          warnings: false,
+          compress: {},
+          mangle: true,
+          output: {
+            comments: false
+          }
+        }
+      })
+    ]
+  }
 }
 
 module.exports = config;
