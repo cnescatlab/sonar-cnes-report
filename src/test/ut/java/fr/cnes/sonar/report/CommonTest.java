@@ -33,6 +33,18 @@ public abstract class CommonTest {
      */
     private static final String MAJOR = "MAJOR";
     /**
+     * Project key.
+     */
+    protected static final String PROJECT_KEY = "cnesreport";
+    /**
+     * Branch name.
+     */
+    protected static final String BRANCH = "master";
+    /**
+     * Quality Gate name.
+     */
+    protected static final String QUALITY_GATE_NAME = "CNES";
+    /**
      * Stubbed report for report.
      */
     protected Report report;
@@ -53,8 +65,9 @@ public abstract class CommonTest {
         report = new StubReport();
         conf = ReportConfiguration.create(new String[]{
                 "-s", "http://sonarqube:9000",
-                "-p", "cnesreport",
+                "-p", PROJECT_KEY,
                 "-a", "Lequal",
+                "-b", BRANCH,
                 "-d", new Date().toString(),
                 "-o", "./target",
                 "-l", "en_US",
@@ -159,7 +172,7 @@ public abstract class CommonTest {
         qualityProfile.setProjects((new Project[]{new Project("sonar-cnes-plugin", "sonar-cnes-plugin", "none", "", "", "")}));
         report.setQualityProfiles(Collections.singletonList(qualityProfile));
         final QualityGate qualityGate = new QualityGate();
-        qualityGate.setName("CNES");
+        qualityGate.setName(QUALITY_GATE_NAME);
         report.setQualityGate(qualityGate);
 
         final Language language = new Language();
