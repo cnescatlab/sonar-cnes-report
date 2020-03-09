@@ -57,6 +57,9 @@ public final class RequestManager {
      */
     public static final String STR_PROXY_PASS = "https.proxyPassword";
 
+    public static final String QUERY_CHAR = "?";
+    public static final String ANCHOR_CHAR = "#";
+
     /**
      * Use of private constructor to singletonize this class
      */
@@ -74,6 +77,25 @@ public final class RequestManager {
     }
 
     /**
+     * Return the baseUrl from a string URL
+     * @return the baseUrl as string
+     */
+    private static String extractBaseUrl(String url) {
+      if (url != null) {
+        int queryPosition = url.indexOf(QUERY_CHAR);
+        if (queryPosition <= 0) {
+          queryPosition = url.indexOf(ANCHOR_CHAR);
+        }
+
+        if (queryPosition >= 0) {
+          url = url.substring(0, queryPosition);
+        }
+      }
+       
+      return StringUtils.substringBeforeLast(url, "/");
+    }
+
+    /**
      * Execute a get http request
      * @param url server to request
      * @param token token to authenticate to SonarQube
@@ -83,8 +105,8 @@ public final class RequestManager {
      */
     public String get(final String url, final String token) throws SonarQubeException, BadSonarQubeRequestException {
         // Initialize connexion information.
-        final String baseUrl = StringUtils.substringBeforeLast(url, "/");
-        final String path = StringUtils.substringAfterLast(url, "/");
+        final String baseUrl = extractBaseUrl(url);
+        final String path = url.replace(baseUrl, "");
         final String proxyHost = System.getProperty(STR_PROXY_HOST, StringManager.EMPTY);
         final String proxyPort = System.getProperty(STR_PROXY_PORT, StringManager.EMPTY);
         final String proxyUser = System.getProperty(STR_PROXY_USER, StringManager.EMPTY);
