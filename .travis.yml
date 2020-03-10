@@ -13,6 +13,7 @@ addons:
     
 
 jdk:
+  - openjdk8
   - openjdk11
 
 env:
@@ -51,6 +52,8 @@ cache:
   directories:
     - '$HOME/.m2/repository'
     - '$HOME/.sonar/cache'
+    - 'node'
+    - 'node_modules'
 
 notifications:
   email: false
@@ -65,3 +68,5 @@ deploy:
   on:
     branch: master
     condition: $sonarqube = none
+    tags: true
+    jdk: 'openjdk11'
