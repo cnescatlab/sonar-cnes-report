@@ -62,6 +62,10 @@ public class Report {
      */
     private List<Map> rawIssues;
     /**
+     * List of map representing issues
+     */
+    private List<Map> rawHotspots;
+    /**
      * Data about the project
      */
     private Project project;
@@ -342,12 +346,28 @@ public class Report {
         return new ArrayList<>(rawIssues);
     }
 
+        /**
+     * Get a list of map representing issues
+     * @return return the raw issues' list
+     */
+    public List<Map> getRawHotspots() {
+        return new ArrayList<>(rawHotspots);
+    }
+
     /**
      * Set the list of raw issues
      * @param pRawIssues list of map
      */
     public void setRawIssues(List<Map> pRawIssues) {
         this.rawIssues = new ArrayList<>(pRawIssues);
+    }
+
+    /**
+     * Set the list of raw issues
+     * @param pRawIssues list of map
+     */
+    public void setRawHotspots(List<Map> pRawHotspots) {
+        this.rawHotspots = new ArrayList<>(pRawHotspots);
     }
 
     /**

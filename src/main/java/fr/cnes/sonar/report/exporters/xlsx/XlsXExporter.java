@@ -42,7 +42,7 @@ public class XlsXExporter implements IExporter {
     /**
      * Name for the table containing all raw resources
      */
-    private static final String ALL_TABLE_NAME = "all";
+    private static final String ALL_TABLE_NAME = "all";  
     /**
      * Name for the tab containing metrics
      */
@@ -51,6 +51,14 @@ public class XlsXExporter implements IExporter {
      * Name for the table containing metrics
      */
     private static final String METRICS_TABLE_NAME = "metrics";
+    /**
+     * Name for the sheet containing all hotspots
+     */
+    private static final String ALL_HOTSPOTS_SHEET_NAME = "Hotspots";
+    /**
+     * Name for the table containing all raw resources
+     */
+    private static final String HOTSPOT_TABLE_NAME = "hotspots";
 
     /**
      * Overridden export for XlsX
@@ -99,6 +107,9 @@ public class XlsXExporter implements IExporter {
             // retrieve the sheet aiming to contain selected resources
             final XSSFSheet allDataSheet = (XSSFSheet) workbook.getSheet(ALL_DETAILS_SHEET_NAME);
 
+            // retrieve the sheet aiming to contain hotspots resources
+            final XSSFSheet allHotSheet = (XSSFSheet) workbook.getSheet(ALL_HOTSPOTS_SHEET_NAME);
+
             // retrieve the sheet with metrics
             final XSSFSheet metricsSheet = (XSSFSheet) workbook.getSheet(METRICS_SHEET_NAME);
 
@@ -113,6 +124,9 @@ public class XlsXExporter implements IExporter {
 
             // write all metrics in the metric sheet
             XlsXTools.addListOfMap(metricsSheet, report.getComponents(), METRICS_TABLE_NAME);
+
+            // write all raw resources in the hotspot sheet
+            XlsXTools.addListOfMap(allHotSheet, report.getRawHotspots(), HOTSPOT_TABLE_NAME);
 
             // write output as file
             workbook.write(fileOut);
