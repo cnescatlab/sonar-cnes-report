@@ -96,6 +96,7 @@ public class Report {
         this.facets = new ArrayList<>();
         this.measures = new ArrayList<>();
         this.rawIssues = new ArrayList<>();
+        this.rawHotspots = new ArrayList<>();
         this.components = new ArrayList<>();
         this.project = new Project(StringManager.EMPTY, StringManager.EMPTY,
                 StringManager.EMPTY,StringManager.EMPTY,StringManager.EMPTY, StringManager.EMPTY);
