@@ -42,7 +42,6 @@
         <sonar.sources>src/main/java</sonar.sources>
         <sonar.test>src/test/java</sonar.test>
         <sonar.skipDependenciesPackaging>true</sonar.skipDependenciesPackaging>
-        <sonar.useChildFirstClassLoader>true</sonar.useChildFirstClassLoader>
         <sonar.pluginClass>fr.cnes.sonar.plugin.ReportSonarPlugin</sonar.pluginClass>
         <app.mainClass>fr.cnes.sonar.report.ReportCommandLine</app.mainClass>
     </properties>
