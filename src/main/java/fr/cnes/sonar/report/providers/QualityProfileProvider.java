@@ -67,18 +67,13 @@ public class QualityProfileProvider extends AbstractDataProvider {
                 jo.get(PROFILES), ProfileMetaData[].class));
         for (ProfileMetaData profileMetaData : metaData) {
             final ProfileData profileData = new ProfileData();
-
-            // URL Encode Quality Profile & Language name to avoid issue with special characters
-            profileMetaData.setLanguage(
-                UrlEncoder.urlEncodeString(profileMetaData.getLanguage()));
-            profileMetaData.setName(
-                UrlEncoder.urlEncodeString(profileMetaData.getName()));
             
             // get configuration
+            // URL Encode Quality Profile & Language name to avoid issue with special characters
             request = String.format(getRequest(GET_QUALITY_PROFILES_CONF_REQUEST),
                     getServer().getUrl(),
-                    profileMetaData.getLanguage(),
-                    profileMetaData.getName());
+                    UrlEncoder.urlEncodeString(profileMetaData.getLanguage()),
+                    UrlEncoder.urlEncodeString(profileMetaData.getName()));
             // perform request to sonarqube server
             final String xml = stringRequest(request);
             // add configuration as string to the profile
