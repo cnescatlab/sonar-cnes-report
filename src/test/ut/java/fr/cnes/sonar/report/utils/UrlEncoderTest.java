@@ -2,7 +2,7 @@ package fr.cnes.sonar.report.utils;
 
 import org.junit.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UrlEncoderTest {
 
@@ -14,7 +14,7 @@ public class UrlEncoderTest {
         String initialString = "Test 4 Q&A ++";
         String expectedResult = "Test%204%20Q%26A%20%2B%2B";
         String urlEncodedString = UrlEncoder.urlEncodeString(initialString);
-        assertTrue(urlEncodedString.equals(expectedResult));
+        assertEquals(urlEncodedString, expectedResult);
     }
 
 }
