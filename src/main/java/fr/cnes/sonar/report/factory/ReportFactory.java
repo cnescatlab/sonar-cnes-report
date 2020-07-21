@@ -99,8 +99,6 @@ public class ReportFactory {
             // prepare docx report's filename
             final String docXFilename = formatFilename(REPORT_FILENAME, configuration.getOutput(), model.getProjectName()); 
             // // export the full docx report
-            // File f = new File (docXFilename);
-            // f.getParentFile().mkdirs();
             docXExporter.export(model, docXFilename, configuration.getTemplateReport());
         }
 
