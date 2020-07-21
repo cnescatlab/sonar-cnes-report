@@ -37,6 +37,9 @@ import java.util.Iterator;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 
+import com.google.common.escape.Escaper;
+import com.google.common.escape.Escapers;
+
 public class ReportFactory {
 
     /** Property for the word report filename. */
@@ -94,8 +97,10 @@ public class ReportFactory {
         // Export issues and metrics in report if requested.
         if(configuration.isEnableReport()) {
             // prepare docx report's filename
-            final String docXFilename = formatFilename(REPORT_FILENAME, configuration.getOutput(), model.getProjectName());
-            // export the full docx report
+            final String docXFilename = formatFilename(REPORT_FILENAME, configuration.getOutput(), model.getProjectName()); 
+            // // export the full docx report
+            // File f = new File (docXFilename);
+            // f.getParentFile().mkdirs();
             docXExporter.export(model, docXFilename, configuration.getTemplateReport());
         }
 
@@ -196,7 +201,17 @@ public class ReportFactory {
         return StringManager.getProperty(propertyName)
                 .replaceFirst(BASEDIR, Matcher.quoteReplacement(baseDir))
                 .replace(DATE, new SimpleDateFormat(StringManager.DATE_PATTERN).format(new Date()))
-                .replace(NAME, projectName);
+                .replace(NAME, escapeProjectName(projectName));
+    }
+
+    /**
+     * Escapes the folder seperator from the project name.
+     * @param projectName
+     * @return file seperator (/ or \) escaped project name.
+     */
+    private static CharSequence escapeProjectName(String projectName) {
+        Escaper escaper = Escapers.builder().addEscape(File.separatorChar, "_").build();
+        return escaper.escape(projectName);
     }
 
 }
