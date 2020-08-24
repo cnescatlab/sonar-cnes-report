@@ -17,14 +17,14 @@
     </organization>
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/lequal/sonar-cnes-report/issues</url>
+        <url>https://github.com/cnescatlab/sonar-cnes-report/issues</url>
     </issueManagement>
     <ciManagement>
         <system>Travis-CI</system>
-        <url>https://travis-ci.org/lequal/sonar-cnes-report</url>
+        <url>https://travis-ci.org/cnescatlab/sonar-cnes-report</url>
     </ciManagement>
     <scm>
-        <url>https://github.com/lequal/sonar-cnes-report</url>
+        <url>https://github.com/cnescatlab/sonar-cnes-report</url>
     </scm>
 
     <properties>
@@ -37,7 +37,7 @@
         <sonar.apiVersion>6.5</sonar.apiVersion>
         <sonar-packaging-maven-plugin.version>1.18.0.372</sonar-packaging-maven-plugin.version>
         <sonar.pluginKey>cnesreport</sonar.pluginKey>
-        <sonar.pluginUrl>https://github.com/lequal/sonar-cnes-report</sonar.pluginUrl>
+        <sonar.pluginUrl>https://github.com/cnescatlab/sonar-cnes-report</sonar.pluginUrl>
         <sonar.pluginOrganizationName>CNES</sonar.pluginOrganizationName>
         <sonar.sources>src/main/java</sonar.sources>
         <sonar.test>src/test/java</sonar.test>
