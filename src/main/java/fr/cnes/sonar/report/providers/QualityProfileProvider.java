@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import fr.cnes.sonar.report.utils.UrlEncoder;
+
 /**
  * Provides quality gates
  */
@@ -65,13 +67,13 @@ public class QualityProfileProvider extends AbstractDataProvider {
                 jo.get(PROFILES), ProfileMetaData[].class));
         for (ProfileMetaData profileMetaData : metaData) {
             final ProfileData profileData = new ProfileData();
+            
             // get configuration
+            // URL Encode Quality Profile & Language name to avoid issue with special characters
             request = String.format(getRequest(GET_QUALITY_PROFILES_CONF_REQUEST),
                     getServer().getUrl(),
-                    profileMetaData.getLanguage().replaceAll(String.valueOf(StringManager.SPACE),
-                    StringManager.URI_SPACE),
-                    profileMetaData.getName().replaceAll(String.valueOf(StringManager.SPACE),
-                    StringManager.URI_SPACE));
+                    UrlEncoder.urlEncodeString(profileMetaData.getLanguage()),
+                    UrlEncoder.urlEncodeString(profileMetaData.getName()));
             // perform request to sonarqube server
             final String xml = stringRequest(request);
             // add configuration as string to the profile
