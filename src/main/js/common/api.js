@@ -11,36 +11,17 @@ function getSonarVersion() {
   });
 }
 
-// Function used to get the list of existing projects (until 7.9.x)
-function getProjectsList79() {
-  return getJSON("/api/projects/index").then(response => {
-    return response.map(item => {
-      // Attribute names changed in SonarQube 8.0
-      // so we need to match the new ones for the frontend
-      item.key = item.k;
-      item.name = item.nm;
-      return item;
-    });
-  });
-}
 
-// Function used to get the list of existing projects (since 8.0)
-function getProjectsList8() {
-  return getJSON("/api/projects/search").then(response => {
-    return response.components;
-  });
+//Function used to get the list of existing projects (since 8.0) for any user
+function getProjectsList8(){
+  return getJSON("/api/components/search", {"qualifiers": "TRK"}).then(response => {
+      return response.components;
+  })
 }
 
 // Function used to get the list of existing project regarding SonarQube version
-export function getProjectsList() {
-  return getSonarVersion().then(version => {
-    // Depending on SonarQube version, the API is not the same to retrieve projects list
-    if (version >= 8.0) {
+export function getProjectsList() { 
       return getProjectsList8();
-    } else {
-      return getProjectsList79();
-    }
-  });
 }
 
 // Function used to revoke the plugin token
