@@ -43,28 +43,24 @@ export function getProjectsList(){
   let elementByPage = 500;
   let allPromises = [];
   let finalProjectsList = [];
-  getJSON("/api/components/search", {"qualifiers": "TRK", "ps":elementByPage}).then(response => {
+  return getJSON("/api/components/search", {"qualifiers": "TRK", "ps":elementByPage}).then(response => {
     let nbProjects = response.paging.total;
     let nbPages = Math.ceil(nbProjects/elementByPage);
-    return nbPages;
-  }).then(nbPages => {
     for(let i = 1; i <= nbPages; i++){
       allPromises.push(getJSON("/api/components/search", {"qualifiers": "TRK", "ps":elementByPage, "p":i}).then(response => {
         return response.components;
-        //allPromises[i].concat(projectsList);
       }));
     }
-  });
-  return Promise.all(allPromises).then((results) => {
-    results.forEach((array) => {
-      finalProjectsList.concat(array);
-    })
-   // for(let i =0;i < results.length; i++){
-    //  finalProjectsList.concat(results[i]);
-  //  }
-    return finalProjectsList;
+    return Promise.all(allPromises).then((results) => {
+      results.forEach((result) => {
+        finalProjectsList.concat(result);
+      })
+      return finalProjectsList;
+    });
   });
 }
+
+
   /*finalProjectsList = () => {
     return Promise.all(allPromises);
   }
