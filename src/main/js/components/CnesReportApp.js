@@ -4,7 +4,6 @@
  */
 
 import React from "react";
-
 import { DeferredSpinner } from "sonar-components";
 import { getProjectsList, initiatePluginToken, getBranches } from "../common/api";
 
