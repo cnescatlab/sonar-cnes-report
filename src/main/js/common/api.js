@@ -52,9 +52,12 @@ export function getProjectsList(){
       }));
     }
     return Promise.all(allPromises).then((results) => {
+      let projects = [];
       results.forEach((result) => {
-        finalProjectsList.concat(result);
+        projects = projects.concat(result);
+        console.log(projects);
       })
+      finalProjectsList = projects;
       return finalProjectsList;
     });
   });
