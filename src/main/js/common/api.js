@@ -4,41 +4,14 @@
 
 import { getJSON, postJSON, post } from "sonar-request";
 
-// Function used to get current SonarQube Server version
+//Function used to get current SonarQube Server version
 function getSonarVersion() {
   return getJSON("/api/system/status").then(response => {
     return parseFloat(response.version);
   });
 }
-/*
-// Function used to get the list of existing project regarding SonarQube version
-export async function getProjectsList() {
-  let result = []; 
-  let numberTotal = await new Promise(r => getJSON(r, "/api/components/search", {"qualifiers": "TRK","ps": 500}).then(total => {
-    return total.paging.total;
-  }));
-  let numberOfPages;
-  if (numberTotal % 500 === 0){
-    numberOfPages = numberTotal / 500;
-  } else {
-    numberOfPages = (numberTotal / 500) + 1;
-  }
-  for(let i = 0; i <= numberOfPages; i++){
-      let pieceOfArray = [];
-      pieceOfArray.push(await new Promise(r => getJSON(r, "/api/components/search", {"qualifiers": "TRK","ps": 500, "p": i}).then(response => {
-        return response.components;
-      })))
-    result.push(pieceOfArray);
-  }
-  return result;
-}
-*/
-/*export function getProjectsList(){
-  return getJSON("/api/components/search", {"qualifiers": "TRK"}).then(response => {
-      return response.components;
-  });
-}*/
 
+//Functions used to get all user projects
 export function getProjectsList(){
   let elementByPage = 500;
   let allPromises = [];
@@ -62,28 +35,6 @@ export function getProjectsList(){
     });
   });
 }
-
-
-  /*finalProjectsList = () => {
-    return Promise.all(allPromises);
-  }
-  Promise.all(allPromises).then((promise) => {
-    for(let i = 0; i < promise.length; i++) {
-      finalProjectsList.concat(promise[i]);
-    }
-  });*/
-  //return finalProjectsList;
-    //let finalProjectsList = [];
-      //for(let i = 1; i <= nbPages; i ++){
-      //  finalProjectsList.concat(allPromises[i]);
-      //}
-  //    console.log(finalProjectsList);
-    //  return finalProjectsList;
-  //});
-    //return Promise.all(allPromises).then(finalProjectsList => {
-     // return finalProjectsList;
-   // });
-//finalProjectsList.concat(projectsList);
 
 // Function used to revoke the plugin token
 function revokeToken(name) {
