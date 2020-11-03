@@ -12,28 +12,31 @@ function getSonarVersion() {
 }
 
 //Functions used to get all user projects
+//The maximum number of projects with this API (api/components/search) is 500.
+//Thus, the objective is to display an infinite number of projects
 export function getProjectsList(){
-  let elementByPage = 500;
+  const elementByPage = 500;
   let allPromises = [];
-  let finalProjectsList = [];
+  //Get the number of projects and compute the number of pages required
   return getJSON("/api/components/search", {"qualifiers": "TRK", "ps":elementByPage}).then(response => {
-    let nbProjects = response.paging.total;
+    const nbProjects = response.paging.total;
     let nbPages = Math.ceil(nbProjects/elementByPage);
+    //Fill an array of promises
     for(let i = 1; i <= nbPages; i++){
       allPromises.push(getJSON("/api/components/search", {"qualifiers": "TRK", "ps":elementByPage, "p":i}).then(response => {
         return response.components;
       }));
     }
-    return Promise.all(allPromises).then((results) => {
+    //Wait until all promises are done
+    return Promise.all(allPromises);
+  }).then((results) => {
+    //Concatenate an array : x * 500 (x = number of pages)
       let projects = [];
       results.forEach((result) => {
         projects = projects.concat(result);
-        console.log(projects);
       })
-      finalProjectsList = projects;
-      return finalProjectsList;
+      return projects;
     });
-  });
 }
 
 // Function used to revoke the plugin token
