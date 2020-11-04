@@ -77,6 +77,10 @@ public abstract class AbstractDataProvider {
      */
     protected static final String GET_ISSUES_REQUEST = "GET_ISSUES_REQUEST";
     /**
+     * Name of the request for getting hotspots
+     */
+    protected static final String GET_HOTSPOTS_REQUEST = "GET_HOTSPOTS_REQUEST";
+    /**
      *  Name of the request for getting facets
      */
     protected static final String GET_FACETS_REQUEST = "GET_FACETS_REQUEST";
@@ -126,6 +130,10 @@ public abstract class AbstractDataProvider {
      * Field to search in json to get issues
      */
     protected static final String ISSUES = "issues";
+    /**
+     * Field to search in json to get hotspots
+     */
+    protected static final String HOTSPOTS = "hotspots";
     /**
      * Field to search in json to get the paging section
      */

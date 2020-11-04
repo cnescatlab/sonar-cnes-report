@@ -50,6 +50,8 @@ public final class StringManager {
     public static final String SONAR_TOKEN = "sonar.token";
     /** Logged message when there are too much issues to export. */
     public static final String ISSUES_OVERFLOW_MSG = "log.overflow.msg";
+    /** Logged message when there are to much hotspots to export. */
+    public static final String HOTSPOTS_OVERFLOW_MSG = "log.overflow.msg";
     /** Pattern to format the date. */
     public static final String DATE_PATTERN = "yyyy-MM-dd";
     /** Default path to the target diretory for report files. */
