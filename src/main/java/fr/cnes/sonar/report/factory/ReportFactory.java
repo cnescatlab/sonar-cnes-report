@@ -60,6 +60,8 @@ public class ReportFactory {
     private static final String DATE = "DATE";
     /** Placeholder for the name of the project. */
     private static final String NAME = "NAME";
+    /** Property for fileseparators replace character. */
+    private static final String FILESEPARATORS_REPLACE_CHAR = "report.fileseparators.replace";
     /** Logger of this class. */
     private static final Logger LOGGER = Logger.getLogger(ReportFactory.class.getName());
 
@@ -208,7 +210,10 @@ public class ReportFactory {
      * @return file seperator (/ or \) escaped project name.
      */
     private static CharSequence escapeProjectName(String projectName) {
-        Escaper escaper = Escapers.builder().addEscape(File.separatorChar, "_").build();
+        Escaper escaper = Escapers.builder().addEscape(
+            File.separatorChar, 
+            StringManager.getProperty(FILESEPARATORS_REPLACE_CHAR)
+        ).build();
         return escaper.escape(projectName);
     }
 
