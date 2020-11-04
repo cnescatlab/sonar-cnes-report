@@ -42,7 +42,7 @@ public class XlsXExporter implements IExporter {
     /**
      * Name for the table containing all raw resources
      */
-    private static final String ALL_TABLE_NAME = "all";
+    private static final String ALL_TABLE_NAME = "all";  
     /**
      * Name for the tab containing metrics
      */
@@ -56,7 +56,11 @@ public class XlsXExporter implements IExporter {
      */
     private static final String ALL_HOTSPOTS_SHEET_NAME = "Hotspots";
     /**
+<<<<<<< HEAD
      * Name for the table containing all raw ressources
+=======
+     * Name for the table containing all raw resources
+>>>>>>> fork/fix133-security-hotspots
      */
     private static final String HOTSPOT_TABLE_NAME = "hotspots";
 

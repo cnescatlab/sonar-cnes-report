@@ -347,11 +347,11 @@ public class Report {
         return new ArrayList<>(rawIssues);
     }
 
-    /**
-     * Get a list of map representig hotspots
-     * @return return the raw hotspots' list
+        /**
+     * Get a list of map representing issues
+     * @return return the raw issues' list
      */
-    public List<Map> getRawHotspots(){
+    public List<Map> getRawHotspots() {
         return new ArrayList<>(rawHotspots);
     }
 
