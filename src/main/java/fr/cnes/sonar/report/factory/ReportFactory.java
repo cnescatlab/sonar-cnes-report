@@ -99,7 +99,7 @@ public class ReportFactory {
         // Export issues and metrics in report if requested.
         if(configuration.isEnableReport()) {
             // prepare docx report's filename
-            final String docXFilename = formatFilename(REPORT_FILENAME, configuration.getOutput(), model.getProjectName()); 
+            final String docXFilename = formatFilename(REPORT_FILENAME, configuration.getOutput(), model.getProjectName());
             // export the full docx report
             docXExporter.export(model, docXFilename, configuration.getTemplateReport());
         }
