@@ -4,6 +4,7 @@
  */
 
 import React from "react";
+
 import { DeferredSpinner } from "sonar-components";
 import { getProjectsList, initiatePluginToken, getBranches } from "../common/api";
 
@@ -77,7 +78,7 @@ export default class CnesReportApp extends React.PureComponent {
                     <h1 class="maintenance-title text-center">Generate a report</h1>
                     <form id="generation-form" action="../../api/cnesreport/report" method="get">
                         <div class='forminput'>
-                            <label for="key" id="keyLabel" class="login-label"><strong>Project key</strong></label>
+                            <label for="key" id="keyLabel" class="login-label"><strong>Project</strong></label>
                             <select id="key"
                                 name="key"
                                 class="login-input"

@@ -4,7 +4,7 @@
 
 import { getJSON, postJSON, post } from "sonar-request";
 
-//Function used to get current SonarQube Server version
+// Function used to get current SonarQube Server version
 function getSonarVersion() {
   return getJSON("/api/system/status").then(response => {
     return parseFloat(response.version);
@@ -35,8 +35,23 @@ export function getProjectsList(){
       results.forEach((result) => {
         projects = projects.concat(result);
       })
+      //Sort the projects list for a user-friendlier display
+      //The name is displayed in the user interface, so we sort the projects by name
+      projects.sort(GetSortOrder("name"));
       return projects;
     });
+}
+
+//Comparator function in order to compare each specific key of the json array
+function GetSortOrder(key){
+  return function(a, b){
+    if(a[key] > b[key]){
+      return 1;
+    } else if (a[key] < b[key]){
+      return -1;
+    }
+    return 0;
+  }
 }
 
 // Function used to revoke the plugin token
