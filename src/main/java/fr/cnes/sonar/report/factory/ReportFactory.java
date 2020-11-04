@@ -100,7 +100,7 @@ public class ReportFactory {
         if(configuration.isEnableReport()) {
             // prepare docx report's filename
             final String docXFilename = formatFilename(REPORT_FILENAME, configuration.getOutput(), model.getProjectName()); 
-            // // export the full docx report
+            // export the full docx report
             docXExporter.export(model, docXFilename, configuration.getTemplateReport());
         }
 
