@@ -96,7 +96,7 @@ public class Report {
         this.facets = new ArrayList<>();
         this.measures = new ArrayList<>();
         this.rawIssues = new ArrayList<>();
-        this.rawHotspots = new ArrayList<>();
+       // this.rawHotspots = new ArrayList<>();
         this.components = new ArrayList<>();
         this.project = new Project(StringManager.EMPTY, StringManager.EMPTY,
                 StringManager.EMPTY,StringManager.EMPTY,StringManager.EMPTY, StringManager.EMPTY);
@@ -351,9 +351,9 @@ public class Report {
      * Get a list of map representing issues
      * @return return the raw issues' list
      */
-    public List<Map> getRawHotspots() {
-        return new ArrayList<>(rawHotspots);
-    }
+    //public List<Map> getRawHotspots() {
+      //  return new ArrayList<>(rawHotspots);
+   // }
 
     /**
      * Set the list of raw issues
@@ -367,9 +367,9 @@ public class Report {
      * Set the list of raw hotspots
      * @param pRawHotspots list of map
      */
-    public void setRawHotspots(List<Map> pRawHotspots){
-        this.rawHotspots = new ArrayList<>(pRawHotspots);
-    }
+    //public void setRawHotspots(List<Map> pRawHotspots){
+      //  this.rawHotspots = new ArrayList<>(pRawHotspots);
+   // }
 
     /**
      * Get the version of the project given by the user

@@ -78,7 +78,7 @@ public class ReportModelFactory {
      */
     public Report create() throws BadSonarQubeRequestException, UnknownQualityGateException, SonarQubeException {
 
-        final String[] numbers = this.server.getVersion().split("\\.");
+       // final String[] numbers = this.server.getVersion().split("\\.");
         
         // the new report to return
         final Report report = new Report();
@@ -87,7 +87,7 @@ public class ReportModelFactory {
         final ProviderFactory providerFactory = new ProviderFactory(this.server, this.token, this.project,
                 this.branch);
         final IssuesProvider issuesProvider = providerFactory.create(IssuesProvider.class);
-        final HotspotsProvider hotspotsProvider = providerFactory.create(HotspotsProvider.class);
+        //final HotspotsProvider hotspotsProvider = providerFactory.create(HotspotsProvider.class);
         final MeasureProvider measureProvider = providerFactory.create(MeasureProvider.class);
         final ProjectProvider projectProvider = providerFactory.create(ProjectProvider.class);
         final QualityProfileProvider qualityProfileProvider = providerFactory.create(QualityProfileProvider.class);
@@ -118,9 +118,9 @@ public class ReportModelFactory {
         report.setUnconfirmed(issuesProvider.getUnconfirmedIssues());
         report.setRawIssues(issuesProvider.getRawIssues());
         //
-        if(numbers.length >= 2 && Integer.parseInt(numbers[0]) > 7){
-            report.setRawHotspots(hotspotsProvider.getRawHotspots());
-        }
+        //if(numbers.length >= 2 && Integer.parseInt(numbers[0]) > 7){
+         //   report.setRawHotspots(hotspotsProvider.getRawHotspots());
+        //}
         // facets's setting
         report.setFacets(issuesProvider.getFacets());
         // quality profile's setting

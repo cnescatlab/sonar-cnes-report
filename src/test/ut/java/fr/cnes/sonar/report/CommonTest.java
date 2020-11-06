@@ -159,7 +159,7 @@ public abstract class CommonTest {
         hotspot2.put("someNumber", 2.0);
         rawHotspots.add(hotspot2);
 
-        report.setRawHotspots(rawHotspots);
+        //report.setRawHotspots(rawHotspots);
 
         final List<Facet> facets = new ArrayList<>();
         final Facet rules = new Facet();

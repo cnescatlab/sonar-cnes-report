@@ -20,6 +20,7 @@ package fr.cnes.sonar.report.providers;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.SonarQubeServer;
@@ -335,7 +336,7 @@ public abstract class AbstractDataProvider {
 
         return jsonObject;
     }
-    public JsonObject requestHotspots(final String request)
+   /* public JsonObject requestHotspots(final String request)
             throws BadSonarQubeRequestException, SonarQubeException {
         // do the request to the server and return a string answer
         final String raw = stringRequest(request);
@@ -367,7 +368,7 @@ public abstract class AbstractDataProvider {
         isErrorFree(jsonObject);
 
         return jsonObject;
-    }
+    }*/
     
 
     /**

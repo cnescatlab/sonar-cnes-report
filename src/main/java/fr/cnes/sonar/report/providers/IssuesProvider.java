@@ -18,6 +18,8 @@
 package fr.cnes.sonar.report.providers;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Facet;
@@ -49,6 +51,14 @@ public class IssuesProvider extends AbstractDataProvider {
      * Value of the field to get unconfirmed issues
      */
     private static final String UNCONFIRMED = "true";
+    /**
+     * Parameter "issues" of the JSON response
+     */
+    private static final String ISSUES = "issues";
+    /**
+     * Parameter "severity" of the JSON response
+     */
+    private static final String SEVERITY = "severity";
 
     /**
      * Complete constructor.
@@ -218,6 +228,19 @@ public class IssuesProvider extends AbstractDataProvider {
                     getServer().getUrl(), getProjectKey(), maxPerPage, page, CONFIRMED, getBranch());
             // perform the request to the server
             final JsonObject jo = request(request);
+
+            // Add the severity "CRITICAL" for the security hotspots
+            // Because the issue type "hotspot security" do not have any severity on the json file
+            JsonArray ja = jo.getAsJsonArray(ISSUES);
+            for(int i = 0; i < ja.size(); i++){
+                JsonElement je = ja.get(i);
+                JsonObject jobj = je.getAsJsonObject();
+                //If there is no severity, it's a security hotspot issue
+                if(!jobj.has(SEVERITY)){
+                    // Add the proper property into the JSON file
+                    jobj.addProperty(SEVERITY, StringManager.HOTSPOT_SEVERITY);
+                }
+            }
             // transform json to Issue objects
             final Map [] tmp = (getGson().fromJson(jo.get(ISSUES), Map[].class));
             // add them to the final result

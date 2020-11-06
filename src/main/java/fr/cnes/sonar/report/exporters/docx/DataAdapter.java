@@ -247,7 +247,7 @@ public final class DataAdapter {
     /**
      * List of possible issue types
      */
-    private static final String[] ISSUE_TYPES = {"VULNERABILITY", "BUG", "CODE_SMELL", "SECURITY_HOTSPOT"};
+    private static final String[] ISSUE_TYPES = {"VULNERABILITY", "BUG", "CODE_SMELL"};
     /**
      * List of possible issue severities
      */
@@ -293,10 +293,16 @@ public final class DataAdapter {
         final String[] types = ISSUE_TYPES;
         final String[] severities = ISSUE_SEVERITIES;
 
+        // accumulator for the number of security hotspots
+        long nbHotspots = 0;
+                        
         for(String type : types) {
             for (String severity : severities) {
                 // accumulator for the number of occurrences
                 long nb = 0;
+                //List of items for each line of the table
+                final List<String> item = new ArrayList<>();
+
                 // we sum all issues with a type and a severity
                 for(Issue issue : report.getIssues()) {
                     if(issue.getType().equals(type) && issue.getSeverity().equals(severity)) {
@@ -304,7 +310,6 @@ public final class DataAdapter {
                     }
                 }
                 // we add it to the list
-                final List<String> item = new ArrayList<>();
                 item.add(type);
                 item.add(severity);
                 item.add(String.valueOf(nb));
@@ -312,6 +317,18 @@ public final class DataAdapter {
                 results.add(item);
             }
         }
+        //List of hotspots
+        final List<String> hotspotItem = new ArrayList<>();
+        for(Issue issue : report.getIssues()){
+            if(issue.getType().equals(StringManager.HOTSPOT_TYPE)){
+                nbHotspots++;
+            }
+        }
+        hotspotItem.add(StringManager.HOTSPOT_TYPE);
+        hotspotItem.add(StringManager.HOTSPOT_SEVERITY);
+        hotspotItem.add(String.valueOf(nbHotspots));
+        // add the whole line to the results
+        results.add(hotspotItem);
 
         return results;
     }

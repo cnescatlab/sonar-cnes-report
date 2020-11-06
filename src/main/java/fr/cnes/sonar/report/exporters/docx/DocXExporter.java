@@ -19,7 +19,10 @@ package fr.cnes.sonar.report.exporters.docx;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exporters.IExporter;
+import fr.cnes.sonar.report.model.Facet;
+import fr.cnes.sonar.report.model.Issue;
 import fr.cnes.sonar.report.model.Report;
+import fr.cnes.sonar.report.model.Value;
 import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
@@ -57,6 +60,10 @@ public class DocXExporter implements IExporter {
      * Name of the property giving the path header's number
      */
     private static final String HEADER_NUMBER = "header.number";
+    /**
+     * Name of the property giving the number of severities for each severity
+     */
+    private static final String SEVERITIES = "severities";
     /**
      * Name of the columns in issues table
      */
@@ -115,6 +122,27 @@ public class DocXExporter implements IExporter {
             XWPFDocument document = new XWPFDocument(opcPackage)
         ) {
 
+            // Search the number of security hotspots
+            List<Issue> allIssues = report.getIssues();
+            int counter = 0;
+            for(Issue issue : allIssues){
+                if (issue.getType().equals(StringManager.HOTSPOT_TYPE)){
+                    counter++;
+                }
+            }
+            // Put this number in the corresponding facet "severities"
+            report.setIssues(allIssues);
+            List<Facet> facets = report.getFacets();
+            for(Facet facet : facets){
+                if(facet.getProperty().equals(SEVERITIES)){
+                    List<Value> values = facet.getValues();
+                    for(Value value : values){
+                        if(value.getVal().equals(StringManager.HOTSPOT_SEVERITY)){
+                            value.setCount(value.getCount() + counter);
+                        }
+                    }
+                }
+            }
             // Fill charts
             DocXTools.fillCharts(document, report.getFacets());
 

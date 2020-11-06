@@ -1,6 +1,8 @@
 package fr.cnes.sonar.report.exporters.xlsx;
 
 import fr.cnes.sonar.report.model.Issue;
+import fr.cnes.sonar.report.utils.StringManager;
+
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellReference;
@@ -236,7 +238,11 @@ public final class XlsXTools {
                 row.createCell(RULE_ID_INDEX).setCellValue(issue.getRule());
                 row.createCell(MESSAGE_INDEX).setCellValue(issue.getMessage());
                 row.createCell(ISSUE_TYPE_INDEX).setCellValue(issue.getType());
-                row.createCell(ISSUE_SEVERITY_INDEX).setCellValue(issue.getSeverity());
+                if(issue.getType().equals(StringManager.HOTSPOT_TYPE)){
+                    row.createCell(ISSUE_SEVERITY_INDEX).setCellValue(StringManager.HOTSPOT_SEVERITY);
+                }else{
+                    row.createCell(ISSUE_SEVERITY_INDEX).setCellValue(issue.getSeverity());
+                }
                 row.createCell(ISSUE_LANGUAGE_INDEX).setCellValue(issue.getLanguage());
                 row.createCell(ISSUE_FILE_INDEX).setCellValue(issue.getComponent());
                 row.createCell(ISSUE_LINE_INDEX).setCellValue(issue.getLine());
