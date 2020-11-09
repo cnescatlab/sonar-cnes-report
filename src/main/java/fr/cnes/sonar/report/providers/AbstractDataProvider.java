@@ -336,40 +336,6 @@ public abstract class AbstractDataProvider {
 
         return jsonObject;
     }
-   /* public JsonObject requestHotspots(final String request)
-            throws BadSonarQubeRequestException, SonarQubeException {
-        // do the request to the server and return a string answer
-        final String raw = stringRequest(request);
-
-        // prepare json
-        final JsonElement json;
-
-        // verify that the server response was correct
-        try {
-            json = getGson().fromJson(raw, JsonElement.class);
-        } catch (Exception e) {
-            // log exception's message
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            throw new BadSonarQubeRequestException("Server answered: " + raw +
-                    StringManager.SPACE + e.getMessage());
-        }
-
-        // get the json object version
-        final JsonObject jsonObject;
-
-        try {
-            jsonObject = json.getAsJsonObject();
-        } catch (NullPointerException e) {
-            throw new BadSonarQubeRequestException("Empty server response, reason might be : " +
-                    "server certificate not in JRE/JDK truststore, ...");
-        }
-
-        // verify if an error occurred
-        isErrorFree(jsonObject);
-
-        return jsonObject;
-    }*/
-    
 
     /**
      * Get the raw string response

@@ -145,22 +145,6 @@ public abstract class CommonTest {
 
         report.setRawIssues(rawIssues);
 
-        List<Map> rawHotspots = new ArrayList<>();
-        Map hotspot1 = new HashMap();
-        hotspot1.put("Comments", new ArrayList<String>());
-        hotspot1.put("ToReview", true);
-        hotspot1.put("someNumber", 1.0);
-        rawHotspots.add(hotspot1);
-
-        Map hotspot2 = new HashMap();
-        list.add("Element 1");
-        list.add("Element 2");
-        hotspot2.put("Comments", list);
-        hotspot2.put("someNumber", 2.0);
-        rawHotspots.add(hotspot2);
-
-        //report.setRawHotspots(rawHotspots);
-
         final List<Facet> facets = new ArrayList<>();
         final Facet rules = new Facet();
         rules.setProperty("rules");

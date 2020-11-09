@@ -51,14 +51,6 @@ public class XlsXExporter implements IExporter {
      * Name for the table containing metrics
      */
     private static final String METRICS_TABLE_NAME = "metrics";
-    /**
-     * Name for the sheet containing all hotspots
-     */
-    private static final String ALL_HOTSPOTS_SHEET_NAME = "Hotspots";
-    /**
-     * Name for the table containing all raw ressources
-     */
-    private static final String HOTSPOT_TABLE_NAME = "hotspots";
 
     /**
      * Overridden export for XlsX
