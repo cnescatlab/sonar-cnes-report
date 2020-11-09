@@ -62,10 +62,6 @@ public class Report {
      */
     private List<Map> rawIssues;
     /**
-     * List of map reprensenting hotspots
-     */
-    private List<Map> rawHotspots;
-    /**
      * Data about the project
      */
     private Project project;
