@@ -77,7 +77,6 @@ public class ReportModelFactory {
      * @throws SonarQubeException When an error occurred from SonarQube server.
      */
     public Report create() throws BadSonarQubeRequestException, UnknownQualityGateException, SonarQubeException {
-        
         // the new report to return
         final Report report = new Report();
 
