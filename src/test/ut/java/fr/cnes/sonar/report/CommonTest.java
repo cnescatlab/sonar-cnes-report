@@ -20,7 +20,6 @@ package fr.cnes.sonar.report;
 import fr.cnes.sonar.report.model.*;
 import fr.cnes.sonar.report.utils.ReportConfiguration;
 import fr.cnes.sonar.report.utils.StringManager;
-
 import org.junit.Before;
 
 import java.util.*;
