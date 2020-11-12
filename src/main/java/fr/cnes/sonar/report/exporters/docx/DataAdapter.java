@@ -562,8 +562,8 @@ public final class DataAdapter {
             placeholders.add(MAXCOMPLEXITY_PLACEHOLDER);
             placeholders.add(MINNCLOC_PLACEHOLDER);
             placeholders.add(MAXNCLOC_PLACEHOLDER);
-            placeholders.add(MINCOGNITIVECOMPLEXITY_PLACEHOLDER);
-            placeholders.add(MAXCOGNITIVECOMPLEXITY_PLACEHOLDER);
+            placeholders.add(MINDUPLICATION_PLACEHOLDER);
+            placeholders.add(MAXDUPLICATION_PLACEHOLDER);
             placeholders.add(MINCOGNITIVECOMPLEXITY_PLACEHOLDER);
             placeholders.add(MAXCOGNITIVECOMPLEXITY_PLACEHOLDER);
             for(String placeholder: placeholders){

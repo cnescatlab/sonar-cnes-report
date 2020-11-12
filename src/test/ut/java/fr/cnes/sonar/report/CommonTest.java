@@ -19,6 +19,8 @@ package fr.cnes.sonar.report;
 
 import fr.cnes.sonar.report.model.*;
 import fr.cnes.sonar.report.utils.ReportConfiguration;
+import fr.cnes.sonar.report.utils.StringManager;
+
 import org.junit.Before;
 
 import java.util.*;
@@ -88,6 +90,7 @@ public abstract class CommonTest {
         final Issue i1 = new Issue();
         final Issue i2 = new Issue();
         final Issue i3 = new Issue();
+        final Issue i4 = new Issue();
         i1.setComponent("a");
         i1.setKey("z");
         i1.setLine("15");
@@ -114,6 +117,7 @@ public abstract class CommonTest {
         i2.setStatus("OPEN");
         i2.setType("SECURITY");
         i2.setRule("abcd:dcba");
+        i4.setType(StringManager.HOTSPOT_TYPE);
         // Adding multiple time to test comparator (DataAdapter.RuleComparator)
         Issue issue;
         for(int i=1;i<10;i++){
@@ -126,6 +130,7 @@ public abstract class CommonTest {
         issues.add(i1);
         issues.add(i3);
         issues.add(i2);
+        issues.add(i4);
         report.setIssues(issues);
 
         List<Map> rawIssues = new ArrayList<>();
@@ -147,11 +152,17 @@ public abstract class CommonTest {
 
         final List<Facet> facets = new ArrayList<>();
         final Facet rules = new Facet();
+        final Facet severities = new Facet();
         rules.setProperty("rules");
+        severities.setProperty("severities");
         final List<Value> values = new ArrayList<>();
         values.add(new Value("squid:S1258", 3));
         rules.setValues(values);
+        final List<Value> valuesSeverity = new ArrayList<>();
+        valuesSeverity.add(new Value("CRITICAL", 0));
+        severities.setValues(valuesSeverity);
         facets.add(rules);
+        facets.add(severities);
         report.setFacets(facets);
 
         final ProfileData profileData = new ProfileData();
