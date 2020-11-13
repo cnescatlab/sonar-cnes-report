@@ -208,6 +208,11 @@ public final class RequestManager {
         
     }
     
+    /**
+     * Transform nonProxyHosts from its native format to the java regex one
+     * @param disjunct The nonProxyHosts env variable in native format
+     * @return The nonProxyHosts env variable in java regex format
+     */
     private String disjunctToRegex(String disjunct) {
         String regex;
         if (disjunct.startsWith("*") && disjunct.endsWith("*")) {
