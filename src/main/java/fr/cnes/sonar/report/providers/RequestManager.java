@@ -185,27 +185,31 @@ public final class RequestManager {
      * @throws SonarQubeException When cannot parse url to URI
      */
     private boolean avoidProxy(String nonProxyHosts, String url) throws SonarQubeException {
-        
-    	if(url == null || url.isEmpty())
-    		return false;
 
-    	String strUriHost;
-    	
-   		try {
-			strUriHost = new URI(url).getHost();
-		} catch (URISyntaxException e) {
-            throw new SonarQubeException("Impossible parse url to URI.", e);
-		}
-    	
-        String regex = Sets.newHashSet(nonProxyHosts.split("\\|"))
-        	.stream()
-        	.filter(nps -> !nps.isEmpty())
-        	.map(this::disjunctToRegex).collect(Collectors.joining("|"));
-    	
-        Pattern pattern = Pattern.compile(regex);
+        boolean shouldAvoid;
         
-        return pattern != null && pattern.matcher(strUriHost).matches();
-        
+    	if(url == null || url.isEmpty()) {
+            shouldAvoid = false;
+        } else {
+            String strUriHost;
+    	
+            try {
+                strUriHost = new URI(url).getHost();
+            } catch (URISyntaxException e) {
+                throw new SonarQubeException("Impossible parse url to URI.", e);
+            }
+            
+            String regex = Sets.newHashSet(nonProxyHosts.split("\\|"))
+                .stream()
+                .filter(nps -> !nps.isEmpty())
+                .map(this::disjunctToRegex).collect(Collectors.joining("|"));
+            
+            Pattern pattern = Pattern.compile(regex);
+            
+            shouldAvoid = pattern != null && pattern.matcher(strUriHost).matches();
+        }
+
+    	return shouldAvoid;        
     }
     
     /**
