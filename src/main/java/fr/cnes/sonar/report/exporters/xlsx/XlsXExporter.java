@@ -79,7 +79,7 @@ public class XlsXExporter implements IExporter {
 
         // Check if template file exists
         if(!file.exists() && !filename.isEmpty()) {
-            LOGGER.log(Level.WARNING, "Unable to find provided XLSX template file (using default one instead) : " + file.getAbsolutePath());
+            LOGGER.log(Level.WARNING, () -> "Unable to find provided XLSX template file (using default one instead) : " + file.getAbsolutePath());
         }
 
         // open the template

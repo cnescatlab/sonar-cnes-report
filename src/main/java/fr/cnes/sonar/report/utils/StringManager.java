@@ -159,7 +159,7 @@ public final class StringManager {
         try {
             changeLocale(locale[0], locale[1]);
         } catch (ArrayIndexOutOfBoundsException e) {
-            LOGGER.log(Level.SEVERE, "Unable to change the locale due to malformed command line parameter : " + language, e);
+            LOGGER.log(Level.SEVERE, e, () -> "Unable to change the locale due to malformed command line parameter : " + language);
         }
     }
 
