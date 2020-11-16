@@ -93,7 +93,7 @@ public class DataAdapterTest extends CommonTest{
         expected.put("XX-MAXCOMPLEXITY-XX", "unknown");
         expected.put("XX-SECURITY-XX", "C");
         expected.put("XX-MINCOGNITIVECOMPLEXITY-XX", "unknown");
-        expected.put("XX-DATE-XX", new Date().toString());
+        expected.put("XX-DATE-XX", new Date().toString().substring(0,16));
         expected.put("XX-RELIABILITY-XX", "A");
         expected.put("XX-COVERAGE-XX", "1.0");
         expected.put("XX-VERSION-XX", "Version");

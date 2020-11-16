@@ -77,7 +77,7 @@ public abstract class CommonTest {
         });
 
         report.setProjectName("CNES Report");
-        report.setProjectDate(new Date().toString());
+        report.setProjectDate(new Date().toString().substring(0,16));
         report.setProjectAuthor("Lequal");
 
         sonarQubeServer = new SonarQubeServer();
