@@ -118,10 +118,11 @@ public class DocXExporter implements IExporter {
 
             // Take into account the severity "critical" of the security hotspots
             List<Facet> facets = report.getFacets();
-            DataAdapter.editFacetForHotspot(facets, report);
+            // Create a new facet just for this chart
+            List<Facet> newFacets = DataAdapter.editFacetForHotspot(facets, report);
 
             // Fill charts
-            DocXTools.fillCharts(document, report.getFacets());
+            DocXTools.fillCharts(document, newFacets);
 
             // Add issues
             final List<List<String>> issues = DataAdapter.getIssues(report);

@@ -33,9 +33,10 @@ import java.util.Map;
 
 public class DataAdapterTest extends CommonTest{
     
-    private int nbFacet;
-    private int nbValue;
+    private int rankFacet;
+    private int rankValue;
     private List<Facet> facets;
+    private List<Facet> newFacets;
 
     /**
      * Explore the facets and values
@@ -45,11 +46,11 @@ public class DataAdapterTest extends CommonTest{
         this.facets = report.getFacets();
         for(int i = 0; i < facets.size(); i ++){
             if(facets.get(i).getProperty().equals("severities")){
-                this.nbFacet = i;
+                this.rankFacet = i;
                 List<Value> values = facets.get(i).getValues();
                 for(int j = 0; j < values.size(); j ++){
                     if(values.get(j).getVal().equals(StringManager.HOTSPOT_SEVERITY)){
-                        this.nbValue = j;
+                        this.rankValue = j;
                         return;
                     }
                 }
@@ -62,8 +63,8 @@ public class DataAdapterTest extends CommonTest{
      */
     @Test
     public void editFacetForHotspotTest(){
-        DataAdapter.editFacetForHotspot(facets, report);
-        Assert.assertEquals(1, this.facets.get(this.nbFacet).getValues().get(this.nbValue).getCount());
+        this.newFacets = DataAdapter.editFacetForHotspot(facets, report);
+        Assert.assertEquals(1, this.newFacets.get(this.rankFacet).getValues().get(this.rankValue).getCount());
     }
 
     /**
