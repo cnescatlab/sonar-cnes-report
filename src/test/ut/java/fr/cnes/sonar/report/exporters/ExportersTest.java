@@ -15,11 +15,11 @@
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.cnes.sonar.report;
+package fr.cnes.sonar.report.exporters;
 
 import fr.cnes.sonar.plugin.tools.FileTools;
+import fr.cnes.sonar.report.CommonTest;
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
-import fr.cnes.sonar.report.exporters.*;
 import fr.cnes.sonar.report.exporters.docx.DocXExporter;
 import fr.cnes.sonar.report.exporters.xlsx.XlsXExporter;
 import org.junit.Assert;

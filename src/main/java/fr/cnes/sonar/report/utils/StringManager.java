@@ -58,6 +58,10 @@ public final class StringManager {
     public static final String DEFAULT_LANGUAGE = "report.locale";
     /** Default name for the author. */
     public static final String DEFAULT_AUTHOR = "report.author";
+    /** The only severity decided by us for the hotspot security */
+    public static final String HOTSPOT_SEVERITY = "CRITICAL";
+     /** Security hotspot type (different from issue type) */
+    public static final String HOTSPOT_TYPE = "SECURITY_HOTSPOT";
 
     /** Logger for StringManager. */
     private static final Logger LOGGER = Logger.getLogger(StringManager.class.getCanonicalName());
@@ -155,7 +159,7 @@ public final class StringManager {
         try {
             changeLocale(locale[0], locale[1]);
         } catch (ArrayIndexOutOfBoundsException e) {
-            LOGGER.log(Level.SEVERE, "Unable to change the locale due to malformed command line parameter : " + language, e);
+            LOGGER.log(Level.SEVERE, e, () -> "Unable to change the locale due to malformed command line parameter : " + language);
         }
     }
 
