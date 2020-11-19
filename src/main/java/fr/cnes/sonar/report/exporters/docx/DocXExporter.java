@@ -19,7 +19,6 @@ package fr.cnes.sonar.report.exporters.docx;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exporters.IExporter;
-import fr.cnes.sonar.report.model.Facet;
 import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
@@ -115,11 +114,6 @@ public class DocXExporter implements IExporter {
             OPCPackage opcPackage = OPCPackage.open(fileInputStream);
             XWPFDocument document = new XWPFDocument(opcPackage)
         ) {
-
-            // Take into account the severity "critical" of the security hotspots
-            //List<Facet> facets = report.getFacets();
-            // Create a new facet just for this chart
-            //List<Facet> newFacets = DataAdapter.editFacetForHotspot(facets, report);
 
             // Fill charts
             DocXTools.fillCharts(document, report.getFacets());

@@ -274,10 +274,6 @@ public final class DataAdapter {
      * Just an empty string
      */
     private static final String EMPTY = "";
-    /**
-     * Name of the property giving the number of severities for each severity
-     */
-    private static final String SEVERITIES = "severities";
 
     /**
      * Private constructor to forbid instantiation of this class
@@ -409,40 +405,6 @@ public final class DataAdapter {
         }
 
         return items;
-    }
-
-    /**
-     * Change the facets depending on security hotspots
-     * @param facets list of facets from which to extract values
-     * @param report report from which to export ressources
-     * @return returns a new list of facets which take into account the security hotspots criticality
-     */
-    public static List<Facet> editFacetForHotspot(List<Facet> facets, Report report){
-        // Search the number of security hotspots
-        List<Issue> allIssues = report.getIssues();
-        int counter = 0;
-        for(Issue issue : allIssues){
-            if (issue.getType().equals(StringManager.HOTSPOT_TYPE)){
-                counter++;
-            }
-        }
-
-        //Create a new facet to return without changing the actual model
-        List<Facet> newFacets = facets;
-
-        // Put this number in the corresponding value "severities"
-        report.setIssues(allIssues);
-        for(Facet facet : newFacets){
-            if(facet.getProperty().equals(SEVERITIES)){
-                List<Value> values = facet.getValues();
-                for(Value value : values){
-                    if(value.getVal().equals(StringManager.HOTSPOT_SEVERITY)){
-                        value.setCount(value.getCount() + counter);
-                    }
-                }
-            }
-        }
-        return newFacets;
     }
 
     /**

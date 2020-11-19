@@ -18,54 +18,15 @@
 package fr.cnes.sonar.report.exporters.docx;
 
 import fr.cnes.sonar.report.CommonTest;
-import fr.cnes.sonar.report.model.Facet;
-import fr.cnes.sonar.report.model.Value;
-import fr.cnes.sonar.report.utils.StringManager;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class DataAdapterTest extends CommonTest{
-    
-    private int rankFacet;
-    private int rankValue;
-    private List<Facet> facets;
-    private List<Facet> newFacets;
-
-    /**
-     * Explore the facets and values
-     */
-    @Before
-    public void setUp(){
-        this.facets = report.getFacets();
-        for(int i = 0; i < facets.size(); i ++){
-            if(facets.get(i).getProperty().equals("severities")){
-                this.rankFacet = i;
-                List<Value> values = facets.get(i).getValues();
-                for(int j = 0; j < values.size(); j ++){
-                    if(values.get(j).getVal().equals(StringManager.HOTSPOT_SEVERITY)){
-                        this.rankValue = j;
-                        return;
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Assert that security hotspots are well considered for what they are
-     */
-    @Test
-    public void editFacetForHotspotTest(){
-        this.newFacets = DataAdapter.editFacetForHotspot(facets, report);
-        Assert.assertEquals(1, this.newFacets.get(this.rankFacet).getValues().get(this.rankValue).getCount());
-    }
 
     /**
      * Assert that the method "loadPlaceholdersMap" fills correctly the placeholders

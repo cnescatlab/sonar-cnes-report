@@ -114,7 +114,7 @@ public abstract class CommonTest {
         i2.setProject("genius");
         i2.setSeverity(MAJOR);
         i2.setStatus("OPEN");
-        i2.setType("SECURITY");
+        i2.setType("SECURITY_HOTSPOT");
         i2.setRule("abcd:dcba");
         i4.setType(StringManager.HOTSPOT_TYPE);
         // Adding multiple time to test comparator (DataAdapter.RuleComparator)
@@ -152,16 +152,22 @@ public abstract class CommonTest {
         final List<Facet> facets = new ArrayList<>();
         final Facet rules = new Facet();
         final Facet severities = new Facet();
+        final Facet types = new Facet();
         rules.setProperty("rules");
         severities.setProperty("severities");
+        types.setProperty("types");
         final List<Value> values = new ArrayList<>();
         values.add(new Value("squid:S1258", 3));
         rules.setValues(values);
         final List<Value> valuesSeverity = new ArrayList<>();
         valuesSeverity.add(new Value("CRITICAL", 0));
+        final List<Value> valuesType = new ArrayList<>();
+        valuesType.add(new Value("SECURITY_HOTSPOT", 5));
         severities.setValues(valuesSeverity);
+        types.setValues(valuesType);
         facets.add(rules);
         facets.add(severities);
+        facets.add(types);
         report.setFacets(facets);
 
         final ProfileData profileData = new ProfileData();

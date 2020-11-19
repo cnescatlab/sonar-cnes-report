@@ -1,7 +1,6 @@
 package fr.cnes.sonar.report.exporters.xlsx;
 
 import fr.cnes.sonar.report.model.Issue;
-import fr.cnes.sonar.report.utils.StringManager;
 
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.util.AreaReference;

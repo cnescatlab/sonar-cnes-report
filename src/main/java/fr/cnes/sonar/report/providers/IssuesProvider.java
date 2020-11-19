@@ -18,7 +18,6 @@
 package fr.cnes.sonar.report.providers;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
@@ -72,6 +71,22 @@ public class IssuesProvider extends AbstractDataProvider {
      * Parameter "types" of the JSON response in the facets
      */
     private static final String TYPES = "types";
+    /**
+     * Parameter "values" of the JSON response in the facets
+     */
+    private static final String VALUES = "values";
+    /**
+     * Parameter "count" of the JSON response in the facets
+     */
+    private static final String COUNT = "count";
+    /**
+     * Parameter "property" of the JSON response in the facets
+     */
+    private static final String PROPERTY = "property";
+    /**
+     * Parameter "val" of the JSON response in the facets
+     */
+    private static final String VAL = "val";
 
     /**
      * Complete constructor.
@@ -302,49 +317,84 @@ public class IssuesProvider extends AbstractDataProvider {
      */
     public List<Facet> getFacets() throws BadSonarQubeRequestException, SonarQubeException {
 
-        // Search for the number of security hotspots
-        int nbHotspots = 0;
-        int nbTmp;
-        final String COUNT = "count";
+        // number of security hotspot and temporary number of critical issues
+        int nbHotspots;
         
         // prepare the request
         final String request = String.format(getRequest(GET_FACETS_REQUEST),
                 getServer().getUrl(), getProjectKey(), getBranch());
         // contact the server to request the resources as json
         final JsonObject jo = request(request);
-        JsonArray jaTypes = jo.getAsJsonArray(FACETS);
-        for(int i = 0; i < jaTypes.size(); i++){
-            JsonElement je = jaTypes.get(i);
-            JsonObject jb = je.getAsJsonObject();
-            String property = jb.get("property").getAsString();
-            if(property.equals(TYPES)){
-                JsonArray jaValue = jb.getAsJsonArray("values");
-                for(int j = 0; j < jaValue.size(); j ++){
-                    JsonElement je2 = jaValue.get(i);
-                    String type = je2.getAsJsonObject().get("val").getAsString();
-                    if(type.equals(StringManager.HOTSPOT_TYPE)){
-                        nbHotspots = je2.getAsJsonObject().get(COUNT).getAsInt();
-                    }
-                }
-            } else if (property.equals(SEVERITIES)){
-                JsonArray jaValues = jb.getAsJsonArray("values");
-                for(int k = 0; k < jaValues.size(); k++){
-                    JsonElement je3 = jaValues.get(i);
-                    String severity = je3.getAsJsonObject().get("val").getAsString();
-                    if(severity.equals(StringManager.HOTSPOT_SEVERITY)){
-                        nbTmp = je3.getAsJsonObject().get(COUNT).getAsInt();
-                        int nbCriticalIssues = nbTmp + nbHotspots;
-                        je3.getAsJsonObject().addProperty(COUNT, nbCriticalIssues);
-                    }
-                }
-            }
-
-        }
+        // set this JsonObject into a JsonArray for the facets
+        JsonArray ja = jo.getAsJsonArray(FACETS);
+        // get the number of security hotspots
+        nbHotspots = getNbHotspots(ja);
+        // set the real number of critical issues taking into account security hotspots
+        setNbCriticalIssues(ja, nbHotspots);
 
         // put wanted resources in facets array and list
         final Facet [] tmp = (getGson().fromJson(jo.get(FACETS), Facet[].class));
 
         // return list of facets
         return new ArrayList<>(Arrays.asList(tmp));
+    }
+
+    /**
+     * Get the number of security hotspot type
+     * @param ja JsonArray of a given request
+     * @return return the number of security hotspots
+     */
+    private int getNbHotspots(JsonArray ja){
+        // return 0 if there is no security hotspot
+        int nbHotspots = 0;
+        // search for the facet with the property named "types"
+        for(int i = 0; i < ja.size(); i++){
+            JsonElement je = ja.get(i);
+            JsonObject jo = je.getAsJsonObject();
+            String property = jo.get(PROPERTY).getAsString();
+            if(property.equals(TYPES)){
+                // get the array of the values of this property and search for the val "SECURITY_HOTSPOT"
+                JsonArray jaValues = jo.getAsJsonArray(VALUES);
+                for(int j = 0; j < jaValues.size(); j++){
+                    JsonElement je2 = jaValues.get(j);
+                    String type = je2.getAsJsonObject().get(VAL).getAsString();
+                    if(type.equals(StringManager.HOTSPOT_TYPE)){
+                        // add the number of security hotspots to return this value
+                        nbHotspots += je2.getAsJsonObject().get(COUNT).getAsInt();
+                    }
+                }
+            }
         }
+        return nbHotspots;
+    }
+
+    /**
+     * Set the real number of critical issue taking into account the security hotspots
+     * @param ja JsonArray of a given request
+     * @param nbHotspots the number of security hotspots
+     */
+    private void setNbCriticalIssues(JsonArray ja, int nbHotspots){
+        // search for the facet with the property named "severities"
+        for(int i = 0; i < ja.size(); i++){
+            JsonElement je = ja.get(i);
+            JsonObject jb = je.getAsJsonObject();
+            String property = jb.get(PROPERTY).getAsString();
+            if (property.equals(SEVERITIES)){
+                // get the array of the values of this property and search for the val "CRITICAL"
+                JsonArray jaValues = jb.getAsJsonArray(VALUES);
+                for(int k = 0; k < jaValues.size(); k++){
+                    JsonElement je3 = jaValues.get(k);
+                    String severity = je3.getAsJsonObject().get(VAL).getAsString();
+                    if(severity.equals(StringManager.HOTSPOT_SEVERITY)){
+                        // get the actual number of critical issues
+                        int nbTmp = je3.getAsJsonObject().get(COUNT).getAsInt();
+                        int nbCriticalIssues = nbTmp + nbHotspots;
+                        // add the number of security hotspots to the number of critical issues to have the real number of critical issues
+                        je3.getAsJsonObject().addProperty(COUNT, nbCriticalIssues);
+                    }
+                }
+            }
+
+        }
+    }
 }
