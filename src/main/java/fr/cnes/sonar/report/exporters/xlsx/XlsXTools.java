@@ -238,11 +238,7 @@ public final class XlsXTools {
                 row.createCell(RULE_ID_INDEX).setCellValue(issue.getRule());
                 row.createCell(MESSAGE_INDEX).setCellValue(issue.getMessage());
                 row.createCell(ISSUE_TYPE_INDEX).setCellValue(issue.getType());
-                if(issue.getType().equals(StringManager.HOTSPOT_TYPE)){
-                    row.createCell(ISSUE_SEVERITY_INDEX).setCellValue(StringManager.HOTSPOT_SEVERITY);
-                }else{
-                    row.createCell(ISSUE_SEVERITY_INDEX).setCellValue(issue.getSeverity());
-                }
+                row.createCell(ISSUE_SEVERITY_INDEX).setCellValue(issue.getSeverity());
                 row.createCell(ISSUE_LANGUAGE_INDEX).setCellValue(issue.getLanguage());
                 row.createCell(ISSUE_FILE_INDEX).setCellValue(issue.getComponent());
                 row.createCell(ISSUE_LINE_INDEX).setCellValue(issue.getLine());

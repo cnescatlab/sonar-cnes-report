@@ -18,6 +18,7 @@
 package fr.cnes.sonar.report.providers;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
@@ -56,9 +57,21 @@ public class IssuesProvider extends AbstractDataProvider {
      */
     private static final String ISSUES = "issues";
     /**
-     * Parameter "severity" of the JSON response
+     * Parameter "facets" of the JSON response
+     */
+    private static final String FACETS = "facets";
+    /**
+     * Parameter "severity" of the JSON response in the issues
      */
     private static final String SEVERITY = "severity";
+    /**
+     * Parameter "severities" of the JSON response in the facets
+     */
+    private static final String SEVERITIES = "severities";
+    /**
+     * Parameter "types" of the JSON response in the facets
+     */
+    private static final String TYPES = "types";
 
     /**
      * Complete constructor.
@@ -126,6 +139,20 @@ public class IssuesProvider extends AbstractDataProvider {
                     getServer().getUrl(), getProjectKey(), maxPerPage, page, confirmed, getBranch());
             // perform the request to the server
             final JsonObject jo = request(request);
+
+            // Add the severity "CRITICAL" for the security hotspots
+            // Because the issue type "hotspot security" do not have any severity on the json file
+            JsonArray ja = jo.getAsJsonArray(ISSUES);
+            for(int i = 0; i < ja.size(); i++){
+                JsonElement je = ja.get(i);
+                JsonObject jobj = je.getAsJsonObject();
+                // If there is no severity, it's a security hotspot issue
+                if(!jobj.has(SEVERITY)){
+                    // Add the proper property into the JSON file
+                    jobj.addProperty(SEVERITY, StringManager.HOTSPOT_SEVERITY);
+                }
+            }
+
             // transform json to Issue and Rule objects
             issuesTemp = (getGson().fromJson(jo.get(ISSUES), Issue[].class));
             rulesTemp = (getGson().fromJson(jo.get(RULES), Rule[].class));
@@ -235,7 +262,7 @@ public class IssuesProvider extends AbstractDataProvider {
             for(int i = 0; i < ja.size(); i++){
                 JsonElement je = ja.get(i);
                 JsonObject jobj = je.getAsJsonObject();
-                //If there is no severity, it's a security hotspot issue
+                // If there is no severity, it's a security hotspot issue
                 if(!jobj.has(SEVERITY)){
                     // Add the proper property into the JSON file
                     jobj.addProperty(SEVERITY, StringManager.HOTSPOT_SEVERITY);
@@ -275,15 +302,49 @@ public class IssuesProvider extends AbstractDataProvider {
      */
     public List<Facet> getFacets() throws BadSonarQubeRequestException, SonarQubeException {
 
+        // Search for the number of security hotspots
+        int nbHotspots = 0;
+        int nbTmp;
+        final String COUNT = "count";
+        
         // prepare the request
         final String request = String.format(getRequest(GET_FACETS_REQUEST),
                 getServer().getUrl(), getProjectKey(), getBranch());
         // contact the server to request the resources as json
         final JsonObject jo = request(request);
+        JsonArray jaTypes = jo.getAsJsonArray(FACETS);
+        for(int i = 0; i < jaTypes.size(); i++){
+            JsonElement je = jaTypes.get(i);
+            JsonObject jb = je.getAsJsonObject();
+            String property = jb.get("property").getAsString();
+            if(property.equals(TYPES)){
+                JsonArray jaValue = jb.getAsJsonArray("values");
+                for(int j = 0; j < jaValue.size(); j ++){
+                    JsonElement je2 = jaValue.get(i);
+                    String type = je2.getAsJsonObject().get("val").getAsString();
+                    if(type.equals(StringManager.HOTSPOT_TYPE)){
+                        nbHotspots = je2.getAsJsonObject().get(COUNT).getAsInt();
+                    }
+                }
+            } else if (property.equals(SEVERITIES)){
+                JsonArray jaValues = jb.getAsJsonArray("values");
+                for(int k = 0; k < jaValues.size(); k++){
+                    JsonElement je3 = jaValues.get(i);
+                    String severity = je3.getAsJsonObject().get("val").getAsString();
+                    if(severity.equals(StringManager.HOTSPOT_SEVERITY)){
+                        nbTmp = je3.getAsJsonObject().get(COUNT).getAsInt();
+                        int nbCriticalIssues = nbTmp + nbHotspots;
+                        je3.getAsJsonObject().addProperty(COUNT, nbCriticalIssues);
+                    }
+                }
+            }
+
+        }
+
         // put wanted resources in facets array and list
         final Facet [] tmp = (getGson().fromJson(jo.get(FACETS), Facet[].class));
 
         // return list of facets
         return new ArrayList<>(Arrays.asList(tmp));
-    }
+        }
 }

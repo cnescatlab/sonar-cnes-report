@@ -247,7 +247,7 @@ public final class DataAdapter {
     /**
      * List of possible issue types
      */
-    private static final String[] ISSUE_TYPES = {"VULNERABILITY", "BUG", "CODE_SMELL"};
+    private static final String[] ISSUE_TYPES = {"VULNERABILITY", "BUG", "CODE_SMELL", "SECURITY_HOTSPOT"};
     /**
      * List of possible issue severities
      */
@@ -296,9 +296,6 @@ public final class DataAdapter {
 
         final String[] types = ISSUE_TYPES;
         final String[] severities = ISSUE_SEVERITIES;
-
-        // accumulator for the number of security hotspots
-        long nbHotspots = 0;
                         
         for(String type : types) {
             for (String severity : severities) {
@@ -321,19 +318,6 @@ public final class DataAdapter {
                 results.add(item);
             }
         }
-        //List of hotspots
-        final List<String> hotspotItem = new ArrayList<>();
-        for(Issue issue : report.getIssues()){
-            if(issue.getType().equals(StringManager.HOTSPOT_TYPE)){
-                nbHotspots++;
-            }
-        }
-        hotspotItem.add(StringManager.HOTSPOT_TYPE);
-        hotspotItem.add(StringManager.HOTSPOT_SEVERITY);
-        hotspotItem.add(String.valueOf(nbHotspots));
-        // add the whole line to the results
-        results.add(hotspotItem);
-
         return results;
     }
 
