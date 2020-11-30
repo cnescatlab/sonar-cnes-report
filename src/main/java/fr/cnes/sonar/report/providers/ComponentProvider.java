@@ -27,8 +27,10 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ComponentProvider extends AbstractDataProvider {
     /**
@@ -40,10 +42,15 @@ public class ComponentProvider extends AbstractDataProvider {
      * @param project The branch of the component to report.
      */
     ArrayList<Map> componentsList;
+    final Set<String> excludeMetricSet;
+
     public ComponentProvider(final SonarQubeServer server, final String token, final String project,
             final String branch) {
         super(server, token, project, branch);
         componentsList =  new ArrayList<>();
+        excludeMetricSet = new HashSet<>();
+        excludeMetricSet.add("Name");
+        excludeMetricSet.add("Path");
     }
 
     /**
@@ -133,6 +140,11 @@ public class ComponentProvider extends AbstractDataProvider {
 
 
     private boolean isCountableMetric(String metric){
+        // The metric is to be excluded
+        if(excludeMetricSet.contains(metric)){
+            return false;
+        }
+
         // Get first non-null value of metrics
         int i=0;
         while(i<componentsList.size() && (componentsList.get(i) == null || componentsList.get(i).get(metric) == null)){
