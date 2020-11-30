@@ -23,9 +23,11 @@ import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.exporters.xlsx.XlsXTools;
 import fr.cnes.sonar.report.model.Component;
 import fr.cnes.sonar.report.model.SonarQubeServer;
+import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +35,12 @@ import java.util.Map;
 import java.util.Set;
 
 public class ComponentProvider extends AbstractDataProvider {
+
+    /**
+     * Property to get the list of components to exclude
+     */
+    private static final String EXCLUDED_COMPONENTS = "components.excluded";
+    
     /**
      * Constructor.
      *
@@ -48,9 +56,8 @@ public class ComponentProvider extends AbstractDataProvider {
             final String branch) {
         super(server, token, project, branch);
         componentsList =  new ArrayList<>();
-        excludeMetricSet = new HashSet<>();
-        excludeMetricSet.add("Name");
-        excludeMetricSet.add("Path");
+        excludeMetricSet = new HashSet<>(Arrays.asList(
+            StringManager.getProperty(EXCLUDED_COMPONENTS).split(",")));
     }
 
     /**
