@@ -140,19 +140,24 @@ public class ComponentProvider extends AbstractDataProvider {
 
 
     private boolean isCountableMetric(String metric){
+
+        boolean isCountable;
+
         // The metric is to be excluded
         if(excludeMetricSet.contains(metric)){
-            return false;
+            isCountable = false;
+        } else {
+            // Get first non-null value of metrics
+            int i=0;
+            while(i<componentsList.size() && (componentsList.get(i) == null || componentsList.get(i).get(metric) == null)){
+                ++i;
+            }
+
+            // If we didn't reach the end and we find a numerical value
+            isCountable = i<componentsList.size() && NumberUtils.isCreatable(componentsList.get(i).get(metric).toString());
         }
 
-        // Get first non-null value of metrics
-        int i=0;
-        while(i<componentsList.size() && (componentsList.get(i) == null || componentsList.get(i).get(metric) == null)){
-            ++i;
-        }
-
-        // If we didn't reach the end and we find a numerical value
-        return i<componentsList.size() && NumberUtils.isCreatable(componentsList.get(i).get(metric).toString());
+        return isCountable;
     }
 
 }
