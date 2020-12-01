@@ -49,7 +49,7 @@ public class ComponentProvider extends AbstractDataProvider {
      * @param project The id of the component to report.
      * @param project The branch of the component to report.
      */
-    ArrayList<Map> componentsList;
+    ArrayList<Map<String,String>> componentsList;
     final Set<String> excludeMetricSet;
 
     public ComponentProvider(final SonarQubeServer server, final String token, final String project,
@@ -64,7 +64,7 @@ public class ComponentProvider extends AbstractDataProvider {
     * Getter for componentsList, retrieve all component from a project and their metrics
      * @return componentsList List of componentsList
     */
-    public List<Map> getComponents() throws BadSonarQubeRequestException, SonarQubeException {
+    public List<Map<String,String>> getComponents() throws BadSonarQubeRequestException, SonarQubeException {
         int page = 1;
         JsonObject jo;
 
@@ -161,7 +161,7 @@ public class ComponentProvider extends AbstractDataProvider {
             }
 
             // If we didn't reach the end and we find a numerical value
-            isCountable = i<componentsList.size() && NumberUtils.isCreatable(componentsList.get(i).get(metric).toString());
+            isCountable = i<componentsList.size() && NumberUtils.isCreatable(componentsList.get(i).get(metric));
         }
 
         return isCountable;

@@ -60,7 +60,7 @@ public class Report {
     /**
      * List of map representing issues
      */
-    private List<Map> rawIssues;
+    private List<Map<String,String>> rawIssues;
     /**
      * Data about the project
      */
@@ -72,7 +72,7 @@ public class Report {
     /**
      * List of components in the project and their metrics
      */
-    private List<Map> components;
+    private List<Map<String,String>> components;
     /**
      * Maps of metrics stats
      */
@@ -139,13 +139,13 @@ public class Report {
      * Getter for components
      * @return components
      */
-    public List<Map> getComponents() {return new ArrayList<>(components); }
+    public List<Map<String,String>> getComponents() {return new ArrayList<>(components); }
 
     /**
      * Setteer for components
      * @param components
      */
-    public void setComponents(List<Map> components){ this.components = new ArrayList<>(components); }
+    public void setComponents(List<Map<String,String>> components){ this.components = new ArrayList<>(components); }
 
     /**
      * Get issues
@@ -338,7 +338,7 @@ public class Report {
      * Get a list of map representing issues
      * @return return the raw issues' list
      */
-    public List<Map> getRawIssues() {
+    public List<Map<String,String>> getRawIssues() {
         return new ArrayList<>(rawIssues);
     }
 
@@ -346,7 +346,7 @@ public class Report {
      * Set the list of raw issues
      * @param pRawIssues list of map
      */
-    public void setRawIssues(List<Map> pRawIssues) {
+    public void setRawIssues(List<Map<String,String>> pRawIssues) {
         this.rawIssues = new ArrayList<>(pRawIssues);
     }
 

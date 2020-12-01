@@ -132,7 +132,7 @@ public abstract class CommonTest {
         issues.add(i4);
         report.setIssues(issues);
 
-        List<Map> rawIssues = new ArrayList<>();
+        List<Map<String,String>> rawIssues = new ArrayList<>();
         Map issue1 = new HashMap();
         issue1.put("Comments", new ArrayList<String>());
         issue1.put("ToReview", true);
