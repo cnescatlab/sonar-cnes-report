@@ -78,7 +78,7 @@ public class ComponentProvider extends AbstractDataProvider {
             // Get components from response
             final Component[] tmp = getGson().fromJson(jo.get(COMPONENTS), Component[].class);
             for (Component c:tmp) {
-                Map map = c.toMap();
+                Map<String,String> map = c.toMap();
                 componentsList.add(map);
             }
 
@@ -94,10 +94,10 @@ public class ComponentProvider extends AbstractDataProvider {
     /**
      * Get min value for a specified metrics
      * */
-    private double getMinMetric(String metric){
+    protected double getMinMetric(String metric){
         double min = Double.MAX_VALUE;
-        for(Map c: componentsList){
-            final String rawValue = (String)c.get(metric);
+        for(Map<String,String> c: componentsList){
+            final String rawValue = c.get(metric);
             if(rawValue!=null){
                 min = Math.min(min, Double.valueOf(rawValue));
             }
@@ -108,10 +108,10 @@ public class ComponentProvider extends AbstractDataProvider {
     /**
      * Get max value for a specified metrics
      * */
-    private double getMaxMetric(String metric){
+    protected double getMaxMetric(String metric){
         double max = -Double.MAX_VALUE;
-        for(Map c: componentsList){
-            final String rawValue = (String)c.get(metric);
+        for(Map<String,String> c: componentsList){
+            final String rawValue = c.get(metric);
             if(rawValue!=null){
                 max = Math.max(max, Double.valueOf(rawValue));
             }
@@ -146,7 +146,7 @@ public class ComponentProvider extends AbstractDataProvider {
     }
 
 
-    private boolean isCountableMetric(String metric){
+    protected boolean isCountableMetric(String metric){
 
         boolean isCountable;
 
