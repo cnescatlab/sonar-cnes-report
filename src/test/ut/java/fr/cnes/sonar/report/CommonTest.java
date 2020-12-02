@@ -214,7 +214,7 @@ public abstract class CommonTest {
         report.setMeasures(measures);
 
 
-        Map<String, Double> metricStats = new HashMap();
+        Map<String, Double> metricStats = new HashMap<>();
         // Use first component to gets all metrics names
 
         // for each metric

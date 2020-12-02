@@ -76,7 +76,7 @@ public class Report {
     /**
      * Maps of metrics stats
      */
-    private Map metricsStats;
+    private Map<String, Double> metricsStats;
 
     /**
      * Default constructor
@@ -127,13 +127,13 @@ public class Report {
      * Getter for metrics stats
      * @param metricsStats maps with min, max, mean all numerical metric
      */
-    public void setMetricsStats(Map metricsStats){ this.metricsStats = metricsStats; }
+    public void setMetricsStats(Map<String, Double> metricsStats){ this.metricsStats = metricsStats; }
 
     /**
      * Setter for components
      * @return maps with min, max, mean all numerical metric
      */
-    public Map getMetricsStats(){return metricsStats; }
+    public Map<String, Double> getMetricsStats(){return metricsStats; }
 
     /**
      * Getter for components

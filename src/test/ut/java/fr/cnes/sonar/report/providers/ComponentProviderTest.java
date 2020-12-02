@@ -4,7 +4,6 @@ import fr.cnes.sonar.report.CommonTest;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.SonarQubeServer;
-import jdk.jfr.Timestamp;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -99,6 +98,7 @@ public class ComponentProviderTest extends CommonTest {
         Map<String,String> component3 = new HashMap<>();
         ComponentProviderWrapper componentProvider = new ComponentProviderWrapper(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
 
+        // Test data to match every possible case
         component1.put("Test", "42.42");
         component1.put("Other", "1");
         component2.put("Other", "3");
@@ -120,7 +120,7 @@ public class ComponentProviderTest extends CommonTest {
         expected.put("minAlone", 0.0);
         expected.put("maxAlone", 0.0);
 
-        assertTrue(expected.equals(componentProvider.getMetricStats()));
+        assertEquals(expected,componentProvider.getMetricStats());
     }
 
     /**
