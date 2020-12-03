@@ -250,9 +250,9 @@ public class IssuesProvider extends AbstractDataProvider {
      * @throws BadSonarQubeRequestException A request is not recognized by the server
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    public List<Map> getRawIssues() throws BadSonarQubeRequestException, SonarQubeException {
+    public List<Map<String,String>> getRawIssues() throws BadSonarQubeRequestException, SonarQubeException {
         // results variable
-        final List<Map> res = new ArrayList<>();
+        final List<Map<String,String>> res = new ArrayList<>();
 
         // stop condition
         boolean goon = true;
@@ -284,7 +284,7 @@ public class IssuesProvider extends AbstractDataProvider {
                 }
             }
             // transform json to Issue objects
-            final Map [] tmp = (getGson().fromJson(jo.get(ISSUES), Map[].class));
+            final Map<String,String> [] tmp = (getGson().fromJson(jo.get(ISSUES), Map[].class));
             // add them to the final result
             res.addAll(Arrays.asList(tmp));
             // check next results' pages

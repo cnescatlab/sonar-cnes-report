@@ -45,7 +45,7 @@ public class CSVExporter implements IExporter {
         FileWriter outputfile = new FileWriter(file);
         try(CSVPrinter csvPrinter = new CSVPrinter(outputfile, CSVFormat.EXCEL.withDelimiter('\t'))){
 
-          List<Map> allIssues = report.getRawIssues();
+          List<Map<String,String>> allIssues = report.getRawIssues();
 
           // Extracting headers
           List<String> headers = XlsXTools.extractHeader(allIssues);

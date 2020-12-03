@@ -68,7 +68,7 @@ public class DataAdapterTest extends CommonTest{
         Assert.assertEquals(expected, placeHolders);
 
         // Add the maxcoverage to cancel the unknown error
-        Map metricsStats = report.getMetricsStats();
+        Map<String, Double> metricsStats = report.getMetricsStats();
         metricsStats.put("maxcoverage", 1.0);
         report.setMetricsStats(metricsStats);
 
