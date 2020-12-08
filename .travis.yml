@@ -24,7 +24,7 @@ env:
   - sonarqube: 8.2-community
 
 script:
-  - IS_JDK_11=$(java -version 2>&1 |grep "^openjdk version \"11\." > /dev/null && echo $?)
+  - IS_JDK_11=$(java -version 2>&1 |grep "^openjdk version \"11\." > /dev/null ; echo $?)
   - if [ $sonarqube != "none" ]; then
       mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package;
       chmod +x src/test/it/run-test.sh;mvn clean package;
