@@ -11,36 +11,47 @@ function getSonarVersion() {
   });
 }
 
-// Function used to get the list of existing projects (until 7.9.x)
-function getProjectsList79() {
-  return getJSON("/api/projects/index").then(response => {
-    return response.map(item => {
-      // Attribute names changed in SonarQube 8.0
-      // so we need to match the new ones for the frontend
-      item.key = item.k;
-      item.name = item.nm;
-      return item;
-    });
-  });
-}
-
-// Function used to get the list of existing projects (since 8.0)
-function getProjectsList8() {
-  return getJSON("/api/projects/search").then(response => {
-    return response.components;
-  });
-}
-
-// Function used to get the list of existing project regarding SonarQube version
-export function getProjectsList() {
-  return getSonarVersion().then(version => {
-    // Depending on SonarQube version, the API is not the same to retrieve projects list
-    if (version >= 8.0) {
-      return getProjectsList8();
-    } else {
-      return getProjectsList79();
+//Functions used to get all user projects
+//The maximum number of projects with this API (api/components/search) is 500.
+//Thus, the objective is to display an infinite number of projects
+export function getProjectsList(){
+  const elementByPage = 500;
+  let allPromises = [];
+  //Get the number of projects and compute the number of pages required
+  return getJSON("/api/components/search", {"qualifiers": "TRK", "ps":elementByPage}).then(response => {
+    const nbProjects = response.paging.total;
+    let nbPages = Math.ceil(nbProjects/elementByPage);
+    //Fill an array of promises
+    for(let i = 1; i <= nbPages; i++){
+      allPromises.push(getJSON("/api/components/search", {"qualifiers": "TRK", "ps":elementByPage, "p":i}).then(response => {
+        return response.components;
+      }));
     }
-  });
+    //Wait until all promises are done
+    return Promise.all(allPromises);
+  }).then((results) => {
+    //Concatenate an array : x * 500 (x = number of pages)
+      let projects = [];
+      results.forEach((result) => {
+        projects = projects.concat(result);
+      })
+      //Sort the projects list for a user-friendlier display
+      //The name is displayed in the user interface, so we sort the projects by name
+      projects.sort(GetSortOrder("name"));
+      return projects;
+    });
+}
+
+//Comparator function in order to compare each specific key of the json array
+function GetSortOrder(key){
+  return function(a, b){
+    if(a[key] > b[key]){
+      return 1;
+    } else if (a[key] < b[key]){
+      return -1;
+    }
+    return 0;
+  }
 }
 
 // Function used to revoke the plugin token

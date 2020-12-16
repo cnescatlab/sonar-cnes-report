@@ -1,6 +1,7 @@
 package fr.cnes.sonar.report.exporters.xlsx;
 
 import fr.cnes.sonar.report.model.Issue;
+
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellReference;
@@ -78,7 +79,7 @@ public final class XlsXTools {
      * @param list list of map to put
      * @param tableName name of the table to fill out
      */
-    public static void addListOfMap(XSSFSheet sheet, List<Map> list, String tableName) {
+    public static void addListOfMap(XSSFSheet sheet, List<Map<String,String>> list, String tableName) {
 
         // get the headers list
         final List<String> headers = extractHeader(list);
@@ -146,7 +147,7 @@ public final class XlsXTools {
      * @param list List of map whose you want to extract keys
      * @return a list of strings
      */
-    public static List<String> extractHeader(List<Map> list) {
+    public static List<String> extractHeader(List<Map<String,String>> list) {
         // list of header titles to be returned
         final List<String> result = new ArrayList<>();
         // gather all unique keys of all maps

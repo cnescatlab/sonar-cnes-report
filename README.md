@@ -1,5 +1,5 @@
 # Sonar CNES Report
-[![Build Status](https://travis-ci.org/lequal/sonar-cnes-report.svg?branch=master)](https://travis-ci.org/lequal/sonar-cnes-report)
+[![Build Status](https://travis-ci.org/cnescatlab/sonar-cnes-report.svg?branch=master)](https://travis-ci.org/cnescatlab/sonar-cnes-report)
 [![SonarQube Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonar%3Acnesreport&metric=alert_status)](https://sonarcloud.io/dashboard?id=fr.cnes.sonar%3Acnesreport)
 [![SonarQube Bugs](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonar%3Acnesreport&metric=bugs)](https://sonarcloud.io/project/issues?id=fr.cnes.sonar%3Acnesreport&resolved=false&types=BUG)
 [![SonarQube Coverage](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonar%3Acnesreport&metric=coverage)](https://sonarcloud.io/component_measures?id=fr.cnes.sonar%3Acnesreport&metric=Coverage)
@@ -53,7 +53,7 @@ Generate editable reports for SonarQube projects.
  -x,--template-spreadsheet <arg>   Path to the spreadsheet template. Default: usage of internal template.
 
 
-Please report issues at https://github.com/lequal/sonar-cnes-report/issues
+Please report issues at https://github.com/cnescatlab/sonar-cnes-report/issues
 ````
 
 #### Get logs
@@ -109,7 +109,7 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
 
 ### Compatibility matrix
 
-For legacy versions, check the wiki page here : [Note on legacy versions](https://github.com/lequal/sonar-cnes-report/wiki#note-on-legacy-versions)
+For legacy versions, check the wiki page here : [Note on legacy versions](https://github.com/cnescatlab/sonar-cnes-report/wiki#note-on-legacy-versions)
 
 <table>
  <tr>
@@ -178,6 +178,6 @@ zip these files and send them to client. Files are deleted after download. If yo
 during execution (bug, stopping sonar, etc.) you may check this folder to remove useless files.
 
 ### License
-Copyright 2017 LEQUAL.
+Copyright 2020 CATLab.
 
 Licensed under the [GNU General Public License, Version 3.0](https://www.gnu.org/licenses/gpl.txt)
