@@ -292,11 +292,14 @@ public final class DataAdapter {
 
         final String[] types = ISSUE_TYPES;
         final String[] severities = ISSUE_SEVERITIES;
-
+                        
         for(String type : types) {
             for (String severity : severities) {
                 // accumulator for the number of occurrences
                 long nb = 0;
+                //List of items for each line of the table
+                final List<String> item = new ArrayList<>();
+
                 // we sum all issues with a type and a severity
                 for(Issue issue : report.getIssues()) {
                     if(issue.getType().equals(type) && issue.getSeverity().equals(severity)) {
@@ -304,7 +307,6 @@ public final class DataAdapter {
                     }
                 }
                 // we add it to the list
-                final List<String> item = new ArrayList<>();
                 item.add(type);
                 item.add(severity);
                 item.add(String.valueOf(nb));
@@ -312,7 +314,6 @@ public final class DataAdapter {
                 results.add(item);
             }
         }
-
         return results;
     }
 
@@ -384,7 +385,7 @@ public final class DataAdapter {
     /**
      * Return values of a given facet
      * @param facets list of facets from which to extract values
-     * @param facetName name of th facet to get
+     * @param facetName name of the facet to get
      * @return a list (can be empty)
      */
     public static List<Value> getFacetValues(List<Facet> facets, String facetName) {
@@ -513,8 +514,8 @@ public final class DataAdapter {
             placeholders.add(MAXCOMPLEXITY_PLACEHOLDER);
             placeholders.add(MINNCLOC_PLACEHOLDER);
             placeholders.add(MAXNCLOC_PLACEHOLDER);
-            placeholders.add(MINCOGNITIVECOMPLEXITY_PLACEHOLDER);
-            placeholders.add(MAXCOGNITIVECOMPLEXITY_PLACEHOLDER);
+            placeholders.add(MINDUPLICATION_PLACEHOLDER);
+            placeholders.add(MAXDUPLICATION_PLACEHOLDER);
             placeholders.add(MINCOGNITIVECOMPLEXITY_PLACEHOLDER);
             placeholders.add(MAXCOGNITIVECOMPLEXITY_PLACEHOLDER);
             for(String placeholder: placeholders){

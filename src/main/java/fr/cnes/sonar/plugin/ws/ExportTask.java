@@ -78,10 +78,15 @@ public class ExportTask implements RequestHandler {
         try {
             final Request.StringParam pBranch =
                     request.getParam(PluginStringManager.getProperty("api.report.args.branch"));
+
+            // Build SonarQube local URL
+            String port = config.get("sonar.web.port").orElse(PluginStringManager.getProperty("plugin.defaultPort"));
+            String host = String.format(PluginStringManager.getProperty("plugin.defaultHost"), port);
+
             ReportCommandLine.execute(new String[]{
                     "report",
                     "-o", outputDirectory.getAbsolutePath(),
-                    "-s", config.get("sonar.core.serverBaseURL").orElse(PluginStringManager.getProperty("plugin.defaultHost")),
+                    "-s", host,
                     "-p", projectKey,
                     "-b", pBranch.isPresent()?pBranch.getValue(): StringManager.NO_BRANCH,
                     "-a", request.getParam(PluginStringManager.getProperty("api.report.args.author")).getValue(),

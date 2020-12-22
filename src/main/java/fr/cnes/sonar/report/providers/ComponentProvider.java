@@ -23,14 +23,24 @@ import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.exporters.xlsx.XlsXTools;
 import fr.cnes.sonar.report.model.Component;
 import fr.cnes.sonar.report.model.SonarQubeServer;
+import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ComponentProvider extends AbstractDataProvider {
+
+    /**
+     * Property to get the list of components to exclude
+     */
+    private static final String EXCLUDED_COMPONENTS = "components.excluded";
+    
     /**
      * Constructor.
      *
@@ -39,18 +49,22 @@ public class ComponentProvider extends AbstractDataProvider {
      * @param project The id of the component to report.
      * @param project The branch of the component to report.
      */
-    ArrayList<Map> componentsList;
+    ArrayList<Map<String,String>> componentsList;
+    final Set<String> excludeMetricSet;
+
     public ComponentProvider(final SonarQubeServer server, final String token, final String project,
             final String branch) {
         super(server, token, project, branch);
         componentsList =  new ArrayList<>();
+        excludeMetricSet = new HashSet<>(Arrays.asList(
+            StringManager.getProperty(EXCLUDED_COMPONENTS).split(",")));
     }
 
     /**
     * Getter for componentsList, retrieve all component from a project and their metrics
      * @return componentsList List of componentsList
     */
-    public List<Map> getComponents() throws BadSonarQubeRequestException, SonarQubeException {
+    public List<Map<String,String>> getComponents() throws BadSonarQubeRequestException, SonarQubeException {
         int page = 1;
         JsonObject jo;
 
@@ -64,7 +78,7 @@ public class ComponentProvider extends AbstractDataProvider {
             // Get components from response
             final Component[] tmp = getGson().fromJson(jo.get(COMPONENTS), Component[].class);
             for (Component c:tmp) {
-                Map map = c.toMap();
+                Map<String,String> map = c.toMap();
                 componentsList.add(map);
             }
 
@@ -80,10 +94,10 @@ public class ComponentProvider extends AbstractDataProvider {
     /**
      * Get min value for a specified metrics
      * */
-    private double getMinMetric(String metric){
+    protected double getMinMetric(String metric){
         double min = Double.MAX_VALUE;
-        for(Map c: componentsList){
-            final String rawValue = (String)c.get(metric);
+        for(Map<String,String> c: componentsList){
+            final String rawValue = c.get(metric);
             if(rawValue!=null){
                 min = Math.min(min, Double.valueOf(rawValue));
             }
@@ -94,10 +108,10 @@ public class ComponentProvider extends AbstractDataProvider {
     /**
      * Get max value for a specified metrics
      * */
-    private double getMaxMetric(String metric){
+    protected double getMaxMetric(String metric){
         double max = -Double.MAX_VALUE;
-        for(Map c: componentsList){
-            final String rawValue = (String)c.get(metric);
+        for(Map<String,String> c: componentsList){
+            final String rawValue = c.get(metric);
             if(rawValue!=null){
                 max = Math.max(max, Double.valueOf(rawValue));
             }
@@ -132,15 +146,25 @@ public class ComponentProvider extends AbstractDataProvider {
     }
 
 
-    private boolean isCountableMetric(String metric){
-        // Get first non-null value of metrics
-        int i=0;
-        while(i<componentsList.size() && (componentsList.get(i) == null || componentsList.get(i).get(metric) == null)){
-            ++i;
+    protected boolean isCountableMetric(String metric){
+
+        boolean isCountable;
+
+        // The metric is to be excluded
+        if(excludeMetricSet.contains(metric)){
+            isCountable = false;
+        } else {
+            // Get first non-null value of metrics
+            int i=0;
+            while(i<componentsList.size() && (componentsList.get(i) == null || componentsList.get(i).get(metric) == null)){
+                ++i;
+            }
+
+            // If we didn't reach the end and we find a numerical value
+            isCountable = i<componentsList.size() && NumberUtils.isCreatable(componentsList.get(i).get(metric));
         }
 
-        // If we didn't reach the end and we find a numerical value
-        return i<componentsList.size() && NumberUtils.isCreatable(componentsList.get(i).get(metric).toString());
+        return isCountable;
     }
 
 }

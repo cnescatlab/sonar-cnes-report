@@ -19,6 +19,7 @@ package fr.cnes.sonar.report;
 
 import fr.cnes.sonar.report.model.*;
 import fr.cnes.sonar.report.utils.ReportConfiguration;
+import fr.cnes.sonar.report.utils.StringManager;
 import org.junit.Before;
 
 import java.util.*;
@@ -76,7 +77,7 @@ public abstract class CommonTest {
         });
 
         report.setProjectName("CNES Report");
-        report.setProjectDate(new Date().toString());
+        report.setProjectDate(new Date().toString().substring(0,16));
         report.setProjectAuthor("Lequal");
 
         sonarQubeServer = new SonarQubeServer();
@@ -88,6 +89,7 @@ public abstract class CommonTest {
         final Issue i1 = new Issue();
         final Issue i2 = new Issue();
         final Issue i3 = new Issue();
+        final Issue i4 = new Issue();
         i1.setComponent("a");
         i1.setKey("z");
         i1.setLine("15");
@@ -112,8 +114,9 @@ public abstract class CommonTest {
         i2.setProject("genius");
         i2.setSeverity(MAJOR);
         i2.setStatus("OPEN");
-        i2.setType("SECURITY");
+        i2.setType("SECURITY_HOTSPOT");
         i2.setRule("abcd:dcba");
+        i4.setType(StringManager.HOTSPOT_TYPE);
         // Adding multiple time to test comparator (DataAdapter.RuleComparator)
         Issue issue;
         for(int i=1;i<10;i++){
@@ -126,9 +129,10 @@ public abstract class CommonTest {
         issues.add(i1);
         issues.add(i3);
         issues.add(i2);
+        issues.add(i4);
         report.setIssues(issues);
 
-        List<Map> rawIssues = new ArrayList<>();
+        List<Map<String,String>> rawIssues = new ArrayList<>();
         Map issue1 = new HashMap();
         issue1.put("Comments", new ArrayList<String>());
         issue1.put("ToReview", true);
@@ -147,11 +151,23 @@ public abstract class CommonTest {
 
         final List<Facet> facets = new ArrayList<>();
         final Facet rules = new Facet();
+        final Facet severities = new Facet();
+        final Facet types = new Facet();
         rules.setProperty("rules");
+        severities.setProperty("severities");
+        types.setProperty("types");
         final List<Value> values = new ArrayList<>();
         values.add(new Value("squid:S1258", 3));
         rules.setValues(values);
+        final List<Value> valuesSeverity = new ArrayList<>();
+        valuesSeverity.add(new Value("CRITICAL", 0));
+        final List<Value> valuesType = new ArrayList<>();
+        valuesType.add(new Value("SECURITY_HOTSPOT", 5));
+        severities.setValues(valuesSeverity);
+        types.setValues(valuesType);
         facets.add(rules);
+        facets.add(severities);
+        facets.add(types);
         report.setFacets(facets);
 
         final ProfileData profileData = new ProfileData();
@@ -198,7 +214,7 @@ public abstract class CommonTest {
         report.setMeasures(measures);
 
 
-        Map<String, Double> metricStats = new HashMap();
+        Map<String, Double> metricStats = new HashMap<>();
         // Use first component to gets all metrics names
 
         // for each metric
