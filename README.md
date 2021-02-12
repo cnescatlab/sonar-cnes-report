@@ -130,6 +130,7 @@ For legacy versions, check the wiki page here : [Note on legacy versions](https:
   <td>X</td>
   <td>X</td>
   <td>X</td>
+  <td>X</td>
  </tr>
  <tr>
   <td><b>8.0</b></td>
@@ -138,6 +139,7 @@ For legacy versions, check the wiki page here : [Note on legacy versions](https:
   <td>-</td>
   <td>-</td>
   <td>-</td>
+  <td>X</td>
   <td>X</td>
  </tr>
  <tr>
@@ -148,6 +150,7 @@ For legacy versions, check the wiki page here : [Note on legacy versions](https:
   <td>-</td>
   <td>-</td>
   <td>X</td>
+  <td>X</td>
  </tr>
  <tr>
   <td><b>8.2</b></td>
@@ -157,17 +160,8 @@ For legacy versions, check the wiki page here : [Note on legacy versions](https:
   <td>-</td>
   <td>-</td>
   <td>X</td>
- </tr>
- <tr>
-  <td><b>8.3</b></td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
   <td>X</td>
  </tr>
- 
 </table>
 
 ### How to contribute
