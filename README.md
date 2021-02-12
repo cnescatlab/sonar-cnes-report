@@ -120,6 +120,7 @@ For legacy versions, check the wiki page here : [Note on legacy versions](https:
   <td><b>3.0.x<br/>Standalone + Plugin</b></b></td>
   <td><b>3.1.0<br/>Standalone + Plugin</b></b></td>
   <td><b>3.2.x<br/>Standalone + Plugin</b></b></td>
+  <td><b>3.3.0<br/>Standalone + Plugin</b></b></td>
  </tr>
  <tr>
   <td><b>7.9.x (LTS)</b></td>
