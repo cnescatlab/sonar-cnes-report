@@ -158,6 +158,16 @@ For legacy versions, check the wiki page here : [Note on legacy versions](https:
   <td>-</td>
   <td>X</td>
  </tr>
+ <tr>
+  <td><b>8.3</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>X</td>
+ </tr>
+ 
 </table>
 
 ### How to contribute
