@@ -31,6 +31,7 @@ import org.apache.xmlbeans.XmlException;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
@@ -80,7 +81,7 @@ public class ReportFactory {
      * @throws OpenXML4JException Caused by Apache library.
      */
     public static void report(final ReportConfiguration configuration, final Report model)
-            throws IOException, XmlException, BadExportationDataTypeException, OpenXML4JException {
+            throws IOException, XmlException, BadExportationDataTypeException, OpenXML4JException, ParseException {
 
         // Files exporters : export the resources in the correct file type
         final DocXExporter docXExporter = new DocXExporter();
@@ -99,7 +100,7 @@ public class ReportFactory {
         // Export issues and metrics in report if requested.
         if(configuration.isEnableReport()) {
             // prepare docx report's filename
-            final String docXFilename = formatFilename(REPORT_FILENAME, configuration.getOutput(), model.getProjectName());
+            final String docXFilename = formatFilename(REPORT_FILENAME, configuration.getOutput(), configuration.getDate(), model.getProjectName());
             // export the full docx report
             docXExporter.export(model, docXFilename, configuration.getTemplateReport());
         }
@@ -107,20 +108,20 @@ public class ReportFactory {
         // Export issues in spreadsheet if requested.
         if(configuration.isEnableSpreadsheet()) {
             // construct the xlsx filename by replacing date and name
-            final String xlsXFilename = formatFilename(ISSUES_FILENAME, configuration.getOutput(), model.getProjectName());
+            final String xlsXFilename = formatFilename(ISSUES_FILENAME, configuration.getOutput(), configuration.getDate(), model.getProjectName());
             // export the xlsx issues' list
             issuesExporter.export(model, xlsXFilename, configuration.getTemplateSpreadsheet());
         }
 
         // Export in markdown if requested
         if (configuration.isEnableMarkdown()) {
-            final String MDFilename = formatFilename(MD_FILENAME, configuration.getOutput(), model.getProjectName());
+            final String MDFilename = formatFilename(MD_FILENAME, configuration.getOutput(), configuration.getDate(), model.getProjectName());
             markdownExporter.export(model, MDFilename, configuration.getTemplateMarkdown());
         }
 
         // Export issues in report if requested
         if(configuration.isEnableCSV()) {
-            final String CSVFilename = formatFilename(CSV_FILENAME, configuration.getOutput(), model.getProjectName());
+            final String CSVFilename = formatFilename(CSV_FILENAME, configuration.getOutput(), configuration.getDate(), model.getProjectName());
             csvExporter.export(model, CSVFilename, model.getProjectName());
         }
     }
@@ -196,11 +197,19 @@ public class ReportFactory {
      * @param projectName Name of the current project
      * @return a formatted filename
      */
-    public static String formatFilename(final String propertyName, final String baseDir, final String projectName) {
+    public static String formatFilename(final String propertyName, final String baseDir, final String projectDate, final String projectName) 
+            throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(StringManager.DATE_PATTERN);
+        String dateStr;
+        if (projectDate.isEmpty()) {
+            dateStr = simpleDateFormat.format(new Date());
+        } else {
+            dateStr = simpleDateFormat.format(simpleDateFormat.parse(projectDate));
+        }
         // construct the filename by replacing date and name
         return StringManager.getProperty(propertyName)
                 .replaceFirst(BASEDIR, Matcher.quoteReplacement(baseDir))
-                .replace(DATE, new SimpleDateFormat(StringManager.DATE_PATTERN).format(new Date()))
+                .replace(DATE, dateStr)
                 .replace(NAME, escapeProjectName(projectName));
     }
 

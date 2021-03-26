@@ -8,11 +8,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 public class ReportFactoryTest extends CommonTest {
 
     @Test
-    public void createTest() throws XmlException, BadExportationDataTypeException, OpenXML4JException, IOException {
+    public void createTest() throws XmlException, BadExportationDataTypeException, OpenXML4JException, IOException, ParseException {
         ReportFactory.report(conf, report);
         Assert.assertTrue(true);
     }

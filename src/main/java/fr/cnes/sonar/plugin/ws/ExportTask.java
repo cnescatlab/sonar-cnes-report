@@ -39,6 +39,7 @@ import org.sonar.api.utils.text.JsonWriter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.ParseException;
 
 public class ExportTask implements RequestHandler {
 
@@ -60,7 +61,7 @@ public class ExportTask implements RequestHandler {
      */
     @Override
     public void handle(Request request, Response response) throws BadExportationDataTypeException, IOException,
-            UnknownQualityGateException, OpenXML4JException, XmlException, SonarQubeException{
+            UnknownQualityGateException, OpenXML4JException, XmlException, SonarQubeException, ParseException {
 
         // Get project key
         String projectKey = request.getParam(PluginStringManager.getProperty("api.report.args.key")).getValue();
@@ -94,7 +95,7 @@ public class ExportTask implements RequestHandler {
             });
 
             stream.setMediaType("application/zip");
-            String filename = ReportFactory.formatFilename("zip.report.output", "", projectKey);
+            String filename = ReportFactory.formatFilename("zip.report.output", "", "", projectKey);
             response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + '"');
 
 
