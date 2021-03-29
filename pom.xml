@@ -67,6 +67,10 @@
             <id>louisjdmartin</id>
             <name>Louis Martin</name>
         </developer>
+        <developer>
+            <id>ErwanGauduchon</id>
+            <name>Erwan Gauduchon</name>
+        </developer>
     </developers>
 
     <dependencies>
@@ -171,6 +175,15 @@
 
     <build>
         <testSourceDirectory>src/test/ut/java</testSourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>src/main/resources-filtered</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
 
             <plugin>
