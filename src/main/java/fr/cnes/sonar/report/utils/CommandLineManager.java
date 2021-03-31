@@ -122,7 +122,8 @@ public class CommandLineManager {
                     final Properties properties = new Properties();
                     properties.load(input);
                     String version = properties.getProperty("version");
-                    LOGGER.info(version);
+                    String message = String.format("Current version: %s", version);                    
+                    System.out.println(message);
                     System.exit(0);
                 }
             } catch (IOException e) {
