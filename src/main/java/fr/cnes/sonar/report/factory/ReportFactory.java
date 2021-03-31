@@ -194,6 +194,8 @@ public class ReportFactory {
      * Format a given filename pattern.
      * Add the date and the project's name
      * @param propertyName Name of pattern's property
+     * @param baseDir Path to the folder where to save the file
+     * @param projectDate Date of the current project
      * @param projectName Name of the current project
      * @return a formatted filename
      */
@@ -201,12 +203,15 @@ public class ReportFactory {
             throws ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(StringManager.DATE_PATTERN);
         String dateStr;
+        // put the current date if no date is given
         if (projectDate.isEmpty()) {
             dateStr = simpleDateFormat.format(new Date());
         } else {
-            if (!projectDate.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")) {
+            // accept only the defined format
+            if (!projectDate.matches(StringManager.DATE_REGEX)) {
                 throw new IllegalArgumentException("Please provide a date that respects " + StringManager.DATE_PATTERN + " format.");
             }
+            // reject inconsistent dates
             simpleDateFormat.setLenient(false);
             try {
                 dateStr = simpleDateFormat.format(simpleDateFormat.parse(projectDate));
