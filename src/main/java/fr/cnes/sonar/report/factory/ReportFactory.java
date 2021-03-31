@@ -204,7 +204,15 @@ public class ReportFactory {
         if (projectDate.isEmpty()) {
             dateStr = simpleDateFormat.format(new Date());
         } else {
-            dateStr = simpleDateFormat.format(simpleDateFormat.parse(projectDate));
+            if (!projectDate.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")) {
+                throw new IllegalArgumentException("Please provide a date that respects " + StringManager.DATE_PATTERN + " format.");
+            }
+            simpleDateFormat.setLenient(false);
+            try {
+                dateStr = simpleDateFormat.format(simpleDateFormat.parse(projectDate));
+            } catch (ParseException e) {
+                throw new ParseException("Invalid date value: day or month exceeds its bounds.", e.getErrorOffset());
+            }
         }
         // construct the filename by replacing date and name
         return StringManager.getProperty(propertyName)

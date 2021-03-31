@@ -18,4 +18,20 @@ public class ReportFactoryTest extends CommonTest {
         Assert.assertTrue(true);
     }
 
+    @Test
+    public void formatFilenameWithValidDate() throws ParseException {
+        String actual = ReportFactory.formatFilename("report.output", "./target", "2021-03-31", "CNES Report");
+        String expected = "./target/2021-03-31-CNES Report-analysis-report.docx";
+        Assert.assertEquals(actual, expected);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void formatFilenameWithBadDateFormat() throws ParseException {
+        String actual = ReportFactory.formatFilename("report.output", "./target", "30-03-2021", "CNES Report");
+    }
+
+    @Test(expected = ParseException.class)
+    public void formatFilenameWithInconsistentDate() throws ParseException {
+        String actual = ReportFactory.formatFilename("report.output", "./target", "2021-12-32", "CNES Report");
+    }
 }
