@@ -81,7 +81,7 @@ public class ExportTask implements RequestHandler {
 
             // Build SonarQube local URL
             String port = config.get("sonar.web.port").orElse(PluginStringManager.getProperty("plugin.defaultPort"));
-            String context = config.get("sonar.web.context").orElse("");
+            String context = config.get("sonar.web.context").orElse(PluginStringManager.getProperty("plugin.defaultContext"));
             String sonarUrl = String.format(PluginStringManager.getProperty("plugin.defaultHost"), port, context);
 
             ReportCommandLine.execute(new String[]{
