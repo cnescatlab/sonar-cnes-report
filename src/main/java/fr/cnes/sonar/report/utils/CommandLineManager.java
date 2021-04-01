@@ -123,7 +123,7 @@ public class CommandLineManager {
                     properties.load(input);
                     String version = properties.getProperty("version");
                     String message = String.format("Current version: %s", version);                    
-                    System.out.println(message);
+                    LOGGER.info(message);
                     System.exit(0);
                 }
             } catch (IOException e) {
