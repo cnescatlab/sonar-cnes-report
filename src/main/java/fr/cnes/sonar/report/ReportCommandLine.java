@@ -101,16 +101,6 @@ public final class ReportCommandLine {
         // assumes the language is set with language_country
         StringManager.changeLocale(conf.getLanguage());
 
-        // Display version information and exit.
-        if(conf.isVersion()) {
-            final String name = ReportCommandLine.class.getPackage().getImplementationTitle();
-            final String version = ReportCommandLine.class.getPackage().getImplementationVersion();
-            final String vendor = ReportCommandLine.class.getPackage().getImplementationVendor();
-            message = String.format("%s %s by %s", name, version, vendor);
-            LOGGER.info(message);
-            System.exit(0);
-        }
-
         // Print information about SonarQube.
         message = String.format("SonarQube URL: %s", conf.getServer());
         LOGGER.info(message);
