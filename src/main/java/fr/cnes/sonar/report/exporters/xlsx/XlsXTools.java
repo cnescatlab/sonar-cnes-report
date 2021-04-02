@@ -127,11 +127,11 @@ public final class XlsXTools {
                 content = new String[headers.size()];
                 int index;
                 // adding each field of the map in a different column of the row
-                for (Map.Entry issue : map.entrySet()) {
+                for (Map.Entry<String, String> issue : map.entrySet()) {
                     // index of the column to fill comparing key and headers
-                    index = headers.indexOf(issue.getKey().toString());
+                    index = headers.indexOf(issue.getKey());
                     // get the cell having the same key as the header
-                    content[index] = issue.getValue().toString();
+                    content[index] = String.valueOf(issue.getValue());
                 }
 
                 // create a row from resources as string's list
@@ -159,9 +159,9 @@ public final class XlsXTools {
         }
 
         // for each unique header
-        for(Map.Entry header : gatherer.entrySet()) {
+        for(Map.Entry<String, String> header : gatherer.entrySet()) {
             // we had the key to the list
-            result.add(header.getKey().toString());
+            result.add(header.getKey());
         }
 
         return result;

@@ -306,8 +306,6 @@ public abstract class AbstractDataProvider {
         try {
             json = getGson().fromJson(raw, JsonElement.class);
         } catch (Exception e) {
-            // log exception's message
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
             throw new BadSonarQubeRequestException("Server answered: " + raw +
                     StringManager.SPACE + e.getMessage());
         }
@@ -340,7 +338,7 @@ public abstract class AbstractDataProvider {
         // replace spaces
         String preparedRequest = request.replace(" ", "%20");
         // replace + characters
-        preparedRequest = preparedRequest.replaceAll("\\+", "%2B");
+        preparedRequest = preparedRequest.replace("+", "%2B");
 
         // launch the request on SonarQube server and retrieve resources into a string
         return RequestManager.getInstance().get(preparedRequest, this.token);

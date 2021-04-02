@@ -189,7 +189,8 @@ public class IssuesProvider extends AbstractDataProvider {
 
         // in case of overflow we log the problem
         if(overflow) {
-            LOGGER.warning(StringManager.string(StringManager.ISSUES_OVERFLOW_MSG));
+            String message = StringManager.string(StringManager.ISSUES_OVERFLOW_MSG);
+            LOGGER.warning(message);
         }
 
         // return the issues
@@ -302,7 +303,8 @@ public class IssuesProvider extends AbstractDataProvider {
 
         // in case of overflow we log the problem
         if(overflow) {
-            LOGGER.warning(StringManager.string(StringManager.ISSUES_OVERFLOW_MSG));
+            String message = StringManager.string(StringManager.ISSUES_OVERFLOW_MSG);
+            LOGGER.warning(message);
         }
 
         // return the issues

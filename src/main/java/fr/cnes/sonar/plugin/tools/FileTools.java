@@ -25,6 +25,9 @@ import java.util.logging.Logger;
 
 public class FileTools {
 
+    /** Logger of this class */
+    private static final Logger LOGGER = Logger.getLogger(FileTools.class.getName());
+
     private FileTools(){
         throw new IllegalStateException("Utility class");
     }
@@ -46,7 +49,6 @@ public class FileTools {
                 try {
                     Files.deleteIfExists(toDelete.toPath());
                 } catch (IOException e) {
-                    Logger LOGGER = Logger.getLogger(FileTools.class.getName());
                     LOGGER.warning(e.getMessage());
                 }
             }
@@ -54,7 +56,6 @@ public class FileTools {
         try {
             Files.deleteIfExists(folder.toPath());
         } catch (IOException e) {
-            Logger LOGGER = Logger.getLogger(FileTools.class.getName());
             LOGGER.warning(e.getMessage());
         }
     }
