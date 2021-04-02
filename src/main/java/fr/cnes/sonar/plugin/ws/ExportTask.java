@@ -82,12 +82,13 @@ public class ExportTask implements RequestHandler {
 
             // Build SonarQube local URL
             String port = config.get("sonar.web.port").orElse(PluginStringManager.getProperty("plugin.defaultPort"));
-            String host = String.format(PluginStringManager.getProperty("plugin.defaultHost"), port);
+            String context = config.get("sonar.web.context").orElse(PluginStringManager.getProperty("plugin.defaultContext"));
+            String sonarUrl = String.format(PluginStringManager.getProperty("plugin.defaultHost"), port, context);
 
             ReportCommandLine.execute(new String[]{
                     "report",
                     "-o", outputDirectory.getAbsolutePath(),
-                    "-s", host,
+                    "-s", sonarUrl,
                     "-p", projectKey,
                     "-b", pBranch.isPresent()?pBranch.getValue(): StringManager.NO_BRANCH,
                     "-a", request.getParam(PluginStringManager.getProperty("api.report.args.author")).getValue(),
