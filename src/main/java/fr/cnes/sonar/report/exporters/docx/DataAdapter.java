@@ -687,7 +687,7 @@ class RuleComparator implements Comparator<String>{
     public int compare(String o1, String o2) {
         int compare = 0;
 
-        if(o1.isEmpty() || o2.isEmpty())compare = 1;
+        if(o1.isEmpty() || o2.isEmpty()){compare = 1;}
 
         //If rule is removed in quality gate, the issue is send to the end of list
         if(report.getRule(o1) == null){compare = 1;}

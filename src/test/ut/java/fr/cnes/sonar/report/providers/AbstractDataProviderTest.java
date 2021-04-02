@@ -2,7 +2,7 @@ package fr.cnes.sonar.report.providers;
 
 import fr.cnes.sonar.report.CommonTest;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import org.junit.Test;
 
@@ -14,20 +14,20 @@ public class AbstractDataProviderTest extends CommonTest {
     public void createAbstractDataProvider() {
         ComponentProvider componentProvider = new ComponentProvider(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
 
-        assertTrue(componentProvider.getToken() == TOKEN);
+        assertSame(TOKEN, componentProvider.getToken());
         componentProvider.setToken("sqerv1654dr1gsert");
-        assertTrue(componentProvider.getToken() == "sqerv1654dr1gsert");
+        assertSame("sqerv1654dr1gsert", componentProvider.getToken());
 
-        assertTrue(componentProvider.getProjectKey() == PROJECT_KEY);
+        assertSame(PROJECT_KEY, componentProvider.getProjectKey());
         componentProvider.setProjectKey("test");
-        assertTrue(componentProvider.getProjectKey() == "test");
+        assertSame("test", componentProvider.getProjectKey());
 
         componentProvider.setQualityGateName(QUALITY_GATE_NAME);
-        assertTrue(componentProvider.getQualityGateName() == QUALITY_GATE_NAME);
+        assertSame(QUALITY_GATE_NAME, componentProvider.getQualityGateName());
 
-        assertTrue(componentProvider.getBranch() == BRANCH);
+        assertSame(BRANCH, componentProvider.getBranch());
         componentProvider.setBranch("develop");
-        assertTrue(componentProvider.getBranch() == "develop");
+        assertSame("develop", componentProvider.getBranch());
     }
 
 }
