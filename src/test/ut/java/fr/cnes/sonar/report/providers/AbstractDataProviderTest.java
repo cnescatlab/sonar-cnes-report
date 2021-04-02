@@ -14,20 +14,20 @@ public class AbstractDataProviderTest extends CommonTest {
     public void createAbstractDataProvider() {
         ComponentProvider componentProvider = new ComponentProvider(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
 
-        assertSame(componentProvider.getToken(), TOKEN);
+        assertSame(TOKEN, componentProvider.getToken());
         componentProvider.setToken("sqerv1654dr1gsert");
-        assertSame(componentProvider.getToken(), "sqerv1654dr1gsert");
+        assertSame("sqerv1654dr1gsert", componentProvider.getToken());
 
-        assertSame(componentProvider.getProjectKey(), PROJECT_KEY);
+        assertSame(PROJECT_KEY, componentProvider.getProjectKey());
         componentProvider.setProjectKey("test");
-        assertSame(componentProvider.getProjectKey(), "test");
+        assertSame("test", componentProvider.getProjectKey());
 
         componentProvider.setQualityGateName(QUALITY_GATE_NAME);
-        assertSame(componentProvider.getQualityGateName(), QUALITY_GATE_NAME);
+        assertSame(QUALITY_GATE_NAME, componentProvider.getQualityGateName());
 
-        assertSame(componentProvider.getBranch(), BRANCH);
+        assertSame(BRANCH, componentProvider.getBranch());
         componentProvider.setBranch("develop");
-        assertSame(componentProvider.getBranch(), "develop");
+        assertSame("develop", componentProvider.getBranch());
     }
 
 }
