@@ -23,6 +23,7 @@ import fr.cnes.sonar.report.utils.StringManager;
 import org.junit.Before;
 
 import java.util.*;
+import java.text.SimpleDateFormat;
 
 /**
  * Contains common code for report
@@ -69,7 +70,7 @@ public abstract class CommonTest {
                 "-p", PROJECT_KEY,
                 "-a", "Lequal",
                 "-b", BRANCH,
-                "-d", new Date().toString(),
+                "-d", new SimpleDateFormat(StringManager.DATE_PATTERN).format(new Date()),
                 "-o", "./target",
                 "-l", "en_US",
                 "-r", "src/main/resources/template/code-analysis-template.docx",

@@ -34,6 +34,7 @@ import org.apache.xmlbeans.XmlException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -78,7 +79,7 @@ public final class ReportCommandLine {
 
         } catch (BadExportationDataTypeException | BadSonarQubeRequestException | IOException |
                 UnknownQualityGateException | OpenXML4JException | XmlException | SonarQubeException |
-                IllegalStateException | IllegalArgumentException e) {
+                IllegalStateException | IllegalArgumentException | ParseException e) {
             // it logs all the stack trace
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             System.exit(-1);
@@ -86,7 +87,7 @@ public final class ReportCommandLine {
     }
 
     public static void execute(final String[] args) throws BadExportationDataTypeException , BadSonarQubeRequestException , IOException,
-    UnknownQualityGateException, OpenXML4JException, XmlException, SonarQubeException{
+    UnknownQualityGateException, OpenXML4JException, XmlException, SonarQubeException, ParseException {
         // Log message.
         String message;
 
