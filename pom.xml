@@ -6,7 +6,7 @@
 
     <groupId>fr.cnes.sonar</groupId>
     <artifactId>cnesreport</artifactId>
-    <version>3.3.0</version>
+    <version>3.3.1</version>
     <packaging>sonar-plugin</packaging>
 
     <name>SonarQube CNES Report</name>
@@ -66,6 +66,10 @@
         <developer>
             <id>louisjdmartin</id>
             <name>Louis Martin</name>
+        </developer>
+        <developer>
+            <id>ErwanGauduchon</id>
+            <name>Erwan Gauduchon</name>
         </developer>
     </developers>
 
@@ -171,6 +175,15 @@
 
     <build>
         <testSourceDirectory>src/test/ut/java</testSourceDirectory>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>src/main/resources-filtered</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
 
             <plugin>

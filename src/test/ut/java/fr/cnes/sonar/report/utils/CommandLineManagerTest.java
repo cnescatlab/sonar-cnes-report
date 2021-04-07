@@ -42,4 +42,15 @@ public class CommandLineManagerTest {
 		commandLineManager.parse(new String[] { "-h", "this parameter is ignored" });
 		assertThat(commandLineManager.hasOption("-h"), is(true));
 	}
+
+	/**
+	 * Test command line version argument
+	 */
+	@Test
+	public void parseWithVersionOption() {
+		final CommandLineManager commandLineManager = new CommandLineManager();
+		exit.expectSystemExitWithStatus(0);
+		commandLineManager.parse(new String[] { "-v", "this parameter is ignored" });
+		assertThat(commandLineManager.hasOption("-v"), is(true));
+	}
 }

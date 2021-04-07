@@ -52,6 +52,8 @@ public final class StringManager {
     public static final String ISSUES_OVERFLOW_MSG = "log.overflow.msg";
     /** Pattern to format the date. */
     public static final String DATE_PATTERN = "yyyy-MM-dd";
+    /** Regular expression to match exactly the date format */
+    public static final String DATE_REGEX = "[0-9]{4}-[0-9]{2}-[0-9]{2}";
     /** Default path to the target diretory for report files. */
     public static final String DEFAULT_OUTPUT = "report.path";
     /** Default language for the report. */

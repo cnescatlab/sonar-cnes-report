@@ -34,6 +34,7 @@ import org.apache.xmlbeans.XmlException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -78,7 +79,7 @@ public final class ReportCommandLine {
 
         } catch (BadExportationDataTypeException | BadSonarQubeRequestException | IOException |
                 UnknownQualityGateException | OpenXML4JException | XmlException | SonarQubeException |
-                IllegalStateException | IllegalArgumentException e) {
+                IllegalStateException | IllegalArgumentException | ParseException e) {
             // it logs all the stack trace
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             System.exit(-1);
@@ -86,7 +87,7 @@ public final class ReportCommandLine {
     }
 
     public static void execute(final String[] args) throws BadExportationDataTypeException , BadSonarQubeRequestException , IOException,
-    UnknownQualityGateException, OpenXML4JException, XmlException, SonarQubeException{
+    UnknownQualityGateException, OpenXML4JException, XmlException, SonarQubeException, ParseException {
         // Log message.
         String message;
 
@@ -99,16 +100,6 @@ public final class ReportCommandLine {
         // Set the language of the report.
         // assumes the language is set with language_country
         StringManager.changeLocale(conf.getLanguage());
-
-        // Display version information and exit.
-        if(conf.isVersion()) {
-            final String name = ReportCommandLine.class.getPackage().getImplementationTitle();
-            final String version = ReportCommandLine.class.getPackage().getImplementationVersion();
-            final String vendor = ReportCommandLine.class.getPackage().getImplementationVendor();
-            message = String.format("%s %s by %s", name, version, vendor);
-            LOGGER.info(message);
-            System.exit(0);
-        }
 
         // Print information about SonarQube.
         message = String.format("SonarQube URL: %s", conf.getServer());

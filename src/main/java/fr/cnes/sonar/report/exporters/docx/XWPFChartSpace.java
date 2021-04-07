@@ -93,7 +93,7 @@ public class XWPFChartSpace {
                 final ChartSpaceDocument c = ChartSpaceDocument.Factory.parse(inputStream);
                 result.add(new XWPFChartSpace(c, p.getPackagePart()));
             } catch(final ClassCastException e){
-                LOGGER.log(Level.WARNING, "Error while getting charts, can't convert XMLObject into ChartSpaceDocument", e);
+                LOGGER.log(Level.WARNING, "Error while getting charts, cannot convert XMLObject into ChartSpaceDocument", e);
             }
         }
 

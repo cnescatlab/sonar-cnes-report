@@ -18,10 +18,13 @@ package fr.cnes.sonar.report.utils;
 
 import org.apache.commons.cli.*;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Properties;
 
 /**
  * Manage the command line by parsing it and providing preprocessed data.
@@ -51,7 +54,7 @@ public class CommandLineManager {
             {"o", "output", Boolean.TRUE.toString(), "Output path for exported resources."},
             {"l", "language", Boolean.TRUE.toString(), "Language of the report. Values: en_US, fr_FR. Default: en_US."},
             {"a", "author", Boolean.TRUE.toString(), "Name of the report writer."},
-            {"d", "date", Boolean.TRUE.toString(), "Date for the report. Default: current date."},
+            {"d", "date", Boolean.TRUE.toString(), "Date for the report. Format: " + StringManager.DATE_PATTERN + ". Default: current date."},
             {"c", "disable-conf", Boolean.FALSE.toString(), "Disable export of quality configuration used during analysis."},
             {"w", "disable-report", Boolean.FALSE.toString(), "Disable report generation."},
             {"e", "disable-spreadsheet", Boolean.FALSE.toString(), "Disable spreadsheet generation."},
@@ -112,6 +115,20 @@ public class CommandLineManager {
         } else if (commandLine.hasOption("h")) {
             printHelp();
             System.exit(0);
+        } else if (commandLine.hasOption("v")) {
+            // Display version information and exit.
+            try(InputStream input = this.getClass().getClassLoader().getResourceAsStream("version.properties")) {
+                if(input!=null) {
+                    final Properties properties = new Properties();
+                    properties.load(input);
+                    String version = properties.getProperty("version");
+                    String message = String.format("Current version: %s", version);                    
+                    LOGGER.info(message);
+                    System.exit(0);
+                }
+            } catch (IOException e) {
+                LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            }
         }
     }
 

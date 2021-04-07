@@ -59,7 +59,7 @@ public class MarkdownExporter implements IExporter {
     /**
      * Placeholder for issues table
      */
-    private static String ISSUES_DETAILS_PLACEHOLDER = "$ISSUES_DETAILS";
+    private static final String ISSUES_DETAILS_PLACEHOLDER = "$ISSUES_DETAILS";
     /**
      * Placeholder for volume table
      */
@@ -67,11 +67,11 @@ public class MarkdownExporter implements IExporter {
     /**
      * Markdown special chars
      */
-    private static String CELL_SEPARATOR = "|";
-    private static String ESCAPED_CELL_SEPARATOR = "&#124";
-    private static String HEADER_SEPARATOR = "---";
-    private static String LINE_BREAK = "\n";
-    private static String MD_LINE_BREAK = " <br /> ";
+    private static final String CELL_SEPARATOR = "|";
+    private static final String ESCAPED_CELL_SEPARATOR = "&#124";
+    private static final String HEADER_SEPARATOR = "---";
+    private static final String LINE_BREAK = "\n";
+    private static final String MD_LINE_BREAK = " <br /> ";
 
     @Override
     public File export(Object data, String path, String filename) throws IOException, BadExportationDataTypeException {

@@ -26,6 +26,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class ZipFolder {
+
+    /** Logger of this class */
+    private static final Logger LOGGER = Logger.getLogger(ZipFolder.class.getName());
+
     private ZipFolder(){
         throw new IllegalStateException("Utility class");
     }
@@ -52,7 +56,6 @@ public class ZipFolder {
                             Files.deleteIfExists(path);
                             zs.closeEntry();
                         } catch (IOException e) {
-                            Logger LOGGER = Logger.getLogger(ZipFolder.class.getName());
                             LOGGER.warning(e.getMessage());
                         }
                     });
