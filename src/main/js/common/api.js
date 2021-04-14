@@ -21,11 +21,15 @@ export function getProjectsList(){
   return getJSON("/api/components/search", {"qualifiers": "TRK", "ps":elementByPage}).then(response => {
     const nbProjects = response.paging.total;
     let nbPages = Math.ceil(nbProjects/elementByPage);
-    //Fill an array of promises
-    for(let i = 1; i <= nbPages; i++){
-      allPromises.push(getJSON("/api/components/search", {"qualifiers": "TRK", "ps":elementByPage, "p":i}).then(response => {
-        return response.components;
-      }));
+    //Store the first page
+    allPromises.push(response.components);
+    //Fill the array of promises with next pages if there are ones
+    if (nbPages >= 2) {
+      for(let i = 2; i <= nbPages; i++){
+        allPromises.push(getJSON("/api/components/search", {"qualifiers": "TRK", "ps":elementByPage, "p":i}).then(response => {
+          return response.components;
+        }));
+      }
     }
     //Wait until all promises are done
     return Promise.all(allPromises);
