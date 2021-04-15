@@ -4,6 +4,7 @@
  */
 
 const path = require("path");
+const utils = require('./utils');
 
 module.exports = {
   // Define the entry points here. They MUST have the same name as the page_id
@@ -18,7 +19,7 @@ module.exports = {
     filename: "[name].js"
   },
   resolve: {
-    modules: [ path.join(__dirname, "src/main/js") ]
+    modules: [ path.join(__dirname, "src/main/js"), 'node_modules' ]
   },
   externals: {
     // React 16.8 ships with SonarQube, and should be re-used to avoid 
@@ -28,12 +29,7 @@ module.exports = {
     // Register the Sonar* globals as packages, to simplify importing.
     // See src/main/js/common/api.js for more information on what is exposed 
     // in SonarRequest.
-    "sonar-request": "SonarRequest",
-    // TODO: provide an example
-    "sonar-measures": "SonarMeasures",
-    // See src/main/js/portfolio_page/components/MeasuresHistory.js for some
-    // examples using React components from SonarQube.
-    "sonar-components": "SonarComponents"
+    "sonar-request": "SonarRequest"
   },
   module: {
     // Our example uses Babel to transpile our code.
@@ -44,8 +40,20 @@ module.exports = {
         exclude: /(node_modules)/
       },
       {
-        test: /\.css/,
-        loader: "style-loader!css-loader!postcss-loader"
+        // extract styles from 'app/' into separate file
+        test: /\.css$/,
+        include: path.resolve(__dirname, 'src/main/js'),
+        use: [
+          'style-loader',
+          utils.cssLoader(),
+          utils.postcssLoader()
+        ]
+      },
+      {
+        // inline all other styles
+        test: /\.css$/,
+        exclude: path.resolve(__dirname, 'src/main/js'),
+        use: ['style-loader', utils.cssLoader(), utils.postcssLoader()]
       },
       { test: /\.json$/, loader: "json" }
     ]
