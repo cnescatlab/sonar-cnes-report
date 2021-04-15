@@ -1,3 +1,8 @@
+/**
+ * Script taken from https://github.com/SonarSource/sonarqube
+ * Defines custom css properties
+ */
+
 const grid = 8;
 
 module.exports = {

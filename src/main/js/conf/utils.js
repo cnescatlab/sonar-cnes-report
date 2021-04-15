@@ -1,3 +1,8 @@
+/**
+ * Script taken from https://github.com/SonarSource/sonarqube
+ * Used to provide custom css properties to sonar-ui-common library
+ */
+
 const cssLoader = () => ({
     loader: 'css-loader',
     options: {
