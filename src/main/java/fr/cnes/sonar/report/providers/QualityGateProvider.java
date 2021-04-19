@@ -107,8 +107,8 @@ public class QualityGateProvider extends AbstractDataProvider {
 
         // get all the quality gates
         final List<QualityGate> qualityGates = getQualityGates();
-        // request the criteria
-        String request = String.format(getRequest(GET_QUALITY_GATE_REQUEST),
+        // get the project
+        String request = String.format(getRequest(GET_PROJECT_REQUEST),
                 getServer().getUrl(), getProjectKey(), getBranch());
         // Final quality gate result.
         QualityGate res;
