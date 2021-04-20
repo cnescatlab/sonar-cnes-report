@@ -54,6 +54,10 @@ public class Report {
      */
     private List<Facet> facets;
     /**
+     * List of security hotspots detected in the project
+     */
+    private List<SecurityHotspot> securityHotspots;
+    /**
      * List of measures on the project
      */
     private List<Measure> measures;
@@ -90,6 +94,7 @@ public class Report {
         this.issues = new ArrayList<>();
         this.unconfirmed = new ArrayList<>();
         this.facets = new ArrayList<>();
+        this.securityHotspots = new ArrayList<>();
         this.measures = new ArrayList<>();
         this.rawIssues = new ArrayList<>();
         this.components = new ArrayList<>();
@@ -161,6 +166,22 @@ public class Report {
      */
     public void setIssues(List<Issue> pIssues) {
         this.issues = new ArrayList<>(pIssues);
+    }
+
+    /**
+     * Get security hotspots
+     * @return security hotspots
+     */
+    public List<SecurityHotspot> getSecurityHotspots() {
+        return new ArrayList<>(securityHotspots);
+    }
+
+    /**
+     * Setter for security hotspots
+     * @param pSecurityHotspots value
+     */
+    public void setSecurityHotspots(List<SecurityHotspot> pSecurityHotspots) {
+        this.securityHotspots = new ArrayList<>(pSecurityHotspots);
     }
 
     /**

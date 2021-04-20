@@ -84,6 +84,7 @@ public class ReportModelFactory {
         final ProviderFactory providerFactory = new ProviderFactory(this.server, this.token, this.project,
                 this.branch);
         final IssuesProvider issuesProvider = providerFactory.create(IssuesProvider.class);
+        final SecurityHotspotsProvider securityHotspotsProvider = providerFactory.create(SecurityHotspotsProvider.class);
         final MeasureProvider measureProvider = providerFactory.create(MeasureProvider.class);
         final ProjectProvider projectProvider = providerFactory.create(ProjectProvider.class);
         final QualityProfileProvider qualityProfileProvider = providerFactory.create(QualityProfileProvider.class);
@@ -115,6 +116,8 @@ public class ReportModelFactory {
         report.setRawIssues(issuesProvider.getRawIssues());
         // facets's setting
         report.setFacets(issuesProvider.getFacets());
+        // security hotspots
+        report.setSecurityHotspots(securityHotspotsProvider.getSecurityHotspots());
         // quality profile's setting
         report.setQualityProfiles(qualityProfileProvider.getQualityProfiles(report.getProject().getOrganization()));
         // quality gate's setting

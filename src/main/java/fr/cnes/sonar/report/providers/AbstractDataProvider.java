@@ -81,6 +81,18 @@ public abstract class AbstractDataProvider {
      */
     protected static final String GET_FACETS_REQUEST = "GET_FACETS_REQUEST";
     /**
+     * Name of the request for getting security hotspots
+     */
+    protected static final String GET_SECURITY_HOTSPOTS_REQUEST = "GET_SECURITY_HOTSPOTS_REQUEST";
+    /**
+     * Name of the request for getting a specific security hotspot
+     */
+    protected static final String GET_SECURITY_HOTSPOT_REQUEST = "GET_SECURITY_HOTSPOT_REQUEST";
+    /**
+     * Name of the request for getting a specific rule
+     */
+    protected static final String GET_RULE_REQUEST = "GET_RULE_REQUEST";
+    /**
      *  Name of the property for the maximum number of results per page
      */
     protected static final String MAX_PER_PAGE_SONARQUBE = "MAX_PER_PAGE_SONARQUBE";
