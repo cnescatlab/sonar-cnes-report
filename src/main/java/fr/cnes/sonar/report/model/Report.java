@@ -56,7 +56,11 @@ public class Report {
     /**
      * List of security hotspots detected in the project
      */
-    private List<SecurityHotspot> securityHotspots;
+    private List<SecurityHotspot> toReviewSecurityHotspots;
+    /**
+     * List of reviewed security hotspots issues in the project
+     */
+    private List<SecurityHotspot> reviewedSecurityHotspots;
     /**
      * List of measures on the project
      */
@@ -94,7 +98,8 @@ public class Report {
         this.issues = new ArrayList<>();
         this.unconfirmed = new ArrayList<>();
         this.facets = new ArrayList<>();
-        this.securityHotspots = new ArrayList<>();
+        this.toReviewSecurityHotspots = new ArrayList<>();
+        this.reviewedSecurityHotspots = new ArrayList<>();
         this.measures = new ArrayList<>();
         this.rawIssues = new ArrayList<>();
         this.components = new ArrayList<>();
@@ -169,19 +174,35 @@ public class Report {
     }
 
     /**
-     * Get security hotspots
+     * Get security hotspots with TO_REVIEW status
      * @return security hotspots
      */
-    public List<SecurityHotspot> getSecurityHotspots() {
-        return new ArrayList<>(securityHotspots);
+    public List<SecurityHotspot> getToReviewSecurityHotspots() {
+        return toReviewSecurityHotspots;
     }
 
     /**
-     * Setter for security hotspots
-     * @param pSecurityHotspots value
+     * Setter for toReviewSecurityHotspots
+     * @param pToReviewSecurityHotspots value
      */
-    public void setSecurityHotspots(List<SecurityHotspot> pSecurityHotspots) {
-        this.securityHotspots = new ArrayList<>(pSecurityHotspots);
+    public void setToReviewSecurityHotspots(List<SecurityHotspot> pToReviewSecurityHotspots) {
+        this.toReviewSecurityHotspots = pToReviewSecurityHotspots;
+    }
+
+    /**
+     * Get security hotspots with REVIEWED status
+     * @return security hotspots
+     */
+    public List<SecurityHotspot> getReviewedSecurityHotspots() {
+        return reviewedSecurityHotspots;
+    }
+
+    /**
+     * Setter for reviewedSecurityHotspots
+     * @param pReviewedSecurityHotspots value
+     */
+    public void setReviewedSecurityHotspots(List<SecurityHotspot> pReviewedSecurityHotspots) {
+        this.reviewedSecurityHotspots = pReviewedSecurityHotspots;
     }
 
     /**

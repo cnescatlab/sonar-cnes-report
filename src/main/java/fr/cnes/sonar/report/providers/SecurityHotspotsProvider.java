@@ -62,6 +62,14 @@ public class SecurityHotspotsProvider extends AbstractDataProvider {
      * Field to search in json to get the security hotspot's language
      */
     protected static final String LANGUAGE = "langName";
+    /**
+     * Value of the status parameter to get security hotspots to review
+     */
+    private static final String TO_REVIEW = "TO_REVIEW";
+    /**
+     * Value of the status parameter to get reviewed security hotspots
+     */
+    private static final String REVIEWED = "REVIEWED";
 
     /**
      * Complete constructor.
@@ -76,12 +84,35 @@ public class SecurityHotspotsProvider extends AbstractDataProvider {
     }
 
     /**
-     * Get all the security hotspots of a project
+     * Get security hotspots of a project with TO_REVIEW status
      * @return List containing all the security hotspots
      * @throws BadSonarQubeRequestException A request is not recognized by the server
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    public List<SecurityHotspot> getSecurityHotspots() 
+    public List<SecurityHotspot> getToReviewSecurityHotspots()
+            throws BadSonarQubeRequestException, SonarQubeException {
+        return getSecurityHotspotsByStatus(TO_REVIEW);
+    }
+
+    /**
+     * Get security hotspots of a project with REVIEWED status
+     * @return List containing all the security hotspots
+     * @throws BadSonarQubeRequestException A request is not recognized by the server
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    public List<SecurityHotspot> getReviewedSecurityHotspots()
+            throws BadSonarQubeRequestException, SonarQubeException {
+        return getSecurityHotspotsByStatus(REVIEWED);
+    }
+
+    /**
+     * Get security hotspots depending on their status
+     * @param status The status of security hotspots
+     * @return List containing all the security hotspots
+     * @throws BadSonarQubeRequestException A request is not recognized by the server
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    public List<SecurityHotspot> getSecurityHotspotsByStatus(String status)
             throws BadSonarQubeRequestException, SonarQubeException {
         // results variable
         final List<SecurityHotspot> res = new ArrayList<>();
@@ -96,7 +127,7 @@ public class SecurityHotspotsProvider extends AbstractDataProvider {
         while(goOn) {
             // prepare the request to get all the security hotspots
             final String searchHotspotsRequest = String.format(getRequest(GET_SECURITY_HOTSPOTS_REQUEST),
-                    getServer().getUrl(), getBranch(), page, getProjectKey(), maxPerPage);
+                    getServer().getUrl(), getBranch(), page, getProjectKey(), maxPerPage, status);
             // perform the request to the server
             final JsonObject searchHotspotsResult = request(searchHotspotsRequest);
             // transform json to SecurityHotspot[]
@@ -107,13 +138,15 @@ public class SecurityHotspotsProvider extends AbstractDataProvider {
                 final String showHotspotRequest = String.format(getRequest(GET_SECURITY_HOTSPOTS_REQUEST),
                         getServer().getUrl(), securityHotspot.getKey());
                 final JsonObject showHotspotsResult = request(showHotspotRequest);
-                String resolution = showHotspotsResult.get(RESOLUTION).getAsString();
                 JsonObject rule = showHotspotsResult.get(RULE).getAsJsonObject();
                 String key = rule.get(KEY).getAsString();
                 Comment[] comments = getGson().fromJson(showHotspotsResult.get(COMMENTS), Comment[].class);
-                securityHotspot.setResolution(resolution);
                 securityHotspot.setRule(key);
                 securityHotspot.setComments(comments);
+                if(status.equals(REVIEWED)) {
+                    String resolution = showHotspotsResult.get(RESOLUTION).getAsString();
+                    securityHotspot.setResolution(resolution);
+                }
 
                 final String showRuleRequest = String.format(getRequest(GET_RULE_REQUEST), getServer().getUrl(),
                         securityHotspot.getRule());

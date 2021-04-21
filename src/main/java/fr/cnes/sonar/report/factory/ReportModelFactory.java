@@ -116,8 +116,10 @@ public class ReportModelFactory {
         report.setRawIssues(issuesProvider.getRawIssues());
         // facets's setting
         report.setFacets(issuesProvider.getFacets());
-        // security hotspots
-        report.setSecurityHotspots(securityHotspotsProvider.getSecurityHotspots());
+        // security hotspots to review
+        report.setToReviewSecurityHotspots(securityHotspotsProvider.getToReviewSecurityHotspots());
+        // reviewed security hotspots
+        report.setReviewedSecurityHotspots(securityHotspotsProvider.getReviewedSecurityHotspots());
         // quality profile's setting
         report.setQualityProfiles(qualityProfileProvider.getQualityProfiles(report.getProject().getOrganization()));
         // quality gate's setting
