@@ -255,6 +255,19 @@ public final class DataAdapter {
         "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "INFO"
     };
     /**
+     * List of possible security hotspot category
+     */
+    private static final String[] SECURITY_HOTSPOT_CATEGORY = {
+        "buffer-overflow", "sql-injection", "rce", "object-injection", "command-injection",
+        "path-traversal-injection", "ldap-injection", "xpath-injection", "log-injection",
+        "xxe", "xss", "dos", "ssrf", "csrf", "http-response-splitting", "open-redirect",
+        "weak-cryptography", "auth", "insecure-conf", "file-manipulation", "others"
+    };
+    /**
+     * List of possible security hotspot review priority
+     */
+    private static final String[] SECURITY_HOTSPOT_PRIORITY = {"LOW", "MEDIUM", "HIGH"};
+    /**
      * Field in json response for number of code lines per language
      */
     private static final String NCLOC_PER_LANGUAGE = "ncloc_language_distribution";
@@ -315,6 +328,53 @@ public final class DataAdapter {
             }
         }
         return results;
+    }
+
+    /**
+     * Prepare list of resources to be print in a table
+     * Data are lines containing the number of security hotspots by review priority and security category
+     * @param report report from which to extract resources
+     * @return
+     */
+    public static List<List<String>> getSecurityHotspotsByCategoryAndPriority(Report report) {
+        // result to return
+        final List<List<String>> result = new ArrayList<>();
+
+        final String[] categories = SECURITY_HOTSPOT_CATEGORY;
+        final String[] priorities = SECURITY_HOTSPOT_PRIORITY;
+
+        for (String category : categories) {
+            // list of items for a line of the table
+            final List<String> row = new ArrayList<>();
+            // accumulator for the number of occurrences for each priority
+            int[] countPerPriority = new int[priorities.length];
+            for (SecurityHotspot securityHotspot : report.getToReviewSecurityHotspots()) {
+                if(securityHotspot.getSecurityCategory().equals(category)) {
+                    boolean found = false;
+                    int i = 0;
+                    while (i<priorities.length && !found) {
+                        if(securityHotspot.getVulnerabilityProbability().equals(priorities[i])) {
+                            // increment the count of the priority
+                            countPerPriority[i]++;
+                            found = true;
+                        }
+                        i++;
+                    }
+                }
+            }
+            // add data to the row
+            row.add(category);
+            for (int i = 0; i < countPerPriority.length; i++) {
+                row.add(String.valueOf(countPerPriority[i]));
+            }
+            // add row to the result
+            result.add(row);
+        }
+        return result;
+    }
+
+    public static String[] getSecurityHotspotPriority() {
+        return SECURITY_HOTSPOT_PRIORITY;
     }
 
     /**

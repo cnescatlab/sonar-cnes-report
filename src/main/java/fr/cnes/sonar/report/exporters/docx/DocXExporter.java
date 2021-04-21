@@ -50,6 +50,10 @@ public class DocXExporter implements IExporter {
      */
     private static final String COUNT_TABLE_PLACEHOLDER = "$ISSUES_COUNT";
     /**
+     * Placeholder for the table containing counts of security hotspots by review priority and security category
+     */
+    private static final String SECURITY_HOTSPOTS_COUNT_TABLE_PLACEHOLDER = "$SECURITY_HOTSPOTS_COUNT";
+    /**
      * Placeholder for the table containing counts of issues by type and severity
      */
     private static final String VOLUME_TABLE_PLACEHOLDER = "$VOLUME";
@@ -129,6 +133,13 @@ public class DocXExporter implements IExporter {
             DocXTools.fillTable(document,
                     headerIssues.subList(HEADER_START_INDEX, HEADER_END_INDEX),
                     types, COUNT_TABLE_PLACEHOLDER);
+
+            // Add security hotspots by security category and review priority
+            final List<List<String>> securityHotspotsByCategoryAndPriority = DataAdapter.getSecurityHotspotsByCategoryAndPriority(report);
+            final List<String> headerSecurityHotspotsCount = new ArrayList<>(Arrays.asList(DataAdapter.getSecurityHotspotPriority()));
+            headerSecurityHotspotsCount.add(0, StringManager.string("header.categorySlashPriority"));
+            DocXTools.fillTable(document, headerSecurityHotspotsCount, securityHotspotsByCategoryAndPriority,
+                    SECURITY_HOTSPOTS_COUNT_TABLE_PLACEHOLDER);
 
             // Add volumes by language
             final List<String> volumesHeader = new ArrayList<>(Arrays.asList(VOLUMES_HEADER));

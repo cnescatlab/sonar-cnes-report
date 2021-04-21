@@ -175,7 +175,7 @@ public class SecurityHotspot {
      * Getter for vulnerabilityProbability
      * @return vulnerabilityProbability
      */
-    public String getvulnerabilityProbability() {
+    public String getVulnerabilityProbability() {
         return vulnerabilityProbability;
     }
 
@@ -183,7 +183,7 @@ public class SecurityHotspot {
      * Setter for vulnerabilityProbability
      * @param vulnerabilityProbability value
      */
-    public void setvulnerabilityProbability(String vulnerabilityProbability) {
+    public void setVulnerabilityProbability(String vulnerabilityProbability) {
         this.vulnerabilityProbability = vulnerabilityProbability;
     }
 

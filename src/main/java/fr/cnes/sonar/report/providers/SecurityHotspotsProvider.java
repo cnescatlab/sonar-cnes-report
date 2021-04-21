@@ -135,7 +135,7 @@ public class SecurityHotspotsProvider extends AbstractDataProvider {
                     SecurityHotspot[].class);
             // perform requests to get more information about each security hotspot
             for (SecurityHotspot securityHotspot : securityHotspotTemp) {
-                final String showHotspotRequest = String.format(getRequest(GET_SECURITY_HOTSPOTS_REQUEST),
+                final String showHotspotRequest = String.format(getRequest(GET_SECURITY_HOTSPOT_REQUEST),
                         getServer().getUrl(), securityHotspot.getKey());
                 final JsonObject showHotspotsResult = request(showHotspotRequest);
                 JsonObject rule = showHotspotsResult.get(RULE).getAsJsonObject();
@@ -151,15 +151,17 @@ public class SecurityHotspotsProvider extends AbstractDataProvider {
                 final String showRuleRequest = String.format(getRequest(GET_RULE_REQUEST), getServer().getUrl(),
                         securityHotspot.getRule());
                 final JsonObject showRuleResult = request(showRuleRequest);
-                String severity = showRuleResult.get(SEVERITY).getAsString();
-                String language = showRuleResult.get(LANGUAGE).getAsString();
+                JsonObject ruleContent = showRuleResult.get(RULE).getAsJsonObject();
+                String severity = ruleContent.get(SEVERITY).getAsString();
+                String language = ruleContent.get(LANGUAGE).getAsString();
                 securityHotspot.setSeverity(severity);
                 securityHotspot.setLanguage(language);
             }
             // add security hotspots to the final result
             res.addAll(Arrays.asList(securityHotspotTemp));
             // get total number of items
-            int number = searchHotspotsResult.get(TOTAL).getAsInt();
+            JsonObject paging = searchHotspotsResult.get(PAGING).getAsJsonObject();
+            int number = paging.get(TOTAL).getAsInt();
             // update stop condition and increment current page
             goOn = page*maxPerPage < number;
             page++;
