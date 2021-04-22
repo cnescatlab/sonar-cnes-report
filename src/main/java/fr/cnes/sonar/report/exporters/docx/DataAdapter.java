@@ -255,18 +255,13 @@ public final class DataAdapter {
         "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "INFO"
     };
     /**
-     * List of possible security hotspot category
+     * List of possible security hotspot categories
      */
-    private static final String[] SECURITY_HOTSPOT_CATEGORY = {
-        "buffer-overflow", "sql-injection", "rce", "object-injection", "command-injection",
-        "path-traversal-injection", "ldap-injection", "xpath-injection", "log-injection",
-        "xxe", "xss", "dos", "ssrf", "csrf", "http-response-splitting", "open-redirect",
-        "weak-cryptography", "auth", "insecure-conf", "file-manipulation", "others"
-    };
+    private static final Map<String,String> SECURITY_HOTSPOT_CATEGORIES = new HashMap<>();
     /**
-     * List of possible security hotspot review priority
+     * List of possible security hotspot review priorities
      */
-    private static final String[] SECURITY_HOTSPOT_PRIORITY = {"LOW", "MEDIUM", "HIGH"};
+    private static final String[] SECURITY_HOTSPOT_PRIORITIES = {"LOW", "MEDIUM", "HIGH"};
     /**
      * Field in json response for number of code lines per language
      */
@@ -287,6 +282,30 @@ public final class DataAdapter {
      * Just an empty string
      */
     private static final String EMPTY = "";
+
+    static {
+        SECURITY_HOTSPOT_CATEGORIES.put("buffer-overflow", "Buffer Overflow");
+        SECURITY_HOTSPOT_CATEGORIES.put("sql-injection", "SQL Injection");
+        SECURITY_HOTSPOT_CATEGORIES.put("rce", "Code Injection (RCE)");
+        SECURITY_HOTSPOT_CATEGORIES.put("object-injection", "Object Injection");
+        SECURITY_HOTSPOT_CATEGORIES.put("command-injection", "Command Injection");
+        SECURITY_HOTSPOT_CATEGORIES.put("path-traversal-injection", "Path Traversal Injection");
+        SECURITY_HOTSPOT_CATEGORIES.put("ldap-injection", "LDAP Injection");
+        SECURITY_HOTSPOT_CATEGORIES.put("xpath-injection", "XPath Injection");
+        SECURITY_HOTSPOT_CATEGORIES.put("log-injection", "Log Injection");
+        SECURITY_HOTSPOT_CATEGORIES.put("xxe", "XML External Entity (XXE)");
+        SECURITY_HOTSPOT_CATEGORIES.put("xss", "Cross-Site Scripting (XSS)");
+        SECURITY_HOTSPOT_CATEGORIES.put("dos", "Denial of Service (DoS)");
+        SECURITY_HOTSPOT_CATEGORIES.put("ssrf", "Server-Side Request Forgery (SSRF)");
+        SECURITY_HOTSPOT_CATEGORIES.put("csrf", "Cross-Site Request Forgery (CSRF)");
+        SECURITY_HOTSPOT_CATEGORIES.put("http-response-splitting", "HTTP Response Splitting");
+        SECURITY_HOTSPOT_CATEGORIES.put("open-redirect", "Open Redirect");
+        SECURITY_HOTSPOT_CATEGORIES.put("weak-cryptography", "Weak Cryptography");
+        SECURITY_HOTSPOT_CATEGORIES.put("auth", "Authentication");
+        SECURITY_HOTSPOT_CATEGORIES.put("insecure-conf", "Insecure Configuration");
+        SECURITY_HOTSPOT_CATEGORIES.put("file-manipulation", "File Manipulation");
+        SECURITY_HOTSPOT_CATEGORIES.put("others", "Others");
+    }
 
     /**
      * Private constructor to forbid instantiation of this class
@@ -340,16 +359,18 @@ public final class DataAdapter {
         // result to return
         final List<List<String>> result = new ArrayList<>();
 
-        final String[] categories = SECURITY_HOTSPOT_CATEGORY;
-        final String[] priorities = SECURITY_HOTSPOT_PRIORITY;
+        final Map<String,String> categories = SECURITY_HOTSPOT_CATEGORIES;
+        final String[] priorities = SECURITY_HOTSPOT_PRIORITIES;
 
-        for (String category : categories) {
+        for (Map.Entry<String, String> entry : categories.entrySet()) {
+            String categoryKey = entry.getKey();
+            String categoryName = entry.getValue();
             // list of items for a line of the table
             final List<String> row = new ArrayList<>();
             // accumulator for the number of occurrences for each priority
             int[] countPerPriority = new int[priorities.length];
             for (SecurityHotspot securityHotspot : report.getToReviewSecurityHotspots()) {
-                if(securityHotspot.getSecurityCategory().equals(category)) {
+                if(securityHotspot.getSecurityCategory().equals(categoryKey)) {
                     boolean found = false;
                     int i = 0;
                     while (i<priorities.length && !found) {
@@ -363,7 +384,7 @@ public final class DataAdapter {
                 }
             }
             // add data to the row
-            row.add(category);
+            row.add(categoryName);
             for (int i = 0; i < countPerPriority.length; i++) {
                 row.add(String.valueOf(countPerPriority[i]));
             }
@@ -373,8 +394,8 @@ public final class DataAdapter {
         return result;
     }
 
-    public static String[] getSecurityHotspotPriority() {
-        return SECURITY_HOTSPOT_PRIORITY;
+    public static String[] getSecurityHotspotPriorities() {
+        return SECURITY_HOTSPOT_PRIORITIES;
     }
 
     /**

@@ -136,7 +136,7 @@ public class DocXExporter implements IExporter {
 
             // Add security hotspots by security category and review priority
             final List<List<String>> securityHotspotsByCategoryAndPriority = DataAdapter.getSecurityHotspotsByCategoryAndPriority(report);
-            final List<String> headerSecurityHotspotsCount = new ArrayList<>(Arrays.asList(DataAdapter.getSecurityHotspotPriority()));
+            final List<String> headerSecurityHotspotsCount = new ArrayList<>(Arrays.asList(DataAdapter.getSecurityHotspotPriorities()));
             headerSecurityHotspotsCount.add(0, StringManager.string("header.categorySlashPriority"));
             DocXTools.fillTable(document, headerSecurityHotspotsCount, securityHotspotsByCategoryAndPriority,
                     SECURITY_HOTSPOTS_COUNT_TABLE_PLACEHOLDER);
