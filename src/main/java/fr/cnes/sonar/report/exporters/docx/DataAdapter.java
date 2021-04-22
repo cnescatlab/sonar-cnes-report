@@ -282,6 +282,10 @@ public final class DataAdapter {
      * Just an empty string
      */
     private static final String EMPTY = "";
+    /**
+     * String for count
+     */
+    private static final String COUNT = "count";
 
     static {
         SECURITY_HOTSPOT_CATEGORIES.put("buffer-overflow", "Buffer Overflow");
@@ -486,6 +490,47 @@ public final class DataAdapter {
         }
 
         return items;
+    }
+
+    /**
+     * Get formatted security hotspots summary
+     * @param report report from which to export resources
+     * @return security hotspots list
+     */
+    public static List<List<String>> getSecurityHotspots(Report report) {
+        // result to return
+        final List<List<String>> result = new ArrayList<>();
+
+        // aggregated security hotspots data
+        HashMap<String, LinkedHashMap<String, String>> data = new HashMap<>();
+
+        for (SecurityHotspot securityHotspot : report.getToReviewSecurityHotspots()) {
+            // get the key of the security hotspot corresponding rule
+            String key = securityHotspot.getRule();
+            if(!data.containsKey(key)) {
+                // fill data
+                final Rule rule = report.getRule(key);
+                LinkedHashMap<String, String> fieldsValues = new LinkedHashMap<>();
+                fieldsValues.put("category", SECURITY_HOTSPOT_CATEGORIES.get(securityHotspot.getSecurityCategory()));
+                fieldsValues.put("name", rule.getName());
+                fieldsValues.put("decription", rule.getHtmlDesc()
+                        .replaceAll(DELETE_HTML_TAGS_REGEX, StringManager.EMPTY));
+                fieldsValues.put("priority", securityHotspot.getVulnerabilityProbability());
+                fieldsValues.put("severity", rule.getSeverity());
+                fieldsValues.put(COUNT, String.valueOf(1));
+                data.put(key, fieldsValues);
+            } else {
+                // increment rule count
+                String newCount = String.valueOf(Integer.valueOf(data.get(key).get(COUNT)) + 1);
+                data.get(key).put(COUNT, newCount);
+            }
+        }
+        // fill result with data
+        for (LinkedHashMap<String, String> fieldsValues : data.values()) {
+            List<String> row = new ArrayList<>(fieldsValues.values());
+            result.add(row);
+        }
+        return result;
     }
 
     /**
