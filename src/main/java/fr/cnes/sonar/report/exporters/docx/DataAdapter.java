@@ -513,8 +513,6 @@ public final class DataAdapter {
                 LinkedHashMap<String, String> fieldsValues = new LinkedHashMap<>();
                 fieldsValues.put("category", SECURITY_HOTSPOT_CATEGORIES.get(securityHotspot.getSecurityCategory()));
                 fieldsValues.put("name", rule.getName());
-                fieldsValues.put("decription", rule.getHtmlDesc()
-                        .replaceAll(DELETE_HTML_TAGS_REGEX, StringManager.EMPTY));
                 fieldsValues.put("priority", securityHotspot.getVulnerabilityProbability());
                 fieldsValues.put("severity", rule.getSeverity());
                 fieldsValues.put(COUNT, String.valueOf(1));

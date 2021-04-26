@@ -78,7 +78,6 @@ public class DocXExporter implements IExporter {
      */
     private static final String[] SECURITY_HOTSPOTS_HEADER = {StringManager.string("header.category"),
             StringManager.string("header.name"),
-            StringManager.string("header.description"),
             StringManager.string("header.priority"),
             StringManager.string("header.severity"),
             StringManager.string("header.count")};
