@@ -247,7 +247,7 @@ public final class DataAdapter {
     /**
      * List of possible issue types
      */
-    private static final String[] ISSUE_TYPES = {"VULNERABILITY", "BUG", "CODE_SMELL", "SECURITY_HOTSPOT"};
+    private static final String[] ISSUE_TYPES = {"VULNERABILITY", "BUG", "CODE_SMELL"};
     /**
      * List of possible issue severities
      */

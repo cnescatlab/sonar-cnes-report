@@ -115,9 +115,9 @@ public abstract class CommonTest {
         i2.setProject("genius");
         i2.setSeverity(MAJOR);
         i2.setStatus("OPEN");
-        i2.setType("SECURITY_HOTSPOT");
+        i2.setType("BUG");
         i2.setRule("abcd:dcba");
-        i4.setType(StringManager.HOTSPOT_TYPE);
+        i4.setType("BUG");
         // Adding multiple time to test comparator (DataAdapter.RuleComparator)
         Issue issue;
         for(int i=1;i<10;i++){
@@ -163,7 +163,7 @@ public abstract class CommonTest {
         final List<Value> valuesSeverity = new ArrayList<>();
         valuesSeverity.add(new Value("CRITICAL", 0));
         final List<Value> valuesType = new ArrayList<>();
-        valuesType.add(new Value("SECURITY_HOTSPOT", 5));
+        valuesType.add(new Value("BUG", 5));
         severities.setValues(valuesSeverity);
         types.setValues(valuesType);
         facets.add(rules);
