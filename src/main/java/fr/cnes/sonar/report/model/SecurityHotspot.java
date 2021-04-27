@@ -28,10 +28,6 @@ public class SecurityHotspot {
      */
     private String component;
     /**
-     * Name of the affected project
-     */
-    private String project;
-    /**
      * Line of the security hotspot
      */
     private String line;
@@ -78,7 +74,6 @@ public class SecurityHotspot {
     public SecurityHotspot() {
         this.key = "";
         this.component = "";
-        this.project = "";
         this.line = "";
         this.securityCategory = "";
         this.vulnerabilityProbability = "";
@@ -121,22 +116,6 @@ public class SecurityHotspot {
      */
     public void setComponent(String component) {
         this.component = component;
-    }
-
-    /**
-     * Getter for project
-     * @return project
-     */
-    public String getProject() {
-        return project;
-    }
-
-    /**
-     * Setter for project
-     * @param project value
-     */
-    public void setProject(String project) {
-        this.project = project;
     }
 
     /**

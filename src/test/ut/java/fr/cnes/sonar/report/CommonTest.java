@@ -181,7 +181,6 @@ public abstract class CommonTest {
         sh1.setKey("y");
         sh1.setLine("58");
         sh1.setMessage("qsdf");
-        sh1.setProject("genius");
         sh1.setSeverity(MAJOR);
         sh1.setStatus("TO_REVIEW");
         sh1.setRule("java:S1234");
@@ -193,7 +192,6 @@ public abstract class CommonTest {
         sh2.setKey("w");
         sh2.setLine("45");
         sh2.setMessage("wxcv");
-        sh2.setProject("genius");
         sh2.setSeverity(MAJOR);
         sh2.setStatus("TO_REVIEW");
         sh2.setRule("java:S4321");
@@ -205,7 +203,6 @@ public abstract class CommonTest {
         sh3.setKey("k");
         sh3.setLine("45");
         sh3.setMessage("wxcv");
-        sh3.setProject("genius");
         sh3.setSeverity(MAJOR);
         sh3.setStatus("TO_REVIEW");
         sh3.setRule("java:S4321");
@@ -225,7 +222,6 @@ public abstract class CommonTest {
         rsh1.setKey("u");
         rsh1.setLine("58");
         rsh1.setMessage("qsdf");
-        rsh1.setProject("genius");
         rsh1.setSeverity(MAJOR);
         rsh1.setStatus("REVIEWED");
         rsh1.setResolution("FIXED");
@@ -238,7 +234,6 @@ public abstract class CommonTest {
         rsh2.setKey("v");
         rsh2.setLine("45");
         rsh2.setMessage("wxcv");
-        rsh2.setProject("genius");
         rsh2.setSeverity(MAJOR);
         rsh2.setStatus("REVIEWED");
         rsh2.setResolution("SAFE");
