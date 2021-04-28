@@ -2,6 +2,7 @@ package fr.cnes.sonar.report.exporters.xlsx;
 
 import fr.cnes.sonar.report.model.Issue;
 import fr.cnes.sonar.report.model.SecurityHotspot;
+import fr.cnes.sonar.report.utils.StringManager;
 
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.util.AreaReference;
@@ -328,7 +329,7 @@ public final class XlsXTools {
                 // adding resources
                 row.createCell(RULE_ID_INDEX).setCellValue(securityHotspot.getRule());
                 row.createCell(MESSAGE_INDEX).setCellValue(securityHotspot.getMessage());
-                row.createCell(HOTSPOT_CATEGORY_INDEX).setCellValue(securityHotspot.getSecurityCategory());
+                row.createCell(HOTSPOT_CATEGORY_INDEX).setCellValue(StringManager.getSecurityHotspotsCategories().get(securityHotspot.getSecurityCategory()));
                 row.createCell(HOTSPOT_PRIORITY_INDEX).setCellValue(securityHotspot.getVulnerabilityProbability());
                 row.createCell(HOTSPOT_SEVERITY_INDEX).setCellValue(securityHotspot.getSeverity());
                 row.createCell(HOTSPOT_LANGUAGE_INDEX).setCellValue(securityHotspot.getLanguage());

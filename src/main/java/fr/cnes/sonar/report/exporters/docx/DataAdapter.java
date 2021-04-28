@@ -255,10 +255,6 @@ public final class DataAdapter {
         "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "INFO"
     };
     /**
-     * List of possible security hotspot categories
-     */
-    private static final Map<String,String> SECURITY_HOTSPOT_CATEGORIES = new HashMap<>();
-    /**
      * List of possible security hotspot review priorities
      */
     private static final String[] SECURITY_HOTSPOT_PRIORITIES = {"LOW", "MEDIUM", "HIGH"};
@@ -286,30 +282,6 @@ public final class DataAdapter {
      * String for count
      */
     private static final String COUNT = "count";
-
-    static {
-        SECURITY_HOTSPOT_CATEGORIES.put("buffer-overflow", "Buffer Overflow");
-        SECURITY_HOTSPOT_CATEGORIES.put("sql-injection", "SQL Injection");
-        SECURITY_HOTSPOT_CATEGORIES.put("rce", "Code Injection (RCE)");
-        SECURITY_HOTSPOT_CATEGORIES.put("object-injection", "Object Injection");
-        SECURITY_HOTSPOT_CATEGORIES.put("command-injection", "Command Injection");
-        SECURITY_HOTSPOT_CATEGORIES.put("path-traversal-injection", "Path Traversal Injection");
-        SECURITY_HOTSPOT_CATEGORIES.put("ldap-injection", "LDAP Injection");
-        SECURITY_HOTSPOT_CATEGORIES.put("xpath-injection", "XPath Injection");
-        SECURITY_HOTSPOT_CATEGORIES.put("log-injection", "Log Injection");
-        SECURITY_HOTSPOT_CATEGORIES.put("xxe", "XML External Entity (XXE)");
-        SECURITY_HOTSPOT_CATEGORIES.put("xss", "Cross-Site Scripting (XSS)");
-        SECURITY_HOTSPOT_CATEGORIES.put("dos", "Denial of Service (DoS)");
-        SECURITY_HOTSPOT_CATEGORIES.put("ssrf", "Server-Side Request Forgery (SSRF)");
-        SECURITY_HOTSPOT_CATEGORIES.put("csrf", "Cross-Site Request Forgery (CSRF)");
-        SECURITY_HOTSPOT_CATEGORIES.put("http-response-splitting", "HTTP Response Splitting");
-        SECURITY_HOTSPOT_CATEGORIES.put("open-redirect", "Open Redirect");
-        SECURITY_HOTSPOT_CATEGORIES.put("weak-cryptography", "Weak Cryptography");
-        SECURITY_HOTSPOT_CATEGORIES.put("auth", "Authentication");
-        SECURITY_HOTSPOT_CATEGORIES.put("insecure-conf", "Insecure Configuration");
-        SECURITY_HOTSPOT_CATEGORIES.put("file-manipulation", "File Manipulation");
-        SECURITY_HOTSPOT_CATEGORIES.put("others", "Others");
-    }
 
     /**
      * Private constructor to forbid instantiation of this class
@@ -363,7 +335,7 @@ public final class DataAdapter {
         // result to return
         final List<List<String>> result = new ArrayList<>();
 
-        final Map<String,String> categories = SECURITY_HOTSPOT_CATEGORIES;
+        final Map<String,String> categories = StringManager.getSecurityHotspotsCategories();
         final String[] priorities = SECURITY_HOTSPOT_PRIORITIES;
 
         for (Map.Entry<String, String> entry : categories.entrySet()) {
@@ -511,7 +483,7 @@ public final class DataAdapter {
                 // fill data
                 final Rule rule = report.getRule(key);
                 LinkedHashMap<String, String> fieldsValues = new LinkedHashMap<>();
-                fieldsValues.put("category", SECURITY_HOTSPOT_CATEGORIES.get(securityHotspot.getSecurityCategory()));
+                fieldsValues.put("category", StringManager.getSecurityHotspotsCategories().get(securityHotspot.getSecurityCategory()));
                 fieldsValues.put("name", rule.getName());
                 fieldsValues.put("priority", securityHotspot.getVulnerabilityProbability());
                 fieldsValues.put("severity", rule.getSeverity());
