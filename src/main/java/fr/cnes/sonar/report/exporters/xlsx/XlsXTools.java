@@ -312,7 +312,7 @@ public final class XlsXTools {
             // Define the resources range including headers
             final AreaReference selectedDataRange = new AreaReference(
                     new CellReference(0, 0),
-                    new CellReference(securityHotspots.size(), 11),
+                    new CellReference(securityHotspots.size(), 10),
                     SpreadsheetVersion.EXCEL2007);
 
             // Set Range to the Table
