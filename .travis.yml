@@ -18,10 +18,7 @@ jdk:
 
 env:
   - sonarqube: none
-  - sonarqube: 7.9-community
-  - sonarqube: 8.0-community-beta
-  - sonarqube: 8.1-community-beta
-  - sonarqube: 8.2-community
+  - sonarqube: 8.8-community
 
 script:
   - if [ $sonarqube != "none" ]; then
