@@ -50,15 +50,6 @@ public abstract class AbstractDataProvider {
     protected static final String GET_QUALITY_PROFILES_PROJECTS_REQUEST =
             "GET_QUALITY_PROFILES_PROJECTS_REQUEST";
     /**
-     *  Name of the request for getting project's quality profiles
-     */
-    public static final String GET_PROJECT_QUALITY_PROFILES_REQUEST =
-            "GET_PROJECT_QUALITY_PROFILES_REQUEST";
-    /**
-     *  Name of the request allowing to retrieve the projects linked to quality gate
-     */
-    public static final String QUALITY_GATE_PROJECTS_REQUEST = "QUALITY_GATE_PROJECTS_REQUEST";
-    /**
      *  Name of the request for getting quality gates' details
      */
     protected static final String GET_QUALITY_GATES_DETAILS_REQUEST =
