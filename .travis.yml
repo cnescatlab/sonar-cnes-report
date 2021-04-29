@@ -42,7 +42,7 @@ script:
       mvn sonar:sonar -Dsonar.host.url=http://127.0.0.1:9000 -Dsonar.login=admin -Dsonar.password=admin -Dsonar.organization=default-organization -Dsonar.branch.name= ;
       src/test/it/run-test.sh;
       token_sonarqube=$(curl -X POST -H "Content-Type:application/x-www-form-urlencoded" -d "name=admin_token" -u admin:test http://localhost:9000/api/user_tokens/generate | jq -r '.token');
-      url_cnesreport=http://localhost:9000/api/cnesreport/report?key=fr.cnes.sonar%3Acnesreport&author=travis-ci&token=${token_sonarqube};
+      url_cnesreport="http://localhost:9000/api/cnesreport/report?key=fr.cnes.sonar%3Acnesreport&author=travis-ci&token=${token_sonarqube}";
       wget ${url_cnesreport};
     elif [ "$TRAVIS_JDK_VERSION" = "openjdk11" ]; then 
       mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar;
