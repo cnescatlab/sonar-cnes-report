@@ -23,7 +23,7 @@ env:
 script:
   - if [ $sonarqube != "none" ]; then
       mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package;
-      chmod +x src/test/it/run-test.sh;mvn clean package;
+      mvn clean package;
       echo "Starting docker";
       docker run --name sonarqube_${sonarqube} -d -p 9000:9000 sonarqube:${sonarqube};
       echo "Inject plugin";
@@ -42,7 +42,9 @@ script:
       mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=admin -Dsonar.password=admin -Dsonar.organization=default-organization -Dsonar.branch.name= ;
       set -x;
       token_sonarqube=$(curl -X POST -H "Content-Type&#58; application/x-www-form-urlencoded" -d "name=admin_token" -u admin:admin http://localhost:9000/api/user_tokens/generate | jq -r '.token');
-      src/test/it/run-test.sh;
+      cp src/main/resources/template/code-analysis-template.docx src/main/resources/template/issues-template.xlsx target;
+      cd target;
+      java -jar sonar-cnes-report.jar -t ${token_sonarqube} -p fr.cnes.sonar:cnesreport -s http://localhost:9000;
       url_cnesreport="http://localhost:9000/api/cnesreport/report?key=fr.cnes.sonar%3Acnesreport&author=travis-ci&token=${token_sonarqube}";
       curl -u admin:admin ${url_cnesreport} -O -J;
       set +x;
