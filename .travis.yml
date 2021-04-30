@@ -43,7 +43,7 @@ script:
       src/test/it/run-test.sh;
       token_sonarqube=$(curl -X POST -H "Content-Type&#58; application/x-www-form-urlencoded" -d "name=admin_token" -u admin:admin http://localhost:9000/api/user_tokens/generate | jq -r '.token');
       url_cnesreport="http://localhost:9000/api/cnesreport/report?key=fr.cnes.sonar%3Acnesreport&author=travis-ci&token=${token_sonarqube}";
-      wget ${url_cnesreport};
+      curl -u admin:admin ${url_cnesreport} -O -J;
     elif [ "$TRAVIS_JDK_VERSION" = "openjdk11" ]; then 
       mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar;
     fi
