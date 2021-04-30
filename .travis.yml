@@ -40,9 +40,9 @@ script:
           status_sonar=$(curl -s "http://localhost:9000/api/system/status" | grep "\"status\":\"UP\"" > /dev/null; echo $?);
       done;
       mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=admin -Dsonar.password=admin -Dsonar.organization=default-organization -Dsonar.branch.name= ;
-      src/test/it/run-test.sh;
       set -x;
       token_sonarqube=$(curl -X POST -H "Content-Type&#58; application/x-www-form-urlencoded" -d "name=admin_token" -u admin:admin http://localhost:9000/api/user_tokens/generate | jq -r '.token');
+      src/test/it/run-test.sh;
       url_cnesreport="http://localhost:9000/api/cnesreport/report?key=fr.cnes.sonar%3Acnesreport&author=travis-ci&token=${token_sonarqube}";
       curl -u admin:admin ${url_cnesreport} -O -J;
       set +x;
