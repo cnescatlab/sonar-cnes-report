@@ -338,31 +338,30 @@ public final class DataAdapter {
         final Map<String,String> categories = StringManager.getSecurityHotspotsCategories();
         final String[] priorities = SECURITY_HOTSPOT_PRIORITIES;
 
+        // accumulator for the number of occurrences for each priority
+        LinkedHashMap<String,Integer> countPerPriority = new LinkedHashMap<>();
+        for (String priority : priorities) {
+            countPerPriority.put(priority, 0);
+        }
+
         for (Map.Entry<String, String> entry : categories.entrySet()) {
             String categoryKey = entry.getKey();
             String categoryName = entry.getValue();
             // list of items for a line of the table
             final List<String> row = new ArrayList<>();
-            // accumulator for the number of occurrences for each priority
-            int[] countPerPriority = new int[priorities.length];
             for (SecurityHotspot securityHotspot : report.getToReviewSecurityHotspots()) {
                 if(securityHotspot.getSecurityCategory().equals(categoryKey)) {
-                    boolean found = false;
-                    int i = 0;
-                    while (i<priorities.length && !found) {
-                        if(securityHotspot.getVulnerabilityProbability().equals(priorities[i])) {
-                            // increment the count of the priority
-                            countPerPriority[i]++;
-                            found = true;
-                        }
-                        i++;
-                    }
+                    // increment the count of the priority
+                    countPerPriority.put(securityHotspot.getVulnerabilityProbability(),
+                            countPerPriority.get(securityHotspot.getVulnerabilityProbability()) + 1);
                 }
             }
             // add data to the row
             row.add(categoryName);
-            for (int i = 0; i < countPerPriority.length; i++) {
-                row.add(String.valueOf(countPerPriority[i]));
+            for (String priority : priorities) {
+                row.add(String.valueOf(countPerPriority.get(priority)));
+                // reset the count
+                countPerPriority.put(priority, 0);
             }
             // add row to the result
             result.add(row);
