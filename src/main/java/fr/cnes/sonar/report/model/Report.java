@@ -285,9 +285,15 @@ public class Report {
 
         // append each quality profile name
         Language language;
+        String languageName;
         for(ProfileMetaData q : project.getQualityProfiles()) {
             language = project.getLanguage(q.getLanguage());
-            sb.append(q.getName()).append(" [").append(language.getName()).append("]; ");
+            if (language != null) {
+                languageName = language.getName();
+            } else {
+                languageName = q.getLanguageName();
+            }
+            sb.append(q.getName()).append(" [").append(languageName).append("]; ");
         }
 
         return sb.toString();
