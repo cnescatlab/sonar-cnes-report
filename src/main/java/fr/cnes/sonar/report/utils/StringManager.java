@@ -26,6 +26,8 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Public class which contains all public String used by internal classes
@@ -77,6 +79,11 @@ public final class StringManager {
     /** Unique instance of this class (singleton). */
     private static StringManager ourInstance = null;
 
+    /**
+     * List of possible security hotspot categories
+     */
+    private static final Map<String, String> SECURITY_HOTSPOT_CATEGORIES = new HashMap<>();
+
     //
     // Static initialization block for reading .properties
     //
@@ -110,6 +117,9 @@ public final class StringManager {
 
         // load internationalized strings, default is defined in the properties file
         changeLocale(properties.getProperty(DEFAULT_LANGUAGE));
+
+        // initialize security hotspots categories
+        initSecurityHotspotsCategories();
     }
 
     /**
@@ -174,5 +184,38 @@ public final class StringManager {
         return messages.getString(key);
     }
 
+    /**
+     * Initialize security hotspots categories
+     */
+    public static void initSecurityHotspotsCategories() {
+        SECURITY_HOTSPOT_CATEGORIES.put("buffer-overflow", "Buffer Overflow");
+        SECURITY_HOTSPOT_CATEGORIES.put("sql-injection", "SQL Injection");
+        SECURITY_HOTSPOT_CATEGORIES.put("rce", "Code Injection (RCE)");
+        SECURITY_HOTSPOT_CATEGORIES.put("object-injection", "Object Injection");
+        SECURITY_HOTSPOT_CATEGORIES.put("command-injection", "Command Injection");
+        SECURITY_HOTSPOT_CATEGORIES.put("path-traversal-injection", "Path Traversal Injection");
+        SECURITY_HOTSPOT_CATEGORIES.put("ldap-injection", "LDAP Injection");
+        SECURITY_HOTSPOT_CATEGORIES.put("xpath-injection", "XPath Injection");
+        SECURITY_HOTSPOT_CATEGORIES.put("log-injection", "Log Injection");
+        SECURITY_HOTSPOT_CATEGORIES.put("xxe", "XML External Entity (XXE)");
+        SECURITY_HOTSPOT_CATEGORIES.put("xss", "Cross-Site Scripting (XSS)");
+        SECURITY_HOTSPOT_CATEGORIES.put("dos", "Denial of Service (DoS)");
+        SECURITY_HOTSPOT_CATEGORIES.put("ssrf", "Server-Side Request Forgery (SSRF)");
+        SECURITY_HOTSPOT_CATEGORIES.put("csrf", "Cross-Site Request Forgery (CSRF)");
+        SECURITY_HOTSPOT_CATEGORIES.put("http-response-splitting", "HTTP Response Splitting");
+        SECURITY_HOTSPOT_CATEGORIES.put("open-redirect", "Open Redirect");
+        SECURITY_HOTSPOT_CATEGORIES.put("weak-cryptography", "Weak Cryptography");
+        SECURITY_HOTSPOT_CATEGORIES.put("auth", "Authentication");
+        SECURITY_HOTSPOT_CATEGORIES.put("insecure-conf", "Insecure Configuration");
+        SECURITY_HOTSPOT_CATEGORIES.put("file-manipulation", "File Manipulation");
+        SECURITY_HOTSPOT_CATEGORIES.put("others", "Others");
+    }
 
+    /**
+     * Return a map containing the security hotspots categories names associated to their key
+     * @return the map
+     */
+    public static Map<String,String> getSecurityHotspotsCategories() {
+        return SECURITY_HOTSPOT_CATEGORIES;
+    }
 }

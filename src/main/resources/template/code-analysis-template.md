@@ -42,3 +42,10 @@ $ISSUES_COUNT
 
 ## Issues
 $ISSUES_DETAILS
+
+## Security hotspots count by category and priority
+
+$SECURITY_HOTSPOTS_COUNT
+
+## Security hotspots
+$SECURITY_HOTSPOTS_DETAILS

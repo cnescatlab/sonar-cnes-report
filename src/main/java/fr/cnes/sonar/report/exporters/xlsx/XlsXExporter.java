@@ -3,6 +3,7 @@ package fr.cnes.sonar.report.exporters.xlsx;
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exporters.IExporter;
 import fr.cnes.sonar.report.model.Report;
+import fr.cnes.sonar.report.model.SecurityHotspot;
 import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -11,6 +12,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.List;
+import java.util.stream.*;
 
 /**
  * Exports the report in .docx format
@@ -43,6 +46,14 @@ public class XlsXExporter implements IExporter {
      * Name for the table containing all raw resources
      */
     private static final String ALL_TABLE_NAME = "all";
+    /**
+     * Name for the tab containing formatted security hotspots
+     */
+    private static final String SECURITY_HOTSPOTS_SHEET_NAME = "Security Hotspots";
+    /**
+     * Name for the table containing security hotspots
+     */
+    private static final String SECURITY_HOTSPOTS_TABLE_NAME = "hotspots";
     /**
      * Name for the tab containing metrics
      */
@@ -99,6 +110,9 @@ public class XlsXExporter implements IExporter {
             // retrieve the sheet aiming to contain selected resources
             final XSSFSheet allDataSheet = (XSSFSheet) workbook.getSheet(ALL_DETAILS_SHEET_NAME);
 
+            // retrieve the sheet aiming to contain selected resources
+            final XSSFSheet securityHotspotsSheet = (XSSFSheet) workbook.getSheet(SECURITY_HOTSPOTS_SHEET_NAME);
+
             // retrieve the sheet with metrics
             final XSSFSheet metricsSheet = (XSSFSheet) workbook.getSheet(METRICS_SHEET_NAME);
 
@@ -110,6 +124,11 @@ public class XlsXExporter implements IExporter {
 
             // write all raw resources in the third sheet
             XlsXTools.addListOfMap(allDataSheet, report.getRawIssues(), ALL_TABLE_NAME);
+
+            // write all security hotspots in the security hotspots sheet
+            List<SecurityHotspot> allSecurityHotspots = Stream.concat(report.getToReviewSecurityHotspots().stream(),
+                    report.getReviewedSecurityHotspots().stream()).collect(Collectors.toList());
+            XlsXTools.addSecurityHotspots(allSecurityHotspots, securityHotspotsSheet, SECURITY_HOTSPOTS_TABLE_NAME);
 
             // write all metrics in the metric sheet
             XlsXTools.addListOfMap(metricsSheet, report.getComponents(), METRICS_TABLE_NAME);

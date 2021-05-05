@@ -247,13 +247,17 @@ public final class DataAdapter {
     /**
      * List of possible issue types
      */
-    private static final String[] ISSUE_TYPES = {"VULNERABILITY", "BUG", "CODE_SMELL", "SECURITY_HOTSPOT"};
+    private static final String[] ISSUE_TYPES = {"VULNERABILITY", "BUG", "CODE_SMELL"};
     /**
      * List of possible issue severities
      */
     private static final String[] ISSUE_SEVERITIES = {
         "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "INFO"
     };
+    /**
+     * List of possible security hotspot review priorities
+     */
+    private static final String[] SECURITY_HOTSPOT_PRIORITIES = {"LOW", "MEDIUM", "HIGH"};
     /**
      * Field in json response for number of code lines per language
      */
@@ -274,6 +278,10 @@ public final class DataAdapter {
      * Just an empty string
      */
     private static final String EMPTY = "";
+    /**
+     * String for count
+     */
+    private static final String COUNT = "count";
 
     /**
      * Private constructor to forbid instantiation of this class
@@ -315,6 +323,54 @@ public final class DataAdapter {
             }
         }
         return results;
+    }
+
+    /**
+     * Prepare list of resources to be print in a table
+     * Data are lines containing the number of security hotspots by review priority and security category
+     * @param report report from which to extract resources
+     * @return
+     */
+    public static List<List<String>> getSecurityHotspotsByCategoryAndPriority(Report report) {
+        // result to return
+        final List<List<String>> result = new ArrayList<>();
+
+        final Map<String,String> categories = StringManager.getSecurityHotspotsCategories();
+        final String[] priorities = SECURITY_HOTSPOT_PRIORITIES;
+
+        // accumulator for the number of occurrences for each priority
+        LinkedHashMap<String,Integer> countPerPriority = new LinkedHashMap<>();
+        for (String priority : priorities) {
+            countPerPriority.put(priority, 0);
+        }
+
+        for (Map.Entry<String, String> entry : categories.entrySet()) {
+            String categoryKey = entry.getKey();
+            String categoryName = entry.getValue();
+            // list of items for a line of the table
+            final List<String> row = new ArrayList<>();
+            for (SecurityHotspot securityHotspot : report.getToReviewSecurityHotspots()) {
+                if(securityHotspot.getSecurityCategory().equals(categoryKey)) {
+                    // increment the count of the priority
+                    countPerPriority.put(securityHotspot.getVulnerabilityProbability(),
+                            countPerPriority.get(securityHotspot.getVulnerabilityProbability()) + 1);
+                }
+            }
+            // add data to the row
+            row.add(categoryName);
+            for (String priority : priorities) {
+                row.add(String.valueOf(countPerPriority.get(priority)));
+                // reset the count
+                countPerPriority.put(priority, 0);
+            }
+            // add row to the result
+            result.add(row);
+        }
+        return result;
+    }
+
+    public static String[] getSecurityHotspotPriorities() {
+        return SECURITY_HOTSPOT_PRIORITIES;
     }
 
     /**
@@ -405,6 +461,45 @@ public final class DataAdapter {
         }
 
         return items;
+    }
+
+    /**
+     * Get formatted security hotspots summary
+     * @param report report from which to export resources
+     * @return security hotspots list
+     */
+    public static List<List<String>> getSecurityHotspots(Report report) {
+        // result to return
+        final List<List<String>> result = new ArrayList<>();
+
+        // aggregated security hotspots data
+        HashMap<String, LinkedHashMap<String, String>> data = new HashMap<>();
+
+        for (SecurityHotspot securityHotspot : report.getToReviewSecurityHotspots()) {
+            // get the key of the security hotspot corresponding rule
+            String key = securityHotspot.getRule();
+            if(!data.containsKey(key)) {
+                // fill data
+                final Rule rule = report.getRule(key);
+                LinkedHashMap<String, String> fieldsValues = new LinkedHashMap<>();
+                fieldsValues.put("category", StringManager.getSecurityHotspotsCategories().get(securityHotspot.getSecurityCategory()));
+                fieldsValues.put("name", rule.getName());
+                fieldsValues.put("priority", securityHotspot.getVulnerabilityProbability());
+                fieldsValues.put("severity", rule.getSeverity());
+                fieldsValues.put(COUNT, String.valueOf(1));
+                data.put(key, fieldsValues);
+            } else {
+                // increment rule count
+                String newCount = String.valueOf(Integer.valueOf(data.get(key).get(COUNT)) + 1);
+                data.get(key).put(COUNT, newCount);
+            }
+        }
+        // fill result with data
+        for (LinkedHashMap<String, String> fieldsValues : data.values()) {
+            List<String> row = new ArrayList<>(fieldsValues.values());
+            result.add(row);
+        }
+        return result;
     }
 
     /**

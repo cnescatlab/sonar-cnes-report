@@ -50,6 +50,14 @@ public class DocXExporter implements IExporter {
      */
     private static final String COUNT_TABLE_PLACEHOLDER = "$ISSUES_COUNT";
     /**
+     * Placeholder for the table containing detailed security hotspots
+     */
+    private static final String SECURITY_HOTSPOTS_DETAILS_PLACEHOLDER = "$SECURITY_HOTSPOTS_DETAILS";
+    /**
+     * Placeholder for the table containing counts of security hotspots by review priority and security category
+     */
+    private static final String SECURITY_HOTSPOTS_COUNT_TABLE_PLACEHOLDER = "$SECURITY_HOTSPOTS_COUNT";
+    /**
      * Placeholder for the table containing counts of issues by type and severity
      */
     private static final String VOLUME_TABLE_PLACEHOLDER = "$VOLUME";
@@ -65,6 +73,14 @@ public class DocXExporter implements IExporter {
             StringManager.string("header.type"),
             StringManager.string("header.severity"),
             StringManager.string(HEADER_NUMBER)};
+    /**
+     * Name of the columns in security hotspots table
+     */
+    private static final String[] SECURITY_HOTSPOTS_HEADER = {StringManager.string("header.category"),
+            StringManager.string("header.name"),
+            StringManager.string("header.priority"),
+            StringManager.string("header.severity"),
+            StringManager.string("header.count")};
     /**
      * Name of the columns in volumes table
      */
@@ -129,6 +145,18 @@ public class DocXExporter implements IExporter {
             DocXTools.fillTable(document,
                     headerIssues.subList(HEADER_START_INDEX, HEADER_END_INDEX),
                     types, COUNT_TABLE_PLACEHOLDER);
+
+            // Add security hotspots
+            final List<List<String>> securityHotspots = DataAdapter.getSecurityHotspots(report);
+            final List<String> headerSecurityHotspots = new ArrayList<>(Arrays.asList(SECURITY_HOTSPOTS_HEADER));
+            DocXTools.fillTable(document, headerSecurityHotspots, securityHotspots, SECURITY_HOTSPOTS_DETAILS_PLACEHOLDER);
+
+            // Add security hotspots by security category and review priority
+            final List<List<String>> securityHotspotsByCategoryAndPriority = DataAdapter.getSecurityHotspotsByCategoryAndPriority(report);
+            final List<String> headerSecurityHotspotsCount = new ArrayList<>(Arrays.asList(DataAdapter.getSecurityHotspotPriorities()));
+            headerSecurityHotspotsCount.add(0, StringManager.string("header.categorySlashPriority"));
+            DocXTools.fillTable(document, headerSecurityHotspotsCount, securityHotspotsByCategoryAndPriority,
+                    SECURITY_HOTSPOTS_COUNT_TABLE_PLACEHOLDER);
 
             // Add volumes by language
             final List<String> volumesHeader = new ArrayList<>(Arrays.asList(VOLUMES_HEADER));
