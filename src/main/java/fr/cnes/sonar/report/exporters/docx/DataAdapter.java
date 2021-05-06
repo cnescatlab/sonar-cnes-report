@@ -847,14 +847,18 @@ class ValueComparator implements Comparator<Value>{
     }
 
     public int compare(Value v1, Value v2) {
-       if (this.name.equals("severities")) {
+        int compare;
+
+        if (this.name.equals("severities")) {
             List<String> issueSeverities = Arrays.asList(DataAdapter.getIssueSeverities());
-            return issueSeverities.indexOf(v1.getVal()) - issueSeverities.indexOf(v2.getVal());
-       } else if(this.name.equals("types")) {
+            compare = issueSeverities.indexOf(v1.getVal()) - issueSeverities.indexOf(v2.getVal());
+        } else if(this.name.equals("types")) {
             List<String> issueTypes = Arrays.asList(DataAdapter.getIssueTypes());
-            return issueTypes.indexOf(v1.getVal()) - issueTypes.indexOf(v2.getVal());
-       } else {
-           return 0;
-       }
+            compare = issueTypes.indexOf(v1.getVal()) - issueTypes.indexOf(v2.getVal());
+        } else {
+            compare = 0;
+        }
+
+        return compare;
     }
 }

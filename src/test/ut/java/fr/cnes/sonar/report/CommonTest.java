@@ -162,8 +162,10 @@ public abstract class CommonTest {
         rules.setValues(values);
         final List<Value> valuesSeverity = new ArrayList<>();
         valuesSeverity.add(new Value("CRITICAL", 0));
+        valuesSeverity.add(new Value("INFO", 10));
         final List<Value> valuesType = new ArrayList<>();
         valuesType.add(new Value("BUG", 5));
+        valuesType.add(new Value("CODE_SMELL", 15));
         severities.setValues(valuesSeverity);
         types.setValues(valuesType);
         facets.add(rules);
