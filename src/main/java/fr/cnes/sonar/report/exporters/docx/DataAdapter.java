@@ -247,7 +247,7 @@ public final class DataAdapter {
     /**
      * List of possible issue types
      */
-    private static final String[] ISSUE_TYPES = {"VULNERABILITY", "BUG", "CODE_SMELL"};
+    private static final String[] ISSUE_TYPES = {"BUG", "VULNERABILITY", "CODE_SMELL"};
     /**
      * List of possible issue severities
      */
@@ -369,6 +369,10 @@ public final class DataAdapter {
         return result;
     }
 
+    /**
+     * Getter for SECURITY_HOTSPOT_PRIORITIES
+     * @return SECURITY_HOTSPOT_PRIORITIES
+     */
     public static String[] getSecurityHotspotPriorities() {
         return SECURITY_HOTSPOT_PRIORITIES;
     }
@@ -460,7 +464,26 @@ public final class DataAdapter {
             }
         }
 
+        // sort the result to fit docx template lengends
+        Collections.sort(items, new ValueComparator(facetName));
+        
         return items;
+    }
+
+    /**
+     * Getter for ISSUE_SEVERITIES
+     * @return ISSUE_SEVERITIES
+     */
+    public static String[] getIssueSeverities() {
+        return ISSUE_SEVERITIES;
+    }
+
+    /**
+     * Getter for ISSUE_TYPES
+     * @return ISSUE_TYPES
+     */
+    public static String[] getIssueTypes() {
+        return ISSUE_TYPES;
     }
 
     /**
@@ -810,5 +833,28 @@ class RuleComparator implements Comparator<String>{
         }
 
         return compare;
+    }
+}
+
+/**
+ * ValueComparator is used to compare 2 values to sort them by severity or type
+ */
+class ValueComparator implements Comparator<Value>{
+    String name;
+
+    ValueComparator(String name){
+        this.name = name;
+    }
+
+    public int compare(Value v1, Value v2) {
+       if (this.name.equals("severities")) {
+            List<String> issueSeverities = Arrays.asList(DataAdapter.getIssueSeverities());
+            return issueSeverities.indexOf(v1.getVal()) - issueSeverities.indexOf(v2.getVal());
+       } else if(this.name.equals("types")) {
+            List<String> issueTypes = Arrays.asList(DataAdapter.getIssueTypes());
+            return issueTypes.indexOf(v1.getVal()) - issueTypes.indexOf(v2.getVal());
+       } else {
+           return 0;
+       }
     }
 }
