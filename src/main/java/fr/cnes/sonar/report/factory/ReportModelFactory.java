@@ -89,7 +89,6 @@ public class ReportModelFactory {
         final ProjectProvider projectProvider = providerFactory.create(ProjectProvider.class);
         final QualityProfileProvider qualityProfileProvider = providerFactory.create(QualityProfileProvider.class);
         final QualityGateProvider qualityGateProvider = providerFactory.create(QualityGateProvider.class);
-        final LanguageProvider languageProvider = providerFactory.create(LanguageProvider.class);
         final ComponentProvider componentProvider = providerFactory.create(ComponentProvider.class);
 
         // author's setting
@@ -124,8 +123,6 @@ public class ReportModelFactory {
         report.setQualityProfiles(qualityProfileProvider.getQualityProfiles(report.getProject().getOrganization()));
         // quality gate's setting
         report.setQualityGate(qualityGateProvider.getProjectQualityGate());
-        // languages' settings
-        report.getProject().setLanguages(languageProvider.getLanguages());
 
         return report;
     }
