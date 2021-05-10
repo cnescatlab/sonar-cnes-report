@@ -464,7 +464,7 @@ public final class DataAdapter {
             }
         }
 
-        // sort the result to fit docx template lengends
+        // sort the result to fit docx template legends
         Collections.sort(items, new ValueComparator(facetName));
         
         return items;
@@ -837,7 +837,7 @@ class RuleComparator implements Comparator<String>{
 }
 
 /**
- * ValueComparator is used to compare 2 values to sort them by severity or type
+ * ValueComparator is used to compare 2 values of a facet to sort them by severity or type
  */
 class ValueComparator implements Comparator<Value>{
     String name;
