@@ -27,9 +27,9 @@ This tool can be used in standalone as a JAR executable (with the command line) 
 - Restart sonarqube (On linux: `sudo service sonar restart`)
 
 #### Get help
-Use `java -jar cnesreport.jar -h` to get the following help about cnesreport:
+Use `java -jar sonar-cnes-report.jar -h` to get the following help about cnesreport:
 ````
-usage: java -jar cnesreport.jar [-a <arg>] [-b <arg>] [-c] [-d <arg>] [-e] [-h] [-l <arg>] [-o <arg>] [-p <arg>] [-r <arg>]
+usage: java -jar sonar-cnes-report.jar [-a <arg>] [-b <arg>] [-c] [-d <arg>] [-e] [-h] [-l <arg>] [-o <arg>] [-p <arg>] [-r <arg>]
        [-s <arg>] [-t <arg>] [-v] [-w] [-x <arg>]
 Generate editable reports for SonarQube projects.
 
@@ -64,15 +64,15 @@ You can have more detailed logs in the hidden directory `.cnesreport` which shou
 ##### Simplest usage
 This is the minimal usage of cnesreport. This example export (report + spreadsheet + configuration) the public project `projectId` from SonarQube server `http://localhost:9000`. This will use default internal templates.
 ````
-java -jar cnesreport.jar -p projectId
+java -jar sonar-cnes-report.jar -p projectId
 ````
 
 If you have installed cnes-report in your sonarqube: open web interface, click on "CNES Report" then choose a project.
 
 ##### Advanced usage (standalone)
-If you are using a secured instance of SonarQube, you can provide a SonarQube authentication token thanks to `-t` option and specify the url of the SonarQube instance with `-s`. The internal template for the text report will be replace by the one given through `-r` option.
+If you are using a secured instance of SonarQube, you can provide a SonarQube authentication token thanks to `-t` option and specify the url of the SonarQube instance with `-s`. The internal template for the text report can be replaced by the one given through `-r` option.
 ````
-java -jar cnesreport.jar -t xuixg5hub345xbefu -s https://example.org:9000 -p projectId -r ./template.docx
+java -jar sonar-cnes-report.jar -t xuixg5hub345xbefu -s https://example.org:9000 -p projectId -r ./template.docx
 ````
 
 ##### Export of a specific project branch (standalone)
@@ -95,7 +95,7 @@ If your JRE's proxy is not set, you can use Java flags as follow:
 ```bash
 java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
 -Dhttps.proxyUser=jerry -Dhttps.proxyPassword=siegel
--jar cnesreport.jar -t xuixg5hub345xbefu -s https://example.org:9000 -p projectId
+-jar sonar-cnes-report.jar -t xuixg5hub345xbefu -s https://example.org:9000 -p projectId
 
 ```
 
@@ -114,52 +114,26 @@ For legacy versions, check the wiki page here : [Note on legacy versions](https:
 <table>
  <tr>
   <td><b>cnesreport <br>\<br> SonarQube</b></td>
-  <td><b>2.0.0<br/>Standalone</b></td>
-  <td><b>2.1.0<br/>Standalone</b></b></td>
-  <td><b>2.2.0<br/>Standalone + Plugin</b></td>
   <td><b>3.0.x<br/>Standalone + Plugin</b></b></td>
   <td><b>3.1.0<br/>Standalone + Plugin</b></b></td>
   <td><b>3.2.x<br/>Standalone + Plugin</b></b></td>
-  <td><b>3.3.0<br/>Standalone + Plugin</b></b></td>
+  <td><b>3.3.x<br/>Standalone + Plugin</b></b></td>
+  <td><b>4.0.0<br/>Standalone + Plugin</b></b></td>
  </tr>
  <tr>
-  <td><b>7.9.x (LTS)</b></td>
-  <td>X</td>
-  <td>X</td>
-  <td>(Standalone only)</td>
+  <td><b>7.9.x (former LTS)</b></td>
   <td>X</td>
   <td>X</td>
   <td>X</td>
   <td>X</td>
+  <td>-</td>
  </tr>
  <tr>
-  <td><b>8.0</b></td>
+  <td><b>8.9.x (LTS)</b></td>
   <td>-</td>
   <td>-</td>
   <td>-</td>
   <td>-</td>
-  <td>-</td>
-  <td>X</td>
-  <td>X</td>
- </tr>
- <tr>
-  <td><b>8.1</b></td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>X</td>
-  <td>X</td>
- </tr>
- <tr>
-  <td><b>8.2</b></td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>X</td>
   <td>X</td>
  </tr>
 </table>
@@ -183,6 +157,6 @@ zip these files and send them to client. Files are deleted after download. If yo
 during execution (bug, stopping sonar, etc.) you may check this folder to remove useless files.
 
 ### License
-Copyright 2020 CATLab.
+Copyright 2021 CATLab.
 
 Licensed under the [GNU General Public License, Version 3.0](https://www.gnu.org/licenses/gpl.txt)
