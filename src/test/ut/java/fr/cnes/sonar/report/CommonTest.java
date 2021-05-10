@@ -295,6 +295,7 @@ public abstract class CommonTest {
         final List<Measure> measures = new ArrayList<>();
         measures.add(new Measure("reliability_rating", "1.0"));
         measures.add(new Measure("duplicated_lines_density", "1.0"));
+        measures.add(new Measure("comment_lines_density", "1.0"));
         measures.add(new Measure("sqale_rating", "2.0"));
         measures.add(new Measure("coverage", "1.0"));
         measures.add(new Measure("ncloc", "1.0"));

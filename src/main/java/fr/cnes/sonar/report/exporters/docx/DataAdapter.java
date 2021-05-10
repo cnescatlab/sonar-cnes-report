@@ -185,6 +185,10 @@ public final class DataAdapter {
      */
     private static final String DUPLICATION_PLACEHOLDER = "XX-DUPLICATION-XX";
     /**
+     * Placeholder for comment density
+     */
+    private static final String COMMENTDENSITY_PLACEHOLDER = "XX-COMMENTDENSITY-XX";
+    /**
      * Placeholder for maintainability mark
      */
     private static final String MAINTAINABILITY_PLACEHOLDER = "XX-MAINTAINABILITY-XX";
@@ -224,6 +228,10 @@ public final class DataAdapter {
      * Field in json response for duplications
      */
     private static final String DUPLICATED_LINES_DENSITY = "duplicated_lines_density";
+    /**
+     * Field in json response for comment density
+     */
+    private static final String COMMENT_LINES_DENSITY = "comment_lines_density";
     /**
      * Field in json response for maintainability mark
      */
@@ -688,6 +696,9 @@ public final class DataAdapter {
                 break;
             case DUPLICATED_LINES_DENSITY:
                 res = DUPLICATION_PLACEHOLDER;
+                break;
+            case COMMENT_LINES_DENSITY:
+                res = COMMENTDENSITY_PLACEHOLDER;
                 break;
             case SQALE_RATING:
                 res = MAINTAINABILITY_PLACEHOLDER;
