@@ -22,7 +22,7 @@ XX-DESCRIPTION-XX
 
 ## Synthesis
 Quality Gate | Reliability | Security | Maintainability | Coverage | Duplications | Comment density
-:---:|:---:|:---:|:---:|:---:|:---:
+:---:|:---:|:---:|:---:|:---:|:---:|:---:
 XX-QUALITYGATE-XX | XX-RELIABILITY-XX | XX-SECURITY-XX | XX-MAINTAINABILITY-XX | XX-COVERAGE-XX % | XX-DUPLICATION-XX % | XX-COMMENTDENSITY-XX %
 
 ## Metrics
