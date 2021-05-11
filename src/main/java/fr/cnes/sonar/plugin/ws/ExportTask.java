@@ -34,11 +34,14 @@ import org.sonar.api.config.Configuration;
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.RequestHandler;
 import org.sonar.api.server.ws.Response;
-import org.sonar.api.utils.text.JsonWriter;
+import org.sonarqube.ws.MediaTypes;
+import com.google.gson.stream.JsonWriter;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.nio.file.Files;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 
 public class ExportTask implements RequestHandler {
@@ -105,13 +108,17 @@ public class ExportTask implements RequestHandler {
             File zip = new File(outputDirectory.getAbsolutePath() + ".zip");
             FileUtils.copyFile(zip, stream.output());
             Files.deleteIfExists(zip.toPath());
-        } catch (BadSonarQubeRequestException e) {
-            try(JsonWriter jsonWriter = response.newJsonWriter()){
+        } catch (BadSonarQubeRequestException e) {          
+            response.stream().setMediaType(MediaTypes.JSON);
+            try (
+                OutputStreamWriter writer = new OutputStreamWriter(response.stream().output(), StandardCharsets.UTF_8);
+                JsonWriter jsonWriter = new JsonWriter(writer);
+            ) {
                 jsonWriter.beginObject();
-                jsonWriter.prop("error", PluginStringManager.getProperty("api.tokenerror"));
+                jsonWriter.name("error").value(PluginStringManager.getProperty("api.tokenerror"));
                 jsonWriter.endObject();
+                jsonWriter.flush();
             }
-
         }
 
         FileTools.deleteFolder(outputDirectory);

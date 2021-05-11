@@ -54,6 +54,14 @@ public class Report {
      */
     private List<Facet> facets;
     /**
+     * List of security hotspots detected in the project
+     */
+    private List<SecurityHotspot> toReviewSecurityHotspots;
+    /**
+     * List of reviewed security hotspots issues in the project
+     */
+    private List<SecurityHotspot> reviewedSecurityHotspots;
+    /**
      * List of measures on the project
      */
     private List<Measure> measures;
@@ -90,6 +98,8 @@ public class Report {
         this.issues = new ArrayList<>();
         this.unconfirmed = new ArrayList<>();
         this.facets = new ArrayList<>();
+        this.toReviewSecurityHotspots = new ArrayList<>();
+        this.reviewedSecurityHotspots = new ArrayList<>();
         this.measures = new ArrayList<>();
         this.rawIssues = new ArrayList<>();
         this.components = new ArrayList<>();
@@ -161,6 +171,38 @@ public class Report {
      */
     public void setIssues(List<Issue> pIssues) {
         this.issues = new ArrayList<>(pIssues);
+    }
+
+    /**
+     * Get security hotspots with TO_REVIEW status
+     * @return security hotspots
+     */
+    public List<SecurityHotspot> getToReviewSecurityHotspots() {
+        return toReviewSecurityHotspots;
+    }
+
+    /**
+     * Setter for toReviewSecurityHotspots
+     * @param pToReviewSecurityHotspots value
+     */
+    public void setToReviewSecurityHotspots(List<SecurityHotspot> pToReviewSecurityHotspots) {
+        this.toReviewSecurityHotspots = pToReviewSecurityHotspots;
+    }
+
+    /**
+     * Get security hotspots with REVIEWED status
+     * @return security hotspots
+     */
+    public List<SecurityHotspot> getReviewedSecurityHotspots() {
+        return reviewedSecurityHotspots;
+    }
+
+    /**
+     * Setter for reviewedSecurityHotspots
+     * @param pReviewedSecurityHotspots value
+     */
+    public void setReviewedSecurityHotspots(List<SecurityHotspot> pReviewedSecurityHotspots) {
+        this.reviewedSecurityHotspots = pReviewedSecurityHotspots;
     }
 
     /**
@@ -284,10 +326,8 @@ public class Report {
         final StringBuilder sb = new StringBuilder();
 
         // append each quality profile name
-        Language language;
         for(ProfileMetaData q : project.getQualityProfiles()) {
-            language = project.getLanguage(q.getLanguage());
-            sb.append(q.getName()).append(" [").append(language.getName()).append("]; ");
+            sb.append(q.getName()).append(" [").append(q.getLanguageName()).append("]; ");
         }
 
         return sb.toString();

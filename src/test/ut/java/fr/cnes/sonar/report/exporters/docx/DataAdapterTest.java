@@ -40,6 +40,7 @@ public class DataAdapterTest extends CommonTest{
         // Fill manually the placeHolders depending on what we initialized in "CommonTest"
         expected.put("XX-PROJECTNAME-XX", "CNES Report");
         expected.put("XX-DUPLICATION-XX", "1.0");
+        expected.put("XX-COMMENTDENSITY-XX", "1.0");
         expected.put("XX-MAXNCLOC-XX", "unknown");
         expected.put("XX-QUALITYGATEFILE-XX", "CNES.xml");
         expected.put("XX-MAXCOGNITIVECOMPLEXITY-XX", "unknown");

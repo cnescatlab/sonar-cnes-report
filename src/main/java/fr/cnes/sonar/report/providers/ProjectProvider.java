@@ -17,9 +17,13 @@
 
 package fr.cnes.sonar.report.providers;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
+import fr.cnes.sonar.report.model.Language;
 import fr.cnes.sonar.report.model.ProfileMetaData;
 import fr.cnes.sonar.report.model.Project;
 import fr.cnes.sonar.report.model.SonarQubeServer;
@@ -66,24 +70,23 @@ public class ProjectProvider extends AbstractDataProvider {
         final Project project = (getGson().fromJson(jo, Project.class));
         ProfileMetaData[] metaData;
 
-        if(server.getNormalizedVersion().matches("5.*|6.[012].*")) {
-            // retrieve quality profiles for SQ 5.X versions
-            jo = request(String.format(getRequest(GET_PROJECT_QUALITY_PROFILES_REQUEST),
-                    getServer().getUrl(), projectKey));
-            // set language's name for profiles
-            metaData = (getGson().fromJson(jo.getAsJsonArray(PROFILES), ProfileMetaData[].class));
-            project.setQualityProfiles(metaData);
-        } else {
-            // set language's name for profiles
-            metaData = project.getQualityProfiles();
-        }
-
+        // set language's name for profiles and add each language to the project languages list
+        metaData = project.getQualityProfiles();        
         String languageName;
+        Map<String, Language> languages = new HashMap<>();
         for(ProfileMetaData it : metaData){
-            languageName = languageProvider.getLanguage(it.getLanguage());
+            String languageKey = it.getLanguage();
+
+            languageName = languageProvider.getLanguage(languageKey);
             it.setLanguageName(languageName);
+
+            Language language = new Language();
+            language.setKey(languageKey);
+            language.setName(languageName);
+            languages.put(languageKey, language);
         }
         project.setQualityProfiles(metaData);
+        project.setLanguages(languages);
 
         // check description nullity
         if(null==project.getDescription()) {

@@ -21,9 +21,9 @@ XX-DESCRIPTION-XX
     - File: XX-QUALITYGATEFILE-XX
 
 ## Synthesis
-Quality Gate | Reliability | Security | Maintainability | Coverage | Duplications
+Quality Gate | Reliability | Security | Maintainability | Coverage | Duplications | Comment density
 :---:|:---:|:---:|:---:|:---:|:---:
-XX-QUALITYGATE-XX | XX-RELIABILITY-XX | XX-SECURITY-XX | XX-MAINTAINABILITY-XX | XX-COVERAGE-XX % | XX-DUPLICATION-XX %
+XX-QUALITYGATE-XX | XX-RELIABILITY-XX | XX-SECURITY-XX | XX-MAINTAINABILITY-XX | XX-COVERAGE-XX % | XX-DUPLICATION-XX % | XX-COMMENTDENSITY-XX %
 
 ## Metrics
 
@@ -42,3 +42,10 @@ $ISSUES_COUNT
 
 ## Issues
 $ISSUES_DETAILS
+
+## Security hotspots count by category and priority
+
+$SECURITY_HOTSPOTS_COUNT
+
+## Security hotspots
+$SECURITY_HOTSPOTS_DETAILS

@@ -39,6 +39,14 @@ public class MarkdownExporter implements IExporter {
             StringManager.string("header.severity"),
             StringManager.string("header.number")};
     /**
+     * Name of the columns in security hotspots table
+     */
+    private static final String[] SECURITY_HOTSPOTS_HEADER = {StringManager.string("header.category"),
+            StringManager.string("header.name"),
+            StringManager.string("header.priority"),
+            StringManager.string("header.severity"),
+            StringManager.string("header.count")};
+    /**
      * Name of the columns in volumes table
      */
     private static final String[] VOLUMES_HEADER = {StringManager.string("header.language"),
@@ -60,6 +68,14 @@ public class MarkdownExporter implements IExporter {
      * Placeholder for issues table
      */
     private static final String ISSUES_DETAILS_PLACEHOLDER = "$ISSUES_DETAILS";
+    /**
+     * Placeholder for the table containing counts of security hotspots by review priority and security category
+     */
+    private static final String SECURITY_HOTSPOTS_COUNT_TABLE_PLACEHOLDER = "$SECURITY_HOTSPOTS_COUNT";
+    /**
+     * Placeholder for the table containing detailed security hotspots
+     */
+    private static final String SECURITY_HOTSPOTS_DETAILS_PLACEHOLDER = "$SECURITY_HOTSPOTS_DETAILS";
     /**
      * Placeholder for volume table
      */
@@ -111,6 +127,18 @@ public class MarkdownExporter implements IExporter {
                     types);
             output = output.replace(ISSUES_COUNT_PLACEHOLDER, tableTypes);
 
+            // Generate security hotspots table
+            final List<List<String>> securityHotspots = DataAdapter.getSecurityHotspots(report);
+            final List<String> headerSecurityHotspots = new ArrayList<>(Arrays.asList(SECURITY_HOTSPOTS_HEADER));
+            final String tableSecurityHotspots = generateMDTable(headerSecurityHotspots, securityHotspots);
+            output = output.replace(SECURITY_HOTSPOTS_DETAILS_PLACEHOLDER, tableSecurityHotspots);
+
+            // Generate security hotspots count table
+            final List<List<String>> securityHotspotsByCategoryAndPriority = DataAdapter.getSecurityHotspotsByCategoryAndPriority(report);
+            final List<String> headerSecurityHotspotsCount = new ArrayList<>(Arrays.asList(DataAdapter.getSecurityHotspotPriorities()));
+            headerSecurityHotspotsCount.add(0, StringManager.string("header.categorySlashPriority"));
+            final String tableSecurityHotspotsCount = generateMDTable(headerSecurityHotspotsCount, securityHotspotsByCategoryAndPriority);
+            output = output.replace(SECURITY_HOTSPOTS_COUNT_TABLE_PLACEHOLDER, tableSecurityHotspotsCount);
 
             // Generate volume table
             final List<String> volumesHeader = new ArrayList<>(Arrays.asList(VOLUMES_HEADER));

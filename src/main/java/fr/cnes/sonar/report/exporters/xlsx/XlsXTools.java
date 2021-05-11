@@ -1,6 +1,8 @@
 package fr.cnes.sonar.report.exporters.xlsx;
 
 import fr.cnes.sonar.report.model.Issue;
+import fr.cnes.sonar.report.model.SecurityHotspot;
+import fr.cnes.sonar.report.utils.StringManager;
 
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.util.AreaReference;
@@ -63,6 +65,42 @@ public final class XlsXTools {
      * Column index for issue's status
      */
     private static final int ISSUE_COMMENTS_INDEX = 9;
+    /**
+     * Column index for security hotspot's category
+     */
+    private static final int HOTSPOT_CATEGORY_INDEX = 2;
+    /**
+     * Column index for security hotspot's priority
+     */
+    private static final int HOTSPOT_PRIORITY_INDEX = 3;
+    /**
+     * Column index for security hotspot's severity
+     */
+    private static final int HOTSPOT_SEVERITY_INDEX = 4;
+    /**
+     * Column index for security hotspot's language
+     */
+    private static final int HOTSPOT_LANGUAGE_INDEX = 5;
+    /**
+     * Column index for security hotspot's file
+     */
+    private static final int HOTSPOT_FILE_INDEX = 6;
+    /**
+     * Column index for security hotspot's line
+     */
+    private static final int HOTSPOT_LINE_INDEX = 7;
+    /**
+     * Column index for security hotspot's status
+     */
+    private static final int HOTSPOT_STATUS_INDEX = 8;
+    /**
+     * Column index for security hotspot's resolution
+     */
+    private static final int HOTSPOT_RESOLUTION_INDEX = 9;
+    /**
+     * Column index for security hotspot's comments
+     */
+    private static final int HOTSPOT_COMMENTS_INDEX = 10;
     /**
      * Status for false positive / wont fix
      */
@@ -249,6 +287,57 @@ public final class XlsXTools {
                 }
                 row.createCell(ISSUE_STATUS_INDEX).setCellValue(status);
                 row.createCell(ISSUE_COMMENTS_INDEX).setCellValue(issue.getComments());
+
+                // go to the next line
+                numRow++;
+            }
+        }
+    }
+
+    /**
+     * Write the formatted resources as wanted in the corresponding sheet
+     * @param securityHotspots Intern resources to format to excel
+     * @param sheet sheet where we want to write
+     * @param tableName Name of the table to fill
+     */
+    public static void addSecurityHotspots(List<SecurityHotspot> securityHotspots, XSSFSheet sheet, String tableName) {
+        // Create an object of type XSSFTable containing the template table for selected resources
+        final XSSFTable table = findTableByName(sheet, tableName);
+
+        // check that the table exists
+        if(null!=table && !securityHotspots.isEmpty()) {
+            // get CTTable object
+            final CTTable cttable = table.getCTTable();
+
+            // Define the resources range including headers
+            final AreaReference selectedDataRange = new AreaReference(
+                    new CellReference(0, 0),
+                    new CellReference(securityHotspots.size(), 10),
+                    SpreadsheetVersion.EXCEL2007);
+
+            // Set Range to the Table
+            cttable.setRef(selectedDataRange.formatAsString());
+            
+            // number of the row to insert, begin to 1 because 0 is the header
+            int numRow = 1;
+            
+            // add security hotspots
+            for (SecurityHotspot securityHotspot : securityHotspots) {
+                // initialization of a new row
+                final XSSFRow row = sheet.createRow(numRow);
+
+                // adding resources
+                row.createCell(RULE_ID_INDEX).setCellValue(securityHotspot.getRule());
+                row.createCell(MESSAGE_INDEX).setCellValue(securityHotspot.getMessage());
+                row.createCell(HOTSPOT_CATEGORY_INDEX).setCellValue(StringManager.getSecurityHotspotsCategories().get(securityHotspot.getSecurityCategory()));
+                row.createCell(HOTSPOT_PRIORITY_INDEX).setCellValue(securityHotspot.getVulnerabilityProbability());
+                row.createCell(HOTSPOT_SEVERITY_INDEX).setCellValue(securityHotspot.getSeverity());
+                row.createCell(HOTSPOT_LANGUAGE_INDEX).setCellValue(securityHotspot.getLanguage());
+                row.createCell(HOTSPOT_FILE_INDEX).setCellValue(securityHotspot.getComponent());
+                row.createCell(HOTSPOT_LINE_INDEX).setCellValue(securityHotspot.getLine());
+                row.createCell(HOTSPOT_STATUS_INDEX).setCellValue(securityHotspot.getStatus());
+                row.createCell(HOTSPOT_RESOLUTION_INDEX).setCellValue(securityHotspot.getResolution());
+                row.createCell(HOTSPOT_COMMENTS_INDEX).setCellValue(securityHotspot.getComments());
 
                 // go to the next line
                 numRow++;

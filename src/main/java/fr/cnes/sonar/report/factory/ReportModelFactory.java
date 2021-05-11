@@ -84,11 +84,11 @@ public class ReportModelFactory {
         final ProviderFactory providerFactory = new ProviderFactory(this.server, this.token, this.project,
                 this.branch);
         final IssuesProvider issuesProvider = providerFactory.create(IssuesProvider.class);
+        final SecurityHotspotsProvider securityHotspotsProvider = providerFactory.create(SecurityHotspotsProvider.class);
         final MeasureProvider measureProvider = providerFactory.create(MeasureProvider.class);
         final ProjectProvider projectProvider = providerFactory.create(ProjectProvider.class);
         final QualityProfileProvider qualityProfileProvider = providerFactory.create(QualityProfileProvider.class);
         final QualityGateProvider qualityGateProvider = providerFactory.create(QualityGateProvider.class);
-        final LanguageProvider languageProvider = providerFactory.create(LanguageProvider.class);
         final ComponentProvider componentProvider = providerFactory.create(ComponentProvider.class);
 
         // author's setting
@@ -115,12 +115,14 @@ public class ReportModelFactory {
         report.setRawIssues(issuesProvider.getRawIssues());
         // facets's setting
         report.setFacets(issuesProvider.getFacets());
+        // security hotspots to review
+        report.setToReviewSecurityHotspots(securityHotspotsProvider.getToReviewSecurityHotspots());
+        // reviewed security hotspots
+        report.setReviewedSecurityHotspots(securityHotspotsProvider.getReviewedSecurityHotspots());
         // quality profile's setting
         report.setQualityProfiles(qualityProfileProvider.getQualityProfiles(report.getProject().getOrganization()));
         // quality gate's setting
         report.setQualityGate(qualityGateProvider.getProjectQualityGate());
-        // languages' settings
-        report.getProject().setLanguages(languageProvider.getLanguages());
 
         return report;
     }
