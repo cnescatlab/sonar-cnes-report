@@ -42,19 +42,19 @@ public class DisplayFormatter extends Formatter {
 
     /**
      * Inherited method to format messages.
-     * @param record Contain information provided to the logger.
+     * @param logRecord Contain information provided to the logger.
      * @return The formatted string as defined in FORMAT constant.
      */
     @Override
-    public String format(LogRecord record) {
+    public String format(LogRecord logRecord) {
         // Default format applied at beginning
-        String message = String.format(FORMAT_DEFAULT, record.getLevel().getName(), record.getMessage());
+        String message = String.format(FORMAT_DEFAULT, logRecord.getLevel().getName(), logRecord.getMessage());
 
-        // If record level is FINE, we change the format.
-        if(record.getLevel().equals(Level.INFO)) {
-            message = String.format(FORMAT_INFO, record.getMessage());
-        } else if(record.getLevel().equals(Level.SEVERE)) {
-            message = String.format(FORMAT_SEVERE, record.getMessage());
+        // If logRecord level is FINE, we change the format.
+        if(logRecord.getLevel().equals(Level.INFO)) {
+            message = String.format(FORMAT_INFO, logRecord.getMessage());
+        } else if(logRecord.getLevel().equals(Level.SEVERE)) {
+            message = String.format(FORMAT_SEVERE, logRecord.getMessage());
         }
 
         return message;
