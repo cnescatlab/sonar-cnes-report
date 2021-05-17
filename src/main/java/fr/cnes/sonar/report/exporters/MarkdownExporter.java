@@ -23,6 +23,7 @@ import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -103,7 +104,7 @@ public class MarkdownExporter implements IExporter {
         ) {
             // Getting MD template
             StringWriter writer = new StringWriter();
-            IOUtils.copy(fileInputStream, writer);
+            IOUtils.copy(fileInputStream, writer, StandardCharsets.UTF_8);
 
             // Getting replacement values, reusing placeholders from docx exporter
             Map<String, String> placeholdersMap = DataAdapter.loadPlaceholdersMap(report);
