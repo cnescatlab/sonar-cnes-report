@@ -31,28 +31,6 @@ import java.util.Map;
 public class MarkdownExporter implements IExporter {
 
     /**
-     * Name of the columns in issues table
-     */
-    private static final String[] HEADER_FIELDS = {StringManager.string("header.name"),
-            StringManager.string("header.description"),
-            StringManager.string("header.type"),
-            StringManager.string("header.severity"),
-            StringManager.string("header.number")};
-    /**
-     * Name of the columns in security hotspots table
-     */
-    private static final String[] SECURITY_HOTSPOTS_HEADER = {StringManager.string("header.category"),
-            StringManager.string("header.name"),
-            StringManager.string("header.priority"),
-            StringManager.string("header.severity"),
-            StringManager.string("header.count")};
-    /**
-     * Name of the columns in volumes table
-     */
-    private static final String[] VOLUMES_HEADER = {StringManager.string("header.language"),
-            StringManager.string("header.number")};
-
-    /**
      * Start index of the sub array in the headers array for the the second table
      */
     private static final int HEADER_START_INDEX = 2;
@@ -116,7 +94,12 @@ public class MarkdownExporter implements IExporter {
 
             // Generate issue table
             final List<List<String>> issues = DataAdapter.getIssues(report);
-            final List<String> headerIssues = new ArrayList<>(Arrays.asList(HEADER_FIELDS));
+            final String[] headerFields = {StringManager.string("header.name"),
+                StringManager.string("header.description"),
+                StringManager.string("header.type"),
+                StringManager.string("header.severity"),
+                StringManager.string("header.number")};
+            final List<String> headerIssues = new ArrayList<>(Arrays.asList(headerFields));
             final String tableIssues = generateMDTable(headerIssues, issues);
             output = output.replace(ISSUES_DETAILS_PLACEHOLDER, tableIssues);
 
@@ -129,7 +112,12 @@ public class MarkdownExporter implements IExporter {
 
             // Generate security hotspots table
             final List<List<String>> securityHotspots = DataAdapter.getSecurityHotspots(report);
-            final List<String> headerSecurityHotspots = new ArrayList<>(Arrays.asList(SECURITY_HOTSPOTS_HEADER));
+            final String[] securityHotspotsHeader = {StringManager.string("header.category"),
+                StringManager.string("header.name"),
+                StringManager.string("header.priority"),
+                StringManager.string("header.severity"),
+                StringManager.string("header.count")};
+            final List<String> headerSecurityHotspots = new ArrayList<>(Arrays.asList(securityHotspotsHeader));
             final String tableSecurityHotspots = generateMDTable(headerSecurityHotspots, securityHotspots);
             output = output.replace(SECURITY_HOTSPOTS_DETAILS_PLACEHOLDER, tableSecurityHotspots);
 
@@ -141,9 +129,11 @@ public class MarkdownExporter implements IExporter {
             output = output.replace(SECURITY_HOTSPOTS_COUNT_TABLE_PLACEHOLDER, tableSecurityHotspotsCount);
 
             // Generate volume table
-            final List<String> volumesHeader = new ArrayList<>(Arrays.asList(VOLUMES_HEADER));
+            final String[] volumesHeader = {StringManager.string("header.language"),
+                StringManager.string("header.number")};
+            final List<String> headerVolumes = new ArrayList<>(Arrays.asList(volumesHeader));
             final List<List<String>> volumes = DataAdapter.getVolumes(report);
-            final String volumeTable = generateMDTable(volumesHeader, volumes);
+            final String volumeTable = generateMDTable(headerVolumes, volumes);
             output = output.replace(VOLUMES_TABLE_PLACEHOLDER, volumeTable);
 
 

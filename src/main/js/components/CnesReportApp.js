@@ -14,7 +14,8 @@ export default class CnesReportApp extends React.PureComponent {
         projects: [],
         token: "",
         author: "",
-        branches: []
+        branches: [],
+        languages: [{id: 'en_US', name: 'English (US)'}, {id: 'fr_FR', name: 'French'}]
     };
 
     onChangeAuthor = (event) => {
@@ -71,6 +72,12 @@ export default class CnesReportApp extends React.PureComponent {
                     <option key={i} value={item.name}>{item.name}</option>
                 )
             }, this);
+        
+        let languagesList = this.state.languages.map((item, i) => {
+            return (
+                <option key={i} value={item.id}>{item.name}</option>
+            )
+        })
 
         return (
             <div class="page-wrapper-simple">
@@ -92,6 +99,14 @@ export default class CnesReportApp extends React.PureComponent {
                                 name="branch"
                                 class="login-input" required>
                                 {branchesList}
+                            </select>
+                        </div>
+                        <div class='forminput'>
+                            <label for="language" id="languageLabel" class="login-label"><strong>Report language</strong></label>
+                            <select id="language"
+                                name="language"
+                                class="login-input" required>
+                                {languagesList}
                             </select>
                         </div>
                         <div class='forminput'>
