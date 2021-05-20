@@ -46,7 +46,6 @@ public class DataAdapterTest extends CommonTest{
         expected.put("XX-MAXCOGNITIVECOMPLEXITY-XX", "unknown");
         expected.put("XX-QUALITYPROFILENAME-XX", "");
         expected.put("XX-MINCOMMENTDENSITY-XX", "unknown");
-        expected.put("XX-QUALITYGATE-XX", "1.0");
         expected.put("XX-MAXDUPLICATION-XX", "unknown");
         expected.put("XX-QUALITYGATENAME-XX", "CNES");
         expected.put("XX-QUALITYPROFILEFILE-XX", "");
@@ -54,14 +53,14 @@ public class DataAdapterTest extends CommonTest{
         expected.put("XX-AUTHOR-XX", "Lequal");
         expected.put("XX-MINCOMPLEXITY-XX", "unknown");
         expected.put("XX-MAXCOMPLEXITY-XX", "unknown");
-        expected.put("XX-SECURITY-XX", "C");
+        expected.put("XX-SECURITY-XX", "C.png");
         expected.put("XX-MINCOGNITIVECOMPLEXITY-XX", "unknown");
         expected.put("XX-DATE-XX", new Date().toString().substring(0,16));
-        expected.put("XX-RELIABILITY-XX", "A");
+        expected.put("XX-RELIABILITY-XX", "A.png");
         expected.put("XX-COVERAGE-XX", "1.0");
         expected.put("XX-VERSION-XX", "Version");
         expected.put("XX-LINES-XX", "1.0");
-        expected.put("XX-MAINTAINABILITY-XX", "B");
+        expected.put("XX-MAINTAINABILITY-XX", "B.png");
         expected.put("XX-MINCOVERAGE-XX", "0.0");
         expected.put("XX-DESCRIPTION-XX", "Short description");
         expected.put("XX-MINNCLOC-XX", "unknown");

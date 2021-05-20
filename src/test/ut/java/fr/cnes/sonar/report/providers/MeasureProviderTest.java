@@ -16,4 +16,9 @@ public class MeasureProviderTest extends CommonTest {
         measureProvider.getMeasures();
     }
 
+    @Test(expected = SonarQubeException.class)
+    public void executeFaultyGetQualityGateStatus() throws SonarQubeException, BadSonarQubeRequestException {
+        MeasureProvider measureProvider = new MeasureProvider(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
+        measureProvider.getQualityGateStatus();
+    }
 }

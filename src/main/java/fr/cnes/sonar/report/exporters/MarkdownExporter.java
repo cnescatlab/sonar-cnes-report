@@ -21,6 +21,7 @@ import fr.cnes.sonar.report.exporters.docx.DataAdapter;
 import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -81,6 +82,10 @@ public class MarkdownExporter implements IExporter {
      */
     private static final String VOLUMES_TABLE_PLACEHOLDER = "$VOLUME";
     /**
+     * Placeholder for the table containing values of each metric of the quality gate
+     */
+    private static final String QUALITY_GATE_STATUS_TABLE_PLACEHOLDER = "$QUALITY_GATE_STATUS";
+    /**
      * Markdown special chars
      */
     private static final String CELL_SEPARATOR = "|";
@@ -88,6 +93,10 @@ public class MarkdownExporter implements IExporter {
     private static final String HEADER_SEPARATOR = "---";
     private static final String LINE_BREAK = "\n";
     private static final String MD_LINE_BREAK = " <br /> ";
+    /**
+     * PNG extension
+     */
+    private static final String PNG_EXTENSION = ".png";
 
     @Override
     public File export(Object data, String path, String filename) throws IOException, BadExportationDataTypeException {
@@ -111,7 +120,11 @@ public class MarkdownExporter implements IExporter {
             // Replace placeholders by values
             String output = writer.toString();
             for(Map.Entry<String, String> entry: placeholdersMap.entrySet()){
-                output = output.replace(entry.getKey(), entry.getValue());
+                String value = entry.getValue();
+                if (value.endsWith(PNG_EXTENSION)) {
+                    value = FilenameUtils.removeExtension(value);
+                }
+                output = output.replace(entry.getKey(), value);
             }
 
             // Generate issue table
@@ -145,7 +158,14 @@ public class MarkdownExporter implements IExporter {
             final List<List<String>> volumes = DataAdapter.getVolumes(report);
             final String volumeTable = generateMDTable(volumesHeader, volumes);
             output = output.replace(VOLUMES_TABLE_PLACEHOLDER, volumeTable);
-
+            
+            // Generate quality gate status table
+            final String[] qualityGateStatusHeader = {StringManager.string("header.metric"),
+                StringManager.string("header.value")};
+            final List<String> headerQualityGateStatus = new ArrayList<>(Arrays.asList(qualityGateStatusHeader));
+            final List<List<String>> qualityGateStatus = DataAdapter.getQualityGateStatus(report);
+            final String qualityGateStatusTable = generateMDTable(headerQualityGateStatus, qualityGateStatus);
+            output = output.replace(QUALITY_GATE_STATUS_TABLE_PLACEHOLDER, qualityGateStatusTable);
 
             // Saving output
             try(FileWriter fileWriter = new FileWriter(path)){

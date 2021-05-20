@@ -301,7 +301,6 @@ public abstract class CommonTest {
         measures.add(new Measure("sqale_rating", "2.0"));
         measures.add(new Measure("coverage", "1.0"));
         measures.add(new Measure("ncloc", "1.0"));
-        measures.add(new Measure("alert_status", "1.0"));
         measures.add(new Measure("security_rating", "3.0"));
         report.setMeasures(measures);
 
@@ -325,5 +324,11 @@ public abstract class CommonTest {
 
 
         report.setMetricsStats(metricStats);
+
+        final Map<String, String> qualityGateStatus = new HashMap<>();
+        qualityGateStatus.put("Quality Gate Status", "OK");
+        qualityGateStatus.put("Maintainability Rating on New Code", "OK");
+        qualityGateStatus.put("Coverage on New Code", "OK");
+        report.setQualityGateStatus(qualityGateStatus);
     }
 }

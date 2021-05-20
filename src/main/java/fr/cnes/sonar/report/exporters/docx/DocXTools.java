@@ -22,19 +22,20 @@ import fr.cnes.sonar.report.model.Value;
 import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
-import org.apache.poi.ss.util.ImageUtils;
 import org.apache.poi.xwpf.usermodel.*;
+import org.apache.poi.util.Units;
 import org.apache.xmlbeans.XmlException;
 
-
-import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
+import javax.imageio.ImageIO;
 
 /**
  * Different tools to manipulate docx
@@ -229,7 +230,9 @@ public final class DocXTools {
         String value;
         ClassLoader classloader;
         InputStream is;
-        Dimension dim;
+        BufferedImage image;
+        ByteArrayOutputStream baos;
+        ByteArrayInputStream bais;
         // For all Run
         for (XWPFRun currentRun : runs){
             // if there are matter to work on
@@ -258,16 +261,25 @@ public final class DocXTools {
                 // add images if we have something to add
                 if(!pictures.isEmpty()) {
                     // browse picture list previously filled out
-
                     for(String filename : pictures) {
-                        classloader = Thread.currentThread().getContextClassLoader();
-                        is = classloader.getResourceAsStream(IMG_FOLDER +filename);
-                        // height and width are retrieve from here
-                        dim = ImageUtils.getImageDimension(is, Document.PICTURE_TYPE_PNG);
-                        currentRun.addPicture(is, Document.PICTURE_TYPE_PNG,
-                                filename, dim.width, dim.height);
-                        // close picture
+                        // get the image from resources as an input stream
+                        classloader = DocXTools.class.getClassLoader();
+                        is = classloader.getResourceAsStream(IMG_FOLDER + filename);
+                        // convert the input stream to a buffered image
+                        image = ImageIO.read(is);
+                        // close the input stream
                         is.close();
+                        // retrieve image dimensions
+                        int width = image.getWidth();
+                        int height = image.getHeight();
+                        // write the buffered image on a byte array output stream
+                        baos = new ByteArrayOutputStream();
+                        ImageIO.write(image, "png", baos);
+                        // create a byte array input stream from the previous stream
+                        bais = new ByteArrayInputStream(baos.toByteArray());
+                        // add the image to the run
+                        currentRun.addPicture(bais, Document.PICTURE_TYPE_PNG,
+                                filename, Units.toEMU(width), Units.toEMU(height));
                     }
                 }
             }

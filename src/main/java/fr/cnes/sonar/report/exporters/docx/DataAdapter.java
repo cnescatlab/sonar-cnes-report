@@ -201,10 +201,6 @@ public final class DataAdapter {
      */
     private static final String LINES_PLACEHOLDER = "XX-LINES-XX";
     /**
-     * Placeholder for quality gate's status
-     */
-    private static final String QUALITYGATE_PLACEHOLDER = "XX-QUALITYGATE-XX";
-    /**
      * Placeholder for security mark
      */
     private static final String SECURITY_PLACEHOLDER = "XX-SECURITY-XX";
@@ -244,10 +240,6 @@ public final class DataAdapter {
      * Field in json response for number of code lines
      */
     private static final String NCLOC = "ncloc";
-    /**
-     * Field in json response for quality gate's status
-     */
-    private static final String ALERT_STATUS = "alert_status";
     /**
      * Field in json response for security mark
      */
@@ -290,7 +282,10 @@ public final class DataAdapter {
      * String for count
      */
     private static final String COUNT = "count";
-
+    /**
+     * PNG extension
+     */
+    private static final String PNG_EXTENSION = ".png";
     /**
      * Private constructor to forbid instantiation of this class
      */
@@ -534,6 +529,24 @@ public final class DataAdapter {
     }
 
     /**
+     * Get formatted quality gate status summary
+     * @param report report from which to export resources
+     * @return quality gate conditions statuses
+     */
+    public static List<List<String>> getQualityGateStatus(Report report) {
+        // result to return
+        final List<List<String>> result = new ArrayList<>();
+        // add a row for each condition
+        for (Map.Entry<String, String> entry : report.getQualityGateStatus().entrySet()) {
+            final List<String> row = new ArrayList<>();
+            row.add(entry.getKey());
+            row.add(entry.getValue());
+            result.add(row);
+        }
+        return result;
+    }
+
+    /**
      * Load in a map all the placeholder (key) with the corresponding replacement value (value)
      * @param report Report from which resources are extracted
      * @return the placeholders map
@@ -685,19 +698,19 @@ public final class DataAdapter {
         // make the link between numbers and letters
         switch (value) {
             case MARK_1_NUMBER:
-                res = MARK_1_LETTER;
+                res = MARK_1_LETTER.concat(PNG_EXTENSION);
                 break;
             case MARK_2_NUMBER:
-                res = MARK_2_LETTER;
+                res = MARK_2_LETTER.concat(PNG_EXTENSION);
                 break;
             case MARK_3_NUMBER:
-                res = MARK_3_LETTER;
+                res = MARK_3_LETTER.concat(PNG_EXTENSION);
                 break;
             case MARK_4_NUMBER:
-                res = MARK_4_LETTER;
+                res = MARK_4_LETTER.concat(PNG_EXTENSION);
                 break;
             case MARK_5_NUMBER:
-                res = MARK_5_LETTER;
+                res = MARK_5_LETTER.concat(PNG_EXTENSION);
                 break;
             default:
                 res = VALUE;
@@ -731,9 +744,6 @@ public final class DataAdapter {
                 break;
             case NCLOC:
                 res = LINES_PLACEHOLDER;
-                break;
-            case ALERT_STATUS:
-                res = QUALITYGATE_PLACEHOLDER;
                 break;
             case SECURITY_RATING:
                 res = SECURITY_PLACEHOLDER;

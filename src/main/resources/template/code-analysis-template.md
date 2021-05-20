@@ -21,9 +21,13 @@ XX-DESCRIPTION-XX
     - File: XX-QUALITYGATEFILE-XX
 
 ## Synthesis
-Quality Gate | Reliability | Security | Maintainability | Coverage | Duplications | Comment density
-:---:|:---:|:---:|:---:|:---:|:---:|:---:
-XX-QUALITYGATE-XX | XX-RELIABILITY-XX | XX-SECURITY-XX | XX-MAINTAINABILITY-XX | XX-COVERAGE-XX % | XX-DUPLICATION-XX % | XX-COMMENTDENSITY-XX %
+Reliability | Security | Maintainability | Coverage | Duplications | Comment density
+:---:|:---:|:---:|:---:|:---:|:---:
+XX-RELIABILITY-XX | XX-SECURITY-XX | XX-MAINTAINABILITY-XX | XX-COVERAGE-XX % | XX-DUPLICATION-XX % | XX-COMMENTDENSITY-XX %
+
+## Quality gate status
+
+$QUALITY_GATE_STATUS
 
 ## Metrics
 

@@ -62,6 +62,10 @@ public class DocXExporter implements IExporter {
      */
     private static final String VOLUME_TABLE_PLACEHOLDER = "$VOLUME";
     /**
+     * Placeholder for the table containing values of each metric of the quality gate
+     */
+    private static final String QUALITY_GATE_STATUS_TABLE_PLACEHOLDER = "$QUALITY_GATE_STATUS";
+    /**
      * Name of the property giving the path header's number
      */
     private static final String HEADER_NUMBER = "header.number";
@@ -162,6 +166,13 @@ public class DocXExporter implements IExporter {
             final List<String> volumesHeader = new ArrayList<>(Arrays.asList(VOLUMES_HEADER));
             final List<List<String>> volumes = DataAdapter.getVolumes(report);
             DocXTools.fillTable(document, volumesHeader, volumes, VOLUME_TABLE_PLACEHOLDER);
+
+            // Add quality gate status
+            final String[] qualityGateStatusHeader = {StringManager.string("header.metric"),
+                StringManager.string("header.value")};
+            final List<String> headerQualityGateStatus = new ArrayList<>(Arrays.asList(qualityGateStatusHeader));
+            final List<List<String>> qualityGateStatus = DataAdapter.getQualityGateStatus(report);
+            DocXTools.fillTable(document, headerQualityGateStatus, qualityGateStatus, QUALITY_GATE_STATUS_TABLE_PLACEHOLDER);
 
             // Map which contains all values to replace
             // the key is the placeholder and the value is the value to write over

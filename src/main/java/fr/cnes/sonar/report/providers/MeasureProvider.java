@@ -19,6 +19,7 @@ package fr.cnes.sonar.report.providers;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonArray;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Measure;
@@ -27,11 +28,39 @@ import fr.cnes.sonar.report.model.SonarQubeServer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 /**
  * Provides issue items
  */
 public class MeasureProvider extends AbstractDataProvider {
+
+    /**
+     * Parameter "projectStatus" of the JSON response
+     */
+    private static final String PROJECT_STATUS = "projectStatus";
+    /**
+     * Parameter "conditions" of the JSON response
+     */
+    private static final String CONDITIONS = "conditions";
+    /**
+     * Parameter "status" of the JSON response
+     */
+    private static final String STATUS = "status";
+    /**
+     * Parameter "metricKey" of the JSON response
+     */
+    private static final String METRIC_KEY = "metricKey";
+    /**
+     * Parameter "metrics" of the JSON response
+     */
+    private static final String METRICS = "metrics";
+    /**
+     * Parameter "name" of the JSON response
+     */
+    private static final String NAME = "name";
+
 
     /**
      * Complete constructor
@@ -65,5 +94,37 @@ public class MeasureProvider extends AbstractDataProvider {
         // then add all measure to the results list
         // return the list
         return new ArrayList<>(Arrays.asList(tmp));
+    }
+
+    /**
+     * Get the quality gate status of a project
+     * @return Map containing each condition of the quality gate and its status
+     * @throws BadSonarQubeRequestException when the server does not understand the request
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    public Map<String, String> getQualityGateStatus() throws BadSonarQubeRequestException, SonarQubeException {
+        // request to get the quality gate status
+        final JsonObject projectStatusResult = request(String.format(getRequest(GET_QUALITY_GATE_STATUS_REQUEST),
+                getServer().getUrl(), getBranch(), getProjectKey()));
+        // map containing the result
+        Map<String, String> res = new LinkedHashMap<>();
+        // retrieve the content of the object
+        JsonObject projectStatusObject = projectStatusResult.get(PROJECT_STATUS).getAsJsonObject();
+        // add the global status to the map
+        String globalStatus = projectStatusObject.get(STATUS).getAsString();
+        res.put("Quality Gate Status", globalStatus);
+        // retrieve the array of conditions
+        JsonArray conditions = projectStatusObject.get(CONDITIONS).getAsJsonArray();
+        // add a couple metric name / status to the map for each condition
+        for (JsonElement condition : conditions) {
+            JsonObject conditionObject = condition.getAsJsonObject();
+            String status = conditionObject.get(STATUS).getAsString();
+            String metricKey = conditionObject.get(METRIC_KEY).getAsString();
+            final JsonObject metricResult = request(String.format(getRequest(GET_METRIC_REQUEST),
+                getServer().getUrl(), getBranch(), getProjectKey(), metricKey));
+            String name = metricResult.get(METRICS).getAsJsonArray().get(0).getAsJsonObject().get(NAME).getAsString();
+            res.put(name, status);
+        }
+        return res;
     }
 }
