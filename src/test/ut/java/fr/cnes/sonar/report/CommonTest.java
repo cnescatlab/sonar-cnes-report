@@ -302,6 +302,7 @@ public abstract class CommonTest {
         measures.add(new Measure("coverage", "1.0"));
         measures.add(new Measure("ncloc", "1.0"));
         measures.add(new Measure("security_rating", "3.0"));
+        measures.add(new Measure("security_review_rating", "4.0"));
         report.setMeasures(measures);
 
 

@@ -272,6 +272,8 @@ public final class DocXTools {
                         // retrieve image dimensions
                         int width = image.getWidth();
                         int height = image.getHeight();
+                        // ratio for dimensions shrinking
+                        double ratio = 0.25;
                         // write the buffered image on a byte array output stream
                         baos = new ByteArrayOutputStream();
                         ImageIO.write(image, "png", baos);
@@ -279,7 +281,7 @@ public final class DocXTools {
                         bais = new ByteArrayInputStream(baos.toByteArray());
                         // add the image to the run
                         currentRun.addPicture(bais, Document.PICTURE_TYPE_PNG,
-                                filename, Units.toEMU(width), Units.toEMU(height));
+                                filename, Units.toEMU(width*ratio), Units.toEMU(height*ratio));
                     }
                 }
             }

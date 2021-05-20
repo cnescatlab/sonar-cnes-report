@@ -54,6 +54,7 @@ public class DataAdapterTest extends CommonTest{
         expected.put("XX-MINCOMPLEXITY-XX", "unknown");
         expected.put("XX-MAXCOMPLEXITY-XX", "unknown");
         expected.put("XX-SECURITY-XX", "C.png");
+        expected.put("XX-SECURITY-REVIEW-XX", "D.png");
         expected.put("XX-MINCOGNITIVECOMPLEXITY-XX", "unknown");
         expected.put("XX-DATE-XX", new Date().toString().substring(0,16));
         expected.put("XX-RELIABILITY-XX", "A.png");

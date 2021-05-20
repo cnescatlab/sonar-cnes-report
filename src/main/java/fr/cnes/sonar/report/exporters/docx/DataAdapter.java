@@ -205,6 +205,10 @@ public final class DataAdapter {
      */
     private static final String SECURITY_PLACEHOLDER = "XX-SECURITY-XX";
     /**
+     * Placeholder for security review mark
+     */
+    private static final String SECURITY_REVIEW_PLACEHOLDER = "XX-SECURITY-REVIEW-XX";
+    /**
      * Placeholder for the project's version
      */
     private static final String VERSION_PLACEHOLDER = "XX-VERSION-XX";
@@ -244,6 +248,10 @@ public final class DataAdapter {
      * Field in json response for security mark
      */
     private static final String SECURITY_RATING = "security_rating";
+    /**
+     * Field in json response for security review mark
+     */
+    private static final String SECURITY_REVIEW_RATING = "security_review_rating";
     /**
      * List of possible issue types
      */
@@ -747,6 +755,9 @@ public final class DataAdapter {
                 break;
             case SECURITY_RATING:
                 res = SECURITY_PLACEHOLDER;
+                break;
+            case SECURITY_REVIEW_RATING:
+                res = SECURITY_REVIEW_PLACEHOLDER;
                 break;
             default:
                 res = DEFAULT_PLACEHOLDER;
