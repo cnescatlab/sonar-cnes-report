@@ -303,6 +303,9 @@ public abstract class CommonTest {
         measures.add(new Measure("ncloc", "1.0"));
         measures.add(new Measure("security_rating", "3.0"));
         measures.add(new Measure("security_review_rating", "4.0"));
+        measures.add(new Measure("reliability_remediation_effort", "3474"));
+        measures.add(new Measure("security_remediation_effort", "4097"));
+        measures.add(new Measure("sqale_index", "3224"));
         report.setMeasures(measures);
 
 

@@ -23,11 +23,15 @@ XX-DESCRIPTION-XX
 ## Synthesis
 Reliability | Security | Security Review | Maintainability | Coverage | Duplications | Comment density
 :---:|:---:|:---:|:---:|:---:|:---:|:---:
-XX-RELIABILITY-XX | XX-SECURITY-XX | XX-MAINTAINABILITY-XX | XX-COVERAGE-XX % | XX-DUPLICATION-XX % | XX-COMMENTDENSITY-XX %
+XX-RELIABILITY-XX | XX-SECURITY-XX | XX-SECURITYREVIEW-XX | XX-MAINTAINABILITY-XX | XX-COVERAGE-XX % | XX-DUPLICATION-XX % | XX-COMMENTDENSITY-XX %
 
 ## Quality gate status
 
 $QUALITY_GATE_STATUS
+
+## Detailed technical debt
+
+$DETAILED_TECHNICAL_DEBT
 
 ## Metrics
 

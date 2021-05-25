@@ -207,7 +207,7 @@ public final class DataAdapter {
     /**
      * Placeholder for security review mark
      */
-    private static final String SECURITY_REVIEW_PLACEHOLDER = "XX-SECURITY-REVIEW-XX";
+    private static final String SECURITY_REVIEW_PLACEHOLDER = "XX-SECURITYREVIEW-XX";
     /**
      * Placeholder for the project's version
      */
@@ -271,6 +271,18 @@ public final class DataAdapter {
      */
     private static final String NCLOC_PER_LANGUAGE = "ncloc_language_distribution";
     /**
+     * Field in json response for reliability remediation effort
+     */
+    private static final String RELIABILITY_REMEDIATION_EFFORT = "reliability_remediation_effort";
+    /**
+     * Field in json response for security remediation effort
+     */
+    private static final String SECURITY_REMEDIATION_EFFORT = "security_remediation_effort";
+    /**
+     * Field in json response for sqale index
+     */
+    private static final String SQALE_INDEX = "sqale_index";
+    /**
      * Just an equals sign
      */
     private static final String EQUALS = "=";
@@ -294,6 +306,10 @@ public final class DataAdapter {
      * PNG extension
      */
     private static final String PNG_EXTENSION = ".png";
+    /**
+     * Technical debt display format
+     */
+    private static final String TECHNICAL_DEBT_FORMAT = "%sd %sh %smin";
     /**
      * Private constructor to forbid instantiation of this class
      */
@@ -340,7 +356,7 @@ public final class DataAdapter {
      * Prepare list of resources to be print in a table
      * Data are lines containing the number of security hotspots by review priority and security category
      * @param report report from which to extract resources
-     * @return
+     * @return list of lists of strings
      */
     public static List<List<String>> getSecurityHotspotsByCategoryAndPriority(Report report) {
         // result to return
@@ -798,6 +814,41 @@ public final class DataAdapter {
         volumes.add(Arrays.asList(TOTAL, total));
 
         return volumes;
+    }
+
+    /**
+     * Get formatted technical debt summary
+     * @param report Report from which resources are extracted
+     * @return detailed technical debt
+     */
+    public static List<List<String>> getDetailedTechnicalDebt(Report report) {
+        // result to return
+        final List<List<String>> detailedTechnicalDebt = new ArrayList<>();
+
+        // get metrics values needed
+        List<Measure> measures = report.getMeasures();
+        int reliabilityDebt = Integer.parseInt(findMeasure(measures, RELIABILITY_REMEDIATION_EFFORT));
+        int securityDebt = Integer.parseInt(findMeasure(measures, SECURITY_REMEDIATION_EFFORT));
+        int maintainabilityDebt = Integer.parseInt(findMeasure(measures, SQALE_INDEX));
+        int totalTechnicalDebt = reliabilityDebt + securityDebt + maintainabilityDebt;
+
+        // format metrics values
+        String reliabilityDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, reliabilityDebt/8/60, reliabilityDebt/60%8, reliabilityDebt%60);
+        String securityDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, securityDebt/8/60, securityDebt/60%8, securityDebt%60);
+        String maintainabilityDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, maintainabilityDebt/8/60, maintainabilityDebt/60%8, maintainabilityDebt%60);
+        String totalTechnicalDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, totalTechnicalDebt/8/60, totalTechnicalDebt/60%8, totalTechnicalDebt%60);
+
+        // create the row
+        final List<String> row = new ArrayList<>();
+        row.add(reliabilityDebtFormatted);
+        row.add(securityDebtFormatted);
+        row.add(maintainabilityDebtFormatted);
+        row.add(totalTechnicalDebtFormatted);
+
+        // add the row to the result
+        detailedTechnicalDebt.add(row);
+
+        return detailedTechnicalDebt;
     }
 
     /**

@@ -86,6 +86,10 @@ public class MarkdownExporter implements IExporter {
      */
     private static final String QUALITY_GATE_STATUS_TABLE_PLACEHOLDER = "$QUALITY_GATE_STATUS";
     /**
+     * Placeholder for the table containing the detailed technical debt
+     */
+    private static final String DETAILED_TECHNICAL_DEBT_TABLE_PLACEHOLDER = "$DETAILED_TECHNICAL_DEBT";
+    /**
      * Markdown special chars
      */
     private static final String CELL_SEPARATOR = "|";
@@ -166,6 +170,15 @@ public class MarkdownExporter implements IExporter {
             final List<List<String>> qualityGateStatus = DataAdapter.getQualityGateStatus(report);
             final String qualityGateStatusTable = generateMDTable(headerQualityGateStatus, qualityGateStatus);
             output = output.replace(QUALITY_GATE_STATUS_TABLE_PLACEHOLDER, qualityGateStatusTable);
+
+            // Generate detailed technical debt table
+            final String[] detailedTechnicalDebtHeader = {StringManager.string("header.reliability"),
+                StringManager.string("header.security"), StringManager.string("header.maintainability"),
+                StringManager.string("header.total")};
+            final List<String> headerDetailedTechnicalDebt = new ArrayList<>(Arrays.asList(detailedTechnicalDebtHeader));
+            final List<List<String>> detailedTechnicalDebt = DataAdapter.getDetailedTechnicalDebt(report);
+            final String detailedTechnicalDebtTable = generateMDTable(headerDetailedTechnicalDebt, detailedTechnicalDebt);
+            output = output.replace(DETAILED_TECHNICAL_DEBT_TABLE_PLACEHOLDER, detailedTechnicalDebtTable);
 
             // Saving output
             try(FileWriter fileWriter = new FileWriter(path)){
