@@ -30,6 +30,8 @@ Median number of lines of code per file | Adherence to coding standard
 XX-MEDIANNCLOC-XX | XX-COMPLIANCE-XX %
 
 ## Quality gate status
+| Quality Gate Status | XX-QUALITYGATE-XX |
+|-|-|
 
 $QUALITY_GATE_STATUS
 

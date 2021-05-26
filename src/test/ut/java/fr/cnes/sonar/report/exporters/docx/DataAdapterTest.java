@@ -46,6 +46,7 @@ public class DataAdapterTest extends CommonTest{
         expected.put("XX-MAXCOGNITIVECOMPLEXITY-XX", "unknown");
         expected.put("XX-QUALITYPROFILENAME-XX", "");
         expected.put("XX-MINCOMMENTDENSITY-XX", "unknown");
+        expected.put("XX-QUALITYGATE-XX", "OK.png");
         expected.put("XX-MAXDUPLICATION-XX", "unknown");
         expected.put("XX-QUALITYGATENAME-XX", "CNES");
         expected.put("XX-QUALITYPROFILEFILE-XX", "");

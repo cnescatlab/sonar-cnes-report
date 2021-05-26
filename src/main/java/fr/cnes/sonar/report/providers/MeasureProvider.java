@@ -110,9 +110,6 @@ public class MeasureProvider extends AbstractDataProvider {
         Map<String, String> res = new LinkedHashMap<>();
         // retrieve the content of the object
         JsonObject projectStatusObject = projectStatusResult.get(PROJECT_STATUS).getAsJsonObject();
-        // add the global status to the map
-        String globalStatus = projectStatusObject.get(STATUS).getAsString();
-        res.put("Quality Gate Status", globalStatus);
         // retrieve the array of conditions
         JsonArray conditions = projectStatusObject.get(CONDITIONS).getAsJsonArray();
         // add a couple metric name / status to the map for each condition

@@ -207,6 +207,10 @@ public final class DataAdapter {
      */
     private static final String LINES_PLACEHOLDER = "XX-LINES-XX";
     /**
+     * Placeholder for quality gate's status
+     */
+    private static final String QUALITYGATE_PLACEHOLDER = "XX-QUALITYGATE-XX";
+    /**
      * Placeholder for security mark
      */
     private static final String SECURITY_PLACEHOLDER = "XX-SECURITY-XX";
@@ -250,6 +254,10 @@ public final class DataAdapter {
      * Field in json response for number of code lines
      */
     private static final String NCLOC = "ncloc";
+    /**
+     * Field in json response for quality gate's status
+     */
+    private static final String ALERT_STATUS = "alert_status";
     /**
      * Field in json response for security mark
      */
@@ -316,6 +324,18 @@ public final class DataAdapter {
      * Technical debt display format
      */
     private static final String TECHNICAL_DEBT_FORMAT = "%sd %sh %smin";
+    /**
+     * String contained in a metric with a status
+     */
+    private static final String STATUS = "status";
+    /**
+     * Value "OK" of the parameter "status" of the JSON response
+     */
+    private static final String OK = "OK";
+    /**
+     * Value "ERROR" of the parameter "status" of the JSON response
+     */
+    private static final String ERROR = "ERROR";
     /**
      * Private constructor to forbid instantiation of this class
      */
@@ -703,11 +723,15 @@ public final class DataAdapter {
         // Synthesis placeholders
         for (Measure m : report.getMeasures()) {
             final String placeholder = getPlaceHolderName(m.getMetric());
-            String value = m.getValue();
+            String value;
 
-            // convert numerical mark to letter if necessary
+            // convert the metric value to a PNG if possible
             if(m.getMetric().contains(RATING)) {
                 value = numberToLetter(m.getValue());
+            } else if(m.getMetric().contains(STATUS)) {
+                value = formatStatus(m.getValue());
+            } else {
+                value = m.getValue();
             }
 
             replacementValues.put(
@@ -755,6 +779,27 @@ public final class DataAdapter {
     }
 
     /**
+     * Format a status
+     * @param status status value
+     * @return a formatted status
+     */
+    private static String formatStatus(String status) {
+        final String res;
+        switch (status) {
+            case OK:
+                res = OK.concat(PNG_EXTENSION);
+                break;
+            case ERROR:
+                res = ERROR.concat(PNG_EXTENSION);
+                break;
+            default:
+                res = status;
+                break;
+        }
+        return res;
+    }
+
+    /**
      * Give the corresponding placeholder
      * @param metric value whose it have to find the placeholder
      * @return value of the place holder
@@ -779,6 +824,9 @@ public final class DataAdapter {
                 break;
             case NCLOC:
                 res = LINES_PLACEHOLDER;
+                break;
+            case ALERT_STATUS:
+                res = QUALITYGATE_PLACEHOLDER;
                 break;
             case SECURITY_RATING:
                 res = SECURITY_PLACEHOLDER;
