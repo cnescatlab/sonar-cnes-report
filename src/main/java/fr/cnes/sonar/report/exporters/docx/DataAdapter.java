@@ -63,6 +63,10 @@ public final class DataAdapter {
      * Placeholder for quality profile's filenames
      */
     private static final String QUALITYPROFILEFILE_PLACEHOLDER = "XX-QUALITYPROFILEFILE-XX";
+    /**
+     * Placeholder for compliance
+     */
+    private static final String COMPLIANCE_PLACEHOLDER = "XX-COMPLIANCE-XX";
 
     /**
      * Placeholders for complexity metrics
@@ -715,6 +719,7 @@ public final class DataAdapter {
                 replacementValues.put(COVERAGE_PLACEHOLDER, QUESTION_MARK);
             }
         }
+        replacementValues.put(COMPLIANCE_PLACEHOLDER, getCompliance(report));
         return replacementValues;
     }
 
@@ -879,6 +884,34 @@ public final class DataAdapter {
         return result;
     }
 
+    /**
+     * Return the compliance to the coding standard
+     * @param report Report from which resources are extracted
+     * @return the compliance
+     */
+    private static String getCompliance(Report report) {
+        int rulesNumber = 0;
+        double compliance;
+
+        for (QualityProfile qp : report.getQualityProfiles()) {
+            rulesNumber += qp.getRules().size();
+        }
+
+        if (rulesNumber != 0) {
+            Set<String> violatedRules = new HashSet<>();
+            for (Issue issue : report.getIssues()) {
+                violatedRules.add(issue.getRule());
+            }
+            for (SecurityHotspot securityHotspot : report.getToReviewSecurityHotspots()) {
+                violatedRules.add(securityHotspot.getRule());
+            }
+            compliance = ((double)(rulesNumber - violatedRules.size()) / rulesNumber) * 100;
+        } else {
+            compliance = 0;
+        }
+
+        return String.valueOf(compliance);
+    }
 }
 
 /**
