@@ -25,6 +25,10 @@ Reliability | Security | Security Review | Maintainability | Coverage | Duplicat
 :---:|:---:|:---:|:---:|:---:|:---:|:---:
 XX-RELIABILITY-XX | XX-SECURITY-XX | XX-SECURITYREVIEW-XX | XX-MAINTAINABILITY-XX | XX-COVERAGE-XX % | XX-DUPLICATION-XX % | XX-COMMENTDENSITY-XX %
 
+Median number of lines of code per file | Adherence to coding standard
+:---:|:---:
+XX-MEDIANNCLOC-XX | XX-COMPLIANCE-XX %
+
 ## Quality gate status
 
 $QUALITY_GATE_STATUS

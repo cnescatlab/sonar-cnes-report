@@ -67,6 +67,7 @@ public class DataAdapterTest extends CommonTest{
         expected.put("XX-XXXXXXXXXXXXXXX-XX", "3224");
         expected.put("XX-MINNCLOC-XX", "unknown");
         expected.put("XX-MAXCOMMENTDENSITY-XX", "unknown");
+        expected.put("XX-MEDIANNCLOC-XX", "unknown");
         Assert.assertEquals(expected, placeHolders);
 
         // Add the maxcoverage to cancel the unknown error
@@ -85,6 +86,7 @@ public class DataAdapterTest extends CommonTest{
         expected.replace("XX-MINCOGNITIVECOMPLEXITY-XX", "0.0");
         expected.replace("XX-MINNCLOC-XX", "0.0");
         expected.replace("XX-MAXCOMMENTDENSITY-XX", "1.0");
+        expected.replace("XX-MEDIANNCLOC-XX", "1.0");
         expected.put("XX-MAXCOVERAGE-XX", "1.0");
         Map<String,String> newPlaceHolders = DataAdapter.loadPlaceholdersMap(report);
         Assert.assertEquals(expected, newPlaceHolders);

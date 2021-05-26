@@ -79,11 +79,13 @@ public final class DataAdapter {
      */
     private static final String MINNCLOC_PLACEHOLDER = "XX-MINNCLOC-XX";
     private static final String MAXNCLOC_PLACEHOLDER = "XX-MAXNCLOC-XX";
+    private static final String MEDIANNCLOC_PLACEHOLDER = "XX-MEDIANNCLOC-XX";
     /**
      * Key to get number of line of codes in metricstats
      */
     private static final String MINNCLOC_STATKEY = "minncloc";
     private static final String MAXNCLOC_STATKEY = "maxncloc";
+    private static final String MEDIANNCLOC_STATKEY = "medianncloc";
     /**
      * Placeholders for comment density metrics
      */
@@ -628,6 +630,9 @@ public final class DataAdapter {
                     MAXNCLOC_PLACEHOLDER,
                     report.getMetricsStats().get(MAXNCLOC_STATKEY).toString()
             );
+            replacementValues.put(MEDIANNCLOC_PLACEHOLDER,
+                    report.getMetricsStats().get(MEDIANNCLOC_STATKEY).toString()
+            );
 
             //comment density
             replacementValues.put(
@@ -677,6 +682,7 @@ public final class DataAdapter {
             placeholders.add(MAXCOMPLEXITY_PLACEHOLDER);
             placeholders.add(MINNCLOC_PLACEHOLDER);
             placeholders.add(MAXNCLOC_PLACEHOLDER);
+            placeholders.add(MEDIANNCLOC_PLACEHOLDER);
             placeholders.add(MINDUPLICATION_PLACEHOLDER);
             placeholders.add(MAXDUPLICATION_PLACEHOLDER);
             placeholders.add(MINCOGNITIVECOMPLEXITY_PLACEHOLDER);
