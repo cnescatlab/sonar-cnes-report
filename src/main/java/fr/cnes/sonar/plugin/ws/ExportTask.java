@@ -95,7 +95,8 @@ public class ExportTask implements RequestHandler {
                     "-p", projectKey,
                     "-b", pBranch.isPresent()?pBranch.getValue(): StringManager.NO_BRANCH,
                     "-a", request.getParam(PluginStringManager.getProperty("api.report.args.author")).getValue(),
-                    "-t", request.getParam(PluginStringManager.getProperty("api.report.args.token")).getValue()
+                    "-t", request.getParam(PluginStringManager.getProperty("api.report.args.token")).getValue(),
+                    "-l", request.getParam(PluginStringManager.getProperty("api.report.args.language")).getValue()
             });
 
             stream.setMediaType("application/zip");

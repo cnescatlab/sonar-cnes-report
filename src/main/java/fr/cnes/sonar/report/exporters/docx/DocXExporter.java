@@ -66,27 +66,6 @@ public class DocXExporter implements IExporter {
      */
     private static final String HEADER_NUMBER = "header.number";
     /**
-     * Name of the columns in issues table
-     */
-    private static final String[] HEADER_FIELDS = {StringManager.string("header.name"),
-            StringManager.string("header.description"),
-            StringManager.string("header.type"),
-            StringManager.string("header.severity"),
-            StringManager.string(HEADER_NUMBER)};
-    /**
-     * Name of the columns in security hotspots table
-     */
-    private static final String[] SECURITY_HOTSPOTS_HEADER = {StringManager.string("header.category"),
-            StringManager.string("header.name"),
-            StringManager.string("header.priority"),
-            StringManager.string("header.severity"),
-            StringManager.string("header.count")};
-    /**
-     * Name of the columns in volumes table
-     */
-    private static final String[] VOLUMES_HEADER = {StringManager.string("header.language"),
-            StringManager.string(HEADER_NUMBER)};
-    /**
      * Start index of the sub array in the headers array for the the second table
      */
     private static final int HEADER_START_INDEX = 2;
@@ -136,7 +115,11 @@ public class DocXExporter implements IExporter {
 
             // Add issues
             final List<List<String>> issues = DataAdapter.getIssues(report);
-            final String[] issuesArrayFr = HEADER_FIELDS;
+            final String[] issuesArrayFr = {StringManager.string("header.name"),
+                StringManager.string("header.description"),
+                StringManager.string("header.type"),
+                StringManager.string("header.severity"),
+                StringManager.string(HEADER_NUMBER)};
             final List<String> headerIssues = new ArrayList<>(Arrays.asList(issuesArrayFr));
             DocXTools.fillTable(document, headerIssues, issues, DETAILS_TABLE_PLACEHOLDER);
 
@@ -148,7 +131,12 @@ public class DocXExporter implements IExporter {
 
             // Add security hotspots
             final List<List<String>> securityHotspots = DataAdapter.getSecurityHotspots(report);
-            final List<String> headerSecurityHotspots = new ArrayList<>(Arrays.asList(SECURITY_HOTSPOTS_HEADER));
+            final String[] securityHotspotsHeader = {StringManager.string("header.category"),
+                StringManager.string("header.name"),
+                StringManager.string("header.priority"),
+                StringManager.string("header.severity"),
+                StringManager.string("header.count")};
+            final List<String> headerSecurityHotspots = new ArrayList<>(Arrays.asList(securityHotspotsHeader));
             DocXTools.fillTable(document, headerSecurityHotspots, securityHotspots, SECURITY_HOTSPOTS_DETAILS_PLACEHOLDER);
 
             // Add security hotspots by security category and review priority
@@ -159,9 +147,11 @@ public class DocXExporter implements IExporter {
                     SECURITY_HOTSPOTS_COUNT_TABLE_PLACEHOLDER);
 
             // Add volumes by language
-            final List<String> volumesHeader = new ArrayList<>(Arrays.asList(VOLUMES_HEADER));
+            final String[] volumesHeader = {StringManager.string("header.language"),
+                StringManager.string(HEADER_NUMBER)};
+            final List<String> headerVolumes = new ArrayList<>(Arrays.asList(volumesHeader));
             final List<List<String>> volumes = DataAdapter.getVolumes(report);
-            DocXTools.fillTable(document, volumesHeader, volumes, VOLUME_TABLE_PLACEHOLDER);
+            DocXTools.fillTable(document, headerVolumes, volumes, VOLUME_TABLE_PLACEHOLDER);
 
             // Map which contains all values to replace
             // the key is the placeholder and the value is the value to write over

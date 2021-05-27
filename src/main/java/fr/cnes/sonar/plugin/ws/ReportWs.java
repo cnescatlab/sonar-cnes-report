@@ -79,6 +79,11 @@ public class ReportWs implements WebService {
         WebService.NewParam branchParam = report.createParam(PluginStringManager.getProperty("api.report.args.branch"));
         branchParam.setDescription(PluginStringManager.getProperty("api.report.args.description.branch"));
         branchParam.setRequired(false);
+
+        // Adding language argument
+        WebService.NewParam languageParam = report.createParam(PluginStringManager.getProperty("api.report.args.language"));
+        languageParam.setDescription(PluginStringManager.getProperty("api.report.args.description.language"));
+        languageParam.setRequired(true);
     }
 }
 
