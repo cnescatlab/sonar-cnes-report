@@ -6,7 +6,7 @@
 
     <groupId>fr.cnes.sonar</groupId>
     <artifactId>cnesreport</artifactId>
-    <version>3.3.1</version>
+    <version>4.0.0</version>
     <packaging>sonar-plugin</packaging>
 
     <name>SonarQube CNES Report</name>
@@ -32,10 +32,10 @@
         <jdk.min.version>1.8</jdk.min.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <junit.version>4.12</junit.version>
-        <jacoco.version>0.8.4</jacoco.version>
-        <sonar.apiVersion>6.5</sonar.apiVersion>
-        <sonar-packaging-maven-plugin.version>1.18.0.372</sonar-packaging-maven-plugin.version>
+        <junit.version>4.13.2</junit.version>
+        <jacoco.version>0.8.7</jacoco.version>
+        <sonar.apiVersion>8.9.0.43852</sonar.apiVersion>
+        <sonar-packaging-maven-plugin.version>1.20.0.405</sonar-packaging-maven-plugin.version>
         <sonar.pluginKey>cnesreport</sonar.pluginKey>
         <sonar.pluginUrl>https://github.com/cnescatlab/sonar-cnes-report</sonar.pluginUrl>
         <sonar.pluginOrganizationName>CNES</sonar.pluginOrganizationName>
@@ -77,13 +77,13 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
-            <version>1.5</version>
+            <version>1.8</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
+            <version>1.7.30</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -102,7 +102,7 @@
             <!-- network use -->
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5.6</version>
+            <version>4.5.13</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -113,10 +113,16 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.8.0</version>
+        </dependency>
+        <dependency>
             <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.8.1</version>
+            <version>3.12.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -127,10 +133,16 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>30.1.1-jre</version>
+        </dependency>
+        <dependency>
             <!-- json parsing -->
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.8.5</version>
+            <version>2.8.6</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -143,7 +155,7 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml-schemas</artifactId>
-            <version>4.1.0</version>
+            <version>4.1.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -162,7 +174,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.3.1</version>
+            <version>5.7.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -198,7 +210,7 @@
 
             <plugin>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
+                <version>3.2.4</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -213,6 +225,16 @@
                             </transformers>
                             <shadedArtifactAttached>false</shadedArtifactAttached>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                             <!--<minimizeJar>true</minimizeJar>-->
                         </configuration>
                     </execution>
@@ -222,7 +244,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>3.8.1</version>
                 <configuration>
                     <source>${jdk.min.version}</source>
                     <target>${jdk.min.version}</target>
@@ -246,7 +268,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.9</version>
+                <version>3.1.2</version>
                 <configuration>
                     <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
                 </configuration>
@@ -255,12 +277,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M4</version>
+                <version>3.0.0-M5</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.apache.maven.surefire</groupId>
                         <artifactId>surefire-junit47</artifactId>
-                        <version>3.0.0-M4</version>
+                        <version>3.0.0-M5</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -302,7 +324,7 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.9.1</version>
+                <version>1.11.3</version>
                 <executions>
                 <execution>
                     <phase>generate-resources</phase>
@@ -311,8 +333,8 @@
                     <goal>install-node-and-yarn</goal>
                     </goals>
                     <configuration>
-                    <nodeVersion>v12.16.1</nodeVersion>
-                    <yarnVersion>v1.22.0</yarnVersion>
+                    <nodeVersion>v14.16.1</nodeVersion>
+                    <yarnVersion>v1.22.10</yarnVersion>
                     </configuration>
                 </execution>
                 <execution>
