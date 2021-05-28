@@ -43,6 +43,9 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Files;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
 
 public class ExportTask implements RequestHandler {
 
@@ -88,7 +91,13 @@ public class ExportTask implements RequestHandler {
             String context = config.get("sonar.web.context").orElse(PluginStringManager.getProperty("plugin.defaultContext"));
             String sonarUrl = String.format(PluginStringManager.getProperty("plugin.defaultHost"), port, context);
 
-            ReportCommandLine.execute(new String[]{
+            // Get files templates paths if defined
+            String docxPath = config.get("sonar.cnesreport.docx.path").orElse(null);
+            String mdPath = config.get("sonar.cnesreport.md.path").orElse(null);
+            String xlsxPath = config.get("sonar.cnesreport.xlsx.path").orElse(null);
+
+            // prepare params for the report generation
+            List<String> reportParams = new ArrayList<>(Arrays.asList(
                     "report",
                     "-o", outputDirectory.getAbsolutePath(),
                     "-s", sonarUrl,
@@ -97,7 +106,23 @@ public class ExportTask implements RequestHandler {
                     "-a", request.getParam(PluginStringManager.getProperty("api.report.args.author")).getValue(),
                     "-t", request.getParam(PluginStringManager.getProperty("api.report.args.token")).getValue(),
                     "-l", request.getParam(PluginStringManager.getProperty("api.report.args.language")).getValue()
-            });
+            ));            
+
+            // add files templates paths to params if defined
+            if (docxPath != null) {
+                reportParams.add("-r");
+                reportParams.add(docxPath);
+            }
+            if (mdPath != null) {
+                reportParams.add("-n");
+                reportParams.add(mdPath);
+            }
+            if (xlsxPath != null) {
+                reportParams.add("-x");
+                reportParams.add(xlsxPath);
+            }
+
+            ReportCommandLine.execute(reportParams.toArray(new String[reportParams.size()]));
 
             stream.setMediaType("application/zip");
             String filename = ReportFactory.formatFilename("zip.report.output", "", "", projectKey);

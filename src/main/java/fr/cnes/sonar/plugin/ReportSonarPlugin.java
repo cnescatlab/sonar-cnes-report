@@ -19,11 +19,13 @@ package fr.cnes.sonar.plugin;
 
 import fr.cnes.sonar.plugin.web.ReportPluginPageDefinition;
 import fr.cnes.sonar.plugin.ws.ReportWs;
+import fr.cnes.sonar.plugin.settings.ReportSonarPluginProperties;
 import org.sonar.api.Plugin;
 
 public class ReportSonarPlugin implements Plugin {
     @Override
     public void define(Context context) {
+        context.addExtensions(ReportSonarPluginProperties.getProperties());
         context.addExtension(ReportWs.class);
         context.addExtension(ReportPluginPageDefinition.class);
     }
