@@ -891,7 +891,7 @@ public final class DataAdapter {
         int maintainabilityDebt = Integer.parseInt(findMeasure(measures, SQALE_INDEX));
         int totalTechnicalDebt = reliabilityDebt + securityDebt + maintainabilityDebt;
 
-        // format metrics values
+        // convert metrics values to days/hours/minutes format
         String reliabilityDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, reliabilityDebt/8/60, reliabilityDebt/60%8, reliabilityDebt%60);
         String securityDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, securityDebt/8/60, securityDebt/60%8, securityDebt%60);
         String maintainabilityDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, maintainabilityDebt/8/60, maintainabilityDebt/60%8, maintainabilityDebt%60);
@@ -933,7 +933,7 @@ public final class DataAdapter {
     }
 
     /**
-     * Return the compliance to the coding standard
+     * Return the compliance to the coding standard (% of rules in all Quality Profiles that are not violated)
      * @param report Report from which resources are extracted
      * @return the compliance
      */
