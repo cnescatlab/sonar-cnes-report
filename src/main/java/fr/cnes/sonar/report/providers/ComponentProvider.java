@@ -27,6 +27,7 @@ import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.stat.descriptive.rank.Median;
+import org.apache.commons.math3.util.Precision;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -134,7 +135,7 @@ public class ComponentProvider extends AbstractDataProvider {
         }
         Median median = new Median();
         double[] valuesArray = ArrayUtils.toPrimitive(values.toArray(new Double[values.size()]));
-        return median.evaluate(valuesArray);
+        return Precision.round(median.evaluate(valuesArray), 1);
     }
 
     /**

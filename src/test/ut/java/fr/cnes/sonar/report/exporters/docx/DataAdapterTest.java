@@ -69,7 +69,7 @@ public class DataAdapterTest extends CommonTest{
         expected.put("XX-MINNCLOC-XX", "unknown");
         expected.put("XX-MAXCOMMENTDENSITY-XX", "unknown");
         expected.put("XX-MEDIANNCLOC-XX", "unknown");
-        expected.put("XX-COMPLIANCE-XX", "-66.66666666666666");
+        expected.put("XX-COMPLIANCE-XX", "-66.7");
         Assert.assertEquals(expected, placeHolders);
 
         // Add the maxcoverage to cancel the unknown error

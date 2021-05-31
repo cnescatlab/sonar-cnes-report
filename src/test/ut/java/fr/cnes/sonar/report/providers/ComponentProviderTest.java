@@ -67,7 +67,7 @@ public class ComponentProviderTest extends CommonTest {
     }
 
     @Test
-    public void getMinMaxMetricTest() {
+    public void getMinMaxMedianMetricTest() {
         ArrayList<Map<String,String>> componentsTest = new ArrayList<>();
         Map<String,String> component1 = new HashMap<>();
         Map<String,String> component2 = new HashMap<>();
@@ -86,7 +86,7 @@ public class ComponentProviderTest extends CommonTest {
 
         double expectedMin = 24;
         double expectedMax = 42.42;
-        double expectedMedian = 33.21;
+        double expectedMedian = 33.2;
         assertEquals(expectedMin, componentProvider.getMinMetricPublic("Test"));
         assertEquals(expectedMax, componentProvider.getMaxMetricPublic("Test"));
         assertEquals(expectedMedian, componentProvider.getMedianMetricPublic("Test"));
@@ -117,7 +117,7 @@ public class ComponentProviderTest extends CommonTest {
         Map<String, Double> expected = new HashMap<String, Double>();
         expected.put("minTest", 24.0);
         expected.put("maxTest", 42.42);
-        expected.put("medianTest", 33.21);
+        expected.put("medianTest", 33.2);
         expected.put("minOther", 1.0);
         expected.put("maxOther", 3.0);
         expected.put("medianOther", 2.0);

@@ -199,21 +199,24 @@ public class MarkdownExporter implements IExporter {
     public static String generateMDTable(List<String> headers, List<List<String>> datas){
 
         StringBuilder table = new StringBuilder();
-        List<String> headerSeparator = new ArrayList<>();
 
-        // Create header line
-        table.append(generateMDTableLine(headers));
+        if (datas != null && !datas.isEmpty()) {
+            List<String> headerSeparator = new ArrayList<>();
 
-        // In markdown we need to add line to separate header and values
-        for(int i=0;i<headers.size();++i){
-            headerSeparator.add(HEADER_SEPARATOR);
-        }
-        table.append(generateMDTableLine(headerSeparator));
+            // Create header line
+            table.append(generateMDTableLine(headers));
 
-        // Adding values
-        for (List<String> row: datas) {
-            table.append(generateMDTableLine(row));
-        }
+            // In markdown we need to add line to separate header and values
+            for(int i=0;i<headers.size();++i){
+                headerSeparator.add(HEADER_SEPARATOR);
+            }
+            table.append(generateMDTableLine(headerSeparator));
+
+            // Adding values
+            for (List<String> row: datas) {
+                table.append(generateMDTableLine(row));
+            }
+        }        
 
         return table.toString();
 

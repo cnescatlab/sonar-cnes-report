@@ -304,7 +304,7 @@ public final class DocXTools {
                                  List<List<String>> data, String name) {
 
         // if there are no resources, there a
-        if(data!=null && !data.isEmpty()) {
+        if(data!=null) {
             // table to fill out
             XWPFTable table = null;
 
@@ -328,29 +328,31 @@ public final class DocXTools {
                 
                 }
 	            
-	            // create the top line (header) and fill it
-	            XWPFTableRow row = table.createRow();
-	            for(String field : header) {
-	                row.createCell().setText(field);
-	            }
-	
-	            // create resources rows
-	            for(int i = 0 ; i < data.size() ; i++) {
-	                table.createRow();
-	            }
-	
-	            // fill resources rows
-	            for(int iLine = 0 ; iLine < data.size() ; iLine++) {
-	                row = table.getRow(iLine+1);
-	                final List<String> line = data.get(iLine);
-	
-	                for (int iCell = 0; iCell < line.size(); iCell++) {
-	                    if(iCell>=row.getTableCells().size()) {
-	                        row.createCell();
-	                    }
-	                    row.getCell(iCell).setText(line.get(iCell));
+                if (!data.isEmpty()) {
+                    // create the top line (header) and fill it
+                    XWPFTableRow row = table.createRow();
+                    for(String field : header) {
+                        row.createCell().setText(field);
 	                }
-	            }
+	
+                    // create resources rows
+                    for(int i = 0 ; i < data.size() ; i++) {
+                        table.createRow();
+                    }
+        
+                    // fill resources rows
+                    for(int iLine = 0 ; iLine < data.size() ; iLine++) {
+                        row = table.getRow(iLine+1);
+                        final List<String> line = data.get(iLine);
+        
+                        for (int iCell = 0; iCell < line.size(); iCell++) {
+                            if(iCell>=row.getTableCells().size()) {
+                                row.createCell();
+                            }
+                            row.getCell(iCell).setText(line.get(iCell));
+                        }
+                    }
+                }
             }
         }
     }

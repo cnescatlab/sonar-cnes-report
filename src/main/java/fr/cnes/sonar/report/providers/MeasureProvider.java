@@ -24,6 +24,7 @@ import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Measure;
 import fr.cnes.sonar.report.model.SonarQubeServer;
+import org.apache.commons.math3.util.Precision;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,7 +61,43 @@ public class MeasureProvider extends AbstractDataProvider {
      * Parameter "name" of the JSON response
      */
     private static final String NAME = "name";
-
+    /**
+     * Value of the parameter "status" of the JSON response
+     */
+    private static final String ERROR = "ERROR";
+    /**
+     * Parameter "actualValue" of the JSON response
+     */
+    private static final String ACTUAL_VALUE = "actualValue";
+    /**
+     * Parameter "errorThreshold" of the JSON response
+     */
+    private static final String ERROR_THRESHOLD = "errorThreshold";
+    /**
+     * Parameter "comparator" of the JSON response
+     */
+    private static final String COMPARATOR = "comparator";
+    /**
+     * Parameter "type" of the JSON response
+     */
+    private static final String TYPE = "type";
+    /**
+     * Value of the parameter "type" of the JSON response
+     */
+    private static final String RATING = "RATING";
+    /**
+     * Value of the parameter "type" of the JSON response
+     */
+    private static final String WORK_DUR = "WORK_DUR";
+    /**
+     * Value of the parameter "type" of the JSON response
+     */
+    private static final String PERCENT = "PERCENT";
+    /**
+     * Value of the parameter "type" of the JSON response
+     */
+    private static final String MILLISEC = "MILLISEC";
+    
 
     /**
      * Complete constructor
@@ -120,8 +157,118 @@ public class MeasureProvider extends AbstractDataProvider {
             final JsonObject metricResult = request(String.format(getRequest(GET_METRIC_REQUEST),
                 getServer().getUrl(), getBranch(), getProjectKey(), metricKey));
             String name = metricResult.get(METRICS).getAsJsonArray().get(0).getAsJsonObject().get(NAME).getAsString();
+            // add the detailed explanation on why the condition failed if it's the case
+            if (status.equals(ERROR)) {
+                String actualValue = conditionObject.get(ACTUAL_VALUE).getAsString();
+                String errorThreshold = conditionObject.get(ERROR_THRESHOLD).getAsString();
+                String comparator = conditionObject.get(COMPARATOR).getAsString();
+                String type = metricResult.get(METRICS).getAsJsonArray().get(0).getAsJsonObject().get(TYPE).getAsString();
+                status = status.concat(getErrorExplanation(actualValue, errorThreshold, comparator, type));
+            }
             res.put(name, status);
         }
         return res;
+    }
+
+    /**
+     * Construct the sentence explaining why a condition failed
+     * @param actualValue the actual value in the JSON response
+     * @param errorThreshold the error threshold in the JSON response
+     * @param comparator the comparator in the JSON response
+     * @param type the type in the JSON response
+     * @return a String containing the error explanation
+     */
+    protected String getErrorExplanation(String actualValue, String errorThreshold, String comparator, String type) {
+        // format of the string to add in the status
+        String format = " (%s is %s than %s)";
+        
+        String actual;
+        String compare;
+        String threshold;
+
+        // compute the values of the strings to put in the explanation according to their types
+        switch (type) {
+            case RATING:
+                actual = ratingToLetter(actualValue);
+                compare = "worse";
+                threshold = ratingToLetter(errorThreshold);
+                break;
+            case WORK_DUR:
+                actual = workDurationToTime(actualValue);
+                compare = comparatorToString(comparator);
+                threshold = workDurationToTime(errorThreshold);
+                break;
+            case PERCENT:
+                actual = String.valueOf(Precision.round(Double.valueOf(actualValue), 1)).concat("%");
+                compare = comparatorToString(comparator);
+                threshold = errorThreshold.concat("%");
+                break;
+            case MILLISEC:
+                actual = actualValue.concat("ms");
+                compare = comparatorToString(comparator);
+                threshold = errorThreshold.concat("ms");
+                break;
+            default:
+                actual = actualValue;
+                compare = comparatorToString(comparator);
+                threshold = errorThreshold;
+                break;
+        }
+        
+        return String.format(format, actual, compare, threshold);
+    }
+
+    /**
+     * Convert a rating number to a String
+     * @param rating the rating number
+     * @return the letter corresponding to the rating number
+     */
+    private String ratingToLetter(String rating) {
+        String res;
+        switch (rating) {
+            case "1.0":
+                res = "A";
+                break;
+            case "2.0":
+                res = "B";
+                break;
+            case "3.0":
+                res = "C";
+                break;
+            case "4.0":
+                res = "D";
+                break;
+            case "5.0":
+                res = "E";
+                break;
+            default:
+                res = rating;
+                break;
+        }
+        return res;
+    }
+
+    /**
+     * Convert a work duration number to days/hours/minutes format
+     * @param workDuration the work duration number
+     * @return the time corresponding to the work duration number
+     */
+    private String workDurationToTime(String workDuration) {
+        String format = "%sd %sh %smin";
+        int workDurationInt = Integer.parseInt(workDuration);
+        return String.format(format, workDurationInt/8/60, workDurationInt/60%8, workDurationInt%60);
+    }
+
+    /**
+     * Convert a comparator in a JSON response to an understandable string
+     * @param comparator the comparator in the JSON response
+     * @return the understandable string corresponding to the comparator
+     */
+    private String comparatorToString(String comparator) {
+        if (comparator.equals("GT")) {
+            return "greater";
+        } else {
+            return "less";
+        }
     }
 }

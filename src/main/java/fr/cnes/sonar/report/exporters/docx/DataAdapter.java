@@ -19,6 +19,7 @@ package fr.cnes.sonar.report.exporters.docx;
 
 import fr.cnes.sonar.report.model.*;
 import fr.cnes.sonar.report.utils.StringManager;
+import org.apache.commons.math3.util.Precision;
 
 import java.util.*;
 
@@ -891,11 +892,35 @@ public final class DataAdapter {
         int maintainabilityDebt = Integer.parseInt(findMeasure(measures, SQALE_INDEX));
         int totalTechnicalDebt = reliabilityDebt + securityDebt + maintainabilityDebt;
 
+        String reliabilityDebtFormatted;
+        String securityDebtFormatted;
+        String maintainabilityDebtFormatted;
+        String totalTechnicalDebtFormatted;
+
         // convert metrics values to days/hours/minutes format
-        String reliabilityDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, reliabilityDebt/8/60, reliabilityDebt/60%8, reliabilityDebt%60);
-        String securityDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, securityDebt/8/60, securityDebt/60%8, securityDebt%60);
-        String maintainabilityDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, maintainabilityDebt/8/60, maintainabilityDebt/60%8, maintainabilityDebt%60);
-        String totalTechnicalDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, totalTechnicalDebt/8/60, totalTechnicalDebt/60%8, totalTechnicalDebt%60);
+        if (reliabilityDebt != 0) {
+            reliabilityDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, reliabilityDebt/8/60, reliabilityDebt/60%8, reliabilityDebt%60);
+        } else {
+            reliabilityDebtFormatted = "-";
+        }
+        
+        if (securityDebt != 0) {
+            securityDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, securityDebt/8/60, securityDebt/60%8, securityDebt%60);
+        } else {
+            securityDebtFormatted = "-";
+        }
+        
+        if (maintainabilityDebt != 0) {
+            maintainabilityDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, maintainabilityDebt/8/60, maintainabilityDebt/60%8, maintainabilityDebt%60);
+        } else {
+            maintainabilityDebtFormatted = "-";
+        }
+        
+        if (totalTechnicalDebt != 0) {
+            totalTechnicalDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, totalTechnicalDebt/8/60, totalTechnicalDebt/60%8, totalTechnicalDebt%60);
+        } else {
+            totalTechnicalDebtFormatted = "-";
+        }
 
         // create the row
         final List<String> row = new ArrayList<>();
@@ -958,7 +983,7 @@ public final class DataAdapter {
             compliance = 0;
         }
 
-        return String.valueOf(compliance);
+        return String.valueOf(Precision.round(compliance, 1));
     }
 }
 
