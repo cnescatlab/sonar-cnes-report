@@ -265,10 +265,12 @@ public class MeasureProvider extends AbstractDataProvider {
      * @return the understandable string corresponding to the comparator
      */
     private String comparatorToString(String comparator) {
+        String res;
         if (comparator.equals("GT")) {
-            return "greater";
+            res = "greater";
         } else {
-            return "less";
+            res = "less";
         }
+        return res;
     }
 }
