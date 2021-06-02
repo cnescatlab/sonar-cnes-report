@@ -38,6 +38,12 @@ public class ReportSonarPluginProperties {
      **/
     public static final String CNES_REPORT_NAME = "CNES report";
 
+	/**
+	 * Suffix used in the description of every path property
+	 */
+	public static final String PATH_DESC_SUFFIX = "This must be an absolute path in the machine on which the SonarQube server is running. "
+			+ "The template must have at least read access by the user used to start the SonarQube server.";
+
     /**
 	 * Key for the docx template path property
 	 **/
@@ -49,7 +55,7 @@ public class ReportSonarPluginProperties {
     /**
 	 * Description for the docx template path property
 	 **/
-	public static final String DOCX_PATH_DESC = "Path to the docx template.";
+	public static final String DOCX_PATH_DESC = "Path to the report template. " + PATH_DESC_SUFFIX;
 
     /**
 	 * Key for the md template path property
@@ -62,7 +68,7 @@ public class ReportSonarPluginProperties {
     /**
 	 * Description for the md template path property
 	 **/
-	public static final String MD_PATH_DESC = "Path to the md template.";
+	public static final String MD_PATH_DESC = "Path to the markdown template. " + PATH_DESC_SUFFIX;
 
     /**
 	 * Key for the xlsx template path property
@@ -75,7 +81,7 @@ public class ReportSonarPluginProperties {
     /**
 	 * Description for the xlsx template path property
 	 **/
-	public static final String XLSX_PATH_DESC = "Path to the xlsx template.";
+	public static final String XLSX_PATH_DESC = "Path to the spreadsheet template. " + PATH_DESC_SUFFIX;
 
     /**
 	 * Private constructor because it is a utility class.

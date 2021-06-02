@@ -53,6 +53,16 @@ public class ExportTask implements RequestHandler {
     private final Configuration config;
 
     /**
+     * Value "false" of an api call parameter
+     */
+    private static final String FALSE = "false";
+
+    /**
+     * Value "no" of an api call parameter
+     */
+    private static final String NO = "no";
+
+    /**
      * public constructor
      * @param config sonarqube configuration
      */
@@ -140,20 +150,26 @@ public class ExportTask implements RequestHandler {
                 reportParams.add(xlsxPath);
             }
 
+            String pEnableDocxValue = pEnableDocx.getValue();
+            String pEnableMdValue = pEnableMd.getValue();
+            String pEnableXlsxValue = pEnableXlsx.getValue();
+            String pEnableCsvValue = pEnableCsv.getValue();
+            String pEnableConfValue = pEnableConf.getValue();
+
             // add disable files generation params if requested
-            if(pEnableDocx.isPresent() && (pEnableDocx.getValue().equals("false") || pEnableDocx.getValue().equals("no"))) {
+            if(pEnableDocxValue != null && (pEnableDocxValue.equals(FALSE) || pEnableDocxValue.equals(NO))) {
                 reportParams.add("-w");
             }
-            if(pEnableMd.isPresent() && (pEnableMd.getValue().equals("false") || pEnableMd.getValue().equals("no"))) {
+            if(pEnableMdValue != null && (pEnableMdValue.equals(FALSE) || pEnableMdValue.equals(NO))) {
                 reportParams.add("-m");
             }
-            if(pEnableXlsx.isPresent() && (pEnableXlsx.getValue().equals("false") || pEnableXlsx.getValue().equals("no"))) {
+            if(pEnableXlsxValue != null && (pEnableXlsxValue.equals(FALSE) || pEnableXlsxValue.equals(NO))) {
                 reportParams.add("-e");
             }
-            if(pEnableCsv.isPresent() && (pEnableCsv.getValue().equals("false") || pEnableCsv.getValue().equals("no"))) {
+            if(pEnableCsvValue != null && (pEnableCsvValue.equals(FALSE) || pEnableCsvValue.equals(NO))) {
                 reportParams.add("-f");
             }
-            if(pEnableConf.isPresent() && (pEnableConf.getValue().equals("false") || pEnableConf.getValue().equals("no"))) {
+            if(pEnableConfValue != null && (pEnableConfValue.equals(FALSE) || pEnableConfValue.equals(NO))) {
                 reportParams.add("-c");
             }
 
