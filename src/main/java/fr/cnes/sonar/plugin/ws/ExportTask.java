@@ -85,6 +85,24 @@ public class ExportTask implements RequestHandler {
         try {
             final Request.StringParam pBranch =
                     request.getParam(PluginStringManager.getProperty("api.report.args.branch"));
+            
+            final Request.StringParam pLanguage =
+                    request.getParam(PluginStringManager.getProperty("api.report.args.language"));
+
+            final Request.StringParam pEnableDocx =
+                    request.getParam(PluginStringManager.getProperty("api.report.args.enableDocx"));
+
+            final Request.StringParam pEnableMd =
+                    request.getParam(PluginStringManager.getProperty("api.report.args.enableMd"));
+
+            final Request.StringParam pEnableXlsx =
+                    request.getParam(PluginStringManager.getProperty("api.report.args.enableXlsx"));
+
+            final Request.StringParam pEnableCsv =
+                    request.getParam(PluginStringManager.getProperty("api.report.args.enableCsv"));
+
+            final Request.StringParam pEnableConf =
+                    request.getParam(PluginStringManager.getProperty("api.report.args.enableConf"));
 
             // Build SonarQube local URL
             String port = config.get("sonar.web.port").orElse(PluginStringManager.getProperty("plugin.defaultPort"));
@@ -105,8 +123,8 @@ public class ExportTask implements RequestHandler {
                     "-b", pBranch.isPresent()?pBranch.getValue(): StringManager.NO_BRANCH,
                     "-a", request.getParam(PluginStringManager.getProperty("api.report.args.author")).getValue(),
                     "-t", request.getParam(PluginStringManager.getProperty("api.report.args.token")).getValue(),
-                    "-l", request.getParam(PluginStringManager.getProperty("api.report.args.language")).getValue()
-            ));            
+                    "-l", pLanguage.isPresent()?pLanguage.getValue(): StringManager.getProperty(StringManager.DEFAULT_LANGUAGE)
+            ));
 
             // add files templates paths to params if defined
             if (docxPath != null) {
@@ -120,6 +138,23 @@ public class ExportTask implements RequestHandler {
             if (xlsxPath != null) {
                 reportParams.add("-x");
                 reportParams.add(xlsxPath);
+            }
+
+            // add disable files generation params if requested
+            if(pEnableDocx.isPresent() && (pEnableDocx.getValue().equals("false") || pEnableDocx.getValue().equals("no"))) {
+                reportParams.add("-w");
+            }
+            if(pEnableMd.isPresent() && (pEnableMd.getValue().equals("false") || pEnableMd.getValue().equals("no"))) {
+                reportParams.add("-m");
+            }
+            if(pEnableXlsx.isPresent() && (pEnableXlsx.getValue().equals("false") || pEnableXlsx.getValue().equals("no"))) {
+                reportParams.add("-e");
+            }
+            if(pEnableCsv.isPresent() && (pEnableCsv.getValue().equals("false") || pEnableCsv.getValue().equals("no"))) {
+                reportParams.add("-f");
+            }
+            if(pEnableConf.isPresent() && (pEnableConf.getValue().equals("false") || pEnableConf.getValue().equals("no"))) {
+                reportParams.add("-c");
             }
 
             ReportCommandLine.execute(reportParams.toArray(new String[reportParams.size()]));

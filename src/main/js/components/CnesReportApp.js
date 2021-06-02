@@ -15,7 +15,12 @@ export default class CnesReportApp extends React.PureComponent {
         token: "",
         author: "",
         branches: [],
-        languages: [{id: 'en_US', name: 'English'}, {id: 'fr_FR', name: 'French'}]
+        languages: [{id: 'en_US', name: 'English'}, {id: 'fr_FR', name: 'French'}],
+        enableDocx: true,
+        enableMd: true,
+        enableXlsx: true,
+        enableCsv: true,
+        enableConf: true
     };
 
     onChangeAuthor = (event) => {
@@ -27,6 +32,26 @@ export default class CnesReportApp extends React.PureComponent {
             this.setState({ branches: branches });
         });
     };
+
+    onChangeCheckbox = (stateParam) => {
+        switch (stateParam) {
+            case 'enableDocx':
+                this.setState({enableDocx: !this.state.enableDocx});
+                break;
+            case 'enableMd':
+                this.setState({enableMd: !this.state.enableMd});
+                break;
+            case 'enableXlsx':
+                this.setState({enableXlsx: !this.state.enableXlsx});
+                break;
+            case 'enableCsv':
+                this.setState({enableCsv: !this.state.enableCsv});
+                break;
+            case 'enableConf':
+                this.setState({enableConf: !this.state.enableConf});
+                break;
+          }
+    }
 
     componentDidMount() {
         initiatePluginToken().then(tokenInfo => {
@@ -121,8 +146,60 @@ export default class CnesReportApp extends React.PureComponent {
                                 onChange={this.onChangeAuthor} />
                             <input type="hidden" name="token" id="token_cnesreport" defaultValue={this.state.token} />
                         </div>
+                        <div>
+                            <input id="enableDocxHidden" type="hidden" value="false" name="enableDocx" disabled={this.state.enableDocx}/>
+                            <input type="checkbox"
+                                id="enableDocx"
+                                name="enableDocx"
+                                value="true"
+                                defaultChecked={this.state.enableDocx}
+                                onChange={() => this.onChangeCheckbox('enableDocx')}/>
+                            <label for="enableDocx" id="enableDocxLabel"><strong>Enable DOCX generation</strong></label>
+                        </div>
+                        <div>
+                            <input id="enableMdHidden" type="hidden" value="false" name="enableMd" disabled={this.state.enableMd}/>
+                            <input type="checkbox"
+                                id="enableMd"
+                                name="enableMd"
+                                value="true"
+                                defaultChecked={this.state.enableMd}
+                                onChange={() => this.onChangeCheckbox('enableMd')}/>
+                            <label for="enableMd" id="enableMdLabel"><strong>Enable MD generation</strong></label>
+                        </div>
+                        <div>
+                            <input id="enableXlsxHidden" type="hidden" value="false" name="enableXlsx" disabled={this.state.enableXlsx}/>
+                            <input type="checkbox"
+                                id="enableXlsx"
+                                name="enableXlsx"
+                                value="true"
+                                defaultChecked={this.state.enableXlsx}
+                                onChange={() => this.onChangeCheckbox('enableXlsx')}/>
+                            <label for="enableXlsx" id="enableXlsxLabel"><strong>Enable XLSX generation</strong></label>
+                        </div>
+                        <div>
+                            <input id="enableCsvHidden" type="hidden" value="false" name="enableCsv" disabled={this.state.enableCsv}/>
+                            <input type="checkbox"
+                                id="enableCsv"
+                                name="enableCsv"
+                                value="true"
+                                defaultChecked={this.state.enableCsv}
+                                onChange={() => this.onChangeCheckbox('enableCsv')}/>
+                            <label for="enableCsv" id="enableCsvLabel"><strong>Enable CSV generation</strong></label>
+                        </div>
+                        <div>
+                            <input id="enableConfHidden" type="hidden" value="false" name="enableConf" disabled={this.state.enableConf}/>
+                            <input type="checkbox"
+                                id="enableConf"
+                                name="enableConf"
+                                value="true"
+                                defaultChecked={this.state.enableConf}
+                                onChange={() => this.onChangeCheckbox('enableConf')}/>
+                            <label for="enableConf" id="enableConfLabel"><strong>Enable quality configuration generation</strong></label>
+                        </div>
                         <br />
-                        <input id="generation" name="generation" type="submit" value="Generate" /><br />
+                        <input id="generation" name="generation" type="submit" value="Generate"
+                            disabled={!(this.state.enableDocx || this.state.enableMd || this.state.enableXlsx || this.state.enableCsv || this.state.enableConf)}/>
+                        <br />
                         <em class="info-message">This operation may take some time, please wait while the report is being generated.</em>
                     </form>
                 </div>

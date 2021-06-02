@@ -31,6 +31,9 @@ import org.apache.xmlbeans.XmlException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -90,7 +93,12 @@ public class ReportFactory {
         final XlsXExporter issuesExporter = new XlsXExporter();
         final CSVExporter csvExporter = new CSVExporter();
         final MarkdownExporter markdownExporter =  new MarkdownExporter();
-
+        
+        // create the output directory if it doesn't exist
+        Path path = Paths.get(configuration.getOutput());
+        if (!Files.isDirectory(path)) {
+            Files.createDirectories(path);
+        }
 
         // Export analysis configuration if requested.
         if(configuration.isEnableConf()) {
@@ -143,11 +151,12 @@ public class ReportFactory {
 
         // full path to the configuration folder
         final String confDirectory = String.format(CONF_FOLDER_PATTERN, configuration.getOutput());
-
+        
         // create the configuration folder
-        final File configFolder = new File(confDirectory);
-        final boolean success = configFolder.mkdirs();
-        if (!success && !configFolder.exists()) {
+        final Path path = Paths.get(confDirectory);
+        Files.createDirectory(path);
+        
+        if (!Files.isDirectory(path)) {
             // Directory creation failed
             final String message = String.format(CNES_MKDIR_ERROR, confDirectory);
             LOGGER.warning(message);

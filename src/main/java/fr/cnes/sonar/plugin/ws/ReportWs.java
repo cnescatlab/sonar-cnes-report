@@ -64,26 +64,61 @@ public class ReportWs implements WebService {
         WebService.NewParam keyParam = report.createParam(PluginStringManager.getProperty("api.report.args.key"));
         keyParam.setDescription(PluginStringManager.getProperty("api.report.args.description.key"));
         keyParam.setRequired(true);
+        keyParam.setExampleValue("my_project");
 
         // Adding author argument
         WebService.NewParam authorParam = report.createParam(PluginStringManager.getProperty("api.report.args.author"));
         authorParam.setDescription(PluginStringManager.getProperty("api.report.args.description.author"));
         authorParam.setRequired(true);
+        authorParam.setExampleValue("Administrator");
 
         // Adding token argument
         WebService.NewParam tokenParam = report.createParam(PluginStringManager.getProperty("api.report.args.token"));
         tokenParam.setDescription(PluginStringManager.getProperty("api.report.args.description.token"));
         tokenParam.setRequired(true);
+        tokenParam.setExampleValue("e4aa1351d0a3936e55d23e340402f48f7dced48b");
 
         // Adding branch argument
         WebService.NewParam branchParam = report.createParam(PluginStringManager.getProperty("api.report.args.branch"));
         branchParam.setDescription(PluginStringManager.getProperty("api.report.args.description.branch"));
         branchParam.setRequired(false);
+        branchParam.setExampleValue("feature/my_branch");
 
         // Adding language argument
         WebService.NewParam languageParam = report.createParam(PluginStringManager.getProperty("api.report.args.language"));
         languageParam.setDescription(PluginStringManager.getProperty("api.report.args.description.language"));
-        languageParam.setRequired(true);
+        languageParam.setRequired(false);
+        languageParam.setPossibleValues("en_US", "fr_FR");
+
+        // Adding enableDocx argument
+        WebService.NewParam enableDocxParam = report.createParam(PluginStringManager.getProperty("api.report.args.enableDocx"));
+        enableDocxParam.setDescription(PluginStringManager.getProperty("api.report.args.description.enableDocx"));
+        enableDocxParam.setRequired(false);
+        enableDocxParam.setBooleanPossibleValues();
+
+        // Adding enableMd argument
+        WebService.NewParam enableMdParam = report.createParam(PluginStringManager.getProperty("api.report.args.enableMd"));
+        enableMdParam.setDescription(PluginStringManager.getProperty("api.report.args.description.enableMd"));
+        enableMdParam.setRequired(false);
+        enableMdParam.setBooleanPossibleValues();
+        
+        // Adding enableXlsx argument
+        WebService.NewParam enableXlsxParam = report.createParam(PluginStringManager.getProperty("api.report.args.enableXlsx"));
+        enableXlsxParam.setDescription(PluginStringManager.getProperty("api.report.args.description.enableXlsx"));
+        enableXlsxParam.setRequired(false);
+        enableXlsxParam.setBooleanPossibleValues();
+
+        // Adding enableCsv argument
+        WebService.NewParam enableCsvParam = report.createParam(PluginStringManager.getProperty("api.report.args.enableCsv"));
+        enableCsvParam.setDescription(PluginStringManager.getProperty("api.report.args.description.enableCsv"));
+        enableCsvParam.setRequired(false);
+        enableCsvParam.setBooleanPossibleValues();
+
+        // Adding enableConf argument
+        WebService.NewParam enableConfParam = report.createParam(PluginStringManager.getProperty("api.report.args.enableConf"));
+        enableConfParam.setDescription(PluginStringManager.getProperty("api.report.args.description.enableConf"));
+        enableConfParam.setRequired(false);
+        enableConfParam.setBooleanPossibleValues();
     }
 }
 
