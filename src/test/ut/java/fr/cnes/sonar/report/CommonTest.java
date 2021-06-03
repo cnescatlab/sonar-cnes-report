@@ -301,8 +301,12 @@ public abstract class CommonTest {
         measures.add(new Measure("sqale_rating", "2.0"));
         measures.add(new Measure("coverage", "1.0"));
         measures.add(new Measure("ncloc", "1.0"));
-        measures.add(new Measure("alert_status", "1.0"));
+        measures.add(new Measure("alert_status", "OK"));
         measures.add(new Measure("security_rating", "3.0"));
+        measures.add(new Measure("security_review_rating", "4.0"));
+        measures.add(new Measure("reliability_remediation_effort", "3474"));
+        measures.add(new Measure("security_remediation_effort", "4097"));
+        measures.add(new Measure("sqale_index", "3224"));
         report.setMeasures(measures);
 
 
@@ -321,9 +325,16 @@ public abstract class CommonTest {
         metricStats.put("mincognitive_complexity", 0.0);
         metricStats.put("maxcognitive_complexity", 1.0);
         metricStats.put("mincoverage", 0.0);
+        metricStats.put("medianncloc", 1.0);
         // Max coverage is not included to raise a NullPointerException
 
 
         report.setMetricsStats(metricStats);
+
+        final Map<String, String> qualityGateStatus = new HashMap<>();
+        qualityGateStatus.put("Quality Gate Status", "OK");
+        qualityGateStatus.put("Maintainability Rating on New Code", "OK");
+        qualityGateStatus.put("Coverage on New Code", "OK");
+        report.setQualityGateStatus(qualityGateStatus);
     }
 }

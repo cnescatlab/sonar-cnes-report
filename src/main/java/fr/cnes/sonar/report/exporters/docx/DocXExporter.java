@@ -62,6 +62,14 @@ public class DocXExporter implements IExporter {
      */
     private static final String VOLUME_TABLE_PLACEHOLDER = "$VOLUME";
     /**
+     * Placeholder for the table containing values of each metric of the quality gate
+     */
+    private static final String QUALITY_GATE_STATUS_TABLE_PLACEHOLDER = "$QUALITY_GATE_STATUS";
+    /**
+     * Placeholder for the table containing the detailed technical debt
+     */
+    private static final String DETAILED_TECHNICAL_DEBT_TABLE_PLACEHOLDER = "$DETAILED_TECHNICAL_DEBT";
+    /**
      * Name of the property giving the path header's number
      */
     private static final String HEADER_NUMBER = "header.number";
@@ -152,6 +160,21 @@ public class DocXExporter implements IExporter {
             final List<String> headerVolumes = new ArrayList<>(Arrays.asList(volumesHeader));
             final List<List<String>> volumes = DataAdapter.getVolumes(report);
             DocXTools.fillTable(document, headerVolumes, volumes, VOLUME_TABLE_PLACEHOLDER);
+
+            // Add quality gate status
+            final String[] qualityGateStatusHeader = {StringManager.string("header.metric"),
+                StringManager.string("header.value")};
+            final List<String> headerQualityGateStatus = new ArrayList<>(Arrays.asList(qualityGateStatusHeader));
+            final List<List<String>> qualityGateStatus = DataAdapter.getQualityGateStatus(report);
+            DocXTools.fillTable(document, headerQualityGateStatus, qualityGateStatus, QUALITY_GATE_STATUS_TABLE_PLACEHOLDER);
+
+            // Add detailed technical debt
+            final String[] detailedTechnicalDebtHeader = {StringManager.string("header.reliability"),
+                StringManager.string("header.security"), StringManager.string("header.maintainability"),
+                StringManager.string("header.total")};
+            final List<String> headerDetailedTechnicalDebt = new ArrayList<>(Arrays.asList(detailedTechnicalDebtHeader));
+            final List<List<String>> detailedTechnicalDebt = DataAdapter.getDetailedTechnicalDebt(report);
+            DocXTools.fillTable(document, headerDetailedTechnicalDebt, detailedTechnicalDebt, DETAILED_TECHNICAL_DEBT_TABLE_PLACEHOLDER);
 
             // Map which contains all values to replace
             // the key is the placeholder and the value is the value to write over

@@ -114,6 +114,15 @@ public abstract class AbstractDataProvider {
     protected static final String GET_SONARQUBE_INFO_REQUEST =
             "GET_SONARQUBE_INFO_REQUEST";
     /**
+     * Name of the request for getting the quality gate status of a project
+     */
+    protected static final String GET_QUALITY_GATE_STATUS_REQUEST = 
+            "GET_QUALITY_GATE_STATUS_REQUEST";
+    /**
+     * Name of the request for getting a specific metric
+     */
+    protected static final String GET_METRIC_REQUEST = "GET_METRIC_REQUEST";
+    /**
      * Field to search in json to get results' values
      */
     protected static final String RESULTS = "results";

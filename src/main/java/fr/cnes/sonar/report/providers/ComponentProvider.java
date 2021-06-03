@@ -25,6 +25,9 @@ import fr.cnes.sonar.report.model.Component;
 import fr.cnes.sonar.report.model.SonarQubeServer;
 import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.math3.stat.descriptive.rank.Median;
+import org.apache.commons.math3.util.Precision;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -120,10 +123,26 @@ public class ComponentProvider extends AbstractDataProvider {
     }
 
     /**
+     * Get the median of a specified metric
+     */
+    protected double getMedianMetric(String metric) {
+        List<Double> values = new ArrayList<>(); 
+        for(Map<String,String> c: componentsList){
+            final String rawValue = c.get(metric);
+            if(rawValue!=null){
+                values.add(Double.valueOf(rawValue));
+            }
+        }
+        Median median = new Median();
+        double[] valuesArray = ArrayUtils.toPrimitive(values.toArray(new Double[values.size()]));
+        return Precision.round(median.evaluate(valuesArray), 1);
+    }
+
+    /**
      * Generate a map with all metrics stats (for numerical metrics)
-     * Generate a map with `min<metric name>`, `max<metric name>`, `mean<metric name>`
-     * as keys and min, max or mean as value (converted in double)
-     * @return map with min, max and mean of each numerical metric in the project
+     * Generate a map with `min<metric name>`, `max<metric name>`, `median<metric name>`
+     * as keys and min, max or median as value (converted in double)
+     * @return map with min, max and median of each numerical metric in the project
      * */
     public Map<String, Double> getMetricStats(){
         
@@ -135,9 +154,10 @@ public class ComponentProvider extends AbstractDataProvider {
             for(Object metric: XlsXTools.extractHeader(componentsList)){
                 // if metric is numerical
                 if (isCountableMetric(metric.toString())) {
-                    // Get min, max and mean of this metric on the current project
+                    // Get min, max and median of this metric on the current project
                     map.put("min" + metric.toString(), getMinMetric(metric.toString()));
                     map.put("max" + metric.toString(), getMaxMetric(metric.toString()));
+                    map.put("median" + metric.toString(), getMedianMetric(metric.toString()));
                 }
             }
         }

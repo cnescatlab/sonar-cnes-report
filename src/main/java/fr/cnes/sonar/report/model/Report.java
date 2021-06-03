@@ -85,7 +85,10 @@ public class Report {
      * Maps of metrics stats
      */
     private Map<String, Double> metricsStats;
-
+    /**
+     * Map of quality gate conditions statuses
+     */
+    private Map<String, String> qualityGateStatus;
     /**
      * Default constructor
      */
@@ -103,6 +106,8 @@ public class Report {
         this.measures = new ArrayList<>();
         this.rawIssues = new ArrayList<>();
         this.components = new ArrayList<>();
+        this.metricsStats = new HashMap<>();
+        this.qualityGateStatus = new HashMap<>();
         this.project = new Project(StringManager.EMPTY, StringManager.EMPTY,
                 StringManager.EMPTY,StringManager.EMPTY,StringManager.EMPTY, StringManager.EMPTY);
     }
@@ -437,5 +442,21 @@ public class Report {
      */
     public void setUnconfirmed(List<Issue> pIssues) {
         this.unconfirmed = new ArrayList<>(pIssues);
+    }
+
+    /**
+     * Getter for qualityGateStatus
+     * @return qualityGateStatus
+     */
+    public Map<String, String> getQualityGateStatus() {
+        return qualityGateStatus;
+    }
+
+    /**
+     * Setter for unconfirmed
+     * @param pQualityGateStatus value
+     */
+    public void setQualityGateStatus(Map<String, String> pQualityGateStatus) {
+        this.qualityGateStatus = pQualityGateStatus;
     }
 }

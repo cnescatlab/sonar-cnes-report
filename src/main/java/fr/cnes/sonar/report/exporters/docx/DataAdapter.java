@@ -19,6 +19,7 @@ package fr.cnes.sonar.report.exporters.docx;
 
 import fr.cnes.sonar.report.model.*;
 import fr.cnes.sonar.report.utils.StringManager;
+import org.apache.commons.math3.util.Precision;
 
 import java.util.*;
 
@@ -63,6 +64,10 @@ public final class DataAdapter {
      * Placeholder for quality profile's filenames
      */
     private static final String QUALITYPROFILEFILE_PLACEHOLDER = "XX-QUALITYPROFILEFILE-XX";
+    /**
+     * Placeholder for compliance
+     */
+    private static final String COMPLIANCE_PLACEHOLDER = "XX-COMPLIANCE-XX";
 
     /**
      * Placeholders for complexity metrics
@@ -79,11 +84,13 @@ public final class DataAdapter {
      */
     private static final String MINNCLOC_PLACEHOLDER = "XX-MINNCLOC-XX";
     private static final String MAXNCLOC_PLACEHOLDER = "XX-MAXNCLOC-XX";
+    private static final String MEDIANNCLOC_PLACEHOLDER = "XX-MEDIANNCLOC-XX";
     /**
      * Key to get number of line of codes in metricstats
      */
     private static final String MINNCLOC_STATKEY = "minncloc";
     private static final String MAXNCLOC_STATKEY = "maxncloc";
+    private static final String MEDIANNCLOC_STATKEY = "medianncloc";
     /**
      * Placeholders for comment density metrics
      */
@@ -209,6 +216,10 @@ public final class DataAdapter {
      */
     private static final String SECURITY_PLACEHOLDER = "XX-SECURITY-XX";
     /**
+     * Placeholder for security review mark
+     */
+    private static final String SECURITY_REVIEW_PLACEHOLDER = "XX-SECURITYREVIEW-XX";
+    /**
      * Placeholder for the project's version
      */
     private static final String VERSION_PLACEHOLDER = "XX-VERSION-XX";
@@ -253,6 +264,10 @@ public final class DataAdapter {
      */
     private static final String SECURITY_RATING = "security_rating";
     /**
+     * Field in json response for security review mark
+     */
+    private static final String SECURITY_REVIEW_RATING = "security_review_rating";
+    /**
      * List of possible issue types
      */
     private static final String[] ISSUE_TYPES = {"BUG", "VULNERABILITY", "CODE_SMELL"};
@@ -270,6 +285,18 @@ public final class DataAdapter {
      * Field in json response for number of code lines per language
      */
     private static final String NCLOC_PER_LANGUAGE = "ncloc_language_distribution";
+    /**
+     * Field in json response for reliability remediation effort
+     */
+    private static final String RELIABILITY_REMEDIATION_EFFORT = "reliability_remediation_effort";
+    /**
+     * Field in json response for security remediation effort
+     */
+    private static final String SECURITY_REMEDIATION_EFFORT = "security_remediation_effort";
+    /**
+     * Field in json response for sqale index
+     */
+    private static final String SQALE_INDEX = "sqale_index";
     /**
      * Just an equals sign
      */
@@ -290,7 +317,26 @@ public final class DataAdapter {
      * String for count
      */
     private static final String COUNT = "count";
-
+    /**
+     * PNG extension
+     */
+    private static final String PNG_EXTENSION = ".png";
+    /**
+     * Technical debt display format
+     */
+    private static final String TECHNICAL_DEBT_FORMAT = "%sd %sh %smin";
+    /**
+     * String contained in a metric with a status
+     */
+    private static final String STATUS = "status";
+    /**
+     * Value "OK" of the parameter "status" of the JSON response
+     */
+    private static final String OK = "OK";
+    /**
+     * Value "ERROR" of the parameter "status" of the JSON response
+     */
+    private static final String ERROR = "ERROR";
     /**
      * Private constructor to forbid instantiation of this class
      */
@@ -337,7 +383,7 @@ public final class DataAdapter {
      * Prepare list of resources to be print in a table
      * Data are lines containing the number of security hotspots by review priority and security category
      * @param report report from which to extract resources
-     * @return
+     * @return list of lists of strings
      */
     public static List<List<String>> getSecurityHotspotsByCategoryAndPriority(Report report) {
         // result to return
@@ -534,6 +580,24 @@ public final class DataAdapter {
     }
 
     /**
+     * Get formatted quality gate status summary
+     * @param report report from which to export resources
+     * @return quality gate conditions statuses
+     */
+    public static List<List<String>> getQualityGateStatus(Report report) {
+        // result to return
+        final List<List<String>> result = new ArrayList<>();
+        // add a row for each condition
+        for (Map.Entry<String, String> entry : report.getQualityGateStatus().entrySet()) {
+            final List<String> row = new ArrayList<>();
+            row.add(entry.getKey());
+            row.add(entry.getValue());
+            result.add(row);
+        }
+        return result;
+    }
+
+    /**
      * Load in a map all the placeholder (key) with the corresponding replacement value (value)
      * @param report Report from which resources are extracted
      * @return the placeholders map
@@ -591,6 +655,9 @@ public final class DataAdapter {
                     MAXNCLOC_PLACEHOLDER,
                     report.getMetricsStats().get(MAXNCLOC_STATKEY).toString()
             );
+            replacementValues.put(MEDIANNCLOC_PLACEHOLDER,
+                    report.getMetricsStats().get(MEDIANNCLOC_STATKEY).toString()
+            );
 
             //comment density
             replacementValues.put(
@@ -640,6 +707,7 @@ public final class DataAdapter {
             placeholders.add(MAXCOMPLEXITY_PLACEHOLDER);
             placeholders.add(MINNCLOC_PLACEHOLDER);
             placeholders.add(MAXNCLOC_PLACEHOLDER);
+            placeholders.add(MEDIANNCLOC_PLACEHOLDER);
             placeholders.add(MINDUPLICATION_PLACEHOLDER);
             placeholders.add(MAXDUPLICATION_PLACEHOLDER);
             placeholders.add(MINCOGNITIVECOMPLEXITY_PLACEHOLDER);
@@ -656,11 +724,15 @@ public final class DataAdapter {
         // Synthesis placeholders
         for (Measure m : report.getMeasures()) {
             final String placeholder = getPlaceHolderName(m.getMetric());
-            String value = m.getValue();
+            String value;
 
-            // convert numerical mark to letter if necessary
+            // convert the metric value to a PNG if possible
             if(m.getMetric().contains(RATING)) {
                 value = numberToLetter(m.getValue());
+            } else if(m.getMetric().contains(STATUS)) {
+                value = formatStatus(m.getValue());
+            } else {
+                value = m.getValue();
             }
 
             replacementValues.put(
@@ -672,6 +744,7 @@ public final class DataAdapter {
                 replacementValues.put(COVERAGE_PLACEHOLDER, QUESTION_MARK);
             }
         }
+        replacementValues.put(COMPLIANCE_PLACEHOLDER, getCompliance(report));
         return replacementValues;
     }
 
@@ -685,22 +758,43 @@ public final class DataAdapter {
         // make the link between numbers and letters
         switch (value) {
             case MARK_1_NUMBER:
-                res = MARK_1_LETTER;
+                res = MARK_1_LETTER.concat(PNG_EXTENSION);
                 break;
             case MARK_2_NUMBER:
-                res = MARK_2_LETTER;
+                res = MARK_2_LETTER.concat(PNG_EXTENSION);
                 break;
             case MARK_3_NUMBER:
-                res = MARK_3_LETTER;
+                res = MARK_3_LETTER.concat(PNG_EXTENSION);
                 break;
             case MARK_4_NUMBER:
-                res = MARK_4_LETTER;
+                res = MARK_4_LETTER.concat(PNG_EXTENSION);
                 break;
             case MARK_5_NUMBER:
-                res = MARK_5_LETTER;
+                res = MARK_5_LETTER.concat(PNG_EXTENSION);
                 break;
             default:
                 res = VALUE;
+                break;
+        }
+        return res;
+    }
+
+    /**
+     * Format a status
+     * @param status status value
+     * @return a formatted status
+     */
+    private static String formatStatus(String status) {
+        final String res;
+        switch (status) {
+            case OK:
+                res = OK.concat(PNG_EXTENSION);
+                break;
+            case ERROR:
+                res = ERROR.concat(PNG_EXTENSION);
+                break;
+            default:
+                res = status;
                 break;
         }
         return res;
@@ -737,6 +831,9 @@ public final class DataAdapter {
                 break;
             case SECURITY_RATING:
                 res = SECURITY_PLACEHOLDER;
+                break;
+            case SECURITY_REVIEW_RATING:
+                res = SECURITY_REVIEW_PLACEHOLDER;
                 break;
             default:
                 res = DEFAULT_PLACEHOLDER;
@@ -780,6 +877,65 @@ public final class DataAdapter {
     }
 
     /**
+     * Get formatted technical debt summary
+     * @param report Report from which resources are extracted
+     * @return detailed technical debt
+     */
+    public static List<List<String>> getDetailedTechnicalDebt(Report report) {
+        // result to return
+        final List<List<String>> detailedTechnicalDebt = new ArrayList<>();
+
+        // get metrics values needed
+        List<Measure> measures = report.getMeasures();
+        int reliabilityDebt = Integer.parseInt(findMeasure(measures, RELIABILITY_REMEDIATION_EFFORT));
+        int securityDebt = Integer.parseInt(findMeasure(measures, SECURITY_REMEDIATION_EFFORT));
+        int maintainabilityDebt = Integer.parseInt(findMeasure(measures, SQALE_INDEX));
+        int totalTechnicalDebt = reliabilityDebt + securityDebt + maintainabilityDebt;
+
+        String reliabilityDebtFormatted;
+        String securityDebtFormatted;
+        String maintainabilityDebtFormatted;
+        String totalTechnicalDebtFormatted;
+
+        // convert metrics values to days/hours/minutes format
+        if (reliabilityDebt != 0) {
+            reliabilityDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, reliabilityDebt/8/60, reliabilityDebt/60%8, reliabilityDebt%60);
+        } else {
+            reliabilityDebtFormatted = "-";
+        }
+        
+        if (securityDebt != 0) {
+            securityDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, securityDebt/8/60, securityDebt/60%8, securityDebt%60);
+        } else {
+            securityDebtFormatted = "-";
+        }
+        
+        if (maintainabilityDebt != 0) {
+            maintainabilityDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, maintainabilityDebt/8/60, maintainabilityDebt/60%8, maintainabilityDebt%60);
+        } else {
+            maintainabilityDebtFormatted = "-";
+        }
+        
+        if (totalTechnicalDebt != 0) {
+            totalTechnicalDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, totalTechnicalDebt/8/60, totalTechnicalDebt/60%8, totalTechnicalDebt%60);
+        } else {
+            totalTechnicalDebtFormatted = "-";
+        }
+
+        // create the row
+        final List<String> row = new ArrayList<>();
+        row.add(reliabilityDebtFormatted);
+        row.add(securityDebtFormatted);
+        row.add(maintainabilityDebtFormatted);
+        row.add(totalTechnicalDebtFormatted);
+
+        // add the row to the result
+        detailedTechnicalDebt.add(row);
+
+        return detailedTechnicalDebt;
+    }
+
+    /**
      * Return the value of a given metrics
      * @param measures List of measures to browse
      * @param metric metric to search
@@ -801,6 +957,34 @@ public final class DataAdapter {
         return result;
     }
 
+    /**
+     * Return the compliance to the coding standard (% of rules in all Quality Profiles that are not violated)
+     * @param report Report from which resources are extracted
+     * @return the compliance
+     */
+    private static String getCompliance(Report report) {
+        int rulesNumber = 0;
+        double compliance;
+
+        for (QualityProfile qp : report.getQualityProfiles()) {
+            rulesNumber += qp.getRules().size();
+        }
+
+        if (rulesNumber != 0) {
+            Set<String> violatedRules = new HashSet<>();
+            for (Issue issue : report.getIssues()) {
+                violatedRules.add(issue.getRule());
+            }
+            for (SecurityHotspot securityHotspot : report.getToReviewSecurityHotspots()) {
+                violatedRules.add(securityHotspot.getRule());
+            }
+            compliance = ((double)(rulesNumber - violatedRules.size()) / rulesNumber) * 100;
+        } else {
+            compliance = 0;
+        }
+
+        return String.valueOf(Precision.round(compliance, 1));
+    }
 }
 
 /**

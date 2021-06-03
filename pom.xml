@@ -126,6 +126,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-math3 -->
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.6.1</version>
+        </dependency>
+        <dependency>
             <!-- packaged with the plugin -->
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>

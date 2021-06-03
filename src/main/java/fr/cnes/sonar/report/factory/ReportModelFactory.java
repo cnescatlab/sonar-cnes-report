@@ -123,6 +123,8 @@ public class ReportModelFactory {
         report.setQualityProfiles(qualityProfileProvider.getQualityProfiles(report.getProject().getOrganization()));
         // quality gate's setting
         report.setQualityGate(qualityGateProvider.getProjectQualityGate());
+        // quality gate's status
+        report.setQualityGateStatus(measureProvider.getQualityGateStatus());
 
         return report;
     }
