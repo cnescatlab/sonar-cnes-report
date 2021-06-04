@@ -73,14 +73,6 @@ public class DocXExporter implements IExporter {
      * Name of the property giving the path header's number
      */
     private static final String HEADER_NUMBER = "header.number";
-    /**
-     * Start index of the sub array in the headers array for the the second table
-     */
-    private static final int HEADER_START_INDEX = 2;
-    /**
-     * End index of the sub array in the headers array for the the second table
-     */
-    private static final int HEADER_END_INDEX = 5;
 
     /**
      * Overridden export for docX
@@ -133,9 +125,9 @@ public class DocXExporter implements IExporter {
 
             // Add issues count by type and severity
             final List<List<String>> types = DataAdapter.getTypes(report);
-            DocXTools.fillTable(document,
-                    headerIssues.subList(HEADER_START_INDEX, HEADER_END_INDEX),
-                    types, COUNT_TABLE_PLACEHOLDER);
+            final List<String> headerIssuesCount = DataAdapter.getReversedIssuesSeverities();
+            headerIssuesCount.add(0, StringManager.string("header.typeSlashSeverity"));
+            DocXTools.fillTable(document, headerIssuesCount, types, COUNT_TABLE_PLACEHOLDER);
 
             // Add security hotspots
             final List<List<String>> securityHotspots = DataAdapter.getSecurityHotspots(report);

@@ -33,14 +33,6 @@ import java.util.Map;
 public class MarkdownExporter implements IExporter {
 
     /**
-     * Start index of the sub array in the headers array for the the second table
-     */
-    private static final int HEADER_START_INDEX = 2;
-    /**
-     * End index of the sub array in the headers array for the the second table
-     */
-    private static final int HEADER_END_INDEX = 5;
-    /**
      * Placeholder for issues count table
      */
     private static final String ISSUES_COUNT_PLACEHOLDER = "$ISSUES_COUNT";
@@ -123,9 +115,9 @@ public class MarkdownExporter implements IExporter {
 
             // Generate issue count table
             final List<List<String>> types = DataAdapter.getTypes(report);
-            final String tableTypes = generateMDTable(
-                    headerIssues.subList(HEADER_START_INDEX, HEADER_END_INDEX),
-                    types);
+            final List<String> headerIssuesCount = DataAdapter.getReversedIssuesSeverities();
+            headerIssuesCount.add(0, StringManager.string("header.typeSlashSeverity"));
+            final String tableTypes = generateMDTable(headerIssuesCount, types);
             output = output.replace(ISSUES_COUNT_PLACEHOLDER, tableTypes);
 
             // Generate security hotspots table

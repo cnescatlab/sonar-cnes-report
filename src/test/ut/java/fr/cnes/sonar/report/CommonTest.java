@@ -117,6 +117,7 @@ public abstract class CommonTest {
         i2.setStatus("OPEN");
         i2.setType("BUG");
         i2.setRule("abcd:dcba");
+        i4.setSeverity(MAJOR);
         i4.setType("BUG");
         // Adding multiple time to test comparator (DataAdapter.RuleComparator)
         Issue issue;
