@@ -119,7 +119,7 @@ public class ExportTask implements RequestHandler {
             String context = config.get("sonar.web.context").orElse(PluginStringManager.getProperty("plugin.defaultContext"));
             String sonarUrl = String.format(PluginStringManager.getProperty("plugin.defaultHost"), port, context);
 
-            // Get files templates paths if defined
+            // Get files templates paths if defined in the decicated SonarQube configuration panel
             String docxPath = config.get("sonar.cnesreport.docx.path").orElse(null);
             String mdPath = config.get("sonar.cnesreport.md.path").orElse(null);
             String xlsxPath = config.get("sonar.cnesreport.xlsx.path").orElse(null);

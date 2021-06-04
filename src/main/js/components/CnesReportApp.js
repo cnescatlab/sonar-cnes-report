@@ -53,6 +53,12 @@ export default class CnesReportApp extends React.PureComponent {
           }
     }
 
+    // disable generate button if no checkbox is checked to prevent the generation of an empty zip
+    shouldDisableGeneration = () => {
+        return !(this.state.enableDocx || this.state.enableMd || this.state.enableXlsx
+            || this.state.enableCsv || this.state.enableConf);
+    }
+
     componentDidMount() {
         initiatePluginToken().then(tokenInfo => {
             getProjectsList().then(projects => {
@@ -147,6 +153,11 @@ export default class CnesReportApp extends React.PureComponent {
                             <input type="hidden" name="token" id="token_cnesreport" defaultValue={this.state.token} />
                         </div>
                         <div>
+                            {/*
+                                We need a hidden field for each checkbox in case it is unchecked because otherwise no value is sent and
+                                we want that if we don't fill in a parameter then the api uses the default value i.e. the document is
+                                generated.
+                            */}
                             <input id="enableDocxHidden" type="hidden" value="false" name="enableDocx" disabled={this.state.enableDocx}/>
                             <input type="checkbox"
                                 id="enableDocx"
@@ -198,7 +209,7 @@ export default class CnesReportApp extends React.PureComponent {
                         </div>
                         <br />
                         <input id="generation" name="generation" type="submit" value="Generate"
-                            disabled={!(this.state.enableDocx || this.state.enableMd || this.state.enableXlsx || this.state.enableCsv || this.state.enableConf)}/>
+                            disabled={this.shouldDisableGeneration()}/>
                         <br />
                         <em class="info-message">This operation may take some time, please wait while the report is being generated.</em>
                     </form>
