@@ -353,30 +353,45 @@ public final class DataAdapter {
         final List<List<String>> results = new ArrayList<>();
 
         final String[] types = ISSUE_TYPES;
-        final String[] severities = ISSUE_SEVERITIES;
-                        
-        for(String type : types) {
-            for (String severity : severities) {
-                // accumulator for the number of occurrences
-                long nb = 0;
-                //List of items for each line of the table
-                final List<String> item = new ArrayList<>();
+        final List<String> severities = getReversedIssuesSeverities();
 
-                // we sum all issues with a type and a severity
-                for(Issue issue : report.getIssues()) {
-                    if(issue.getType().equals(type) && issue.getSeverity().equals(severity)) {
-                        nb++;
-                    }
+        // accumulator for the number of occurrences for each severity
+        LinkedHashMap<String,Integer> countPerSeverity = new LinkedHashMap<>();
+        for (String severity : severities) {
+            countPerSeverity.put(severity, 0);
+        }
+
+        for(String type : types) {
+            //List of items for each line of the table
+            final List<String> row = new ArrayList<>();
+            for(Issue issue : report.getIssues()) {
+                if(issue.getType().equals(type)) {
+                    // increment the count of the severity
+                    countPerSeverity.put(issue.getSeverity(),
+                            countPerSeverity.get(issue.getSeverity()) + 1);
                 }
-                // we add it to the list
-                item.add(type);
-                item.add(severity);
-                item.add(String.valueOf(nb));
-                // add the whole line to the results
-                results.add(item);
             }
+            // add data to the row
+            row.add(type);
+            for (String severity : severities) {
+                row.add(String.valueOf(countPerSeverity.get(severity)));
+                // reset the count
+                countPerSeverity.put(severity, 0);
+            }
+            // add row to the result
+            results.add(row);
         }
         return results;
+    }
+
+    /**
+     * Getter for reversed ISSUE_SEVERITIES
+     * @return reversed ISSUE_SEVERITIES
+     */
+    public static List<String> getReversedIssuesSeverities() {
+        List<String> issuesSeverities = new ArrayList<>(Arrays.asList(ISSUE_SEVERITIES));
+        Collections.reverse(issuesSeverities);
+        return issuesSeverities;
     }
 
     /**
