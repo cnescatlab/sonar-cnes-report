@@ -43,12 +43,15 @@ jobs:
       - name: Build with Maven
         run: mvn -B clean package
       - name: Test cnes-report
+        env:
+          SONARQUBE_VERSION: 8.9.0-community
         run: |
+          version=$(cat pom.xml | grep "<version>.*</version>" | head -1 |awk -F'[><]' '{print $3}');
           echo "Starting docker";
           docker run --name sonarqube_${SONARQUBE_VERSION} -d -p 9000:9000 sonarqube:${SONARQUBE_VERSION};
           echo "Inject plugin";
-          docker cp target/sonar-cnes-report-*.jar sonarqube_${SONARQUBE_VERSION}:/opt/sonarqube/extensions/plugins/;
-          docker exec -u root sonarqube_${SONARQUBE_VERSION} chown sonarqube:sonarqube /opt/sonarqube/extensions/plugins/sonar-cnes-report-*.jar;
+          docker cp target/sonar-cnes-report-${version}.jar sonarqube_${SONARQUBE_VERSION}:/opt/sonarqube/extensions/plugins/;
+          docker exec -u root sonarqube_${SONARQUBE_VERSION} chown sonarqube:sonarqube /opt/sonarqube/extensions/plugins/sonar-cnes-report-${version}.jar;
           docker restart sonarqube_${SONARQUBE_VERSION};
           echo "Waiting up to 5 minutes for SonarQube...";
           counter=0;
@@ -62,7 +65,7 @@ jobs:
           mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=admin -Dsonar.password=admin -Dsonar.organization=default-organization -Dsonar.branch.name= ;
           token_sonarqube=$(curl -X POST -H "Content-Type&#58; application/x-www-form-urlencoded" -d "name=admin_token" -u admin:admin http://localhost:9000/api/user_tokens/generate | jq -r '.token');
           cd target;
-          java -jar sonar-cnes-report-*.jar -t ${token_sonarqube} -p fr.cnes.sonar:cnesreport -s http://localhost:9000;
+          java -jar sonar-cnes-report-${version}.jar -t ${token_sonarqube} -p fr.cnes.sonar:cnesreport -s http://localhost:9000;
           url_cnesreport="http://localhost:9000/api/cnesreport/report?key=fr.cnes.sonar%3Acnesreport&author=github-actions&token=${token_sonarqube}";
           curl -u admin:admin ${url_cnesreport} -O -J;
 
