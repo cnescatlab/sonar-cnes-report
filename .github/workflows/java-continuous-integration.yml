@@ -65,7 +65,21 @@ jobs:
               status_sonar=$(curl -s "http://localhost:9000/api/system/status" | grep "\"status\":\"UP\"" > /dev/null; echo $?);
           done;
           mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=admin -Dsonar.password=admin -Dsonar.organization=default-organization;
-          sleep 10;
+          ce=$(grep ceTaskUrl= target/sonar/report-task.txt);
+          ceTaskUrl=${ce:10};
+          continue=true;
+          while [ $continue = true ]; do
+              status=$(curl -u admin:admin ${ceTaskUrl} | jq -r '.task.status');
+              if [ $status = SUCCESS ]
+              then
+                  continue=false;
+              elif [ $status = FAILED ] || [ $status = CANCELED ]
+              then
+                  exit 1;
+              else
+                  sleep 1;
+              fi
+          done;
           token_sonarqube=$(curl -X POST -H "Content-Type&#58; application/x-www-form-urlencoded" -d "name=admin_token" -u admin:admin http://localhost:9000/api/user_tokens/generate | jq -r '.token');
           java -jar target/sonar-cnes-report-${version}.jar -t ${token_sonarqube} -p fr.cnes.sonar:cnesreport -s http://localhost:9000;
           url_cnesreport="http://localhost:9000/api/cnesreport/report?key=fr.cnes.sonar%3Acnesreport&author=github-actions&token=${token_sonarqube}";

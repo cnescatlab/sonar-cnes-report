@@ -80,7 +80,6 @@ public final class ReportCommandLine {
         } catch (BadExportationDataTypeException | BadSonarQubeRequestException | IOException |
                 UnknownQualityGateException | OpenXML4JException | XmlException | SonarQubeException |
                 IllegalStateException | IllegalArgumentException | ParseException e) {
-            e.printStackTrace();
             // it logs all the stack trace
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             System.exit(-1);
