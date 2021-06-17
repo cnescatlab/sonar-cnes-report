@@ -38,7 +38,6 @@ import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-import java.lang.NumberFormatException;
 
 /**
  * Main entry point
@@ -78,9 +77,10 @@ public final class ReportCommandLine {
             // We use different method because it can be called outside main (for example, in from ReportSonarPlugin)
             execute(args);
 
-        } catch (NumberFormatException | BadExportationDataTypeException | BadSonarQubeRequestException | IOException |
+        } catch (BadExportationDataTypeException | BadSonarQubeRequestException | IOException |
                 UnknownQualityGateException | OpenXML4JException | XmlException | SonarQubeException |
                 IllegalStateException | IllegalArgumentException | ParseException e) {
+            e.printStackTrace();
             // it logs all the stack trace
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             System.exit(-1);
