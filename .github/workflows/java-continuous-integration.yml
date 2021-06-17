@@ -48,7 +48,6 @@ jobs:
         env:
           SONARQUBE_VERSION: 8.9.0-community
         run: |
-          set +x;
           version=$(cat pom.xml | grep "<version>.*</version>" | head -1 |awk -F'[><]' '{print $3}');
           echo "Starting docker";
           docker run --name sonarqube_${SONARQUBE_VERSION} -d -p 9000:9000 sonarqube:${SONARQUBE_VERSION};
@@ -67,7 +66,9 @@ jobs:
           done;
           mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=admin -Dsonar.password=admin -Dsonar.organization=default-organization;
           token_sonarqube=$(curl -X POST -H "Content-Type&#58; application/x-www-form-urlencoded" -d "name=admin_token" -u admin:admin http://localhost:9000/api/user_tokens/generate | jq -r '.token');
-          java -jar target/sonar-cnes-report-${version}.jar -t ${token_sonarqube} -p fr.cnes.sonar:cnesreport -s http://localhost:9000;
+          echo ${token_sonarqube};
+          java -jar target/sonar-cnes-report-${version}.jar -t ${token_sonarqube} -p fr.cnes.sonar:cnesreport -s http://localhost:9000 | true;
+          docker logs sonarqube_${SONARQUBE_VERSION};
           url_cnesreport="http://localhost:9000/api/cnesreport/report?key=fr.cnes.sonar%3Acnesreport&author=github-actions&token=${token_sonarqube}";
           curl -u admin:admin ${url_cnesreport} -O -J;
 
