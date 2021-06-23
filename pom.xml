@@ -210,7 +210,7 @@
                 <version>${sonar-packaging-maven-plugin.version}</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <jarName>sonar-cnes-report</jarName>
+                    <jarName>sonar-cnes-report-${project.version}</jarName>
                 </configuration>
             </plugin>
 

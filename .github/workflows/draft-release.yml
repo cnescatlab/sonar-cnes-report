@@ -1,0 +1,57 @@
+# Description
+# ===========
+# This workflow is triggered each time a milestone is closed
+# It builds the jar, generates release notes, pushes a new tag
+# and makes a draft release with these elements.
+---
+name: Draft Release
+
+on: 
+  milestone:
+    types: [closed]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v2
+    - name: Setup java
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '11'
+    - name: Cache Maven packages
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+    - name: Build with Maven
+      run: mvn -B clean package
+    - name: Create Release Notes
+      uses: docker://decathlon/release-notes-generator-action:2.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        OUTPUT_FOLDER: temp_release_notes
+    - name: Set tag and project values
+      run: |
+        echo "tag=$(cat pom.xml | grep "<version>.*</version>" | head -1 |awk -F'[><]' '{print $3}')" >> $GITHUB_ENV
+        echo "project=$(echo ${{ github.repository }} | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+    - name: Create a tag for the release
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email catlab@cnes.fr
+        git tag -a ${{ env.tag }} -m "Release ${{ env.tag }}"
+        git push origin ${{ env.tag }}
+    - name: Create GitHub Release
+      uses: ncipollo/release-action@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        artifacts: "target/${{ env.project }}-${{ env.tag }}.jar"
+        tag: ${{ env.tag }}
+        name: ${{ env.project }} ${{ env.tag }}
+        bodyFile: "temp_release_notes/release_file.md"
+        draft: true
+        token: ${{ secrets.GITHUB_TOKEN }}
