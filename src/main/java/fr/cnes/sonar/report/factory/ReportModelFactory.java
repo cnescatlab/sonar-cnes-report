@@ -20,9 +20,16 @@ package fr.cnes.sonar.report.factory;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
+import fr.cnes.sonar.report.model.Components;
 import fr.cnes.sonar.report.model.Report;
-import fr.cnes.sonar.report.model.SonarQubeServer;
 import fr.cnes.sonar.report.providers.*;
+import fr.cnes.sonar.report.providers.component.ComponentProvider;
+import fr.cnes.sonar.report.providers.issues.IssuesProvider;
+import fr.cnes.sonar.report.providers.measure.MeasureProvider;
+import fr.cnes.sonar.report.providers.project.ProjectProvider;
+import fr.cnes.sonar.report.providers.qualitygate.QualityGateProvider;
+import fr.cnes.sonar.report.providers.qualityprofile.QualityProfileProvider;
+import fr.cnes.sonar.report.providers.securityhotspots.SecurityHotspotsProvider;
 import fr.cnes.sonar.report.utils.ReportConfiguration;
 
 /**
@@ -30,14 +37,6 @@ import fr.cnes.sonar.report.utils.ReportConfiguration;
  */
 public class ReportModelFactory {
 
-    /**
-     * SonarQube server.
-     */
-    private SonarQubeServer server;
-    /**
-     * Token of the SonarQube user.
-     */
-    private String token;
     /**
      * Id of the project to report.
      */
@@ -54,19 +53,25 @@ public class ReportModelFactory {
      * Date of the reporting.
      */
     private String date;
+    /**
+     * Factory used to create providers.
+     */
+    private ProviderFactory providerFactory;
 
     /**
      * Complete constructor
-     * @param pServer Value for SQ server.
-     * @param pConfiguration Contains report configuration.
+     * @param project the project's id
+     * @param branch the project's branch
+     * @param author the project's author
+     * @param date the project's date
+     * @param providerFactory the provider factory
      */
-    public ReportModelFactory(final SonarQubeServer pServer, final ReportConfiguration pConfiguration) {
-        this.server = pServer;
-        this.token = pConfiguration.getToken();
-        this.project = pConfiguration.getProject();
-        this.branch = pConfiguration.getBranch();
-        this.author = pConfiguration.getAuthor();
-        this.date = pConfiguration.getDate();
+    public ReportModelFactory(final String project, final String branch, final String author, final String date, final ProviderFactory providerFactory) {
+        this.project = project;
+        this.branch = branch;
+        this.author = author;
+        this.date = date;
+        this.providerFactory = providerFactory;
     }
 
     /**
@@ -80,16 +85,13 @@ public class ReportModelFactory {
         // the new report to return
         final Report report = new Report();
 
-        // instantiation of providers
-        final ProviderFactory providerFactory = new ProviderFactory(this.server, this.token, this.project,
-                this.branch);
-        final IssuesProvider issuesProvider = providerFactory.create(IssuesProvider.class);
-        final SecurityHotspotsProvider securityHotspotsProvider = providerFactory.create(SecurityHotspotsProvider.class);
-        final MeasureProvider measureProvider = providerFactory.create(MeasureProvider.class);
-        final ProjectProvider projectProvider = providerFactory.create(ProjectProvider.class);
-        final QualityProfileProvider qualityProfileProvider = providerFactory.create(QualityProfileProvider.class);
-        final QualityGateProvider qualityGateProvider = providerFactory.create(QualityGateProvider.class);
-        final ComponentProvider componentProvider = providerFactory.create(ComponentProvider.class);
+        final IssuesProvider issuesProvider = this.providerFactory.createIssuesProvider();
+        final SecurityHotspotsProvider securityHotspotsProvider = this.providerFactory.createSecurityHotspotsProvider();
+        final MeasureProvider measureProvider = this.providerFactory.createMeasureProvider();
+        final ProjectProvider projectProvider = this.providerFactory.createProjectProvider();
+        final QualityProfileProvider qualityProfileProvider = this.providerFactory.createQualityProfileProvider();
+        final QualityGateProvider qualityGateProvider = this.providerFactory.createQualityGateProvider();
+        final ComponentProvider componentProvider = this.providerFactory.createComponentProvider();
 
         // author's setting
         report.setProjectAuthor(this.author);
@@ -103,10 +105,11 @@ public class ReportModelFactory {
         // measures's setting
         report.setMeasures(measureProvider.getMeasures());
         // metrics' by component setting
-        report.setComponents(componentProvider.getComponents());
-        report.setMetricsStats(componentProvider.getMetricStats());
+        final Components components = componentProvider.getComponents();
+        report.setComponents(components.getComponentsList());
+        report.setMetricsStats(components.getMetricStats());
         // set report basic data
-        report.setProject(projectProvider.getProject(projectProvider.getProjectKey(), projectProvider.getBranch()));
+        report.setProject(projectProvider.getProject(this.project, this.branch));
         // project's name's setting
         report.setProjectName(report.getProject().getName());
         // formatted issues, unconfirmed issues and raw issues' setting
@@ -124,7 +127,7 @@ public class ReportModelFactory {
         // quality gate's setting
         report.setQualityGate(qualityGateProvider.getProjectQualityGate());
         // quality gate's status
-        report.setQualityGateStatus(measureProvider.getQualityGateStatus());
+        report.setQualityGateStatus(qualityGateProvider.getQualityGateStatus());
 
         return report;
     }

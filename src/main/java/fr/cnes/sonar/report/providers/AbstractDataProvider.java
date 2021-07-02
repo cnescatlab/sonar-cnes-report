@@ -17,13 +17,15 @@
 
 package fr.cnes.sonar.report.providers;
 
+import com.google.protobuf.Message;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.model.SonarQubeServer;
 import fr.cnes.sonar.report.utils.StringManager;
+import org.sonarqube.ws.client.WsClient;
+import org.sonar.core.util.ProtobufJsonFormat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,99 +43,13 @@ public abstract class AbstractDataProvider {
      */
     protected static final String REQUESTS_PROPERTIES = "requests.properties";
     /**
-     *  Field to retrieve languages list.
-     */
-    protected static final String GET_LANGUAGES = "GET_LANGUAGES";
-    /**
-     *  Name of the request for getting quality profiles' linked projects
-     */
-    protected static final String GET_QUALITY_PROFILES_PROJECTS_REQUEST =
-            "GET_QUALITY_PROFILES_PROJECTS_REQUEST";
-    /**
-     *  Name of the request for getting quality gates' details
-     */
-    protected static final String GET_QUALITY_GATES_DETAILS_REQUEST =
-            "GET_QUALITY_GATES_DETAILS_REQUEST";
-    /**
-     *  Name of the request for getting quality profiles' linked rules
-     */
-    protected static final String GET_QUALITY_PROFILES_RULES_REQUEST =
-            "GET_QUALITY_PROFILES_RULES_REQUEST";
-    /**
-     *  Name of the request for getting issues
-     */
-    protected static final String GET_ISSUES_REQUEST = "GET_ISSUES_REQUEST";
-    /**
-     *  Name of the request for getting facets
-     */
-    protected static final String GET_FACETS_REQUEST = "GET_FACETS_REQUEST";
-    /**
-     * Name of the request for getting security hotspots
-     */
-    protected static final String GET_SECURITY_HOTSPOTS_REQUEST = "GET_SECURITY_HOTSPOTS_REQUEST";
-    /**
-     * Name of the request for getting a specific security hotspot
-     */
-    protected static final String GET_SECURITY_HOTSPOT_REQUEST = "GET_SECURITY_HOTSPOT_REQUEST";
-    /**
-     * Name of the request for getting a specific rule
-     */
-    protected static final String GET_RULE_REQUEST = "GET_RULE_REQUEST";
-    /**
      *  Name of the property for the maximum number of results per page
      */
     protected static final String MAX_PER_PAGE_SONARQUBE = "MAX_PER_PAGE_SONARQUBE";
     /**
-     *  Name of the request for getting quality gates
-     */
-    protected static final String GET_QUALITY_GATES_REQUEST = "GET_QUALITY_GATES_REQUEST";
-    /**
-     *  Name of the request for getting measures
-     */
-    protected static final String GET_MEASURES_REQUEST = "GET_MEASURES_REQUEST";
-    /**
-     *  Name of the request for getting componentsList
-     */
-    protected static final String GET_COMPONENTS_REQUEST = "GET_COMPONENTS_REQUEST";
-    /**
      *  Name of the request for getting a specific project
      */
     protected static final String GET_PROJECT_REQUEST = "GET_PROJECT_REQUEST";
-    /**
-     *  Name of the request for getting quality profiles
-     */
-    protected static final String GET_QUALITY_PROFILES_REQUEST = "GET_QUALITY_PROFILES_REQUEST";
-    /**
-     *  Name of the request for getting quality profiles' configuration
-     */
-    protected static final String GET_QUALITY_PROFILES_CONF_REQUEST =
-            "GET_QUALITY_PROFILES_CONFIGURATION_REQUEST";
-    /**
-     *  Name of the request for getting SonarQube server information
-     */
-    protected static final String GET_SONARQUBE_INFO_REQUEST =
-            "GET_SONARQUBE_INFO_REQUEST";
-    /**
-     * Name of the request for getting the quality gate status of a project
-     */
-    protected static final String GET_QUALITY_GATE_STATUS_REQUEST = 
-            "GET_QUALITY_GATE_STATUS_REQUEST";
-    /**
-     * Name of the request for getting a specific metric
-     */
-    protected static final String GET_METRIC_REQUEST = "GET_METRIC_REQUEST";
-    /**
-     * Field to search in json to get results' values
-     */
-    protected static final String RESULTS = "results";
-    /**
-     * Field to search in json to get profiles
-     */
-    protected static final String PROFILES = "profiles";
-    /**
-     * Field to search in json to get issues
-     */
-    protected static final String ISSUES = "issues";
     /**
      * Field to search in json to get the paging section
      */
@@ -143,33 +59,13 @@ public abstract class AbstractDataProvider {
      */
     protected static final String TOTAL = "total";
     /**
-     * Field to search in json to get facets
-     */
-    protected static final String FACETS = "facets";
-    /**
-     * Field to search in json to get the component
-     */
-    protected static final String COMPONENT = "component";
-    /**
-     * Field to search in json to get measures
-     */
-    protected static final String MEASURES = "measures";
-    /**
-     * Field to search in json to get the boolean saying if a profile is the default one
-     */
-    protected static final String DEFAULT = "default";
-    /**
-     * Field to search in json to get quality gates
-     */
-    protected static final String QUALITYGATES = "qualitygates";
-    /**
      * Field to search in json to get rules
      */
     protected static final String RULES = "rules";
     /**
-     * Field to search in json to get components
+     * Field to search in json to get a key
      */
-    protected static final String COMPONENTS = "components";
+    protected static final String KEY = "key";
 
     /**
      * Logger for the class
@@ -189,7 +85,7 @@ public abstract class AbstractDataProvider {
     /**
      * SonarQube server
      */
-    protected SonarQubeServer server;
+    protected String server;
 
     /**
      * Token to authenticate the user on the sonarqube server
@@ -205,6 +101,11 @@ public abstract class AbstractDataProvider {
      * The branch of the project
      */
     protected String branch;
+
+    /**
+     * Client to talk with sonarqube's services
+     */
+	protected WsClient wsClient;
 
     /**
      * Name of the used quality gate
@@ -235,7 +136,7 @@ public abstract class AbstractDataProvider {
      * @param project The id of the project to report.
      * @param branch The branch of the project to report.
      */
-    AbstractDataProvider(final SonarQubeServer server, final String token, final String project, final String branch) {
+    protected AbstractDataProvider(final String server, final String token, final String project, final String branch) {
         // json tool
         this.gson = new Gson();
         // get sonar server
@@ -254,7 +155,7 @@ public abstract class AbstractDataProvider {
      * @param token String representing the user token.
      * @param project The id of the project to report.
      */
-    AbstractDataProvider(final SonarQubeServer server, final String token, final String project) {
+    protected AbstractDataProvider(final String server, final String token, final String project) {
         // json tool
         this.gson = new Gson();
         // get sonar server
@@ -266,12 +167,54 @@ public abstract class AbstractDataProvider {
     }
 
     /**
+     * Constructor.
+     * @param wsClient The web client
+     */
+    protected AbstractDataProvider(final WsClient wsClient) {
+        // json tool
+        this.gson = new Gson();
+        // get web client
+        this.wsClient = wsClient;
+    }
+
+    /**
+     * Constructor.
+     * @param wsClient The web client
+     * @param project The id of the project to report.
+     */
+    protected AbstractDataProvider(final WsClient wsClient, final String project) {
+        // json tool
+        this.gson = new Gson();
+        // get web client
+        this.wsClient = wsClient;
+        // get project key
+        this.projectKey = project;
+    }
+
+    /**
+     * Constructor.
+     * @param wsClient The web client
+     * @param project The id of the project to report.
+     * @param branch The branch of the project to report.
+     */
+    protected AbstractDataProvider(final WsClient wsClient, final String project, final String branch) {
+        // json tool
+        this.gson = new Gson();
+        // get web client
+        this.wsClient = wsClient;
+        // get project key
+        this.projectKey = project;
+        // get branch
+        this.branch = branch;
+    }
+
+    /**
      * Give the value of the property corresponding to the key passed as parameter.
      * It gives only properties related to requests.
      * @param property Key of the property you want.
      * @return The value of the property you want as a String.
      */
-    static String getRequest(final String property) {
+    protected String getRequest(final String property) {
         return requests.getProperty(property);
     }
 
@@ -353,6 +296,17 @@ public abstract class AbstractDataProvider {
     }
 
     /**
+     * Convert a SonarQube API response into a JsonObject
+     * @param response the SonarQube API response
+     * @return the response as a JsonObject
+     */
+    protected JsonObject responseToJsonObject(Message response) {
+        final String jsonString = ProtobufJsonFormat.toJson(response);
+        final JsonElement jsonElement = getGson().fromJson(jsonString, JsonElement.class);
+        return jsonElement.getAsJsonObject();
+    }
+
+    /**
      * Json parsing tool
      * @return the gson tool
      */
@@ -372,7 +326,7 @@ public abstract class AbstractDataProvider {
      * SonarQube instance
      * @return the server
      */
-    public SonarQubeServer getServer() {
+    public String getServer() {
         return server;
     }
 
@@ -380,7 +334,7 @@ public abstract class AbstractDataProvider {
      * Setter of server
      * @param pServer value
      */
-    public void setServer(final SonarQubeServer pServer) {
+    public void setServer(final String pServer) {
         this.server = pServer;
     }
 
@@ -430,6 +384,22 @@ public abstract class AbstractDataProvider {
      */
     public void setBranch(final String branch) {
         this.branch = branch;
+    }
+
+    /**
+     * Client to talk with sonarqube's services
+     * @return the web client
+     */
+    public WsClient getWsClient() {
+        return wsClient;
+    }
+
+    /**
+     * Setter of wsClient
+     * @param pWsClient value to give
+     */
+    public void setWsClient(final WsClient pWsClient) {
+        this.wsClient = pWsClient;
     }
 
     /**

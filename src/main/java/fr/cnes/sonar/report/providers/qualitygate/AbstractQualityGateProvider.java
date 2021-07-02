@@ -15,72 +15,73 @@
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.cnes.sonar.report.providers;
+package fr.cnes.sonar.report.providers.qualitygate;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonArray;
-import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
-import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.model.Measure;
-import fr.cnes.sonar.report.model.SonarQubeServer;
+import fr.cnes.sonar.report.providers.AbstractDataProvider;
+import org.sonarqube.ws.client.WsClient;
 import org.apache.commons.math3.util.Precision;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.LinkedHashMap;
-
 /**
- * Provides issue items
+ * Contains common code for quality gate providers
  */
-public class MeasureProvider extends AbstractDataProvider {
+public abstract class AbstractQualityGateProvider extends AbstractDataProvider {
 
+    /**
+     * Field to search in json to get the boolean saying if a profile is the default one
+     */
+    protected static final String DEFAULT = "default";
+    /**
+     * Field to search in json to get quality gates
+     */
+    protected static final String QUALITYGATES = "qualitygates";
+    /** 
+     * Field to find in json to get quality gate
+     */
+    protected static final String QUALITY_GATE = "qualityGate";
     /**
      * Parameter "projectStatus" of the JSON response
      */
-    private static final String PROJECT_STATUS = "projectStatus";
+    protected static final String PROJECT_STATUS = "projectStatus";
     /**
      * Parameter "conditions" of the JSON response
      */
-    private static final String CONDITIONS = "conditions";
+    protected static final String CONDITIONS = "conditions";
     /**
      * Parameter "status" of the JSON response
      */
-    private static final String STATUS = "status";
+    protected static final String STATUS = "status";
     /**
      * Parameter "metricKey" of the JSON response
      */
-    private static final String METRIC_KEY = "metricKey";
+    protected static final String METRIC_KEY = "metricKey";
     /**
      * Parameter "metrics" of the JSON response
      */
-    private static final String METRICS = "metrics";
+    protected static final String METRICS = "metrics";
     /**
      * Parameter "name" of the JSON response
      */
-    private static final String NAME = "name";
+    protected static final String NAME = "name";
     /**
      * Value of the parameter "status" of the JSON response
      */
-    private static final String ERROR = "ERROR";
+    protected static final String ERROR = "ERROR";
     /**
      * Parameter "actualValue" of the JSON response
      */
-    private static final String ACTUAL_VALUE = "actualValue";
+    protected static final String ACTUAL_VALUE = "actualValue";
     /**
      * Parameter "errorThreshold" of the JSON response
      */
-    private static final String ERROR_THRESHOLD = "errorThreshold";
+    protected static final String ERROR_THRESHOLD = "errorThreshold";
     /**
      * Parameter "comparator" of the JSON response
      */
-    private static final String COMPARATOR = "comparator";
+    protected static final String COMPARATOR = "comparator";
     /**
      * Parameter "type" of the JSON response
      */
-    private static final String TYPE = "type";
+    protected static final String TYPE = "type";
     /**
      * Value of the parameter "type" of the JSON response
      */
@@ -97,77 +98,27 @@ public class MeasureProvider extends AbstractDataProvider {
      * Value of the parameter "type" of the JSON response
      */
     private static final String MILLISEC = "MILLISEC";
-    
 
     /**
-     * Complete constructor
-     * @param pServer SonarQube server..
+     * Complete constructor.
+     * @param pServer SonarQube server.
      * @param pToken String representing the user token.
      * @param pProject The id of the project to report.
      * @param pBranch The branch of the project to report.
      */
-    public MeasureProvider(final SonarQubeServer pServer, final String pToken, final String pProject,
+    protected AbstractQualityGateProvider(final String pServer, final String pToken, final String pProject,
             final String pBranch) {
         super(pServer, pToken, pProject, pBranch);
     }
 
     /**
-     * Get all the measures of a project
-     * @return Array containing all the measures
-     * @throws BadSonarQubeRequestException when the server does not understand the request
-     * @throws SonarQubeException When SonarQube server is not callable.
+     * Complete constructor.
+     * @param wsClient The web client.
+     * @param project The id of the project to report.
+     * @param branch The branch of the project to report.
      */
-    public List<Measure> getMeasures() throws BadSonarQubeRequestException, SonarQubeException {
-        // send a request to sonarqube server and return th response as a json object
-        // if there is an error on server side this method throws an exception
-        final JsonObject jo = request(String.format(getRequest(GET_MEASURES_REQUEST),
-                getServer().getUrl(), getProjectKey(), getBranch()));
-
-        // json element containing measure information
-        final JsonElement measuresJE = jo.get(COMPONENT).getAsJsonObject().get(MEASURES);
-        // put json in a list of measures
-        final Measure[] tmp = (getGson().fromJson(measuresJE, Measure[].class));
-
-        // then add all measure to the results list
-        // return the list
-        return new ArrayList<>(Arrays.asList(tmp));
-    }
-
-    /**
-     * Get the quality gate status of a project
-     * @return Map containing each condition of the quality gate and its status
-     * @throws BadSonarQubeRequestException when the server does not understand the request
-     * @throws SonarQubeException When SonarQube server is not callable.
-     */
-    public Map<String, String> getQualityGateStatus() throws BadSonarQubeRequestException, SonarQubeException {
-        // request to get the quality gate status
-        final JsonObject projectStatusResult = request(String.format(getRequest(GET_QUALITY_GATE_STATUS_REQUEST),
-                getServer().getUrl(), getBranch(), getProjectKey()));
-        // map containing the result
-        Map<String, String> res = new LinkedHashMap<>();
-        // retrieve the content of the object
-        JsonObject projectStatusObject = projectStatusResult.get(PROJECT_STATUS).getAsJsonObject();
-        // retrieve the array of conditions
-        JsonArray conditions = projectStatusObject.get(CONDITIONS).getAsJsonArray();
-        // add a couple metric name / status to the map for each condition
-        for (JsonElement condition : conditions) {
-            JsonObject conditionObject = condition.getAsJsonObject();
-            String status = conditionObject.get(STATUS).getAsString();
-            String metricKey = conditionObject.get(METRIC_KEY).getAsString();
-            final JsonObject metricResult = request(String.format(getRequest(GET_METRIC_REQUEST),
-                getServer().getUrl(), getBranch(), getProjectKey(), metricKey));
-            String name = metricResult.get(METRICS).getAsJsonArray().get(0).getAsJsonObject().get(NAME).getAsString();
-            // add the detailed explanation on why the condition failed if it's the case
-            if (status.equals(ERROR)) {
-                String actualValue = conditionObject.get(ACTUAL_VALUE).getAsString();
-                String errorThreshold = conditionObject.get(ERROR_THRESHOLD).getAsString();
-                String comparator = conditionObject.get(COMPARATOR).getAsString();
-                String type = metricResult.get(METRICS).getAsJsonArray().get(0).getAsJsonObject().get(TYPE).getAsString();
-                status = status.concat(getErrorExplanation(actualValue, errorThreshold, comparator, type));
-            }
-            res.put(name, status);
-        }
-        return res;
+    protected AbstractQualityGateProvider(final WsClient wsClient, final String project, final String branch) {
+        super(wsClient, project, branch);
     }
 
     /**
@@ -226,19 +177,19 @@ public class MeasureProvider extends AbstractDataProvider {
     private String ratingToLetter(String rating) {
         String res;
         switch (rating) {
-            case "1.0":
+            case "1":
                 res = "A";
                 break;
-            case "2.0":
+            case "2":
                 res = "B";
                 break;
-            case "3.0":
+            case "3":
                 res = "C";
                 break;
-            case "4.0":
+            case "4":
                 res = "D";
                 break;
-            case "5.0":
+            case "5":
                 res = "E";
                 break;
             default:

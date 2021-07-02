@@ -15,7 +15,7 @@
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.cnes.sonar.report.providers;
+package fr.cnes.sonar.report.providers.project;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,48 +23,42 @@ import java.util.Map;
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
+import fr.cnes.sonar.report.model.Project;
 import fr.cnes.sonar.report.model.Language;
 import fr.cnes.sonar.report.model.ProfileMetaData;
-import fr.cnes.sonar.report.model.Project;
-import fr.cnes.sonar.report.model.SonarQubeServer;
+import fr.cnes.sonar.report.providers.language.LanguageProvider;
 import fr.cnes.sonar.report.utils.StringManager;
+import org.sonarqube.ws.client.WsClient;
+import org.sonarqube.ws.client.navigation.ComponentRequest;
 
 /**
- * Provides basic project's information
+ * Provides basic project's information in plugin mode
  */
-public class ProjectProvider extends AbstractDataProvider {
-
-	/**
-	 * Used to get language data for the projects
-	 */
-    private LanguageProvider languageProvider;
+public class ProjectProviderPlugin extends AbstractProjectProvider implements ProjectProvider {
 
     /**
      * Complete constructor.
-     * @param pServer SonarQube server..
-     * @param pToken String representing the user token.
-     * @param pProject The id of the project to report.
-     * @param pBranch The branch of the project to report.
+     * @param wsClient The web client.
+     * @param project The id of the project to report.
+     * @param branch The branch of the project to report.
+     * @param languageProvider The language provider.
      */
-    public ProjectProvider(final SonarQubeServer pServer, final String pToken, final String pProject,
-            final String pBranch) {
-        super(pServer, pToken, pProject, pBranch);
-        languageProvider = new LanguageProvider(pServer, pToken, pProject);
+    public ProjectProviderPlugin(final WsClient wsClient, final String project, final String branch, final LanguageProvider languageProvider) {
+        super(wsClient, project, branch, languageProvider);
     }
 
-    /**
-     * Get the project corresponding to the given key.
-     * @param projectKey the key of the project.
-     * @param branch the branch of the project.
-     * @return A simple project.
-     * @throws BadSonarQubeRequestException when the server does not understand the request.
-     * @throws SonarQubeException When SonarQube server is not callable.
-     */
+    @Override
     public Project getProject(final String projectKey, final String branch) throws BadSonarQubeRequestException, SonarQubeException {
-        // send a request to sonarqube server and return th response as a json object
-        // if there is an error on server side this method throws an exception
-        JsonObject jo = request(String.format(getRequest(GET_PROJECT_REQUEST),
-                getServer().getUrl(), projectKey, branch));
+        // get the project
+        final ComponentRequest componentRequest = new ComponentRequest()
+                                                        .setComponent(getProjectKey())
+                                                        .setBranch(getBranch());
+
+        // perform previous request
+        final String componentResponse = getWsClient().navigation().component(componentRequest);
+        
+        // transform response to JsonObject
+        final JsonObject jo = getGson().fromJson(componentResponse, JsonObject.class);
 
         // put json in a Project class
         final Project project = (getGson().fromJson(jo, Project.class));
@@ -77,7 +71,7 @@ public class ProjectProvider extends AbstractDataProvider {
         for(ProfileMetaData it : metaData){
             String languageKey = it.getLanguage();
 
-            languageName = languageProvider.getLanguage(languageKey);
+            languageName = languageProvider.getLanguages().getLanguage(languageKey);
             it.setLanguageName(languageName);
 
             Language language = new Language();
@@ -100,19 +94,18 @@ public class ProjectProvider extends AbstractDataProvider {
         return project;
     }
 
-    /**
-     * Check if a project exists on a SonarQube instance.
-     * @param projectKey the key of the project.
-     * @param branch the branch of the project.
-     * @return True if the project exists.
-     * @throws BadSonarQubeRequestException when the server does not understand the request.
-     * @throws SonarQubeException When SonarQube server is not callable.
-     */
-    public boolean hasProject(final String projectKey, final String branch) throws BadSonarQubeRequestException, SonarQubeException {
-        // send a request to sonarqube server and return th response as a json object
-        // if there is an error on server side this method throws an exception
-        final JsonObject jsonObject = request(String.format(getRequest(GET_PROJECT_REQUEST),
-                getServer().getUrl(), projectKey, branch));
+    @Override
+    public boolean hasProject(final String projectKey, final String branch) {
+        // get the project
+        final ComponentRequest componentRequest = new ComponentRequest()
+                                                        .setComponent(getProjectKey())
+                                                        .setBranch(getBranch());
+
+        // perform previous request
+        final String componentResponse = getWsClient().navigation().component(componentRequest);
+        
+        // transform response to JsonObject
+        final JsonObject jsonObject = getGson().fromJson(componentResponse, JsonObject.class);
 
         // Retrieve project key if the project exists or null.
         final String project = jsonObject.get("key").getAsString();

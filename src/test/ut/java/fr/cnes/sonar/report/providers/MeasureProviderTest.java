@@ -33,10 +33,10 @@ public class MeasureProviderTest extends CommonTest {
         MeasureProviderWrapper measureProvider = new MeasureProviderWrapper(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
 
         List<String> actual = new ArrayList<>();
-        actual.add(measureProvider.getErrorExplanationPublic("5.0", "1.0", "GT", "RATING"));
-        actual.add(measureProvider.getErrorExplanationPublic("4.0", "1.0", "GT", "RATING"));
-        actual.add(measureProvider.getErrorExplanationPublic("3.0", "1.0", "GT", "RATING"));
-        actual.add(measureProvider.getErrorExplanationPublic("2.0", "1.0", "GT", "RATING"));
+        actual.add(measureProvider.getErrorExplanationPublic("5", "1", "GT", "RATING"));
+        actual.add(measureProvider.getErrorExplanationPublic("4", "1", "GT", "RATING"));
+        actual.add(measureProvider.getErrorExplanationPublic("3", "1", "GT", "RATING"));
+        actual.add(measureProvider.getErrorExplanationPublic("2", "1", "GT", "RATING"));
         actual.add(measureProvider.getErrorExplanationPublic("30", "0", "GT", "WORK_DUR"));
         actual.add(measureProvider.getErrorExplanationPublic("50.314", "80", "LT", "PERCENT"));
         actual.add(measureProvider.getErrorExplanationPublic("10000", "5000", "GT", "MILLISEC"));

@@ -152,9 +152,11 @@ public class ReportFactory {
         // full path to the configuration folder
         final String confDirectory = String.format(CONF_FOLDER_PATTERN, configuration.getOutput());
 
-        // create the configuration folder
+        // create the configuration folder if it doesn't exist
         final Path path = Paths.get(confDirectory);
-        Files.createDirectory(path);
+        if (!Files.isDirectory(path)) {
+            Files.createDirectory(path);
+        }
         
         if (!Files.isDirectory(path)) {
             // Directory creation failed

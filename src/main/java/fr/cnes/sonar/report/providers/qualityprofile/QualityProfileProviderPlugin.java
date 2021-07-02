@@ -15,52 +15,48 @@
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.cnes.sonar.report.providers;
+package fr.cnes.sonar.report.providers.qualityprofile;
 
 import com.google.gson.JsonObject;
-import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
-import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.*;
 import fr.cnes.sonar.report.utils.StringManager;
+import org.sonarqube.ws.client.WsClient;
+import org.sonarqube.ws.client.qualityprofiles.SearchRequest;
+import org.sonarqube.ws.client.qualityprofiles.ExportRequest;
+import org.sonarqube.ws.client.qualityprofiles.ProjectsRequest;
+import org.sonarqube.ws.Qualityprofiles.SearchWsResponse;
+import org.sonarqube.ws.Rules.SearchResponse;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import fr.cnes.sonar.report.utils.UrlEncoder;
-
 /**
- * Provides quality gates
+ * Provides quality gates in plugin mode
  */
-public class QualityProfileProvider extends AbstractDataProvider {
+public class QualityProfileProviderPlugin extends AbstractQualityProfileProvider implements QualityProfileProvider {
 
     /**
-     * Complete constructor
-     * @param pServer SonarQube server..
-     * @param pToken String representing the user token.
-     * @param pProject The id of the project to report.
+     * Complete constructor.
+     * @param wsClient The web client.
+     * @param project The id of the project to report.
+     * @param branch The branch of the project to report.
      */
-    public QualityProfileProvider(final SonarQubeServer pServer, final String pToken, final String pProject) {
-        super(pServer, pToken, pProject);
+    public QualityProfileProviderPlugin(final WsClient wsClient, final String project) {
+        super(wsClient, project);
     }
 
-    /**
-     * Get all the quality profiles.
-     * @return Array containing all the quality profiles of a project.
-     * @param pOrganization Specify organization in which the project is.
-     * @throws BadSonarQubeRequestException A request is not recognized by the server.
-     * @throws SonarQubeException When SonarQube server is not callable.
-     */
-    public List<QualityProfile> getQualityProfiles(final String pOrganization)
-            throws BadSonarQubeRequestException, SonarQubeException {
+    @Override
+    public List<QualityProfile> getQualityProfiles(final String pOrganization) {
         // initializing returned list
         final List<QualityProfile> res = new ArrayList<>();
 
         // Get all quality profiles (metadata)
-        String request = String.format(getRequest(GET_QUALITY_PROFILES_REQUEST),
-                getServer().getUrl(), getProjectKey(), pOrganization);
+        final SearchRequest searchQualityProfilesRequest = new SearchRequest().setProject(getProjectKey());
         // perform the previous request
-        JsonObject jo = request(request);
+        final SearchWsResponse searchWsResponse = getWsClient().qualityprofiles().search(searchQualityProfilesRequest);
+        JsonObject jo = responseToJsonObject(searchWsResponse);
 
         // Get quality profiles resources
         final ProfileMetaData[] metaData = (getGson().fromJson(
@@ -69,13 +65,11 @@ public class QualityProfileProvider extends AbstractDataProvider {
             final ProfileData profileData = new ProfileData();
             
             // get configuration
-            // URL Encode Quality Profile & Language name to avoid issue with special characters
-            request = String.format(getRequest(GET_QUALITY_PROFILES_CONF_REQUEST),
-                    getServer().getUrl(),
-                    UrlEncoder.urlEncodeString(profileMetaData.getLanguage()),
-                    UrlEncoder.urlEncodeString(profileMetaData.getName()));
+            ExportRequest exportRequest = new ExportRequest()
+                                                .setLanguage(profileMetaData.getLanguage())
+                                                .setQualityProfile(profileMetaData.getName());
             // perform request to sonarqube server
-            final String xml = stringRequest(request);
+            final String xml = getWsClient().qualityprofiles().export(exportRequest);
             // add configuration as string to the profile
             profileData.setConf(xml);
 
@@ -93,11 +87,20 @@ public class QualityProfileProvider extends AbstractDataProvider {
             // continue until there are no more results
             while(goon) {
                 // prepare the request
-                request = String.format(getRequest(GET_QUALITY_PROFILES_RULES_REQUEST),
-                        getServer().getUrl(), profileKey,
-                        Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)), page);
+                final List<String> f = new ArrayList<>(Arrays.asList("htmlDesc", "name", "repo", "severity", "defaultRemFn", "actives"));
+                final String ps = String.valueOf(Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)));
+                final String p = String.valueOf(page);
+                final org.sonarqube.ws.client.rules.SearchRequest searchRulesRequest =
+                    new org.sonarqube.ws.client.rules.SearchRequest()
+                                                        .setQprofile(profileKey)
+                                                        .setF(f)
+                                                        .setPs(ps)
+                                                        .setP(p)
+                                                        .setActivation("true");
                 // perform the previous request to sonarqube server
-                jo = request(request);
+                final SearchResponse searchRulesResponse = getWsClient().rules().search(searchRulesRequest);
+                // transform response to JsonObject
+                jo = responseToJsonObject(searchRulesResponse);
                 // convert json to Rule objects
                 final Rule [] tmp = (getGson().fromJson(jo.get(RULES), Rule[].class));
 
@@ -122,10 +125,11 @@ public class QualityProfileProvider extends AbstractDataProvider {
             profileData.setRules(rules);
 
             // get projects linked to the profile
-            request = String.format(getRequest(GET_QUALITY_PROFILES_PROJECTS_REQUEST),
-                    getServer().getUrl(), profileMetaData.getKey());
+            final ProjectsRequest projectsRequest = new ProjectsRequest().setKey(profileMetaData.getKey());
             // perform a request
-            jo = request(request);
+            final String projectsResponse = getWsClient().qualityprofiles().projects(projectsRequest);
+            // transform response to JsonObject
+            jo = getGson().fromJson(projectsResponse, JsonObject.class);
             // convert json to Project objects
             final Project[] projects = (getGson().fromJson(jo.get(RESULTS), Project[].class));
 
