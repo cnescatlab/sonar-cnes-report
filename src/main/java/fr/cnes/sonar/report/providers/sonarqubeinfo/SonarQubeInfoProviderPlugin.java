@@ -20,6 +20,8 @@ package fr.cnes.sonar.report.providers.sonarqubeinfo;
 import fr.cnes.sonar.report.providers.AbstractDataProvider;
 import org.sonarqube.ws.client.WsClient;
 
+import java.util.logging.Level;
+
 /**
  * Provides info about SonarQube system in plugin mode.
  */
@@ -40,6 +42,13 @@ public class SonarQubeInfoProviderPlugin extends AbstractDataProvider implements
 
     @Override
     public String getSonarQubeStatus() {
-        return getWsClient().system().status().getStatus().toString();
+        String status;
+        try {
+            status = getWsClient().system().status().getStatus().toString();
+        } catch (Exception e) {
+            status = "DOWN";
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        }
+        return status;
     }
 }

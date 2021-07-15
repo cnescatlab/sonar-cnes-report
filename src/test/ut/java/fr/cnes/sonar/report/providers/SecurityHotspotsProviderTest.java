@@ -12,14 +12,26 @@ public class SecurityHotspotsProviderTest extends CommonTest {
     private static final String TOKEN = "token";
 
     @Test(expected = SonarQubeException.class)
-    public void executeFaultyGetToReviewSecurityHotspots() throws SonarQubeException, BadSonarQubeRequestException {
+    public void executeFaultyGetToReviewSecurityHotspotsStandalone() throws SonarQubeException, BadSonarQubeRequestException {
         SecurityHotspotsProvider securityHotspotsProvider = new SecurityHotspotsProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
         securityHotspotsProvider.getToReviewSecurityHotspots();
     }
 
     @Test(expected = SonarQubeException.class)
-    public void executeFaultyGetReviewedSecurityHotspots() throws SonarQubeException, BadSonarQubeRequestException {
+    public void executeFaultyGetReviewedSecurityHotspotsStandalone() throws SonarQubeException, BadSonarQubeRequestException {
         SecurityHotspotsProvider securityHotspotsProvider = new SecurityHotspotsProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
+        securityHotspotsProvider.getReviewedSecurityHotspots();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void executeFaultyGetToReviewSecurityHotspotsPlugin() throws SonarQubeException, BadSonarQubeRequestException {
+        SecurityHotspotsProvider securityHotspotsProvider = new SecurityHotspotsProviderPlugin(wsClient, PROJECT_KEY, BRANCH);
+        securityHotspotsProvider.getToReviewSecurityHotspots();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void executeFaultyGetReviewedSecurityHotspotsPlugin() throws SonarQubeException, BadSonarQubeRequestException {
+        SecurityHotspotsProvider securityHotspotsProvider = new SecurityHotspotsProviderPlugin(wsClient, PROJECT_KEY, BRANCH);
         securityHotspotsProvider.getReviewedSecurityHotspots();
     }
 }

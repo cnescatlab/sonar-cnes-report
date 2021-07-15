@@ -12,8 +12,14 @@ public class QualityProfileProviderTest extends CommonTest {
     private static final String TOKEN = "token";
 
     @Test(expected = SonarQubeException.class)
-    public void executeFaultyGetQualityProfiles() throws SonarQubeException, BadSonarQubeRequestException {
+    public void executeFaultyGetQualityProfilesStandalone() throws SonarQubeException, BadSonarQubeRequestException {
         QualityProfileProvider qualityProfileProvider = new QualityProfileProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY);
+        qualityProfileProvider.getQualityProfiles();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void executeFaultyGetQualityProfilesPlugin() throws SonarQubeException, BadSonarQubeRequestException {
+        QualityProfileProvider qualityProfileProvider = new QualityProfileProviderPlugin(wsClient, PROJECT_KEY);
         qualityProfileProvider.getQualityProfiles();
     }
 }

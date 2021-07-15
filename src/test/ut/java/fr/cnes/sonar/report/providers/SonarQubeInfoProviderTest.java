@@ -14,14 +14,28 @@ public class SonarQubeInfoProviderTest extends CommonTest {
     private static final String TOKEN = "token";
 
     @Test(expected = SonarQubeException.class)
-    public void executeFaultyGetSonarQubeVersion() throws SonarQubeException, BadSonarQubeRequestException {
+    public void executeFaultyGetSonarQubeVersionStandalone() throws SonarQubeException, BadSonarQubeRequestException {
         SonarQubeInfoProvider sonarQubeInfoProvider = new SonarQubeInfoProviderStandalone(sonarQubeServer, TOKEN);
         sonarQubeInfoProvider.getSonarQubeVersion();
     }
 
     @Test
-    public void executeFaultyGetStatus() {
+    public void executeFaultyGetStatusStandalone() {
         SonarQubeInfoProvider sonarQubeInfoProvider = new SonarQubeInfoProviderStandalone(sonarQubeServer, TOKEN);
+        final String actual = sonarQubeInfoProvider.getSonarQubeStatus();
+        final String expected = "DOWN";
+        assertEquals(expected, actual);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void executeFaultyGetSonarQubeVersionPlugin() throws SonarQubeException, BadSonarQubeRequestException {
+        SonarQubeInfoProvider sonarQubeInfoProvider = new SonarQubeInfoProviderPlugin(wsClient);
+        sonarQubeInfoProvider.getSonarQubeVersion();
+    }
+
+    @Test
+    public void executeFaultyGetStatusPlugin() {
+        SonarQubeInfoProvider sonarQubeInfoProvider = new SonarQubeInfoProviderPlugin(wsClient);
         final String actual = sonarQubeInfoProvider.getSonarQubeStatus();
         final String expected = "DOWN";
         assertEquals(expected, actual);

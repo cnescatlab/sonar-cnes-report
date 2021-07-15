@@ -13,16 +13,30 @@ public class ProjectProviderTest extends CommonTest {
     private static final String TOKEN = "token";
 
     @Test(expected = SonarQubeException.class)
-    public void executeFaultyGetProject() throws SonarQubeException, BadSonarQubeRequestException {
+    public void executeFaultyGetProjectStandalone() throws SonarQubeException, BadSonarQubeRequestException {
         LanguageProvider languageProvider = new LanguageProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY);
         ProjectProvider projectProvider = new ProjectProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH, languageProvider);
         projectProvider.getProject(PROJECT_KEY, BRANCH);
     }
 
     @Test(expected = SonarQubeException.class)
-    public void executeFaultyHasProject() throws SonarQubeException, BadSonarQubeRequestException {
+    public void executeFaultyHasProjectStandalone() throws SonarQubeException, BadSonarQubeRequestException {
         LanguageProvider languageProvider = new LanguageProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY);
         ProjectProvider projectProvider = new ProjectProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH, languageProvider);
+        projectProvider.hasProject(PROJECT_KEY, BRANCH);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void executeFaultyGetProjectPlugin() throws SonarQubeException, BadSonarQubeRequestException {
+        LanguageProvider languageProvider = new LanguageProviderPlugin(wsClient, PROJECT_KEY);
+        ProjectProvider projectProvider = new ProjectProviderPlugin(wsClient, PROJECT_KEY, BRANCH, languageProvider);
+        projectProvider.getProject(PROJECT_KEY, BRANCH);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void executeFaultyHasProjectPlugin() throws SonarQubeException, BadSonarQubeRequestException {
+        LanguageProvider languageProvider = new LanguageProviderPlugin(wsClient, PROJECT_KEY);
+        ProjectProvider projectProvider = new ProjectProviderPlugin(wsClient, PROJECT_KEY, BRANCH, languageProvider);
         projectProvider.hasProject(PROJECT_KEY, BRANCH);
     }
 }

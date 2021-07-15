@@ -12,8 +12,14 @@ public class LanguageProviderTest extends CommonTest {
     private static final String TOKEN = "token";
 
     @Test(expected = SonarQubeException.class)
-    public void executeFaultyGetLanguages() throws SonarQubeException, BadSonarQubeRequestException {
+    public void executeFaultyGetLanguagesStandalone() throws SonarQubeException, BadSonarQubeRequestException {
         LanguageProvider languageProvider = new LanguageProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY);
+        languageProvider.getLanguages();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void executeFaultyGetLanguagesPlugin() throws SonarQubeException, BadSonarQubeRequestException {
+        LanguageProvider languageProvider = new LanguageProviderPlugin(wsClient, PROJECT_KEY);
         languageProvider.getLanguages();
     }
 }

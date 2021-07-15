@@ -12,8 +12,14 @@ public class ComponentProviderTest extends CommonTest {
     private static final String TOKEN = "token";
 
     @Test(expected = SonarQubeException.class)
-    public void executeFaultyGetComponents() throws SonarQubeException, BadSonarQubeRequestException {
+    public void executeFaultyGetComponentsStandalone() throws SonarQubeException, BadSonarQubeRequestException {
         ComponentProvider componentProvider = new ComponentProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
+        componentProvider.getComponents();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void executeFaultyGetComponentsPlugin() throws SonarQubeException, BadSonarQubeRequestException {
+        ComponentProvider componentProvider = new ComponentProviderPlugin(wsClient, PROJECT_KEY, BRANCH);
         componentProvider.getComponents();
     }
 }
