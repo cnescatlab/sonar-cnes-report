@@ -123,7 +123,7 @@ public class ReportModelFactory {
         // reviewed security hotspots
         report.setReviewedSecurityHotspots(securityHotspotsProvider.getReviewedSecurityHotspots());
         // quality profile's setting
-        report.setQualityProfiles(qualityProfileProvider.getQualityProfiles(report.getProject().getOrganization()));
+        report.setQualityProfiles(qualityProfileProvider.getQualityProfiles());
         // quality gate's setting
         report.setQualityGate(qualityGateProvider.getProjectQualityGate());
         // quality gate's status

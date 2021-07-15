@@ -23,14 +23,11 @@ import org.sonarqube.ws.client.measures.ComponentTreeRequest;
 import org.sonarqube.ws.Measures.ComponentTreeWsResponse;
 import fr.cnes.sonar.report.model.Component;
 import fr.cnes.sonar.report.model.Components;
-import fr.cnes.sonar.report.utils.StringManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Provides component items in plugin mode
@@ -52,7 +49,6 @@ public class ComponentProviderPlugin extends AbstractComponentProvider implement
         int page = 1;
         JsonObject jo;
         ArrayList<Map<String,String>> componentsList = new ArrayList<>();
-        Set<String> excludeMetricSet = new HashSet<>(Arrays.asList(StringManager.getProperty(EXCLUDED_COMPONENTS).split(",")));
 
         // For each page, we get the components
         boolean goOn = true;
@@ -86,7 +82,6 @@ public class ComponentProviderPlugin extends AbstractComponentProvider implement
 
         Components components = new Components();
         components.setComponentsList(componentsList);
-        components.setExcludeMetricSet(excludeMetricSet);
         return components;
     }
 }

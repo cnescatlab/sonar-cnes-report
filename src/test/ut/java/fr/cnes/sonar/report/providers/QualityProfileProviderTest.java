@@ -1,0 +1,19 @@
+package fr.cnes.sonar.report.providers;
+
+import fr.cnes.sonar.report.CommonTest;
+import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
+import fr.cnes.sonar.report.providers.qualityprofile.*;
+
+import org.junit.Test;
+
+public class QualityProfileProviderTest extends CommonTest {
+
+    private static final String TOKEN = "token";
+
+    @Test(expected = SonarQubeException.class)
+    public void executeFaultyGetQualityProfiles() throws SonarQubeException, BadSonarQubeRequestException {
+        QualityProfileProvider qualityProfileProvider = new QualityProfileProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY);
+        qualityProfileProvider.getQualityProfiles();
+    }
+}

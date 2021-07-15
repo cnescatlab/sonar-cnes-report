@@ -18,9 +18,15 @@
 package fr.cnes.sonar.report;
 
 import fr.cnes.sonar.report.model.*;
+import fr.cnes.sonar.report.factory.ProviderFactory;
+import fr.cnes.sonar.report.factory.StandaloneProviderFactory;
+import fr.cnes.sonar.report.factory.PluginProviderFactory;
 import fr.cnes.sonar.report.utils.ReportConfiguration;
 import fr.cnes.sonar.report.utils.StringManager;
 import org.junit.Before;
+import org.sonarqube.ws.client.HttpConnector;
+import org.sonarqube.ws.client.WsClient;
+import org.sonarqube.ws.client.WsClientFactories;
 
 import java.util.*;
 import java.text.SimpleDateFormat;
@@ -53,11 +59,27 @@ public abstract class CommonTest {
     /**
      * Stubbed sonarqube server for report.
      */
-    protected SonarQubeServer sonarQubeServer;
+    protected SonarQubeServer sonarQubeServerInstance;
     /**
      * stubbed parameters for testing.
      */
     protected ReportConfiguration conf;
+    /**
+     * Stubbed WsClient for testing plugin mode.
+     */
+    protected WsClient wsClient;
+    /**
+     * Stubbed ProviderFactory for testing standalone mode.
+     */
+    protected ProviderFactory standaloneProviderFactory;
+    /**
+     * Stubbed ProviderFactory for testing plugin mode.
+     */
+    protected ProviderFactory pluginProviderFactory;
+    /**
+     * Stubbed sonarqube server URL for report.
+     */
+    protected String sonarQubeServer;
 
     /**
      * Setting of all stubbed resources before launching a test.
@@ -66,7 +88,7 @@ public abstract class CommonTest {
     public void before() {
         report = new StubReport();
         conf = ReportConfiguration.create(new String[]{
-                "-s", "http://sonarqube:9000",
+                "-s", "http://biiiiiiiiiiiiim",
                 "-p", PROJECT_KEY,
                 "-a", "Lequal",
                 "-b", BRANCH,
@@ -81,10 +103,21 @@ public abstract class CommonTest {
         report.setProjectDate(new Date().toString().substring(0,16));
         report.setProjectAuthor("Lequal");
 
-        sonarQubeServer = new SonarQubeServer();
-        sonarQubeServer.setStatus("UP");
-        sonarQubeServer.setUrl("http://biiiiiiiiiiiiim");
-        sonarQubeServer.setVersion("6.7.5", true);
+        sonarQubeServerInstance = new SonarQubeServer();
+        sonarQubeServerInstance.setStatus("UP");
+        sonarQubeServerInstance.setUrl("http://biiiiiiiiiiiiim");
+        sonarQubeServerInstance.setVersion("6.7.5", true);
+
+        sonarQubeServer = conf.getServer();
+
+        HttpConnector httpConnector = HttpConnector.newBuilder()
+            .url(conf.getServer())
+            .credentials("admin", "admin")
+            .build();
+        wsClient = WsClientFactories.getDefault().newClient(httpConnector);
+
+        standaloneProviderFactory = new StandaloneProviderFactory(conf.getServer(), conf.getToken(), conf.getProject(), conf.getBranch());
+        pluginProviderFactory = new PluginProviderFactory(conf.getProject(), conf.getBranch(), wsClient);
 
         final List<Issue> issues = new ArrayList<>();
         final Issue i1 = new Issue();

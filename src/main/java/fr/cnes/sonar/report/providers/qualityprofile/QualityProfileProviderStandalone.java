@@ -65,14 +65,14 @@ public class QualityProfileProviderStandalone extends AbstractQualityProfileProv
     }
 
     @Override
-    public List<QualityProfile> getQualityProfiles(final String pOrganization)
+    public List<QualityProfile> getQualityProfiles()
             throws BadSonarQubeRequestException, SonarQubeException {
         // initializing returned list
         final List<QualityProfile> res = new ArrayList<>();
 
         // Get all quality profiles (metadata)
         String request = String.format(getRequest(GET_QUALITY_PROFILES_REQUEST),
-                getServer(), getProjectKey(), pOrganization);
+                getServer(), getProjectKey());
         // perform the previous request
         JsonObject jo = request(request);
 

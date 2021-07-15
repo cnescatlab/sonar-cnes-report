@@ -18,12 +18,14 @@
 package fr.cnes.sonar.report.model;
 
 import fr.cnes.sonar.report.exporters.xlsx.XlsXTools;
+import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 import org.apache.commons.math3.util.Precision;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +36,12 @@ import java.util.Set;
  * List of components
  */
 public class Components {
+    
+    /**
+     * Property to get the list of components to exclude
+     */
+    private static final String EXCLUDED_COMPONENTS = "components.excluded";
+
     /** Components list */
     private ArrayList<Map<String,String>> componentsList;
     /** Metrics to be excluded */
@@ -44,7 +52,7 @@ public class Components {
      */
     public Components() {
         this.componentsList = new ArrayList<>();
-        this.excludeMetricSet = new HashSet<>();
+        this.excludeMetricSet = new HashSet<>(Arrays.asList(StringManager.getProperty(EXCLUDED_COMPONENTS).split(",")));
     }
 
     /**
@@ -106,7 +114,7 @@ public class Components {
         return map;
     }
 
-    private boolean isCountableMetric(String metric){
+    protected boolean isCountableMetric(String metric){
 
         boolean isCountable;
 
@@ -130,7 +138,7 @@ public class Components {
     /**
      * Get min value for a specified metric
      */
-    private double getMinMetric(String metric){
+    protected double getMinMetric(String metric){
         double min = Double.MAX_VALUE;
         for(Map<String,String> c: componentsList){
             final String rawValue = c.get(metric);
@@ -144,7 +152,7 @@ public class Components {
     /**
      * Get max value for a specified metric
      */
-    private double getMaxMetric(String metric){
+    protected double getMaxMetric(String metric){
         double max = -Double.MAX_VALUE;
         for(Map<String,String> c: componentsList){
             final String rawValue = c.get(metric);
@@ -158,7 +166,7 @@ public class Components {
     /**
      * Get the median of a specified metric
      */
-    private double getMedianMetric(String metric) {
+    protected double getMedianMetric(String metric) {
         List<Double> values = new ArrayList<>(); 
         for(Map<String,String> c: componentsList){
             final String rawValue = c.get(metric);

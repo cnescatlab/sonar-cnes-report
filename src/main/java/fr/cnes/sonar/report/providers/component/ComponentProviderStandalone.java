@@ -22,13 +22,9 @@ import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Component;
 import fr.cnes.sonar.report.model.Components;
-import fr.cnes.sonar.report.utils.StringManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Provides component items in standalone mode
@@ -58,7 +54,6 @@ public class ComponentProviderStandalone extends AbstractComponentProvider imple
         int page = 1;
         JsonObject jo;
         ArrayList<Map<String,String>> componentsList = new ArrayList<>();
-        Set<String> excludeMetricSet = new HashSet<>(Arrays.asList(StringManager.getProperty(EXCLUDED_COMPONENTS).split(",")));
 
         // For each page, we get the components
         boolean goOn = true;
@@ -82,7 +77,6 @@ public class ComponentProviderStandalone extends AbstractComponentProvider imple
 
         Components components = new Components();
         components.setComponentsList(componentsList);
-        components.setExcludeMetricSet(excludeMetricSet);
         return components;
     }
 }

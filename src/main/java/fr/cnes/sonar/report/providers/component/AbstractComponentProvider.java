@@ -29,10 +29,6 @@ public abstract class AbstractComponentProvider extends AbstractDataProvider {
      * Field to search in json to get components
      */
     protected static final String COMPONENTS = "components";
-    /**
-     * Property to get the list of components to exclude
-     */
-    protected static final String EXCLUDED_COMPONENTS = "components.excluded";
 
     /**
      * Complete constructor.

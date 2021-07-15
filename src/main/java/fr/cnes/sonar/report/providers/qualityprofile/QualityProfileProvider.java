@@ -30,10 +30,9 @@ public interface QualityProfileProvider {
     /**
      * Get all the quality profiles.
      * @return Array containing all the quality profiles of a project.
-     * @param pOrganization Specify organization in which the project is.
      * @throws BadSonarQubeRequestException A request is not recognized by the server.
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    List<QualityProfile> getQualityProfiles(final String pOrganization) throws BadSonarQubeRequestException, SonarQubeException;
+    List<QualityProfile> getQualityProfiles() throws BadSonarQubeRequestException, SonarQubeException;
 
 }

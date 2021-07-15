@@ -1,5 +1,5 @@
 # Sonar CNES Report
-[![Build Status](https://travis-ci.org/cnescatlab/sonar-cnes-report.svg?branch=master)](https://travis-ci.org/cnescatlab/sonar-cnes-report)
+[![Java CI](https://github.com/cnescatlab/sonar-cnes-report/actions/workflows/java-continuous-integration.yml/badge.svg)](https://github.com/cnescatlab/sonar-cnes-report/actions/workflows/java-continuous-integration.yml)
 [![SonarQube Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonar%3Acnesreport&metric=alert_status)](https://sonarcloud.io/dashboard?id=fr.cnes.sonar%3Acnesreport)
 [![SonarQube Bugs](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonar%3Acnesreport&metric=bugs)](https://sonarcloud.io/project/issues?id=fr.cnes.sonar%3Acnesreport&resolved=false&types=BUG)
 [![SonarQube Coverage](https://sonarcloud.io/api/project_badges/measure?project=fr.cnes.sonar%3Acnesreport&metric=coverage)](https://sonarcloud.io/component_measures?id=fr.cnes.sonar%3Acnesreport&metric=Coverage)

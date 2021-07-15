@@ -48,7 +48,7 @@ public class QualityProfileProviderPlugin extends AbstractQualityProfileProvider
     }
 
     @Override
-    public List<QualityProfile> getQualityProfiles(final String pOrganization) {
+    public List<QualityProfile> getQualityProfiles() {
         // initializing returned list
         final List<QualityProfile> res = new ArrayList<>();
 

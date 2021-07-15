@@ -24,6 +24,7 @@ import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
 import fr.cnes.sonar.report.model.QualityGate;
+import fr.cnes.sonar.report.utils.UrlEncoder;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -86,7 +87,7 @@ public class QualityGateProviderStandalone extends AbstractQualityGateProvider i
         for (QualityGate i : tmp) {
             // request the criteria
             request = String.format(getRequest(GET_QUALITY_GATES_DETAILS_REQUEST),
-                    getServer(), i.getName().replace(" ", "%20"));
+                    getServer(), UrlEncoder.urlEncodeString(i.getName()));
             // perform previous request
             jo = request(request);
 
