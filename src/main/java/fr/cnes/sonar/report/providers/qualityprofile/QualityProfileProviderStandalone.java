@@ -118,9 +118,9 @@ public class QualityProfileProviderStandalone extends AbstractQualityProfileProv
                 // Redefine the rule's severity, based on the active Quality Profile (not only the default one)
                 for (Rule r: tmp) {
                     // If the rule is active in the Quality Profile
-                    if(jo.get("actives").getAsJsonObject().has(r.getKey())) {
+                    if(jo.get(ACTIVES).getAsJsonObject().has(r.getKey())) {
                         // Retrieve the severity set in the Quality Profile, and override the rule's default severity
-                        String severity = jo.get("actives").getAsJsonObject().get(r.getKey()).getAsJsonArray().get(0).getAsJsonObject().get("severity").getAsString();
+                        String severity = jo.get(ACTIVES).getAsJsonObject().get(r.getKey()).getAsJsonArray().get(0).getAsJsonObject().get("severity").getAsString();
                         r.setSeverity(severity);
                     }
                 }

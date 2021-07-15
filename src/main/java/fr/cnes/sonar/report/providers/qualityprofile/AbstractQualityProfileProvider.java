@@ -33,6 +33,10 @@ public abstract class AbstractQualityProfileProvider extends AbstractDataProvide
      * Field to search in json to get profiles
      */
     protected static final String PROFILES = "profiles";
+    /**
+     * Field to search in json to get profiles
+     */
+    protected static final String ACTIVES = "actives";
 
     /**
      * Complete constructor.

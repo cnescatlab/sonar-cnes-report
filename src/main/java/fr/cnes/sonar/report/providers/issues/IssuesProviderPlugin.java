@@ -37,6 +37,15 @@ import java.util.Map;
 public class IssuesProviderPlugin extends AbstractIssuesProvider implements IssuesProvider {
 
     /**
+     * Field to get the types facet in a response
+     */
+    private static final String TYPES = "types";
+    /**
+     * Field to get the severities facet in a response
+     */
+    private static final String SEVERITIES = "severities";
+
+    /**
      * Complete constructor.
      * @param wsClient The web client.
      * @param project The id of the project to report.
@@ -84,10 +93,10 @@ public class IssuesProviderPlugin extends AbstractIssuesProvider implements Issu
             final int maxPerPage = Integer.parseInt(getRequest(MAX_PER_PAGE_SONARQUBE));
             // prepare the server to get all the issues
             final List<String> projects = new ArrayList<>(Arrays.asList(getProjectKey()));
-            final List<String> facets = new ArrayList<>(Arrays.asList("types", "rules", "severities", "directories", "files", "tags"));
+            final List<String> facets = new ArrayList<>(Arrays.asList(TYPES, RULES, SEVERITIES, "directories", "files", "tags"));
             final String ps = String.valueOf(maxPerPage);
             final String p = String.valueOf(page);
-            final List<String> additionalFields = new ArrayList<>(Arrays.asList("rules", "comments"));
+            final List<String> additionalFields = new ArrayList<>(Arrays.asList(RULES, "comments"));
             final SearchRequest searchRequest = new SearchRequest()
                                                     .setProjects(projects)
                                                     .setFacets(facets)
@@ -147,10 +156,10 @@ public class IssuesProviderPlugin extends AbstractIssuesProvider implements Issu
              final int maxPerPage = Integer.parseInt(getRequest(MAX_PER_PAGE_SONARQUBE));
              // prepare the server to get all the issues
             final List<String> projects = new ArrayList<>(Arrays.asList(getProjectKey()));
-            final List<String> facets = new ArrayList<>(Arrays.asList("types", "rules", "severities", "directories", "files", "tags"));
+            final List<String> facets = new ArrayList<>(Arrays.asList(TYPES, RULES, SEVERITIES, "directories", "files", "tags"));
             final String ps = String.valueOf(maxPerPage);
             final String p = String.valueOf(page);
-            final List<String> additionalFields = new ArrayList<>(Arrays.asList("rules", "comments"));
+            final List<String> additionalFields = new ArrayList<>(Arrays.asList(RULES, "comments"));
             final SearchRequest searchRequest = new SearchRequest()
                                                     .setProjects(projects)
                                                     .setFacets(facets)
@@ -194,7 +203,7 @@ public class IssuesProviderPlugin extends AbstractIssuesProvider implements Issu
     public List<Facet> getFacets() {
         // prepare the request
         final List<String> projects = new ArrayList<>(Arrays.asList(getProjectKey()));
-        final List<String> facets = new ArrayList<>(Arrays.asList("types", "rules", "severities"));
+        final List<String> facets = new ArrayList<>(Arrays.asList(TYPES, RULES, SEVERITIES));
         final String ps = String.valueOf(1);
         final String p = String.valueOf(1);
         final SearchRequest searchRequest = new SearchRequest()

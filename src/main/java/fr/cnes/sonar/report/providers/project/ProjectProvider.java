@@ -21,9 +21,6 @@ import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Project;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * Generic interface for project providers
  */

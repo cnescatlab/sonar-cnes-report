@@ -22,7 +22,6 @@ import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Measure;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Generic interface for measure providers

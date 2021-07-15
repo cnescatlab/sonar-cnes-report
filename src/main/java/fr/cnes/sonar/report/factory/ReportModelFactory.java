@@ -30,7 +30,6 @@ import fr.cnes.sonar.report.providers.project.ProjectProvider;
 import fr.cnes.sonar.report.providers.qualitygate.QualityGateProvider;
 import fr.cnes.sonar.report.providers.qualityprofile.QualityProfileProvider;
 import fr.cnes.sonar.report.providers.securityhotspots.SecurityHotspotsProvider;
-import fr.cnes.sonar.report.utils.ReportConfiguration;
 
 /**
  * Construct the report from resources providers.

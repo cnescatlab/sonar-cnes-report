@@ -25,13 +25,13 @@ import java.util.HashMap;
  */
 public class Languages {
     /** Languages map */
-    private  Map<String, Language> languages;
+    private  Map<String, Language> languagesMap;
 
     /**
      * Default constructor
      */
     public Languages() {
-        this.languages = new HashMap<>();
+        this.languagesMap = new HashMap<>();
     }
 
     /**
@@ -39,15 +39,15 @@ public class Languages {
      * @return a map of couples language's key/language
      */
     public Map<String, Language> getLanguages() {
-        return languages;
+        return languagesMap;
     }
 
     /**
-     * Set languages
-     * @param languages
+     * Set languagesMap
+     * @param languagesMap
      */
-    public void setLanguages(Map<String, Language> languages) {
-        this.languages = languages;
+    public void setLanguages(Map<String, Language> languagesMap) {
+        this.languagesMap = languagesMap;
     }
 
     /**
@@ -57,8 +57,8 @@ public class Languages {
      */
     public String getLanguage(final String languageKey) {
         String languageName = "?";
-        if(!this.languages.isEmpty() && this.languages.get(languageKey) != null) {
-            languageName = this.languages.get(languageKey).getName();
+        if(!this.languagesMap.isEmpty() && this.languagesMap.get(languageKey) != null) {
+            languageName = this.languagesMap.get(languageKey).getName();
         }
         return languageName;
     }

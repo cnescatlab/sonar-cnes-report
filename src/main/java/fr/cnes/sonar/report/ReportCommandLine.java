@@ -29,7 +29,6 @@ import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.model.SonarQubeServer;
 import fr.cnes.sonar.report.utils.ReportConfiguration;
 import fr.cnes.sonar.report.utils.StringManager;
-import fr.cnes.sonar.report.factory.ProviderFactory;
 import fr.cnes.sonar.report.factory.StandaloneProviderFactory;
 import fr.cnes.sonar.report.factory.PluginProviderFactory;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;

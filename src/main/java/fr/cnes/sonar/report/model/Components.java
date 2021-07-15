@@ -43,7 +43,7 @@ public class Components {
     private static final String EXCLUDED_COMPONENTS = "components.excluded";
 
     /** Components list */
-    private ArrayList<Map<String,String>> componentsList;
+    private List<Map<String,String>> componentsList;
     /** Metrics to be excluded */
     private Set<String> excludeMetricSet;
 
@@ -59,7 +59,7 @@ public class Components {
      * Components list
      * @return a list of maps repesenting components
      */
-    public ArrayList<Map<String, String>> getComponentsList() {
+    public List<Map<String, String>> getComponentsList() {
         return componentsList;
     }
 
@@ -67,7 +67,7 @@ public class Components {
      * Set components list
      * @param componentsList
      */
-    public void setComponentsList(ArrayList<Map<String, String>> componentsList) {
+    public void setComponentsList(List<Map<String, String>> componentsList) {
         this.componentsList = componentsList;
     }
 

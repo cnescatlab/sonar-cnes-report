@@ -76,7 +76,7 @@ public class QualityGateProviderPlugin extends AbstractQualityGateProvider imple
             // perform previous request
             final ShowWsResponse showWsResponse = getWsClient().qualitygates().show(showRequest);
             // transform response to JsonObject
-            jo = responseToJsonObject(listWsResponse);
+            jo = responseToJsonObject(showWsResponse);
 
             // put it in configuration field
             i.setConf(jo.toString());

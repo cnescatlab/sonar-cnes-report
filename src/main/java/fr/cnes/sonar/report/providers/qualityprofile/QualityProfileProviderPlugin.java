@@ -87,7 +87,7 @@ public class QualityProfileProviderPlugin extends AbstractQualityProfileProvider
             // continue until there are no more results
             while(goon) {
                 // prepare the request
-                final List<String> f = new ArrayList<>(Arrays.asList("htmlDesc", "name", "repo", "severity", "defaultRemFn", "actives"));
+                final List<String> f = new ArrayList<>(Arrays.asList("htmlDesc", "name", "repo", "severity", "defaultRemFn", ACTIVES));
                 final String ps = String.valueOf(Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)));
                 final String p = String.valueOf(page);
                 final org.sonarqube.ws.client.rules.SearchRequest searchRulesRequest =
@@ -107,9 +107,9 @@ public class QualityProfileProviderPlugin extends AbstractQualityProfileProvider
                 // Redefine the rule's severity, based on the active Quality Profile (not only the default one)
                 for (Rule r: tmp) {
                     // If the rule is active in the Quality Profile
-                    if(jo.get("actives").getAsJsonObject().has(r.getKey())) {
+                    if(jo.get(ACTIVES).getAsJsonObject().has(r.getKey())) {
                         // Retrieve the severity set in the Quality Profile, and override the rule's default severity
-                        String severity = jo.get("actives").getAsJsonObject().get(r.getKey()).getAsJsonArray().get(0).getAsJsonObject().get("severity").getAsString();
+                        String severity = jo.get(ACTIVES).getAsJsonObject().get(r.getKey()).getAsJsonArray().get(0).getAsJsonObject().get("severity").getAsString();
                         r.setSeverity(severity);
                     }
                 }
