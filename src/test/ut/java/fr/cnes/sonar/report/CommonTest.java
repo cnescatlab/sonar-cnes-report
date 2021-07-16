@@ -168,14 +168,14 @@ public abstract class CommonTest {
         report.setIssues(issues);
 
         List<Map<String,String>> rawIssues = new ArrayList<>();
-        Map issue1 = new HashMap();
+        Map issue1 = new HashMap<>();
         issue1.put("Comments", new ArrayList<String>());
         issue1.put("ToReview", true);
         issue1.put("someNumber", 1.0);
         rawIssues.add(issue1);
 
-        Map issue2 = new HashMap();
-        List list = new ArrayList();
+        Map issue2 = new HashMap<>();
+        List<String> list = new ArrayList<>();
         list.add("Element 1");
         list.add("Element 2");
         issue2.put("Comments", list);

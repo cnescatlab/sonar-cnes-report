@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -33,7 +34,7 @@ public class ModelTest extends CommonTest {
         component.setPath("path");
         Assert.assertEquals("path", component.getPath());
 
-        ArrayList measures = new ArrayList();
+        List<Measure> measures = new ArrayList<>();
         measures.add(new Measure());
 
         Assert.assertThat(component.toString(), instanceOf(String.class));

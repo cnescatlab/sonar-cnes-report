@@ -157,7 +157,7 @@ public class QualityGateProviderPlugin extends AbstractQualityGateProvider imple
                                                         .setBranch(getBranch())
                                                         .setComponent(getProjectKey())
                                                         .setMetricKeys(metricKeys);
-            final ComponentWsResponse componentWsResponse = getWsClient().measures().component​(componentRequest);
+            final ComponentWsResponse componentWsResponse = getWsClient().measures().component(componentRequest);
             final JsonObject metricResult = responseToJsonObject(componentWsResponse);
             String name = metricResult.get(METRICS).getAsJsonArray().get(0).getAsJsonObject().get(NAME).getAsString();
             // add the detailed explanation on why the condition failed if it's the case

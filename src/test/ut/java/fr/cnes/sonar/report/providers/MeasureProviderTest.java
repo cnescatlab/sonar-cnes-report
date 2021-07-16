@@ -3,7 +3,6 @@ package fr.cnes.sonar.report.providers;
 import fr.cnes.sonar.report.CommonTest;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.model.SonarQubeServer;
 import fr.cnes.sonar.report.providers.measure.*;
 
 import org.junit.Test;

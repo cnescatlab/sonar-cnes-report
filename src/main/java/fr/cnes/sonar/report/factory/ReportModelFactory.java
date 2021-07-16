@@ -22,7 +22,6 @@ import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
 import fr.cnes.sonar.report.model.Components;
 import fr.cnes.sonar.report.model.Report;
-import fr.cnes.sonar.report.providers.*;
 import fr.cnes.sonar.report.providers.component.ComponentProvider;
 import fr.cnes.sonar.report.providers.issues.IssuesProvider;
 import fr.cnes.sonar.report.providers.measure.MeasureProvider;

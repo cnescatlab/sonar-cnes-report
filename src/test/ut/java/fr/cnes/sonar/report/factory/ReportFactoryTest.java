@@ -37,11 +37,11 @@ public class ReportFactoryTest extends CommonTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void formatFilenameWithBadDateFormat() throws ParseException {
-        String actual = ReportFactory.formatFilename("report.output", "./target", "30-03-2021", "CNES Report");
+        ReportFactory.formatFilename("report.output", "./target", "30-03-2021", "CNES Report");
     }
 
     @Test(expected = ParseException.class)
     public void formatFilenameWithInconsistentDate() throws ParseException {
-        String actual = ReportFactory.formatFilename("report.output", "./target", "2021-12-32", "CNES Report");
+        ReportFactory.formatFilename("report.output", "./target", "2021-12-32", "CNES Report");
     }
 }

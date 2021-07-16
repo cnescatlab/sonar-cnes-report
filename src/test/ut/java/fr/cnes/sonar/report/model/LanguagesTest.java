@@ -5,13 +5,14 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class LanguagesTest extends CommonTest {
 
     @Test
     public void getLanguageTest() {
         Languages languages = new Languages();
-        HashMap hashMap = new HashMap();
+        Map<String, Language> hashMap = new HashMap<>();
         Language cpp = new Language();
         cpp.setKey("cpp");
         cpp.setName("C++");
