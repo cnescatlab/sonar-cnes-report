@@ -17,8 +17,21 @@
 
 package fr.cnes.sonar.report.providers.measure;
 
+import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
+import fr.cnes.sonar.report.model.Measure;
 import fr.cnes.sonar.report.providers.AbstractDataProvider;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import org.sonarqube.ws.client.WsClient;
+import org.sonarqube.ws.client.measures.ComponentRequest;
+import org.sonarqube.ws.Measures.ComponentWsResponse;
 
 /**
  * Contains common code for measure providers
@@ -26,13 +39,17 @@ import org.sonarqube.ws.client.WsClient;
 public abstract class AbstractMeasureProvider extends AbstractDataProvider {
 
     /**
+     *  Name of the request for getting measures
+     */
+    private static final String GET_MEASURES_REQUEST = "GET_MEASURES_REQUEST";
+    /**
      * Field to search in json to get the component
      */
-    protected static final String COMPONENT = "component";
+    private static final String COMPONENT = "component";
     /**
      * Field to search in json to get measures
      */
-    protected static final String MEASURES = "measures";
+    private static final String MEASURES = "measures";
 
     /**
      * Complete constructor.
@@ -54,5 +71,44 @@ public abstract class AbstractMeasureProvider extends AbstractDataProvider {
      */
     protected AbstractMeasureProvider(final WsClient wsClient, final String project, final String branch) {
         super(wsClient, project, branch);
+    }
+
+    /**
+     * Generic getter for all the measures of a project
+     * @param isCalledInStandalone True if the method is called in standalone mode
+     * @return Array containing all the measures
+     * @throws BadSonarQubeRequestException when the server does not understand the request
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected List<Measure> getMeasuresAbstract(final boolean isCalledInStandalone) throws BadSonarQubeRequestException, SonarQubeException {
+        JsonObject jo;
+        // send a request to sonarqube server and return the response as a json object
+        if (isCalledInStandalone) {
+            jo = request(String.format(getRequest(GET_MEASURES_REQUEST),
+                    getServer(), getProjectKey(), getBranch()));
+        } else {
+            final List<String> metricKeys = new ArrayList<>(Arrays.asList(
+                "ncloc", "violations", "ncloc_language_distribution", "duplicated_lines_density",
+                "comment_lines_density","coverage","sqale_rating", "reliability_rating", "security_rating",
+                "alert_status", "security_review_rating", "complexity", "function_complexity", "file_complexity",
+                "class_complexity", "blocker_violations", "critical_violations", "major_violations", "minor_violations",
+                "info_violations", "new_violations", "bugs", "vulnerabilities", "code_smells", "reliability_remediation_effort",
+                "security_remediation_effort", "sqale_index"));
+            final ComponentRequest componentRequest = new ComponentRequest()
+                                                            .setComponent(getProjectKey())
+                                                            .setMetricKeys(metricKeys)
+                                                            .setBranch(getBranch());
+            final ComponentWsResponse componentWsResponse = getWsClient().measures().component(componentRequest);
+            jo = responseToJsonObject(componentWsResponse);
+        }
+
+        // json element containing measure information
+        final JsonElement measuresJE = jo.get(COMPONENT).getAsJsonObject().get(MEASURES);
+        // put json in a list of measures
+        final Measure[] tmp = (getGson().fromJson(measuresJE, Measure[].class));
+
+        // then add all measure to the results list
+        // return the list
+        return new ArrayList<>(Arrays.asList(tmp));
     }
 }

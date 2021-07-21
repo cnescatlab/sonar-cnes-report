@@ -17,25 +17,15 @@
 
 package fr.cnes.sonar.report.providers.component;
 
-import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.model.Component;
 import fr.cnes.sonar.report.model.Components;
-
-import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Provides component items in standalone mode
  */
 public class ComponentProviderStandalone extends AbstractComponentProvider implements ComponentProvider {
 
-    /**
-     *  Name of the request for getting componentsList
-     */
-    private static final String GET_COMPONENTS_REQUEST = "GET_COMPONENTS_REQUEST";
-    
     /**
      * Constructor.
      *
@@ -51,32 +41,6 @@ public class ComponentProviderStandalone extends AbstractComponentProvider imple
 
     @Override
     public Components getComponents() throws BadSonarQubeRequestException, SonarQubeException {
-        int page = 1;
-        JsonObject jo;
-        ArrayList<Map<String,String>> componentsList = new ArrayList<>();
-
-        // For each page, we get the components
-        boolean goOn = true;
-        while(goOn){
-            // Send request to server
-            jo = request(String.format(getRequest(GET_COMPONENTS_REQUEST),
-                    getServer(), getProjectKey(), page, getRequest(MAX_PER_PAGE_SONARQUBE), getBranch()));
-
-            // Get components from response
-            final Component[] tmp = getGson().fromJson(jo.get(COMPONENTS), Component[].class);
-            for (Component c:tmp) {
-                Map<String,String> map = c.toMap();
-                componentsList.add(map);
-            }
-
-            // Check if we reach the end
-            final int number = jo.getAsJsonObject(PAGING).get(TOTAL).getAsInt();
-            goOn =  page * Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)) < number;
-            page++;
-        }
-
-        Components components = new Components();
-        components.setComponentsList(componentsList);
-        return components;
+        return getComponentsAbstract(true);
     }
 }

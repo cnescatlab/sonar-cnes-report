@@ -17,14 +17,10 @@
 
 package fr.cnes.sonar.report.providers.language;
 
-import com.google.gson.JsonObject;
-import fr.cnes.sonar.report.model.Language;
+import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Languages;
 import org.sonarqube.ws.client.WsClient;
-import org.sonarqube.ws.client.languages.ListRequest;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Provides languages in plugin mode
@@ -41,22 +37,7 @@ public class LanguageProviderPlugin extends AbstractLanguageProvider implements 
     }
 
     @Override
-    public Languages getLanguages() {
-        // send a request to sonarqube server and return the response as a json object
-        final ListRequest listRequest = new ListRequest();
-        final String listResponse = getWsClient().languages().list(listRequest);
-        final JsonObject jo = getGson().fromJson(listResponse, JsonObject.class);
-        final Language[] languagesList = getGson().fromJson(jo.get(LANGUAGES_FIELD),
-                Language[].class);
-
-        // put data in a Languages object
-        Map<String, Language> languagesMap = new HashMap<>();
-        for(Language language : languagesList){
-            languagesMap.put(language.getKey(), language);
-        }
-        Languages languages = new Languages();
-        languages.setLanguages(languagesMap);
-
-        return languages;
+    public Languages getLanguages() throws BadSonarQubeRequestException, SonarQubeException {
+        return getLanguagesAbstract(false);
     }
 }

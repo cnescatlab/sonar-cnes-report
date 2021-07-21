@@ -17,17 +17,11 @@
 
 package fr.cnes.sonar.report.providers.component;
 
-import com.google.gson.JsonObject;
 import org.sonarqube.ws.client.WsClient;
-import org.sonarqube.ws.client.measures.ComponentTreeRequest;
-import org.sonarqube.ws.Measures.ComponentTreeWsResponse;
-import fr.cnes.sonar.report.model.Component;
-import fr.cnes.sonar.report.model.Components;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
+import fr.cnes.sonar.report.model.Components;
 
 /**
  * Provides component items in plugin mode
@@ -45,43 +39,7 @@ public class ComponentProviderPlugin extends AbstractComponentProvider implement
     }
 
     @Override
-    public Components getComponents() {
-        int page = 1;
-        JsonObject jo;
-        ArrayList<Map<String,String>> componentsList = new ArrayList<>();
-
-        // For each page, we get the components
-        boolean goOn = true;
-        while(goOn){
-            // Send request to server
-            final List<String> metricKeys = new ArrayList<>(Arrays.asList(
-                "ncloc", "comment_lines_density", "coverage", "complexity", "cognitive_complexity", "duplicated_lines_density"));
-            final String p = String.valueOf(page);
-            final String ps = getRequest(MAX_PER_PAGE_SONARQUBE);
-            final ComponentTreeRequest componentTreeRequest = new ComponentTreeRequest()
-                                                                    .setComponent(getProjectKey())
-                                                                    .setMetricKeys(metricKeys)
-                                                                    .setP(p)
-                                                                    .setPs(ps)
-                                                                    .setBranch(getBranch());
-            final ComponentTreeWsResponse componentTreeWsResponse = getWsClient().measures().componentTree(componentTreeRequest);
-            jo = responseToJsonObject(componentTreeWsResponse);
-
-            // Get components from response
-            final Component[] tmp = getGson().fromJson(jo.get(COMPONENTS), Component[].class);
-            for (Component c:tmp) {
-                Map<String,String> map = c.toMap();
-                componentsList.add(map);
-            }
-
-            // Check if we reach the end
-            final int number = jo.getAsJsonObject(PAGING).get(TOTAL).getAsInt();
-            goOn =  page * Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)) < number;
-            page++;
-        }
-
-        Components components = new Components();
-        components.setComponentsList(componentsList);
-        return components;
+    public Components getComponents() throws BadSonarQubeRequestException, SonarQubeException {
+        return getComponentsAbstract(false);
     }
 }

@@ -17,8 +17,19 @@
 
 package fr.cnes.sonar.report.providers.language;
 
+import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
+import fr.cnes.sonar.report.model.Language;
+import fr.cnes.sonar.report.model.Languages;
 import fr.cnes.sonar.report.providers.AbstractDataProvider;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.google.gson.JsonObject;
+
 import org.sonarqube.ws.client.WsClient;
+import org.sonarqube.ws.client.languages.ListRequest;
 
 /**
  * Contains common code for language providers
@@ -26,9 +37,13 @@ import org.sonarqube.ws.client.WsClient;
 public abstract class AbstractLanguageProvider extends AbstractDataProvider {
 
     /**
+     *  Field to retrieve languages list.
+     */
+    private static final String GET_LANGUAGES = "GET_LANGUAGES";
+    /**
      * Json's field containing the language's array
      */
-    protected static final String LANGUAGES_FIELD = "languages";
+    private static final String LANGUAGES_FIELD = "languages";
 
     /**
      * Complete constructor.
@@ -47,5 +62,36 @@ public abstract class AbstractLanguageProvider extends AbstractDataProvider {
      */
     protected AbstractLanguageProvider(final WsClient wsClient, final String project) {
         super(wsClient, project);
+    }
+
+    /**
+     * Generic getter for all the languages of SonarQube
+     * @param isCalledInStandalone True if the method is called in standalone mode
+     * @return a map with all the languages
+     * @throws BadSonarQubeRequestException when the server does not understand the request
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected Languages getLanguagesAbstract(final boolean isCalledInStandalone) throws BadSonarQubeRequestException, SonarQubeException {
+        JsonObject jo;
+        // send a request to sonarqube server and return the response as a json object
+        if (isCalledInStandalone) {
+            jo = request(String.format(getRequest(GET_LANGUAGES), getServer()));
+        } else {
+            final ListRequest listRequest = new ListRequest();
+            final String listResponse = getWsClient().languages().list(listRequest);
+            jo = getGson().fromJson(listResponse, JsonObject.class);
+        }
+        final Language[] languagesList = getGson().fromJson(jo.get(LANGUAGES_FIELD),
+                Language[].class);
+
+        // put data in a Languages object
+        Map<String, Language> languagesMap = new HashMap<>();
+        for(Language language : languagesList){
+            languagesMap.put(language.getKey(), language);
+        }
+        Languages languages = new Languages();
+        languages.setLanguages(languagesMap);
+
+        return languages;
     }
 }

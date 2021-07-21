@@ -17,9 +17,22 @@
 
 package fr.cnes.sonar.report.providers.project;
 
+import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
+import fr.cnes.sonar.report.model.Language;
+import fr.cnes.sonar.report.model.ProfileMetaData;
+import fr.cnes.sonar.report.model.Project;
 import fr.cnes.sonar.report.providers.AbstractDataProvider;
 import fr.cnes.sonar.report.providers.language.LanguageProvider;
+import fr.cnes.sonar.report.utils.StringManager;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.google.gson.JsonObject;
+
 import org.sonarqube.ws.client.WsClient;
+import org.sonarqube.ws.client.navigation.ComponentRequest;
 
 /**
  * Contains common code for project providers
@@ -55,5 +68,101 @@ public abstract class AbstractProjectProvider extends AbstractDataProvider {
     protected AbstractProjectProvider(final WsClient wsClient, final String project, final String branch, final LanguageProvider languageProvider) {
         super(wsClient, project, branch);
         this.languageProvider = languageProvider;
+    }
+
+    /**
+     * Generic getter for the project corresponding to the given key.
+     * @param isCalledInStandalone True if the method is called in standalone mode.
+     * @param projectKey the key of the project.
+     * @param branch the branch of the project.
+     * @return A simple project.
+     * @throws BadSonarQubeRequestException when the server does not understand the request.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected Project getProjectAbstract(final boolean isCalledInStandalone, final String projectKey, final String branch)
+            throws BadSonarQubeRequestException, SonarQubeException {
+        JsonObject jo;
+        if (isCalledInStandalone) {
+                // send a request to sonarqube server and return th response as a json object
+                // if there is an error on server side this method throws an exception
+                jo = request(String.format(getRequest(GET_PROJECT_REQUEST),
+                        getServer(), projectKey, branch));
+        } else {
+            // get the project
+            final ComponentRequest componentRequest = new ComponentRequest()
+                                                            .setComponent(getProjectKey())
+                                                            .setBranch(getBranch());
+            // perform previous request
+            final String componentResponse = getWsClient().navigation().component(componentRequest);
+            // transform response to JsonObject
+            jo = getGson().fromJson(componentResponse, JsonObject.class);
+        }
+
+        // put json in a Project class
+        final Project project = (getGson().fromJson(jo, Project.class));
+        ProfileMetaData[] metaData;
+
+        // set language's name for profiles and add each language to the project languages list
+        metaData = project.getQualityProfiles();        
+        String languageName;
+        Map<String, Language> languages = new HashMap<>();
+        for(ProfileMetaData it : metaData){
+            String languageKey = it.getLanguage();
+
+            languageName = languageProvider.getLanguages().getLanguage(languageKey);
+            it.setLanguageName(languageName);
+
+            Language language = new Language();
+            language.setKey(languageKey);
+            language.setName(languageName);
+            languages.put(languageKey, language);
+        }
+        project.setQualityProfiles(metaData);
+        project.setLanguages(languages);
+
+        // check description nullity
+        if(null==project.getDescription()) {
+            project.setDescription(StringManager.EMPTY);
+        }
+        // check version nullity
+        if(null==project.getVersion()) {
+            project.setVersion(StringManager.EMPTY);
+        }
+
+        return project;
+    }
+
+    /**
+     * Generic method to check if a project exists on a SonarQube instance.
+     * @param isCalledInStandalone True if the method is called in standalone mode.
+     * @param projectKey the key of the project.
+     * @param branch the branch of the project.
+     * @return True if the project exists.
+     * @throws BadSonarQubeRequestException when the server does not understand the request.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected boolean hasProjectAbstract(final boolean isCalledInStandalone, final String projectKey, final String branch)
+            throws BadSonarQubeRequestException, SonarQubeException {
+        JsonObject jsonObject;
+        if (isCalledInStandalone) {
+            // send a request to sonarqube server and return th response as a json object
+            // if there is an error on server side this method throws an exception
+            jsonObject = request(String.format(getRequest(GET_PROJECT_REQUEST),
+                    getServer(), projectKey, branch));
+        } else {
+            // get the project
+            final ComponentRequest componentRequest = new ComponentRequest()
+                                                            .setComponent(getProjectKey())
+                                                            .setBranch(getBranch());
+            // perform previous request
+            final String componentResponse = getWsClient().navigation().component(componentRequest);
+            // transform response to JsonObject
+            jsonObject = getGson().fromJson(componentResponse, JsonObject.class);
+        }
+
+        // Retrieve project key if the project exists or null.
+        final String project = jsonObject.get("key").getAsString();
+
+        return project != null && project.equals(projectKey);
     }
 }

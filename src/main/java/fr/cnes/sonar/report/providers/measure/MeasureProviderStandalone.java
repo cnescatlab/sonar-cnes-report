@@ -17,25 +17,16 @@
 
 package fr.cnes.sonar.report.providers.measure;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Measure;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * Provides issue items in standalone mode
  */
 public class MeasureProviderStandalone extends AbstractMeasureProvider implements MeasureProvider {
-
-    /**
-     *  Name of the request for getting measures
-     */
-    private static final String GET_MEASURES_REQUEST = "GET_MEASURES_REQUEST";
 
     /**
      * Complete constructor
@@ -51,18 +42,6 @@ public class MeasureProviderStandalone extends AbstractMeasureProvider implement
 
     @Override
     public List<Measure> getMeasures() throws BadSonarQubeRequestException, SonarQubeException {
-        // send a request to sonarqube server and return the response as a json object
-        // if there is an error on server side this method throws an exception
-        final JsonObject jo = request(String.format(getRequest(GET_MEASURES_REQUEST),
-                getServer(), getProjectKey(), getBranch()));
-
-        // json element containing measure information
-        final JsonElement measuresJE = jo.get(COMPONENT).getAsJsonObject().get(MEASURES);
-        // put json in a list of measures
-        final Measure[] tmp = (getGson().fromJson(measuresJE, Measure[].class));
-
-        // then add all measure to the results list
-        // return the list
-        return new ArrayList<>(Arrays.asList(tmp));
+        return getMeasuresAbstract(true);
     }
 }
