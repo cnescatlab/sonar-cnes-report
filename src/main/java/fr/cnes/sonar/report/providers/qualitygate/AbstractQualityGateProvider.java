@@ -319,7 +319,7 @@ public abstract class AbstractQualityGateProvider extends AbstractDataProvider {
                 metricResult = request(String.format(getRequest(GET_METRIC_REQUEST),
                     getServer(), getBranch(), getProjectKey(), metricKey));
             } else {
-                final List<String> additionalFields = new ArrayList<>(Arrays.asList("metrics"));
+                final List<String> additionalFields = new ArrayList<>(Arrays.asList(METRICS));
                 final List<String> metricKeys = new ArrayList<>(Arrays.asList(metricKey));
                 final org.sonarqube.ws.client.measures.ComponentRequest componentRequest =
                     new org.sonarqube.ws.client.measures.ComponentRequest()

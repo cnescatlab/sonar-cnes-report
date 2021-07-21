@@ -149,7 +149,7 @@ public abstract class AbstractIssuesProvider extends AbstractDataProvider {
                                                         .setPs(ps)
                                                         .setP(p)
                                                         .setAdditionalFields(additionalFields)
-                                                        .setResolved(CONFIRMED)
+                                                        .setResolved(confirmed)
                                                         .setBranch(getBranch());
                 // perform the request to the server
                 final SearchWsResponse searchWsResponse = getWsClient().issues().search(searchRequest);
