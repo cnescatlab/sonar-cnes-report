@@ -22,16 +22,29 @@ import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Facet;
 import fr.cnes.sonar.report.model.Issue;
 import org.sonarqube.ws.client.WsClient;
+import org.sonarqube.ws.client.issues.SearchRequest;
+import org.sonarqube.ws.Issues.SearchWsResponse;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import com.google.gson.JsonObject;
 
 /**
  * Provides issue items in plugin mode
  */
 public class IssuesProviderPlugin extends AbstractIssuesProvider implements IssuesProvider {
 
-    
+    /**
+     * Field to get the types facet in a response
+     */
+    private static final String TYPES = "types";
+    /**
+     * Field to get the severities facet in a response
+     */
+    private static final String SEVERITIES = "severities";
 
     /**
      * Complete constructor.
@@ -61,16 +74,58 @@ public class IssuesProviderPlugin extends AbstractIssuesProvider implements Issu
      * @throws SonarQubeException When SonarQube server is not callable.
      */
     private List<Issue> getIssuesByStatus(String confirmed) throws BadSonarQubeRequestException, SonarQubeException {
-        return getIssuesByStatusAbstract(false, confirmed);
+        return getIssuesByStatusAbstract(confirmed);
     }
 
     @Override
     public List<Map<String,String>> getRawIssues() throws BadSonarQubeRequestException, SonarQubeException {
-        return getRawIssuesAbstract(false);
+        return getRawIssuesAbstract();
     }
 
     @Override
     public List<Facet> getFacets() throws BadSonarQubeRequestException, SonarQubeException {
-        return getFacetsAbstract(false);
+        return getFacetsAbstract();
+    }
+
+    @Override
+    protected JsonObject getIssuesAsJsonObject(final int page, final int maxPerPage, final String confirmed) {
+        // prepare the server to get all the issues
+        final List<String> projects = new ArrayList<>(Arrays.asList(getProjectKey()));
+        final List<String> facets = new ArrayList<>(Arrays.asList(TYPES, RULES, SEVERITIES, "directories", "files", "tags"));
+        final String ps = String.valueOf(maxPerPage);
+        final String p = String.valueOf(page);
+        final List<String> additionalFields = new ArrayList<>(Arrays.asList(RULES, "comments"));
+        final SearchRequest searchRequest = new SearchRequest()
+                                                .setProjects(projects)
+                                                .setFacets(facets)
+                                                .setPs(ps)
+                                                .setP(p)
+                                                .setAdditionalFields(additionalFields)
+                                                .setResolved(confirmed)
+                                                .setBranch(getBranch());
+        // perform the request to the server
+        final SearchWsResponse searchWsResponse = getWsClient().issues().search(searchRequest);
+        // transform response to JsonObject
+        return responseToJsonObject(searchWsResponse);
+    }
+
+    @Override
+    protected JsonObject getFacetsAsJsonObject() {
+        // prepare the request
+        final List<String> projects = new ArrayList<>(Arrays.asList(getProjectKey()));
+        final List<String> facets = new ArrayList<>(Arrays.asList(TYPES, RULES, SEVERITIES));
+        final String ps = String.valueOf(1);
+        final String p = String.valueOf(1);
+        final SearchRequest searchRequest = new SearchRequest()
+                                                .setProjects(projects)
+                                                .setResolved(CONFIRMED)
+                                                .setFacets(facets)
+                                                .setPs(ps)
+                                                .setP(p)
+                                                .setBranch(getBranch());
+        // perform the request to the server
+        final SearchWsResponse searchWsResponse = getWsClient().issues().search(searchRequest);
+        // transform response to JsonObject
+        return responseToJsonObject(searchWsResponse);
     }
 }

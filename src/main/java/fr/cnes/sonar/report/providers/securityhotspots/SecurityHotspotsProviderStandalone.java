@@ -23,10 +23,25 @@ import fr.cnes.sonar.report.exceptions.SonarQubeException;
 
 import java.util.List;
 
+import com.google.gson.JsonObject;
+
 /**
  * Provides security hotspots items in standalone mode
  */
 public class SecurityHotspotsProviderStandalone extends AbstractSecurityHotspotsProvider implements SecurityHotspotsProvider {
+
+    /**
+     * Name of the request for getting security hotspots
+     */
+    private static final String GET_SECURITY_HOTSPOTS_REQUEST = "GET_SECURITY_HOTSPOTS_REQUEST";
+    /**
+     * Name of the request for getting a specific security hotspot
+     */
+    private static final String GET_SECURITY_HOTSPOT_REQUEST = "GET_SECURITY_HOTSPOT_REQUEST";
+    /**
+     * Name of the request for getting a specific rule
+     */
+    private static final String GET_RULE_REQUEST = "GET_RULE_REQUEST";
 
     /**
      * Complete constructor.
@@ -61,6 +76,25 @@ public class SecurityHotspotsProviderStandalone extends AbstractSecurityHotspots
      */
     private List<SecurityHotspot> getSecurityHotspotsByStatus(String status)
             throws BadSonarQubeRequestException, SonarQubeException {
-        return getSecurityHotspotsByStatusAbstract(true, status);
+        return getSecurityHotspotsByStatusAbstract(status);
+    }
+
+    @Override
+    protected JsonObject getSecurityHotspotsAsJsonObject(final int page, final int maxPerPage, final String status)
+            throws BadSonarQubeRequestException, SonarQubeException {
+        return request(String.format(getRequest(GET_SECURITY_HOTSPOTS_REQUEST), getServer(), getBranch(), page,
+                getProjectKey(), maxPerPage, status));
+    }
+
+    @Override
+    protected JsonObject getSecurityHotspotAsJsonObject(final String securityHotspotKey)
+            throws BadSonarQubeRequestException, SonarQubeException {
+        return request(String.format(getRequest(GET_SECURITY_HOTSPOT_REQUEST), getServer(), securityHotspotKey));
+    }
+
+    @Override
+    protected JsonObject getRuleAsJsonObject(final String securityHotspotRule)
+            throws BadSonarQubeRequestException, SonarQubeException {
+        return request(String.format(getRequest(GET_RULE_REQUEST), getServer(), securityHotspotRule));
     }
 }

@@ -21,8 +21,15 @@ import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.SecurityHotspot;
 import org.sonarqube.ws.client.WsClient;
+import org.sonarqube.ws.client.hotspots.SearchRequest;
+import org.sonarqube.ws.client.hotspots.ShowRequest;
+import org.sonarqube.ws.Hotspots.SearchWsResponse;
+import org.sonarqube.ws.Hotspots.ShowWsResponse;
+import org.sonarqube.ws.Rules.ShowResponse;
 
 import java.util.List;
+
+import com.google.gson.JsonObject;
 
 /**
  * Provides security hotspots items in plugin mode
@@ -57,6 +64,39 @@ public class SecurityHotspotsProviderPlugin extends AbstractSecurityHotspotsProv
      * @throws SonarQubeException When SonarQube server is not callable.
      */
     private List<SecurityHotspot> getSecurityHotspotsByStatus(String status) throws BadSonarQubeRequestException, SonarQubeException {
-        return getSecurityHotspotsByStatusAbstract(false, status);
+        return getSecurityHotspotsByStatusAbstract(status);
+    }
+
+    @Override
+    protected JsonObject getSecurityHotspotsAsJsonObject(final int page, final int maxPerPage, final String status) {
+        // prepare the request to get all the security hotspots
+        final String p = String.valueOf(page);
+        final String ps = String.valueOf(maxPerPage);
+        final SearchRequest searchRequest = new SearchRequest()
+                                                .setBranch(getBranch())
+                                                .setP(p)
+                                                .setProjectKey(getProjectKey())
+                                                .setPs(ps)
+                                                .setStatus(status);
+        // perform the request to the server
+        final SearchWsResponse searchWsResponse = getWsClient().hotspots().search(searchRequest);
+        // transform response to JsonObject
+        return responseToJsonObject(searchWsResponse);
+    }
+
+    @Override
+    protected JsonObject getSecurityHotspotAsJsonObject(final String securityHotspotKey) {
+        final ShowRequest showHotspotRequest = new ShowRequest().setHotspot(securityHotspotKey);
+        final ShowWsResponse showHotspotResponse = getWsClient().hotspots().show(showHotspotRequest);
+        return responseToJsonObject(showHotspotResponse);
+    }
+
+    @Override
+    protected JsonObject getRuleAsJsonObject(final String securityHotspotRule)
+            throws BadSonarQubeRequestException, SonarQubeException {
+        final org.sonarqube.ws.client.rules.ShowRequest showRuleRequest =
+                new org.sonarqube.ws.client.rules.ShowRequest().setKey(securityHotspotRule);
+        final ShowResponse showRuleResponse = getWsClient().rules().show(showRuleRequest);
+        return responseToJsonObject(showRuleResponse);
     }
 }

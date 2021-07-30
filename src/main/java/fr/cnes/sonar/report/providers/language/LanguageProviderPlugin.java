@@ -20,7 +20,11 @@ package fr.cnes.sonar.report.providers.language;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Languages;
+
+import com.google.gson.JsonObject;
+
 import org.sonarqube.ws.client.WsClient;
+import org.sonarqube.ws.client.languages.ListRequest;
 
 /**
  * Provides languages in plugin mode
@@ -38,6 +42,13 @@ public class LanguageProviderPlugin extends AbstractLanguageProvider implements 
 
     @Override
     public Languages getLanguages() throws BadSonarQubeRequestException, SonarQubeException {
-        return getLanguagesAbstract(false);
+        return getLanguagesAbstract();
+    }
+
+    @Override
+    protected JsonObject getLanguagesAsJsonObject() {
+        final ListRequest listRequest = new ListRequest();
+        final String listResponse = getWsClient().languages().list(listRequest);
+        return getGson().fromJson(listResponse, JsonObject.class);
     }
 }

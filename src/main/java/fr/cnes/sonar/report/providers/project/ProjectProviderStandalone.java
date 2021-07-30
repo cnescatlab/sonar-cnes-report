@@ -17,6 +17,8 @@
 
 package fr.cnes.sonar.report.providers.project;
 
+import com.google.gson.JsonObject;
+
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Project;
@@ -42,11 +44,19 @@ public class ProjectProviderStandalone extends AbstractProjectProvider implement
 
     @Override
     public Project getProject(final String projectKey, final String branch) throws BadSonarQubeRequestException, SonarQubeException {
-        return getProjectAbstract(true, projectKey, branch);
+        return getProjectAbstract(projectKey, branch);
     }
 
     @Override
     public boolean hasProject(final String projectKey, final String branch) throws BadSonarQubeRequestException, SonarQubeException {
-        return hasProjectAbstract(true, projectKey, branch);
+        return hasProjectAbstract(projectKey, branch);
+    }
+
+    @Override
+    protected JsonObject getProjectAsJsonObject(final String projectKey, final String branch)
+            throws BadSonarQubeRequestException, SonarQubeException {
+        // send a request to sonarqube server and return th response as a json object
+        // if there is an error on server side this method throws an exception
+        return request(String.format(getRequest(GET_PROJECT_REQUEST), getServer(), projectKey, branch));
     }
 }

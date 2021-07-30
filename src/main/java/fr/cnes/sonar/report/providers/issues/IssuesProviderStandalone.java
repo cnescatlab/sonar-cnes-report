@@ -25,10 +25,21 @@ import fr.cnes.sonar.report.model.Issue;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gson.JsonObject;
+
 /**
  * Provides issue items in standalone mode
  */
 public class IssuesProviderStandalone extends AbstractIssuesProvider implements IssuesProvider {
+
+    /**
+     *  Name of the request for getting issues
+     */
+    private static final String GET_ISSUES_REQUEST = "GET_ISSUES_REQUEST";
+    /**
+     *  Name of the request for getting facets
+     */
+    private static final String GET_FACETS_REQUEST = "GET_FACETS_REQUEST";
 
     /**
      * Complete constructor.
@@ -63,16 +74,34 @@ public class IssuesProviderStandalone extends AbstractIssuesProvider implements 
      */
     private List<Issue> getIssuesByStatus(String confirmed)
             throws BadSonarQubeRequestException, SonarQubeException {
-        return getIssuesByStatusAbstract(true, confirmed);
+        return getIssuesByStatusAbstract(confirmed);
     }
 
     @Override
     public List<Map<String,String>> getRawIssues() throws BadSonarQubeRequestException, SonarQubeException {
-        return getRawIssuesAbstract(true);
+        return getRawIssuesAbstract();
     }
 
     @Override
     public List<Facet> getFacets() throws BadSonarQubeRequestException, SonarQubeException {
-        return getFacetsAbstract(true);
+        return getFacetsAbstract();
+    }
+
+    @Override
+    protected JsonObject getIssuesAsJsonObject(final int page, final int maxPerPage, final String confirmed)
+            throws BadSonarQubeRequestException, SonarQubeException {
+        // prepare the server to get all the issues
+        final String request = String.format(getRequest(GET_ISSUES_REQUEST), getServer(), getProjectKey(), maxPerPage,
+                page, confirmed, getBranch());
+        // perform the request to the server
+        return request(request);
+    }
+
+    @Override
+    protected JsonObject getFacetsAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException {
+        // prepare the request
+        final String request = String.format(getRequest(GET_FACETS_REQUEST), getServer(), getProjectKey(), getBranch());
+        // contact the server to request the resources as json
+        return request(request);
     }
 }

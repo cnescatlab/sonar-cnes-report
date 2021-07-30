@@ -30,29 +30,11 @@ import java.util.List;
 import com.google.gson.JsonObject;
 
 import org.sonarqube.ws.client.WsClient;
-import org.sonarqube.ws.client.hotspots.SearchRequest;
-import org.sonarqube.ws.client.hotspots.ShowRequest;
-import org.sonarqube.ws.Hotspots.SearchWsResponse;
-import org.sonarqube.ws.Hotspots.ShowWsResponse;
-import org.sonarqube.ws.Rules.ShowResponse;
-
 /**
  * Contains common code for security hotspots providers
  */
 public abstract class AbstractSecurityHotspotsProvider extends AbstractDataProvider {
 
-    /**
-     * Name of the request for getting security hotspots
-     */
-    private static final String GET_SECURITY_HOTSPOTS_REQUEST = "GET_SECURITY_HOTSPOTS_REQUEST";
-    /**
-     * Name of the request for getting a specific security hotspot
-     */
-    private static final String GET_SECURITY_HOTSPOT_REQUEST = "GET_SECURITY_HOTSPOT_REQUEST";
-    /**
-     * Name of the request for getting a specific rule
-     */
-    private static final String GET_RULE_REQUEST = "GET_RULE_REQUEST";
     /**
      * Field to search in json to get security hotspots
      */
@@ -110,13 +92,12 @@ public abstract class AbstractSecurityHotspotsProvider extends AbstractDataProvi
 
     /**
      * Generic getter for security hotspots depending on their status
-     * @param isCalledInStandalone True if the method is called in standalone mode
      * @param status The status of security hotspots
      * @return List containing all the security hotspots
      * @throws BadSonarQubeRequestException A request is not recognized by the server
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    protected List<SecurityHotspot> getSecurityHotspotsByStatusAbstract(final boolean isCalledInStandalone, final String status)
+    protected List<SecurityHotspot> getSecurityHotspotsByStatusAbstract(final String status)
             throws BadSonarQubeRequestException, SonarQubeException {
         // results variable
         final List<SecurityHotspot> res = new ArrayList<>();
@@ -129,43 +110,14 @@ public abstract class AbstractSecurityHotspotsProvider extends AbstractDataProvi
 
         // search all security hotspots of the project
         while(goOn) {
-            JsonObject searchHotspotsResult;
-            if (isCalledInStandalone) {
-                // prepare the request to get all the security hotspots
-                final String searchHotspotsRequest = String.format(getRequest(GET_SECURITY_HOTSPOTS_REQUEST),
-                        getServer(), getBranch(), page, getProjectKey(), maxPerPage, status);
-                // perform the request to the server
-                searchHotspotsResult = request(searchHotspotsRequest);
-            } else {
-                 // prepare the request to get all the security hotspots
-                final String p = String.valueOf(page);
-                final String ps = String.valueOf(maxPerPage);
-                final SearchRequest searchRequest = new SearchRequest()
-                                                        .setBranch(getBranch())
-                                                        .setP(p)
-                                                        .setProjectKey(getProjectKey())
-                                                        .setPs(ps)
-                                                        .setStatus(status);
-                // perform the request to the server
-                final SearchWsResponse searchWsResponse = getWsClient().hotspots().search(searchRequest);
-                // transform response to JsonObject
-                searchHotspotsResult = responseToJsonObject(searchWsResponse);
-            }
+            final JsonObject searchHotspotsResult = getSecurityHotspotsAsJsonObject(page, maxPerPage, status);
             // transform json to SecurityHotspot[]
             SecurityHotspot[] securityHotspotTemp = getGson().fromJson(searchHotspotsResult.get(HOTSPOTS),
                     SecurityHotspot[].class);
             // perform requests to get more information about each security hotspot
             for (SecurityHotspot securityHotspot : securityHotspotTemp) {
-                JsonObject showHotspotsResult;
-                if (isCalledInStandalone) {
-                    final String showHotspotRequest = String.format(getRequest(GET_SECURITY_HOTSPOT_REQUEST),
-                            getServer(), securityHotspot.getKey());
-                    showHotspotsResult = request(showHotspotRequest);
-                } else {
-                    final ShowRequest showHotspotRequest = new ShowRequest().setHotspot(securityHotspot.getKey());
-                    final ShowWsResponse showHotspotResponse = getWsClient().hotspots().show(showHotspotRequest);
-                    showHotspotsResult = responseToJsonObject(showHotspotResponse);
-                }
+                final String securityHotspotKey = securityHotspot.getKey();
+                final JsonObject showHotspotsResult = getSecurityHotspotAsJsonObject(securityHotspotKey);
                 JsonObject rule = showHotspotsResult.get(RULE).getAsJsonObject();
                 String key = rule.get(KEY).getAsString();
                 Comment[] comments = getGson().fromJson(showHotspotsResult.get(COMMENTS), Comment[].class);
@@ -175,17 +127,8 @@ public abstract class AbstractSecurityHotspotsProvider extends AbstractDataProvi
                     String resolution = showHotspotsResult.get(RESOLUTION).getAsString();
                     securityHotspot.setResolution(resolution);
                 }
-                JsonObject showRuleResult;
-                if (isCalledInStandalone) {
-                    final String showRuleRequest = String.format(getRequest(GET_RULE_REQUEST), getServer(),
-                            securityHotspot.getRule());
-                    showRuleResult = request(showRuleRequest);
-                } else {
-                    final org.sonarqube.ws.client.rules.ShowRequest showRuleRequest =
-                        new org.sonarqube.ws.client.rules.ShowRequest().setKey(securityHotspot.getRule());
-                    final ShowResponse showRuleResponse = getWsClient().rules().show(showRuleRequest);
-                    showRuleResult = responseToJsonObject(showRuleResponse);
-                }
+                final String securityHotspotRule = securityHotspot.getRule();
+                final JsonObject showRuleResult = getRuleAsJsonObject(securityHotspotRule);
                 JsonObject ruleContent = showRuleResult.get(RULE).getAsJsonObject();
                 String severity = ruleContent.get(SEVERITY).getAsString();
                 String language = ruleContent.get(LANGUAGE).getAsString();
@@ -205,4 +148,36 @@ public abstract class AbstractSecurityHotspotsProvider extends AbstractDataProvi
         // return the security hotspots
         return res;
     }
+
+    /**
+     * Get a JsonObject from the response of a search hotspots request.
+     * @param page The current page.
+     * @param maxPerPage The maximum page size.
+     * @param status The status of security hotspots.
+     * @return The response as a JsonObject.
+     * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected abstract JsonObject getSecurityHotspotsAsJsonObject(final int page, final int maxPerPage, final String status)
+            throws BadSonarQubeRequestException, SonarQubeException;
+
+    /**
+     * Get a JsonObject from the response of a search hotspots request.
+     * @param securityHotspotKey The key of the security hotspot.
+     * @return The response as a JsonObject.
+     * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected abstract JsonObject getSecurityHotspotAsJsonObject(final String securityHotspotKey)
+            throws BadSonarQubeRequestException, SonarQubeException;
+    
+    /**
+     * Get a JsonObject from the response of a show rule request.
+     * @param securityHotspotRule The key of the rule.
+     * @return The response as a JsonObject.
+     * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected abstract JsonObject getRuleAsJsonObject(final String securityHotspotRule)
+            throws BadSonarQubeRequestException, SonarQubeException;
 }

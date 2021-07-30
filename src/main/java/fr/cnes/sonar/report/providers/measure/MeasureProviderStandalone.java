@@ -23,10 +23,17 @@ import fr.cnes.sonar.report.model.Measure;
 
 import java.util.List;
 
+import com.google.gson.JsonObject;
+
 /**
  * Provides issue items in standalone mode
  */
 public class MeasureProviderStandalone extends AbstractMeasureProvider implements MeasureProvider {
+
+    /**
+     *  Name of the request for getting measures
+     */
+    private static final String GET_MEASURES_REQUEST = "GET_MEASURES_REQUEST";
 
     /**
      * Complete constructor
@@ -42,6 +49,11 @@ public class MeasureProviderStandalone extends AbstractMeasureProvider implement
 
     @Override
     public List<Measure> getMeasures() throws BadSonarQubeRequestException, SonarQubeException {
-        return getMeasuresAbstract(true);
+        return getMeasuresAbstract();
+    }
+
+    @Override
+    protected JsonObject getMeasuresAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException {
+        return request(String.format(getRequest(GET_MEASURES_REQUEST), getServer(), getProjectKey(), getBranch()));
     }
 }

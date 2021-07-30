@@ -21,7 +21,11 @@ import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Project;
 import fr.cnes.sonar.report.providers.language.LanguageProvider;
+
+import com.google.gson.JsonObject;
+
 import org.sonarqube.ws.client.WsClient;
+import org.sonarqube.ws.client.navigation.ComponentRequest;
 
 /**
  * Provides basic project's information in plugin mode
@@ -41,11 +45,23 @@ public class ProjectProviderPlugin extends AbstractProjectProvider implements Pr
 
     @Override
     public Project getProject(final String projectKey, final String branch) throws BadSonarQubeRequestException, SonarQubeException {
-        return getProjectAbstract(false, projectKey, branch);
+        return getProjectAbstract(projectKey, branch);
     }
 
     @Override
     public boolean hasProject(final String projectKey, final String branch) throws BadSonarQubeRequestException, SonarQubeException {
-        return hasProjectAbstract(false, projectKey, branch);
+        return hasProjectAbstract(projectKey, branch);
+    }
+
+    @Override
+    protected JsonObject getProjectAsJsonObject(final String projectKey, final String branch) {
+        // get the project
+        final ComponentRequest componentRequest = new ComponentRequest()
+                                                        .setComponent(projectKey)
+                                                        .setBranch(branch);
+        // perform previous request
+        final String componentResponse = getWsClient().navigation().component(componentRequest);
+        // transform response to JsonObject
+        return getGson().fromJson(componentResponse, JsonObject.class);
     }
 }

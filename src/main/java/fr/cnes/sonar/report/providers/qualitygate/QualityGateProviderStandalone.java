@@ -21,14 +21,34 @@ import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
 import fr.cnes.sonar.report.model.QualityGate;
+import fr.cnes.sonar.report.utils.UrlEncoder;
 
 import java.util.List;
 import java.util.Map;
+
+import com.google.gson.JsonObject;
 
 /**
  * Provides quality gates in standalone mode
  */
 public class QualityGateProviderStandalone extends AbstractQualityGateProvider implements QualityGateProvider {    
+
+    /**
+     * Name of the request for getting quality gates' details
+     */
+    private static final String GET_QUALITY_GATES_DETAILS_REQUEST = "GET_QUALITY_GATES_DETAILS_REQUEST";
+    /**
+     * Name of the request for getting quality gates
+     */
+    private static final String GET_QUALITY_GATES_REQUEST = "GET_QUALITY_GATES_REQUEST";
+    /**
+     * Name of the request for getting the quality gate status of a project
+     */
+    private static final String GET_QUALITY_GATE_STATUS_REQUEST = "GET_QUALITY_GATE_STATUS_REQUEST";
+    /**
+     * Name of the request for getting a specific metric
+     */
+    private static final String GET_METRIC_REQUEST = "GET_METRIC_REQUEST";
 
     /**
      * Complete constructor.
@@ -45,17 +65,47 @@ public class QualityGateProviderStandalone extends AbstractQualityGateProvider i
     @Override
     public List<QualityGate> getQualityGates()
             throws BadSonarQubeRequestException, SonarQubeException {
-        return getQualityGatesAbstract(true);
+        return getQualityGatesAbstract();
     }
 
     @Override
     public QualityGate getProjectQualityGate()
             throws UnknownQualityGateException, BadSonarQubeRequestException, SonarQubeException {
-        return getProjectQualityGateAbstract(true);
+        return getProjectQualityGateAbstract();
     }
 
     @Override
     public Map<String, String> getQualityGateStatus() throws BadSonarQubeRequestException, SonarQubeException {
-        return getQualityGateStatusAbstract(true);
+        return getQualityGateStatusAbstract();
+    }
+
+    @Override
+    protected JsonObject getQualityGatesAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException {
+        return request(String.format(getRequest(GET_QUALITY_GATES_REQUEST), getServer()));
+    }
+
+    @Override
+    protected JsonObject getQualityGatesDetailsAsJsonObject(final QualityGate qualityGate)
+            throws BadSonarQubeRequestException, SonarQubeException {
+        return request(String.format(getRequest(GET_QUALITY_GATES_DETAILS_REQUEST), getServer(),
+                UrlEncoder.urlEncodeString(qualityGate.getName())));
+    }
+
+    @Override
+    protected JsonObject getProjectAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException {
+        return request(String.format(getRequest(GET_PROJECT_REQUEST), getServer(), getProjectKey(), getBranch()));
+    }
+
+    @Override
+    protected JsonObject getQualityGateStatusAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException {
+        return request(String.format(getRequest(GET_QUALITY_GATE_STATUS_REQUEST), getServer(), getBranch(),
+                getProjectKey()));
+    }
+
+    @Override
+    protected JsonObject getMetricAsJsonObject(final String metricKey)
+            throws BadSonarQubeRequestException, SonarQubeException {
+        return request(String.format(getRequest(GET_METRIC_REQUEST), getServer(), getBranch(), getProjectKey(),
+                metricKey));
     }
 }

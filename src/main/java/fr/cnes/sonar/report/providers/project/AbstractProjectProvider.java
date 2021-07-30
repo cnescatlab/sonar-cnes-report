@@ -32,7 +32,6 @@ import java.util.Map;
 import com.google.gson.JsonObject;
 
 import org.sonarqube.ws.client.WsClient;
-import org.sonarqube.ws.client.navigation.ComponentRequest;
 
 /**
  * Contains common code for project providers
@@ -72,31 +71,15 @@ public abstract class AbstractProjectProvider extends AbstractDataProvider {
 
     /**
      * Generic getter for the project corresponding to the given key.
-     * @param isCalledInStandalone True if the method is called in standalone mode.
      * @param projectKey the key of the project.
      * @param branch the branch of the project.
      * @return A simple project.
      * @throws BadSonarQubeRequestException when the server does not understand the request.
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    protected Project getProjectAbstract(final boolean isCalledInStandalone, final String projectKey, final String branch)
+    protected Project getProjectAbstract(final String projectKey, final String branch)
             throws BadSonarQubeRequestException, SonarQubeException {
-        JsonObject jo;
-        if (isCalledInStandalone) {
-                // send a request to sonarqube server and return th response as a json object
-                // if there is an error on server side this method throws an exception
-                jo = request(String.format(getRequest(GET_PROJECT_REQUEST),
-                        getServer(), projectKey, branch));
-        } else {
-            // get the project
-            final ComponentRequest componentRequest = new ComponentRequest()
-                                                            .setComponent(getProjectKey())
-                                                            .setBranch(getBranch());
-            // perform previous request
-            final String componentResponse = getWsClient().navigation().component(componentRequest);
-            // transform response to JsonObject
-            jo = getGson().fromJson(componentResponse, JsonObject.class);
-        }
+        final JsonObject jo = getProjectAsJsonObject(projectKey, branch);
 
         // put json in a Project class
         final Project project = (getGson().fromJson(jo, Project.class));
@@ -134,35 +117,28 @@ public abstract class AbstractProjectProvider extends AbstractDataProvider {
 
     /**
      * Generic method to check if a project exists on a SonarQube instance.
-     * @param isCalledInStandalone True if the method is called in standalone mode.
      * @param projectKey the key of the project.
      * @param branch the branch of the project.
      * @return True if the project exists.
      * @throws BadSonarQubeRequestException when the server does not understand the request.
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    protected boolean hasProjectAbstract(final boolean isCalledInStandalone, final String projectKey, final String branch)
+    protected boolean hasProjectAbstract(final String projectKey, final String branch)
             throws BadSonarQubeRequestException, SonarQubeException {
-        JsonObject jsonObject;
-        if (isCalledInStandalone) {
-            // send a request to sonarqube server and return th response as a json object
-            // if there is an error on server side this method throws an exception
-            jsonObject = request(String.format(getRequest(GET_PROJECT_REQUEST),
-                    getServer(), projectKey, branch));
-        } else {
-            // get the project
-            final ComponentRequest componentRequest = new ComponentRequest()
-                                                            .setComponent(getProjectKey())
-                                                            .setBranch(getBranch());
-            // perform previous request
-            final String componentResponse = getWsClient().navigation().component(componentRequest);
-            // transform response to JsonObject
-            jsonObject = getGson().fromJson(componentResponse, JsonObject.class);
-        }
+        final JsonObject jsonObject = getProjectAsJsonObject(projectKey, branch);
 
         // Retrieve project key if the project exists or null.
         final String project = jsonObject.get("key").getAsString();
 
         return project != null && project.equals(projectKey);
     }
+
+    /**
+     * Get a JsonObject from the response of a get component request.
+     * @return The response as a JsonObject.
+     * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected abstract JsonObject getProjectAsJsonObject(final String projectKey, final String branch)
+            throws BadSonarQubeRequestException, SonarQubeException;
 }

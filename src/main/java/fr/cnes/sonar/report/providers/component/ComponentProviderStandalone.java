@@ -17,6 +17,8 @@
 
 package fr.cnes.sonar.report.providers.component;
 
+import com.google.gson.JsonObject;
+
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Components;
@@ -25,6 +27,11 @@ import fr.cnes.sonar.report.model.Components;
  * Provides component items in standalone mode
  */
 public class ComponentProviderStandalone extends AbstractComponentProvider implements ComponentProvider {
+
+    /**
+     *  Name of the request for getting componentsList
+     */
+    private static final String GET_COMPONENTS_REQUEST = "GET_COMPONENTS_REQUEST";
 
     /**
      * Constructor.
@@ -41,6 +48,12 @@ public class ComponentProviderStandalone extends AbstractComponentProvider imple
 
     @Override
     public Components getComponents() throws BadSonarQubeRequestException, SonarQubeException {
-        return getComponentsAbstract(true);
+        return getComponentsAbstract();
+    }
+
+    @Override
+    protected JsonObject getComponentsAsJsonObject(final int page) throws BadSonarQubeRequestException, SonarQubeException {
+        return request(String.format(getRequest(GET_COMPONENTS_REQUEST), getServer(), getProjectKey(), page,
+                getRequest(MAX_PER_PAGE_SONARQUBE), getBranch()));
     }
 }

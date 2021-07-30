@@ -69,7 +69,7 @@ public class StandaloneProviderFactory implements ProviderFactory {
 		this.server = server;
 		this.token = token;
 		this.project = project;
-        this.branch = branch;
+		this.branch = branch;
 	}
 
     @Override

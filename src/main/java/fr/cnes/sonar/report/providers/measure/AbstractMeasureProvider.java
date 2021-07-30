@@ -30,18 +30,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.sonarqube.ws.client.WsClient;
-import org.sonarqube.ws.client.measures.ComponentRequest;
-import org.sonarqube.ws.Measures.ComponentWsResponse;
 
 /**
  * Contains common code for measure providers
  */
 public abstract class AbstractMeasureProvider extends AbstractDataProvider {
 
-    /**
-     *  Name of the request for getting measures
-     */
-    private static final String GET_MEASURES_REQUEST = "GET_MEASURES_REQUEST";
     /**
      * Field to search in json to get the component
      */
@@ -75,32 +69,13 @@ public abstract class AbstractMeasureProvider extends AbstractDataProvider {
 
     /**
      * Generic getter for all the measures of a project
-     * @param isCalledInStandalone True if the method is called in standalone mode
      * @return Array containing all the measures
      * @throws BadSonarQubeRequestException when the server does not understand the request
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    protected List<Measure> getMeasuresAbstract(final boolean isCalledInStandalone) throws BadSonarQubeRequestException, SonarQubeException {
-        JsonObject jo;
+    protected List<Measure> getMeasuresAbstract() throws BadSonarQubeRequestException, SonarQubeException {
         // send a request to sonarqube server and return the response as a json object
-        if (isCalledInStandalone) {
-            jo = request(String.format(getRequest(GET_MEASURES_REQUEST),
-                    getServer(), getProjectKey(), getBranch()));
-        } else {
-            final List<String> metricKeys = new ArrayList<>(Arrays.asList(
-                "ncloc", "violations", "ncloc_language_distribution", "duplicated_lines_density",
-                "comment_lines_density","coverage","sqale_rating", "reliability_rating", "security_rating",
-                "alert_status", "security_review_rating", "complexity", "function_complexity", "file_complexity",
-                "class_complexity", "blocker_violations", "critical_violations", "major_violations", "minor_violations",
-                "info_violations", "new_violations", "bugs", "vulnerabilities", "code_smells", "reliability_remediation_effort",
-                "security_remediation_effort", "sqale_index"));
-            final ComponentRequest componentRequest = new ComponentRequest()
-                                                            .setComponent(getProjectKey())
-                                                            .setMetricKeys(metricKeys)
-                                                            .setBranch(getBranch());
-            final ComponentWsResponse componentWsResponse = getWsClient().measures().component(componentRequest);
-            jo = responseToJsonObject(componentWsResponse);
-        }
+        final JsonObject jo = getMeasuresAsJsonObject();
 
         // json element containing measure information
         final JsonElement measuresJE = jo.get(COMPONENT).getAsJsonObject().get(MEASURES);
@@ -111,4 +86,12 @@ public abstract class AbstractMeasureProvider extends AbstractDataProvider {
         // return the list
         return new ArrayList<>(Arrays.asList(tmp));
     }
+
+    /**
+     * Get a JsonObject from the response of a get component request.
+     * @return The response as a JsonObject.
+     * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected abstract JsonObject getMeasuresAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException;
 }

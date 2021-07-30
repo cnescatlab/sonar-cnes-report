@@ -19,10 +19,20 @@ package fr.cnes.sonar.report.providers.qualityprofile;
 
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.model.*;
+import fr.cnes.sonar.report.model.ProfileMetaData;
+import fr.cnes.sonar.report.model.QualityProfile;
 import org.sonarqube.ws.client.WsClient;
+import org.sonarqube.ws.client.qualityprofiles.ExportRequest;
+import org.sonarqube.ws.client.qualityprofiles.ProjectsRequest;
+import org.sonarqube.ws.client.qualityprofiles.SearchRequest;
+import org.sonarqube.ws.Qualityprofiles.SearchWsResponse;
+import org.sonarqube.ws.Rules.SearchResponse;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import com.google.gson.JsonObject;
 
 /**
  * Provides quality gates in plugin mode
@@ -41,6 +51,54 @@ public class QualityProfileProviderPlugin extends AbstractQualityProfileProvider
 
     @Override
     public List<QualityProfile> getQualityProfiles() throws BadSonarQubeRequestException, SonarQubeException {
-        return getQualityProfilesAbstract(false);
+        return getQualityProfilesAbstract();
+    }
+
+    @Override
+    protected JsonObject getQualityProfilesAsJsonObject() {
+        // Get all quality profiles (metadata)
+        final SearchRequest searchQualityProfilesRequest = new SearchRequest().setProject(getProjectKey());
+        // perform the previous request
+        final SearchWsResponse searchWsResponse = getWsClient().qualityprofiles().search(searchQualityProfilesRequest);
+        return responseToJsonObject(searchWsResponse);
+    }
+
+    @Override
+    protected String getQualityProfilesConfAsXml(final ProfileMetaData profileMetaData) {
+        // get configuration
+        ExportRequest exportRequest = new ExportRequest()
+                                            .setLanguage(profileMetaData.getLanguage())
+                                            .setQualityProfile(profileMetaData.getName());
+        // perform request to sonarqube server
+        return getWsClient().qualityprofiles().export(exportRequest);
+    }
+
+    @Override
+    protected JsonObject getQualityProfilesRulesAsJsonObject(final int page, final String profileKey) {
+        // prepare the request
+        final List<String> f = new ArrayList<>(Arrays.asList("htmlDesc", "name", "repo", "severity", "defaultRemFn", ACTIVES));
+        final String ps = String.valueOf(Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)));
+        final String p = String.valueOf(page);
+        final org.sonarqube.ws.client.rules.SearchRequest searchRulesRequest =
+                new org.sonarqube.ws.client.rules.SearchRequest()
+                                                    .setQprofile(profileKey)
+                                                    .setF(f)
+                                                    .setPs(ps)
+                                                    .setP(p)
+                                                    .setActivation("true");
+        // perform the previous request to sonarqube server
+        final SearchResponse searchRulesResponse = getWsClient().rules().search(searchRulesRequest);
+        // transform response to JsonObject
+        return responseToJsonObject(searchRulesResponse);
+    }
+
+    @Override
+    protected JsonObject getQualityProfilesProjectsAsJsonObject(final ProfileMetaData profileMetaData) {
+        // get projects linked to the profile
+        final ProjectsRequest projectsRequest = new ProjectsRequest().setKey(profileMetaData.getKey());
+        // perform a request
+        final String projectsResponse = getWsClient().qualityprofiles().projects(projectsRequest);
+        // transform response to JsonObject
+        return getGson().fromJson(projectsResponse, JsonObject.class);
     }
 }

@@ -26,7 +26,6 @@ import fr.cnes.sonar.report.model.QualityProfile;
 import fr.cnes.sonar.report.model.Rule;
 import fr.cnes.sonar.report.providers.AbstractDataProvider;
 import fr.cnes.sonar.report.utils.StringManager;
-import fr.cnes.sonar.report.utils.UrlEncoder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,36 +34,12 @@ import java.util.List;
 import com.google.gson.JsonObject;
 
 import org.sonarqube.ws.client.WsClient;
-import org.sonarqube.ws.client.qualityprofiles.ExportRequest;
-import org.sonarqube.ws.client.qualityprofiles.ProjectsRequest;
-import org.sonarqube.ws.client.qualityprofiles.SearchRequest;
-import org.sonarqube.ws.Qualityprofiles.SearchWsResponse;
-import org.sonarqube.ws.Rules.SearchResponse;
 
 /**
  * Contains common code for quality profile providers
  */
 public abstract class AbstractQualityProfileProvider extends AbstractDataProvider {
 
-    /**
-     *  Name of the request for getting quality profiles' linked projects
-     */
-    private static final String GET_QUALITY_PROFILES_PROJECTS_REQUEST =
-            "GET_QUALITY_PROFILES_PROJECTS_REQUEST";
-    /**
-     *  Name of the request for getting quality profiles' linked rules
-     */
-    private static final String GET_QUALITY_PROFILES_RULES_REQUEST =
-            "GET_QUALITY_PROFILES_RULES_REQUEST";
-    /**
-     *  Name of the request for getting quality profiles
-     */
-    private static final String GET_QUALITY_PROFILES_REQUEST = "GET_QUALITY_PROFILES_REQUEST";
-    /**
-     *  Name of the request for getting quality profiles' configuration
-     */
-    private static final String GET_QUALITY_PROFILES_CONF_REQUEST =
-            "GET_QUALITY_PROFILES_CONFIGURATION_REQUEST";
     /**
      * Field to search in json to get results' values
      */
@@ -76,7 +51,7 @@ public abstract class AbstractQualityProfileProvider extends AbstractDataProvide
     /**
      * Field to search in json to get profiles
      */
-    private static final String ACTIVES = "actives";
+    protected static final String ACTIVES = "actives";
 
     /**
      * Complete constructor.
@@ -101,30 +76,15 @@ public abstract class AbstractQualityProfileProvider extends AbstractDataProvide
 
     /**
      * Get all the quality profiles.
-     * @param isCalledInStandalone True if the method is called in standalone mode.
      * @return Array containing all the quality profiles of a project.
      * @throws BadSonarQubeRequestException A request is not recognized by the server.
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    protected List<QualityProfile> getQualityProfilesAbstract(final boolean isCalledInStandalone) throws BadSonarQubeRequestException, SonarQubeException {
+    protected List<QualityProfile> getQualityProfilesAbstract() throws BadSonarQubeRequestException, SonarQubeException {
         // initializing returned list
         final List<QualityProfile> res = new ArrayList<>();
 
-        String request;
-        JsonObject jo;
-        if (isCalledInStandalone) {
-            // Get all quality profiles (metadata)
-            request = String.format(getRequest(GET_QUALITY_PROFILES_REQUEST),
-                    getServer(), getProjectKey());
-            // perform the previous request
-            jo = request(request);
-        } else {
-            // Get all quality profiles (metadata)
-            final SearchRequest searchQualityProfilesRequest = new SearchRequest().setProject(getProjectKey());
-            // perform the previous request
-            final SearchWsResponse searchWsResponse = getWsClient().qualityprofiles().search(searchQualityProfilesRequest);
-            jo = responseToJsonObject(searchWsResponse);
-        }
+        JsonObject jo = getQualityProfilesAsJsonObject();
 
         // Get quality profiles resources
         final ProfileMetaData[] metaData = (getGson().fromJson(
@@ -132,24 +92,7 @@ public abstract class AbstractQualityProfileProvider extends AbstractDataProvide
         for (ProfileMetaData profileMetaData : metaData) {
             final ProfileData profileData = new ProfileData();
             
-            String xml;
-            if (isCalledInStandalone) {
-                // get configuration
-                // URL Encode Quality Profile & Language name to avoid issue with special characters
-                request = String.format(getRequest(GET_QUALITY_PROFILES_CONF_REQUEST),
-                        getServer(),
-                        UrlEncoder.urlEncodeString(profileMetaData.getLanguage()),
-                        UrlEncoder.urlEncodeString(profileMetaData.getName()));
-                // perform request to sonarqube server
-                xml = stringRequest(request);
-            } else {
-                // get configuration
-                ExportRequest exportRequest = new ExportRequest()
-                                                    .setLanguage(profileMetaData.getLanguage())
-                                                    .setQualityProfile(profileMetaData.getName());
-                // perform request to sonarqube server
-                xml = getWsClient().qualityprofiles().export(exportRequest);
-            }
+            final String xml = getQualityProfilesConfAsXml(profileMetaData);
             // add configuration as string to the profile
             profileData.setConf(xml);
 
@@ -166,29 +109,7 @@ public abstract class AbstractQualityProfileProvider extends AbstractDataProvide
                     StringManager.URI_SPACE);
             // continue until there are no more results
             while(goon) {
-                if (isCalledInStandalone) {
-                    // prepare the request
-                    request = String.format(getRequest(GET_QUALITY_PROFILES_RULES_REQUEST),
-                            getServer(), profileKey, Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)), page);
-                    // perform the previous request to sonarqube server
-                    jo = request(request);
-                } else {
-                    // prepare the request
-                    final List<String> f = new ArrayList<>(Arrays.asList("htmlDesc", "name", "repo", "severity", "defaultRemFn", ACTIVES));
-                    final String ps = String.valueOf(Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)));
-                    final String p = String.valueOf(page);
-                    final org.sonarqube.ws.client.rules.SearchRequest searchRulesRequest =
-                        new org.sonarqube.ws.client.rules.SearchRequest()
-                                                            .setQprofile(profileKey)
-                                                            .setF(f)
-                                                            .setPs(ps)
-                                                            .setP(p)
-                                                            .setActivation("true");
-                    // perform the previous request to sonarqube server
-                    final SearchResponse searchRulesResponse = getWsClient().rules().search(searchRulesRequest);
-                    // transform response to JsonObject
-                    jo = responseToJsonObject(searchRulesResponse);
-                }
+                jo = getQualityProfilesRulesAsJsonObject(page, profileKey);
                 // convert json to Rule objects
                 final Rule [] tmp = (getGson().fromJson(jo.get(RULES), Rule[].class));
 
@@ -197,7 +118,8 @@ public abstract class AbstractQualityProfileProvider extends AbstractDataProvide
                     // If the rule is active in the Quality Profile
                     if(jo.get(ACTIVES).getAsJsonObject().has(r.getKey())) {
                         // Retrieve the severity set in the Quality Profile, and override the rule's default severity
-                        String severity = jo.get(ACTIVES).getAsJsonObject().get(r.getKey()).getAsJsonArray().get(0).getAsJsonObject().get("severity").getAsString();
+                        String severity = jo.get(ACTIVES).getAsJsonObject().get(r.getKey()).getAsJsonArray().get(0)
+                                .getAsJsonObject().get("severity").getAsString();
                         r.setSeverity(severity);
                     }
                 }
@@ -212,20 +134,7 @@ public abstract class AbstractQualityProfileProvider extends AbstractDataProvide
             }
             profileData.setRules(rules);
 
-            if (isCalledInStandalone) {
-                // get projects linked to the profile
-                request = String.format(getRequest(GET_QUALITY_PROFILES_PROJECTS_REQUEST),
-                        getServer(), profileMetaData.getKey());
-                // perform a request
-                jo = request(request);
-            } else {
-                // get projects linked to the profile
-                final ProjectsRequest projectsRequest = new ProjectsRequest().setKey(profileMetaData.getKey());
-                // perform a request
-                final String projectsResponse = getWsClient().qualityprofiles().projects(projectsRequest);
-                // transform response to JsonObject
-                jo = getGson().fromJson(projectsResponse, JsonObject.class);
-            }
+            jo = getQualityProfilesProjectsAsJsonObject(profileMetaData);
             // convert json to Project objects
             final Project[] projects = (getGson().fromJson(jo.get(RESULTS), Project[].class));
 
@@ -237,4 +146,43 @@ public abstract class AbstractQualityProfileProvider extends AbstractDataProvide
 
         return res;
     }
+
+    /**
+     * Get a JsonObject from the response of a search quality profiles request.
+     * @return The response as a JsonObject.
+     * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected abstract JsonObject getQualityProfilesAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException;
+
+    /**
+     * Get a XML String from the response of an export quality profiles request.
+     * @param profileMetaData The quality profile metadata.
+     * @return The response as a String.
+     * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected abstract String getQualityProfilesConfAsXml(final ProfileMetaData profileMetaData)
+            throws BadSonarQubeRequestException, SonarQubeException;
+
+    /**
+     * Get a JsonObject from the response of a search rules request.
+     * @param page The current page.
+     * @param profileKey The key of the quality profile.
+     * @return The response as a JsonObject.
+     * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected abstract JsonObject getQualityProfilesRulesAsJsonObject(final int page, final String profileKey)
+            throws BadSonarQubeRequestException, SonarQubeException;
+
+    /**
+     * Get a JsonObject from the response of a get quality profiles projects request.
+     * @param profileMetaData The quality profile metadata.
+     * @return The response as a String.
+     * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected abstract JsonObject getQualityProfilesProjectsAsJsonObject(final ProfileMetaData profileMetaData)
+            throws BadSonarQubeRequestException, SonarQubeException;
 }

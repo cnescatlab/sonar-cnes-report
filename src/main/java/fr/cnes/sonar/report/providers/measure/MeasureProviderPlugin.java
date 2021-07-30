@@ -21,8 +21,14 @@ import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Measure;
 import org.sonarqube.ws.client.WsClient;
+import org.sonarqube.ws.client.measures.ComponentRequest;
+import org.sonarqube.ws.Measures.ComponentWsResponse;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import com.google.gson.JsonObject;
 
 /**
  * Provides issue items in plugin mode
@@ -41,6 +47,23 @@ public class MeasureProviderPlugin extends AbstractMeasureProvider implements Me
 
     @Override
     public List<Measure> getMeasures() throws BadSonarQubeRequestException, SonarQubeException {
-        return getMeasuresAbstract(false);
+        return getMeasuresAbstract();
+    }
+
+    @Override
+    protected JsonObject getMeasuresAsJsonObject() {
+        final List<String> metricKeys = new ArrayList<>(Arrays.asList("ncloc", "violations",
+                "ncloc_language_distribution", "duplicated_lines_density", "comment_lines_density", "coverage",
+                "sqale_rating", "reliability_rating", "security_rating", "alert_status", "security_review_rating",
+                "complexity", "function_complexity", "file_complexity", "class_complexity", "blocker_violations",
+                "critical_violations", "major_violations", "minor_violations", "info_violations", "new_violations",
+                "bugs", "vulnerabilities", "code_smells", "reliability_remediation_effort",
+                "security_remediation_effort", "sqale_index"));
+        final ComponentRequest componentRequest = new ComponentRequest()
+                                                        .setComponent(getProjectKey())
+                                                        .setMetricKeys(metricKeys)
+                                                        .setBranch(getBranch());
+        final ComponentWsResponse componentWsResponse = getWsClient().measures().component(componentRequest);
+        return responseToJsonObject(componentWsResponse);
     }
 }

@@ -19,14 +19,38 @@ package fr.cnes.sonar.report.providers.qualityprofile;
 
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.model.*;
+import fr.cnes.sonar.report.model.ProfileMetaData;
+import fr.cnes.sonar.report.model.QualityProfile;
+import fr.cnes.sonar.report.utils.UrlEncoder;
 
 import java.util.List;
+
+import com.google.gson.JsonObject;
 
 /**
  * Provides quality gates in standalone mode
  */
 public class QualityProfileProviderStandalone extends AbstractQualityProfileProvider implements QualityProfileProvider {
+
+    /**
+     *  Name of the request for getting quality profiles' linked projects
+     */
+    private static final String GET_QUALITY_PROFILES_PROJECTS_REQUEST =
+            "GET_QUALITY_PROFILES_PROJECTS_REQUEST";
+    /**
+     *  Name of the request for getting quality profiles' linked rules
+     */
+    private static final String GET_QUALITY_PROFILES_RULES_REQUEST =
+            "GET_QUALITY_PROFILES_RULES_REQUEST";
+    /**
+     *  Name of the request for getting quality profiles
+     */
+    private static final String GET_QUALITY_PROFILES_REQUEST = "GET_QUALITY_PROFILES_REQUEST";
+    /**
+     *  Name of the request for getting quality profiles' configuration
+     */
+    private static final String GET_QUALITY_PROFILES_CONF_REQUEST =
+            "GET_QUALITY_PROFILES_CONFIGURATION_REQUEST";
 
     /**
      * Complete constructor
@@ -41,6 +65,34 @@ public class QualityProfileProviderStandalone extends AbstractQualityProfileProv
     @Override
     public List<QualityProfile> getQualityProfiles()
             throws BadSonarQubeRequestException, SonarQubeException {
-        return getQualityProfilesAbstract(true);
+        return getQualityProfilesAbstract();
+    }
+
+    @Override
+    protected JsonObject getQualityProfilesAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException {
+        return request(String.format(getRequest(GET_QUALITY_PROFILES_REQUEST), getServer(), getProjectKey()));
+    }
+
+    @Override
+    protected String getQualityProfilesConfAsXml(final ProfileMetaData profileMetaData)
+            throws BadSonarQubeRequestException, SonarQubeException {
+        // URL Encoder is used to avoid issues with special characters
+        return stringRequest(String.format(getRequest(GET_QUALITY_PROFILES_CONF_REQUEST), getServer(),
+                UrlEncoder.urlEncodeString(profileMetaData.getLanguage()),
+                UrlEncoder.urlEncodeString(profileMetaData.getName())));
+    }
+
+    @Override
+    protected JsonObject getQualityProfilesRulesAsJsonObject(final int page, final String profileKey)
+            throws BadSonarQubeRequestException, SonarQubeException {
+        return request(String.format(getRequest(GET_QUALITY_PROFILES_RULES_REQUEST), getServer(), profileKey,
+                Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)), page));
+    }
+
+    @Override
+    protected JsonObject getQualityProfilesProjectsAsJsonObject(final ProfileMetaData profileMetaData)
+            throws BadSonarQubeRequestException, SonarQubeException {
+        return request(String.format(getRequest(GET_QUALITY_PROFILES_PROJECTS_REQUEST), getServer(),
+                profileMetaData.getKey()));
     }
 }

@@ -17,6 +17,8 @@
 
 package fr.cnes.sonar.report.providers.language;
 
+import com.google.gson.JsonObject;
+
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Languages;
@@ -24,6 +26,11 @@ import fr.cnes.sonar.report.model.Languages;
  * Provides languages in standalone mode
  */
 public class LanguageProviderStandalone extends AbstractLanguageProvider implements LanguageProvider {
+
+    /**
+     *  Field to retrieve languages list.
+     */
+    private static final String GET_LANGUAGES = "GET_LANGUAGES";
 
     /**
      * Complete constructor.
@@ -37,6 +44,11 @@ public class LanguageProviderStandalone extends AbstractLanguageProvider impleme
 
     @Override
     public Languages getLanguages() throws BadSonarQubeRequestException, SonarQubeException {
-        return getLanguagesAbstract(true);
+        return getLanguagesAbstract();
+    }
+
+    @Override
+    protected JsonObject getLanguagesAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException {
+        return request(String.format(getRequest(GET_LANGUAGES), getServer()));
     }
 }

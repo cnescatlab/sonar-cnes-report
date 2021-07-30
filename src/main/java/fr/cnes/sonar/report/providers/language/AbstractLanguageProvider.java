@@ -29,17 +29,12 @@ import java.util.Map;
 import com.google.gson.JsonObject;
 
 import org.sonarqube.ws.client.WsClient;
-import org.sonarqube.ws.client.languages.ListRequest;
 
 /**
  * Contains common code for language providers
  */
 public abstract class AbstractLanguageProvider extends AbstractDataProvider {
 
-    /**
-     *  Field to retrieve languages list.
-     */
-    private static final String GET_LANGUAGES = "GET_LANGUAGES";
     /**
      * Json's field containing the language's array
      */
@@ -66,21 +61,13 @@ public abstract class AbstractLanguageProvider extends AbstractDataProvider {
 
     /**
      * Generic getter for all the languages of SonarQube
-     * @param isCalledInStandalone True if the method is called in standalone mode
      * @return a map with all the languages
      * @throws BadSonarQubeRequestException when the server does not understand the request
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    protected Languages getLanguagesAbstract(final boolean isCalledInStandalone) throws BadSonarQubeRequestException, SonarQubeException {
-        JsonObject jo;
+    protected Languages getLanguagesAbstract() throws BadSonarQubeRequestException, SonarQubeException {
         // send a request to sonarqube server and return the response as a json object
-        if (isCalledInStandalone) {
-            jo = request(String.format(getRequest(GET_LANGUAGES), getServer()));
-        } else {
-            final ListRequest listRequest = new ListRequest();
-            final String listResponse = getWsClient().languages().list(listRequest);
-            jo = getGson().fromJson(listResponse, JsonObject.class);
-        }
+        final JsonObject jo = getLanguagesAsJsonObject();
         final Language[] languagesList = getGson().fromJson(jo.get(LANGUAGES_FIELD),
                 Language[].class);
 
@@ -94,4 +81,12 @@ public abstract class AbstractLanguageProvider extends AbstractDataProvider {
 
         return languages;
     }
+
+    /**
+     * Get a JsonObject from the response of a get languages request.
+     * @return The response as a JsonObject.
+     * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected abstract JsonObject getLanguagesAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException;
 }
