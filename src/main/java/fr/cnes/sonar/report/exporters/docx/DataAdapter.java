@@ -22,6 +22,7 @@ import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.commons.math3.util.Precision;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Format resources in different structure to have an easier use
@@ -337,6 +338,8 @@ public final class DataAdapter {
      * Value "ERROR" of the parameter "status" of the JSON response
      */
     private static final String ERROR = "ERROR";
+    /** Logger of this class */
+    private static final Logger LOGGER = Logger.getLogger(DataAdapter.class.getName());
     /**
      * Private constructor to forbid instantiation of this class
      */
@@ -573,13 +576,17 @@ public final class DataAdapter {
             if(!data.containsKey(key)) {
                 // fill data
                 final Rule rule = report.getRule(key);
-                LinkedHashMap<String, String> fieldsValues = new LinkedHashMap<>();
-                fieldsValues.put("category", StringManager.getSecurityHotspotsCategories().get(securityHotspot.getSecurityCategory()));
-                fieldsValues.put("name", rule.getName());
-                fieldsValues.put("priority", securityHotspot.getVulnerabilityProbability());
-                fieldsValues.put("severity", rule.getSeverity());
-                fieldsValues.put(COUNT, String.valueOf(1));
-                data.put(key, fieldsValues);
+                if (rule == null) {
+                    LOGGER.warning("A security hotspot was ignored because its corresponding rule was not found in project quality profiles.");
+                } else {
+                    LinkedHashMap<String, String> fieldsValues = new LinkedHashMap<>();
+                    fieldsValues.put("category", StringManager.getSecurityHotspotsCategories().get(securityHotspot.getSecurityCategory()));
+                    fieldsValues.put("name", rule.getName());
+                    fieldsValues.put("priority", securityHotspot.getVulnerabilityProbability());
+                    fieldsValues.put("severity", rule.getSeverity());
+                    fieldsValues.put(COUNT, String.valueOf(1));
+                    data.put(key, fieldsValues);
+                }
             } else {
                 // increment rule count
                 String newCount = String.valueOf(Integer.valueOf(data.get(key).get(COUNT)) + 1);
