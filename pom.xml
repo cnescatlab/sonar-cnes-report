@@ -20,8 +20,8 @@
         <url>https://github.com/cnescatlab/sonar-cnes-report/issues</url>
     </issueManagement>
     <ciManagement>
-        <system>Travis-CI</system>
-        <url>https://travis-ci.org/cnescatlab/sonar-cnes-report</url>
+        <system>GitHub Actions</system>
+        <url>https://github.com/cnescatlab/sonar-cnes-report/actions</url>
     </ciManagement>
     <scm>
         <url>https://github.com/cnescatlab/sonar-cnes-report</url>
