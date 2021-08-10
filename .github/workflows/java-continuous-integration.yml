@@ -43,7 +43,7 @@ jobs:
         run: mvn -B clean package
       - name: Test cnes-report
         env:
-          SONARQUBE_VERSION: 8.9.1-community
+          SONARQUBE_VERSION: 8.9-community
         run: |
           version=$(cat pom.xml | grep "<version>.*</version>" | head -1 |awk -F'[><]' '{print $3}');
           echo "Starting docker";
