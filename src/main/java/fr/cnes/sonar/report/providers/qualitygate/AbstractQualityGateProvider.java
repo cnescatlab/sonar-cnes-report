@@ -15,28 +15,45 @@
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.cnes.sonar.report.providers;
+package fr.cnes.sonar.report.providers.qualitygate;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonArray;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.model.Measure;
-import fr.cnes.sonar.report.model.SonarQubeServer;
-import org.apache.commons.math3.util.Precision;
+import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
+import fr.cnes.sonar.report.model.QualityGate;
+import fr.cnes.sonar.report.providers.AbstractDataProvider;
+
+import org.sonarqube.ws.client.WsClient;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.LinkedHashMap;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import org.apache.commons.math3.util.Precision;
 
 /**
- * Provides issue items
+ * Contains common code for quality gate providers
  */
-public class MeasureProvider extends AbstractDataProvider {
+public abstract class AbstractQualityGateProvider extends AbstractDataProvider {
 
+    /**
+     * Field to search in json to get the boolean saying if a profile is the default one
+     */
+    private static final String DEFAULT = "default";
+    /**
+     * Field to search in json to get quality gates
+     */
+    private static final String QUALITYGATES = "qualitygates";
+    /** 
+     * Field to find in json to get quality gate
+     */
+    private static final String QUALITY_GATE = "qualityGate";
     /**
      * Parameter "projectStatus" of the JSON response
      */
@@ -56,7 +73,7 @@ public class MeasureProvider extends AbstractDataProvider {
     /**
      * Parameter "metrics" of the JSON response
      */
-    private static final String METRICS = "metrics";
+    protected static final String METRICS = "metrics";
     /**
      * Parameter "name" of the JSON response
      */
@@ -97,52 +114,110 @@ public class MeasureProvider extends AbstractDataProvider {
      * Value of the parameter "type" of the JSON response
      */
     private static final String MILLISEC = "MILLISEC";
-    
 
     /**
-     * Complete constructor
-     * @param pServer SonarQube server..
+     * Complete constructor.
+     * @param pServer SonarQube server.
      * @param pToken String representing the user token.
      * @param pProject The id of the project to report.
      * @param pBranch The branch of the project to report.
      */
-    public MeasureProvider(final SonarQubeServer pServer, final String pToken, final String pProject,
+    protected AbstractQualityGateProvider(final String pServer, final String pToken, final String pProject,
             final String pBranch) {
         super(pServer, pToken, pProject, pBranch);
     }
 
     /**
-     * Get all the measures of a project
-     * @return Array containing all the measures
-     * @throws BadSonarQubeRequestException when the server does not understand the request
-     * @throws SonarQubeException When SonarQube server is not callable.
+     * Complete constructor.
+     * @param wsClient The web client.
+     * @param project The id of the project to report.
+     * @param branch The branch of the project to report.
      */
-    public List<Measure> getMeasures() throws BadSonarQubeRequestException, SonarQubeException {
-        // send a request to sonarqube server and return th response as a json object
-        // if there is an error on server side this method throws an exception
-        final JsonObject jo = request(String.format(getRequest(GET_MEASURES_REQUEST),
-                getServer().getUrl(), getProjectKey(), getBranch()));
-
-        // json element containing measure information
-        final JsonElement measuresJE = jo.get(COMPONENT).getAsJsonObject().get(MEASURES);
-        // put json in a list of measures
-        final Measure[] tmp = (getGson().fromJson(measuresJE, Measure[].class));
-
-        // then add all measure to the results list
-        // return the list
-        return new ArrayList<>(Arrays.asList(tmp));
+    protected AbstractQualityGateProvider(final WsClient wsClient, final String project, final String branch) {
+        super(wsClient, project, branch);
     }
 
     /**
-     * Get the quality gate status of a project
+     * Generic getter for all the quality gates.
+     * @return Array containing all the issues.
+     * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected List<QualityGate> getQualityGatesAbstract() throws BadSonarQubeRequestException, SonarQubeException {
+        // result list
+        final List<QualityGate> res = new ArrayList<>();
+
+        JsonObject jo = getQualityGatesAsJsonObject();
+
+        // Get quality gates criteria
+        final String defaultQG = (getGson().fromJson(jo.get(DEFAULT), String.class));
+        final QualityGate[] tmp = (getGson().fromJson(jo.get(QUALITYGATES), QualityGate[].class));
+        // for each quality gate
+        for (QualityGate i : tmp) {
+            jo = getQualityGatesDetailsAsJsonObject(i);
+
+            // put it in configuration field
+            i.setConf(jo.toString());
+            
+            // check if it is the default quality gate
+            i.setDefault(i.getId().equals(defaultQG));
+
+            // add the quality gate to the result list
+            res.add(i);
+        }
+
+        return res;
+    }
+
+    /**
+     * Generic getter for the quality gate corresponding to the project.
+     * @return The Quality Gate.
+     * @throws UnknownQualityGateException When there is an error on a quality gate.
+     * @throws BadSonarQubeRequestException When the request is incorrect.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected QualityGate getProjectQualityGateAbstract()
+            throws UnknownQualityGateException, BadSonarQubeRequestException, SonarQubeException {
+        // Final quality gate result.
+        QualityGate res = null;
+
+        // get all the quality gates
+        final List<QualityGate> qualityGates = getQualityGatesAbstract();
+
+        final JsonObject jsonObject = getProjectAsJsonObject();
+
+        // search for the good quality gate
+        final Iterator<QualityGate> iterator = qualityGates.iterator();
+        
+        QualityGate tmp;
+        boolean find = false;
+        final String key = jsonObject.getAsJsonObject(QUALITY_GATE).get(KEY).getAsString();
+
+        while (iterator.hasNext() && !find) {
+            tmp = iterator.next();
+            if (tmp.getId().equals(key)) {
+                res = tmp;
+                find = true;
+            }
+        }
+
+        // check if it was found
+        if (!find) {
+            throw new UnknownQualityGateException(key);
+        }       
+
+        return res;
+    }
+
+    /**
+     * Generic getter for the quality gate status of a project
      * @return Map containing each condition of the quality gate and its status
      * @throws BadSonarQubeRequestException when the server does not understand the request
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    public Map<String, String> getQualityGateStatus() throws BadSonarQubeRequestException, SonarQubeException {
+    protected Map<String, String> getQualityGateStatusAbstract() throws BadSonarQubeRequestException, SonarQubeException {
         // request to get the quality gate status
-        final JsonObject projectStatusResult = request(String.format(getRequest(GET_QUALITY_GATE_STATUS_REQUEST),
-                getServer().getUrl(), getBranch(), getProjectKey()));
+        final JsonObject projectStatusResult = getQualityGateStatusAsJsonObject();
         // map containing the result
         Map<String, String> res = new LinkedHashMap<>();
         // retrieve the content of the object
@@ -154,8 +229,7 @@ public class MeasureProvider extends AbstractDataProvider {
             JsonObject conditionObject = condition.getAsJsonObject();
             String status = conditionObject.get(STATUS).getAsString();
             String metricKey = conditionObject.get(METRIC_KEY).getAsString();
-            final JsonObject metricResult = request(String.format(getRequest(GET_METRIC_REQUEST),
-                getServer().getUrl(), getBranch(), getProjectKey(), metricKey));
+            final JsonObject metricResult = getMetricAsJsonObject(metricKey);
             String name = metricResult.get(METRICS).getAsJsonArray().get(0).getAsJsonObject().get(NAME).getAsString();
             // add the detailed explanation on why the condition failed if it's the case
             if (status.equals(ERROR)) {
@@ -226,19 +300,19 @@ public class MeasureProvider extends AbstractDataProvider {
     private String ratingToLetter(String rating) {
         String res;
         switch (rating) {
-            case "1.0":
+            case "1":
                 res = "A";
                 break;
-            case "2.0":
+            case "2":
                 res = "B";
                 break;
-            case "3.0":
+            case "3":
                 res = "C";
                 break;
-            case "4.0":
+            case "4":
                 res = "D";
                 break;
-            case "5.0":
+            case "5":
                 res = "E";
                 break;
             default:
@@ -273,4 +347,48 @@ public class MeasureProvider extends AbstractDataProvider {
         }
         return res;
     }
+
+    /**
+     * Get a JsonObject from the response of a get quality gates request.
+     * @return The response as a JsonObject.
+     * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected abstract JsonObject getQualityGatesAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException;
+
+    /**
+     * Get a JsonObject from the response of a show quality gates request.
+     * @param qualityGate The current quality gate.
+     * @return The response as a JsonObject.
+     * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected abstract JsonObject getQualityGatesDetailsAsJsonObject(final QualityGate qualityGate)
+            throws BadSonarQubeRequestException, SonarQubeException;
+    
+    /**
+     * Get a JsonObject from the response of a get component request.
+     * @return The response as a JsonObject.
+     * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected abstract JsonObject getProjectAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException;
+
+    /**
+     * Get a JsonObject from the response of a get project status request.
+     * @return The response as a JsonObject.
+     * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected abstract JsonObject getQualityGateStatusAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException;
+
+    /**
+     * Get a JsonObject from the response of a get component request.
+     * @param metricKey The key of the metric.
+     * @return The response as a JsonObject.
+     * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected abstract JsonObject getMetricAsJsonObject(final String metricKey)
+            throws BadSonarQubeRequestException, SonarQubeException;
 }

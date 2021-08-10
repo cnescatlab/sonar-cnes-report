@@ -3,11 +3,7 @@ package fr.cnes.sonar.report.providers;
 import fr.cnes.sonar.report.CommonTest;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.model.Facet;
-import fr.cnes.sonar.report.model.Value;
-import fr.cnes.sonar.report.utils.StringManager;
-
-import java.util.List;
+import fr.cnes.sonar.report.providers.issues.*;
 
 import org.junit.Test;
 
@@ -16,20 +12,50 @@ public class IssuesProviderTest extends CommonTest {
     private static final String TOKEN = "token";
 
     @Test(expected = SonarQubeException.class)
-    public void executeFaultyGetIssues() throws SonarQubeException, BadSonarQubeRequestException {
-        IssuesProvider issuesProvider = new IssuesProvider(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
+    public void executeFaultyGetIssuesStandalone() throws SonarQubeException, BadSonarQubeRequestException {
+        IssuesProvider issuesProvider = new IssuesProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
         issuesProvider.getIssues();
     }
 
     @Test(expected = SonarQubeException.class)
-    public void executeFaultyGetFacets() throws SonarQubeException, BadSonarQubeRequestException {
-        IssuesProvider issuesProvider = new IssuesProvider(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
+    public void executeFaultyGetFacetsStandalone() throws SonarQubeException, BadSonarQubeRequestException {
+        IssuesProvider issuesProvider = new IssuesProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
         issuesProvider.getFacets();
     }
 
     @Test(expected = SonarQubeException.class)
-    public void executeFaultyGetRawIssues() throws SonarQubeException, BadSonarQubeRequestException {
-        IssuesProvider issuesProvider = new IssuesProvider(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
+    public void executeFaultyGetRawIssuesStandalone() throws SonarQubeException, BadSonarQubeRequestException {
+        IssuesProvider issuesProvider = new IssuesProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
         issuesProvider.getRawIssues();
+    }
+
+    @Test(expected = SonarQubeException.class)
+    public void executeFaultyGetUnconfirmedIssuesStandalone() throws SonarQubeException, BadSonarQubeRequestException {
+        IssuesProvider issuesProvider = new IssuesProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
+        issuesProvider.getUnconfirmedIssues();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void executeFaultyGetIssuesPlugin() throws SonarQubeException, BadSonarQubeRequestException {
+        IssuesProvider issuesProvider = new IssuesProviderPlugin(wsClient, PROJECT_KEY, BRANCH);
+        issuesProvider.getIssues();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void executeFaultyGetFacetsPlugin() throws SonarQubeException, BadSonarQubeRequestException {
+        IssuesProvider issuesProvider = new IssuesProviderPlugin(wsClient, PROJECT_KEY, BRANCH);
+        issuesProvider.getFacets();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void executeFaultyGetRawIssuesPlugin() throws SonarQubeException, BadSonarQubeRequestException {
+        IssuesProvider issuesProvider = new IssuesProviderPlugin(wsClient, PROJECT_KEY, BRANCH);
+        issuesProvider.getRawIssues();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void executeFaultyGetUnconfirmedIssuesPlugin() throws SonarQubeException, BadSonarQubeRequestException {
+        IssuesProvider issuesProvider = new IssuesProviderPlugin(wsClient, PROJECT_KEY, BRANCH);
+        issuesProvider.getUnconfirmedIssues();
     }
 }

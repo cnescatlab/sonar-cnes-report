@@ -15,56 +15,71 @@
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.cnes.sonar.report.providers;
+package fr.cnes.sonar.report.providers.project;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Language;
 import fr.cnes.sonar.report.model.ProfileMetaData;
 import fr.cnes.sonar.report.model.Project;
-import fr.cnes.sonar.report.model.SonarQubeServer;
+import fr.cnes.sonar.report.providers.AbstractDataProvider;
+import fr.cnes.sonar.report.providers.language.LanguageProvider;
 import fr.cnes.sonar.report.utils.StringManager;
 
-/**
- * Provides basic project's information
- */
-public class ProjectProvider extends AbstractDataProvider {
+import java.util.HashMap;
+import java.util.Map;
 
-	/**
-	 * Used to get language data for the projects
-	 */
-    private LanguageProvider languageProvider;
+import com.google.gson.JsonObject;
+
+import org.sonarqube.ws.client.WsClient;
+
+/**
+ * Contains common code for project providers
+ */
+public abstract class AbstractProjectProvider extends AbstractDataProvider {
+
+    /**
+     * The language provider
+     */
+    protected LanguageProvider languageProvider;
 
     /**
      * Complete constructor.
-     * @param pServer SonarQube server..
+     * @param pServer SonarQube server.
      * @param pToken String representing the user token.
      * @param pProject The id of the project to report.
      * @param pBranch The branch of the project to report.
+     * @param pLanguageProvider The language provider.
      */
-    public ProjectProvider(final SonarQubeServer pServer, final String pToken, final String pProject,
-            final String pBranch) {
+    protected AbstractProjectProvider(final String pServer, final String pToken, final String pProject,
+            final String pBranch, final LanguageProvider pLanguageProvider) {
         super(pServer, pToken, pProject, pBranch);
-        languageProvider = new LanguageProvider(pServer, pToken, pProject);
+        this.languageProvider = pLanguageProvider;
     }
 
     /**
-     * Get the project corresponding to the given key.
+     * Complete constructor.
+     * @param wsClient The web client.
+     * @param project The id of the project to report.
+     * @param branch The branch of the project to report.
+     * @param languageProvider The language provider.
+     */
+    protected AbstractProjectProvider(final WsClient wsClient, final String project, final String branch, final LanguageProvider languageProvider) {
+        super(wsClient, project, branch);
+        this.languageProvider = languageProvider;
+    }
+
+    /**
+     * Generic getter for the project corresponding to the given key.
      * @param projectKey the key of the project.
      * @param branch the branch of the project.
      * @return A simple project.
      * @throws BadSonarQubeRequestException when the server does not understand the request.
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    public Project getProject(final String projectKey, final String branch) throws BadSonarQubeRequestException, SonarQubeException {
-        // send a request to sonarqube server and return th response as a json object
-        // if there is an error on server side this method throws an exception
-        JsonObject jo = request(String.format(getRequest(GET_PROJECT_REQUEST),
-                getServer().getUrl(), projectKey, branch));
+    protected Project getProjectAbstract(final String projectKey, final String branch)
+            throws BadSonarQubeRequestException, SonarQubeException {
+        final JsonObject jo = getProjectAsJsonObject(projectKey, branch);
 
         // put json in a Project class
         final Project project = (getGson().fromJson(jo, Project.class));
@@ -77,7 +92,7 @@ public class ProjectProvider extends AbstractDataProvider {
         for(ProfileMetaData it : metaData){
             String languageKey = it.getLanguage();
 
-            languageName = languageProvider.getLanguage(languageKey);
+            languageName = languageProvider.getLanguages().getLanguage(languageKey);
             it.setLanguageName(languageName);
 
             Language language = new Language();
@@ -101,22 +116,29 @@ public class ProjectProvider extends AbstractDataProvider {
     }
 
     /**
-     * Check if a project exists on a SonarQube instance.
+     * Generic method to check if a project exists on a SonarQube instance.
      * @param projectKey the key of the project.
      * @param branch the branch of the project.
      * @return True if the project exists.
      * @throws BadSonarQubeRequestException when the server does not understand the request.
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    public boolean hasProject(final String projectKey, final String branch) throws BadSonarQubeRequestException, SonarQubeException {
-        // send a request to sonarqube server and return th response as a json object
-        // if there is an error on server side this method throws an exception
-        final JsonObject jsonObject = request(String.format(getRequest(GET_PROJECT_REQUEST),
-                getServer().getUrl(), projectKey, branch));
+    protected boolean hasProjectAbstract(final String projectKey, final String branch)
+            throws BadSonarQubeRequestException, SonarQubeException {
+        final JsonObject jsonObject = getProjectAsJsonObject(projectKey, branch);
 
         // Retrieve project key if the project exists or null.
         final String project = jsonObject.get("key").getAsString();
 
         return project != null && project.equals(projectKey);
     }
+
+    /**
+     * Get a JsonObject from the response of a get component request.
+     * @return The response as a JsonObject.
+     * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected abstract JsonObject getProjectAsJsonObject(final String projectKey, final String branch)
+            throws BadSonarQubeRequestException, SonarQubeException;
 }

@@ -35,6 +35,8 @@ import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.RequestHandler;
 import org.sonar.api.server.ws.Response;
 import org.sonarqube.ws.MediaTypes;
+import org.sonarqube.ws.client.WsClient;
+import org.sonarqube.ws.client.WsClientFactories;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.File;
@@ -173,7 +175,10 @@ public class ExportTask implements RequestHandler {
                 reportParams.add("-c");
             }
 
-            ReportCommandLine.execute(reportParams.toArray(new String[reportParams.size()]));
+            // create a new client to talk with sonarqube's services
+            WsClient wsClient = WsClientFactories.getLocal().newClient(request.localConnector());
+
+            ReportCommandLine.execute(reportParams.toArray(new String[reportParams.size()]), wsClient);
 
             stream.setMediaType("application/zip");
             String filename = ReportFactory.formatFilename("zip.report.output", "", "", projectKey);

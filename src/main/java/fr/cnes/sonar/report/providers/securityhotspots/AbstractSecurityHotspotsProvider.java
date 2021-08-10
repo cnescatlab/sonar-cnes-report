@@ -15,24 +15,25 @@
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.cnes.sonar.report.providers;
+package fr.cnes.sonar.report.providers.securityhotspots;
+
+import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
+import fr.cnes.sonar.report.model.Comment;
+import fr.cnes.sonar.report.model.SecurityHotspot;
+import fr.cnes.sonar.report.providers.AbstractDataProvider;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import com.google.gson.JsonObject;
 
-import fr.cnes.sonar.report.model.Comment;
-import fr.cnes.sonar.report.model.SecurityHotspot;
-import fr.cnes.sonar.report.model.SonarQubeServer;
-import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
-import fr.cnes.sonar.report.exceptions.SonarQubeException;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
-
+import org.sonarqube.ws.client.WsClient;
 /**
- * Provides security hotspots items
+ * Contains common code for security hotspots providers
  */
-public class SecurityHotspotsProvider extends AbstractDataProvider {
+public abstract class AbstractSecurityHotspotsProvider extends AbstractDataProvider {
 
     /**
      * Field to search in json to get security hotspots
@@ -41,78 +42,62 @@ public class SecurityHotspotsProvider extends AbstractDataProvider {
     /**
      * Field to search in json to get the security hotspot's resolution
      */
-    protected static final String RESOLUTION = "resolution";
+    private static final String RESOLUTION = "resolution";
     /**
      * Field to search in json to get the security hotspot's rule
      */
-    protected static final String RULE = "rule";
-    /**
-     * Field to search in json to get the security hotspot's rule key
-     */
-    protected static final String KEY = "key";
+    private static final String RULE = "rule";
     /**
      * Field to search in json to get the security hotspot's comments
      */
-    protected static final String COMMENTS = "comment";
+    private static final String COMMENTS = "comment";
     /**
      * Field to search in json to get the security hotspot's severity
      */
-    protected static final String SEVERITY = "severity";
+    private static final String SEVERITY = "severity";
     /**
      * Field to search in json to get the security hotspot's language
      */
-    protected static final String LANGUAGE = "langName";
+    private static final String LANGUAGE = "langName";
     /**
      * Value of the status parameter to get security hotspots to review
      */
-    private static final String TO_REVIEW = "TO_REVIEW";
+    protected static final String TO_REVIEW = "TO_REVIEW";
     /**
      * Value of the status parameter to get reviewed security hotspots
      */
-    private static final String REVIEWED = "REVIEWED";
+    protected static final String REVIEWED = "REVIEWED";
 
     /**
      * Complete constructor.
-     * @param server SonarQube server.
-     * @param token String representing the user token.
+     * @param pServer SonarQube server.
+     * @param pToken String representing the user token.
+     * @param pProject The id of the project to report.
+     * @param pBranch The branch of the project to report.
+     */
+    protected AbstractSecurityHotspotsProvider(final String pServer, final String pToken, final String pProject,
+            final String pBranch) {
+        super(pServer, pToken, pProject, pBranch);
+    }
+
+    /**
+     * Complete constructor.
+     * @param wsClient The web client.
      * @param project The id of the project to report.
      * @param branch The branch of the project to report.
      */
-    public SecurityHotspotsProvider(final SonarQubeServer server, final String token, final String project,
-            final String branch) {
-        super(server, token, project, branch);
+    protected AbstractSecurityHotspotsProvider(final WsClient wsClient, final String project, final String branch) {
+        super(wsClient, project, branch);
     }
 
     /**
-     * Get security hotspots of a project with TO_REVIEW status
-     * @return List containing all the security hotspots
-     * @throws BadSonarQubeRequestException A request is not recognized by the server
-     * @throws SonarQubeException When SonarQube server is not callable.
-     */
-    public List<SecurityHotspot> getToReviewSecurityHotspots()
-            throws BadSonarQubeRequestException, SonarQubeException {
-        return getSecurityHotspotsByStatus(TO_REVIEW);
-    }
-
-    /**
-     * Get security hotspots of a project with REVIEWED status
-     * @return List containing all the security hotspots
-     * @throws BadSonarQubeRequestException A request is not recognized by the server
-     * @throws SonarQubeException When SonarQube server is not callable.
-     */
-    public List<SecurityHotspot> getReviewedSecurityHotspots()
-            throws BadSonarQubeRequestException, SonarQubeException {
-        return getSecurityHotspotsByStatus(REVIEWED);
-    }
-
-    /**
-     * Get security hotspots depending on their status
+     * Generic getter for security hotspots depending on their status
      * @param status The status of security hotspots
      * @return List containing all the security hotspots
      * @throws BadSonarQubeRequestException A request is not recognized by the server
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    public List<SecurityHotspot> getSecurityHotspotsByStatus(String status)
+    protected List<SecurityHotspot> getSecurityHotspotsByStatusAbstract(final String status)
             throws BadSonarQubeRequestException, SonarQubeException {
         // results variable
         final List<SecurityHotspot> res = new ArrayList<>();
@@ -125,19 +110,14 @@ public class SecurityHotspotsProvider extends AbstractDataProvider {
 
         // search all security hotspots of the project
         while(goOn) {
-            // prepare the request to get all the security hotspots
-            final String searchHotspotsRequest = String.format(getRequest(GET_SECURITY_HOTSPOTS_REQUEST),
-                    getServer().getUrl(), getBranch(), page, getProjectKey(), maxPerPage, status);
-            // perform the request to the server
-            final JsonObject searchHotspotsResult = request(searchHotspotsRequest);
+            final JsonObject searchHotspotsResult = getSecurityHotspotsAsJsonObject(page, maxPerPage, status);
             // transform json to SecurityHotspot[]
             SecurityHotspot[] securityHotspotTemp = getGson().fromJson(searchHotspotsResult.get(HOTSPOTS),
                     SecurityHotspot[].class);
             // perform requests to get more information about each security hotspot
             for (SecurityHotspot securityHotspot : securityHotspotTemp) {
-                final String showHotspotRequest = String.format(getRequest(GET_SECURITY_HOTSPOT_REQUEST),
-                        getServer().getUrl(), securityHotspot.getKey());
-                final JsonObject showHotspotsResult = request(showHotspotRequest);
+                final String securityHotspotKey = securityHotspot.getKey();
+                final JsonObject showHotspotsResult = getSecurityHotspotAsJsonObject(securityHotspotKey);
                 JsonObject rule = showHotspotsResult.get(RULE).getAsJsonObject();
                 String key = rule.get(KEY).getAsString();
                 Comment[] comments = getGson().fromJson(showHotspotsResult.get(COMMENTS), Comment[].class);
@@ -147,10 +127,8 @@ public class SecurityHotspotsProvider extends AbstractDataProvider {
                     String resolution = showHotspotsResult.get(RESOLUTION).getAsString();
                     securityHotspot.setResolution(resolution);
                 }
-
-                final String showRuleRequest = String.format(getRequest(GET_RULE_REQUEST), getServer().getUrl(),
-                        securityHotspot.getRule());
-                final JsonObject showRuleResult = request(showRuleRequest);
+                final String securityHotspotRule = securityHotspot.getRule();
+                final JsonObject showRuleResult = getRuleAsJsonObject(securityHotspotRule);
                 JsonObject ruleContent = showRuleResult.get(RULE).getAsJsonObject();
                 String severity = ruleContent.get(SEVERITY).getAsString();
                 String language = ruleContent.get(LANGUAGE).getAsString();
@@ -170,4 +148,36 @@ public class SecurityHotspotsProvider extends AbstractDataProvider {
         // return the security hotspots
         return res;
     }
+
+    /**
+     * Get a JsonObject from the response of a search hotspots request.
+     * @param page The current page.
+     * @param maxPerPage The maximum page size.
+     * @param status The status of security hotspots.
+     * @return The response as a JsonObject.
+     * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected abstract JsonObject getSecurityHotspotsAsJsonObject(final int page, final int maxPerPage, final String status)
+            throws BadSonarQubeRequestException, SonarQubeException;
+
+    /**
+     * Get a JsonObject from the response of a search hotspots request.
+     * @param securityHotspotKey The key of the security hotspot.
+     * @return The response as a JsonObject.
+     * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected abstract JsonObject getSecurityHotspotAsJsonObject(final String securityHotspotKey)
+            throws BadSonarQubeRequestException, SonarQubeException;
+    
+    /**
+     * Get a JsonObject from the response of a show rule request.
+     * @param securityHotspotRule The key of the rule.
+     * @return The response as a JsonObject.
+     * @throws BadSonarQubeRequestException A request is not recognized by the server.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    protected abstract JsonObject getRuleAsJsonObject(final String securityHotspotRule)
+            throws BadSonarQubeRequestException, SonarQubeException;
 }

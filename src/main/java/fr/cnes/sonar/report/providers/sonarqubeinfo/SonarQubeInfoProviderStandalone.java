@@ -15,26 +15,32 @@
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.cnes.sonar.report.providers;
+package fr.cnes.sonar.report.providers.sonarqubeinfo;
 
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.model.SonarQubeServer;
+import fr.cnes.sonar.report.providers.AbstractDataProvider;
 
 import java.util.logging.Level;
 
 /**
- * Provides info about SonarQube system.
+ * Provides info about SonarQube system in standalone mode.
  */
-public class SonarQubeInfoProvider extends AbstractDataProvider {
+public class SonarQubeInfoProviderStandalone extends AbstractDataProvider implements SonarQubeInfoProvider {
+
+    /**
+     *  Name of the request for getting SonarQube server information
+     */
+    private static final String GET_SONARQUBE_INFO_REQUEST =
+            "GET_SONARQUBE_INFO_REQUEST";
 
     /**
      * Complete constructor.
      * @param pServer SonarQube server.
      * @param pToken String representing the user token.
      */
-    public SonarQubeInfoProvider(final SonarQubeServer pServer, final String pToken) {
+    public SonarQubeInfoProviderStandalone(final String pServer, final String pToken) {
         super(pServer, pToken, "");
     }
 
@@ -44,10 +50,11 @@ public class SonarQubeInfoProvider extends AbstractDataProvider {
      * @throws BadSonarQubeRequestException when the server does not understand the request.
      * @throws SonarQubeException When SonarQube server is not callable.
      */
+    @Override
     public String getSonarQubeVersion() throws BadSonarQubeRequestException, SonarQubeException {
         // send a request to sonarqube server and return th response as a json object
         // if there is an error on server side this method throws an exception
-        final JsonObject jsonObject = request(String.format(getRequest(GET_SONARQUBE_INFO_REQUEST), getServer().getUrl()));
+        final JsonObject jsonObject = request(String.format(getRequest(GET_SONARQUBE_INFO_REQUEST), getServer()));
 
         // extract data from json object and return it
         return jsonObject.get("version").getAsString();
@@ -57,13 +64,14 @@ public class SonarQubeInfoProvider extends AbstractDataProvider {
      * Get the SonarQube server status.
      * @return String containing the SonarQube status.
      */
+    @Override
     public String getSonarQubeStatus() {
         // Represents status of SonarQube server to return.
         String status;
         try {
             // send a request to SonarQube server and return th response as a json object
             // if there is an error on server side this method throws an exception
-            final String request = String.format(getRequest(GET_SONARQUBE_INFO_REQUEST), getServer().getUrl());
+            final String request = String.format(getRequest(GET_SONARQUBE_INFO_REQUEST), getServer());
             final JsonObject jsonObject = request(request);
             // extract data from json object and return it
             status = jsonObject.get("status").getAsString();
