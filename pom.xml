@@ -34,7 +34,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <junit.version>4.13.2</junit.version>
         <jacoco.version>0.8.7</jacoco.version>
-        <sonar.apiVersion>8.9.1.44547</sonar.apiVersion>
+        <sonar.apiVersion>8.9.2.46101</sonar.apiVersion>
         <sonar-packaging-maven-plugin.version>1.20.0.405</sonar-packaging-maven-plugin.version>
         <sonar.pluginKey>cnesreport</sonar.pluginKey>
         <sonar.pluginUrl>https://github.com/cnescatlab/sonar-cnes-report</sonar.pluginUrl>
