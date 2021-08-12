@@ -221,7 +221,7 @@ public class XWPFChartSpace {
 
                 // convert SonarQube date to Excel date
                 final String sonarQubeDate = values.get(i).getVal();
-                final double excelDate = DateConverter.SonarQubeDateToExcelDate(sonarQubeDate);
+                final double excelDate = DateConverter.sonarQubeDateToExcelDate(sonarQubeDate);
 
                 // set values
                 xVal.setV(String.valueOf(excelDate));

@@ -18,7 +18,6 @@ package fr.cnes.sonar.report.utils;
 
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Date;
 
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -38,15 +37,16 @@ public class DateConverter {
      * Convert a SonarQube date to an Excel date.
      * @param sonarQubeDate The SonarQube date.
      * @return The Excel date.
+     * @throws DateTimeParseException when string cannot be parsed
      */
-    public static double SonarQubeDateToExcelDate(String sonarQubeDate) {
+    public static double sonarQubeDateToExcelDate(String sonarQubeDate) {
         return DateUtil.getExcelDate(parseDateTime(sonarQubeDate));
     }
 
     /**
      * Parse a DateTime.
      * @param s string in format yyyy-MM-dd'T'HH:mm:ssZ
-     * @throws RuntimeException when string cannot be parsed
+     * @throws DateTimeParseException when string cannot be parsed
      */
     private static Date parseDateTime(String s) {
         return Date.from(parseOffsetDateTime(s).toInstant());
@@ -55,13 +55,9 @@ public class DateConverter {
     /**
      * Parse an OffsetDateTime.
      * @param s string in format yyyy-MM-dd'T'HH:mm:ssZ
-     * @throws RuntimeException when string cannot be parsed
+     * @throws DateTimeParseException when string cannot be parsed
      */
     private static OffsetDateTime parseOffsetDateTime(String s) {
-        try {
-            return OffsetDateTime.parse(s, DATETIME_FORMATTER);
-        } catch (DateTimeParseException e) {
-            throw new RuntimeException("The date '" + s + "' does not respect format '" + DATETIME_FORMAT + "'");
-        }
+        return OffsetDateTime.parse(s, DATETIME_FORMATTER);
     }
 }
