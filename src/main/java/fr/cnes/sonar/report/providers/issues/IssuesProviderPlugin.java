@@ -23,7 +23,9 @@ import fr.cnes.sonar.report.model.Facet;
 import fr.cnes.sonar.report.model.Issue;
 import org.sonarqube.ws.client.WsClient;
 import org.sonarqube.ws.client.issues.SearchRequest;
+import org.sonarqube.ws.client.measures.SearchHistoryRequest;
 import org.sonarqube.ws.Issues.SearchWsResponse;
+import org.sonarqube.ws.Measures.SearchHistoryResponse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -127,5 +129,23 @@ public class IssuesProviderPlugin extends AbstractIssuesProvider implements Issu
         final SearchWsResponse searchWsResponse = getWsClient().issues().search(searchRequest);
         // transform response to JsonObject
         return responseToJsonObject(searchWsResponse);
+    }
+
+    @Override
+    protected JsonObject getMeasuresHistoryAsJsonObject(int page, int maxPerPage) {
+        // prepare the request
+        final List<String> metrics = new ArrayList<>(Arrays.asList("violations", "sqale_debt_ratio"));
+        final String ps = String.valueOf(maxPerPage);
+        final String p = String.valueOf(page);
+        final SearchHistoryRequest searchHistoryRequest = new SearchHistoryRequest()
+                                                                .setComponent(getProjectKey())
+                                                                .setMetrics(metrics)
+                                                                .setPs(ps)
+                                                                .setP(p)
+                                                                .setBranch(getBranch());
+        // perform the request to the server
+        final SearchHistoryResponse searchHistoryResponse = getWsClient().measures().searchHistory(searchHistoryRequest);
+        // transform response to JsonObject
+        return responseToJsonObject(searchHistoryResponse);
     }
 }

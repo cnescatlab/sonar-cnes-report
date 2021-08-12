@@ -188,9 +188,13 @@ public abstract class CommonTest {
         final Facet rules = new Facet();
         final Facet severities = new Facet();
         final Facet types = new Facet();
+        final Facet violations = new Facet();
+        final Facet technicalDebtRatio = new Facet();
         rules.setProperty("rules");
         severities.setProperty("severities");
         types.setProperty("types");
+        violations.setProperty("violations");
+        technicalDebtRatio.setProperty("sqale_debt_ratio");
         final List<Value> values = new ArrayList<>();
         values.add(new Value("squid:S1258", 3));
         rules.setValues(values);
@@ -200,11 +204,21 @@ public abstract class CommonTest {
         final List<Value> valuesType = new ArrayList<>();
         valuesType.add(new Value("BUG", 5));
         valuesType.add(new Value("CODE_SMELL", 15));
+        final List<Value> valuesViolation = new ArrayList<>();
+        valuesViolation.add(new Value("2021-05-17T07:55:42+0000", 3));
+        valuesViolation.add(new Value("2021-06-02T13:56:46+0000", 4));
+        final List<Value> valuesTechnicalDebtRatio = new ArrayList<>();
+        valuesTechnicalDebtRatio.add(new Value("2021-05-17T07:55:42+0000", 0.1));
+        valuesTechnicalDebtRatio.add(new Value("2021-06-02T13:56:46+0000", 0.2));
         severities.setValues(valuesSeverity);
         types.setValues(valuesType);
+        violations.setValues(valuesViolation);
+        technicalDebtRatio.setValues(valuesTechnicalDebtRatio);
         facets.add(rules);
         facets.add(severities);
         facets.add(types);
+        facets.add(violations);
+        facets.add(technicalDebtRatio);
         report.setFacets(facets);
 
         final List<SecurityHotspot> securityHotspots = new ArrayList<>();

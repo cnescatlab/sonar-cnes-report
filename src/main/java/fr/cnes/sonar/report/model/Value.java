@@ -28,14 +28,14 @@ public class Value {
     /**
      * Number of occurrences
      */
-    private int count;
+    private double count;
 
     /**
      * Complete constructor
      * @param pVal value to give to val
      * @param pCount value to give to count
      */
-    public Value(final String pVal, final int pCount) {
+    public Value(final String pVal, final double pCount) {
         this.val = pVal;
         this.count = pCount;
     }
@@ -60,7 +60,7 @@ public class Value {
      * Getter for count
      * @return count
      */
-    public int getCount() {
+    public double getCount() {
         return count;
     }
 
@@ -68,7 +68,7 @@ public class Value {
      * Setter to give to count
      * @param pCount count
      */
-    public void setCount(final int pCount) {
+    public void setCount(final double pCount) {
         this.count = pCount;
     }
 }

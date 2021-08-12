@@ -40,6 +40,10 @@ public class IssuesProviderStandalone extends AbstractIssuesProvider implements 
      *  Name of the request for getting facets
      */
     private static final String GET_FACETS_REQUEST = "GET_FACETS_REQUEST";
+    /**
+     *  Name of the request for getting the measures history
+     */
+    private static final String GET_MEASURES_HISTORY_REQUEST = "GET_MEASURES_HISTORY_REQUEST";
 
     /**
      * Complete constructor.
@@ -102,6 +106,16 @@ public class IssuesProviderStandalone extends AbstractIssuesProvider implements 
         // prepare the request
         final String request = String.format(getRequest(GET_FACETS_REQUEST), getServer(), getProjectKey(), getBranch());
         // contact the server to request the resources as json
+        return request(request);
+    }
+
+    @Override
+    protected JsonObject getMeasuresHistoryAsJsonObject(int page, int maxPerPage)
+            throws BadSonarQubeRequestException, SonarQubeException {
+        // prepare the request
+        final String request = String.format(getRequest(GET_MEASURES_HISTORY_REQUEST), getServer(), getProjectKey(),
+                maxPerPage, page, getBranch());
+        // perform the request to the server
         return request(request);
     }
 }
