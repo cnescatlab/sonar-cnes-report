@@ -156,6 +156,10 @@ use advanced features you should use plugin in standalone.
 zip these files and send them to client. Files are deleted after download. If you interrupt plugin
 during execution (bug, stopping sonar, etc.) you may check this folder to remove useless files.
 
+### Compile from sources
+In order to compile the project, a simple `mvn clean package` command from the project's root, where the `pom.xml` is located, will do the trick.  
+Of course, Maven and Java are required to build the JAR file.
+
 ### License
 Copyright 2021 CATLab.
 
