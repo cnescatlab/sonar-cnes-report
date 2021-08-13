@@ -19,6 +19,8 @@ package fr.cnes.sonar.report.factory;
 
 import fr.cnes.sonar.report.providers.component.ComponentProvider;
 import fr.cnes.sonar.report.providers.component.ComponentProviderPlugin;
+import fr.cnes.sonar.report.providers.facets.FacetsProvider;
+import fr.cnes.sonar.report.providers.facets.FacetsProviderPlugin;
 import fr.cnes.sonar.report.providers.issues.IssuesProvider;
 import fr.cnes.sonar.report.providers.issues.IssuesProviderPlugin;
 import fr.cnes.sonar.report.providers.language.LanguageProvider;
@@ -70,6 +72,11 @@ public class PluginProviderFactory implements ProviderFactory {
     @Override
     public ComponentProvider createComponentProvider() {
         return new ComponentProviderPlugin(this.wsClient, this.project, this.branch);
+    }
+
+    @Override
+    public FacetsProvider createFacetsProvider() {
+        return new FacetsProviderPlugin(this.wsClient, this.project, this.branch);
     }
 
     @Override

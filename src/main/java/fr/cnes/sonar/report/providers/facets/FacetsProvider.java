@@ -15,38 +15,31 @@
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.cnes.sonar.report.providers.issues;
+package fr.cnes.sonar.report.providers.facets;
 
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.model.Issue;
+import fr.cnes.sonar.report.model.Facet;
+import fr.cnes.sonar.report.model.TimeFacets;
 
 import java.util.List;
-import java.util.Map;
 
 /**
- * Generic interface for issues providers
+ * Generic interface for facets providers
  */
-public interface IssuesProvider {
+public interface FacetsProvider {
     /**
-     * Get all the real issues of a project
-     * @return Array containing all the issues
+     * Get all the stats on a project
+     * @return A list of facets
      * @throws BadSonarQubeRequestException A request is not recognized by the server
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    List<Issue> getIssues() throws BadSonarQubeRequestException, SonarQubeException;
+    List<Facet> getFacets() throws BadSonarQubeRequestException, SonarQubeException;
     /**
-     * Get all the unconfirmed issues of a project
-     * @return Array containing all the issues
+     * Get all time values on a project
+     * @return A list of facets
      * @throws BadSonarQubeRequestException A request is not recognized by the server
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    List<Issue> getUnconfirmedIssues() throws BadSonarQubeRequestException, SonarQubeException;
-    /**
-     * Get all the issues of a project in a raw format (map)
-     * @return Array containing all the issues as maps
-     * @throws BadSonarQubeRequestException A request is not recognized by the server
-     * @throws SonarQubeException When SonarQube server is not callable.
-     */
-    List<Map<String,String>> getRawIssues() throws BadSonarQubeRequestException, SonarQubeException;
+    TimeFacets getTimeFacets() throws BadSonarQubeRequestException, SonarQubeException;
 }

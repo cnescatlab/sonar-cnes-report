@@ -111,7 +111,7 @@ public class DocXExporter implements IExporter {
         ) {
 
             // Fill charts
-            DocXTools.fillCharts(document, report.getFacets());
+            DocXTools.fillCharts(document, report.getFacets(), report.getTimeFacets());
 
             // Add issues
             final List<List<String>> issues = DataAdapter.getIssues(report);

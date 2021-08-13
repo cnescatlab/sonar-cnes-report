@@ -54,6 +54,10 @@ public class Report {
      */
     private List<Facet> facets;
     /**
+     * List of facets of the project
+     */
+    private TimeFacets timeFacets;
+    /**
      * List of security hotspots detected in the project
      */
     private List<SecurityHotspot> toReviewSecurityHotspots;
@@ -101,6 +105,7 @@ public class Report {
         this.issues = new ArrayList<>();
         this.unconfirmed = new ArrayList<>();
         this.facets = new ArrayList<>();
+        this.timeFacets = new TimeFacets();
         this.toReviewSecurityHotspots = new ArrayList<>();
         this.reviewedSecurityHotspots = new ArrayList<>();
         this.measures = new ArrayList<>();
@@ -320,6 +325,22 @@ public class Report {
      */
     public void setFacets(List<Facet> pFacets) {
         this.facets = new ArrayList<>(pFacets);
+    }
+
+    /**
+     * Getter for time facets
+     * @return timeFacets
+     */
+    public TimeFacets getTimeFacets() {
+        return timeFacets;
+    }
+
+    /**
+     * Setter for time facets
+     * @param pTimeFacets value
+     */
+    public void setTimeFacets(TimeFacets pTimeFacets) {
+        this.timeFacets = pTimeFacets;
     }
 
     /**

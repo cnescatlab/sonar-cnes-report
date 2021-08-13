@@ -18,12 +18,6 @@ public class IssuesProviderTest extends CommonTest {
     }
 
     @Test(expected = SonarQubeException.class)
-    public void executeFaultyGetFacetsStandalone() throws SonarQubeException, BadSonarQubeRequestException {
-        IssuesProvider issuesProvider = new IssuesProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
-        issuesProvider.getFacets();
-    }
-
-    @Test(expected = SonarQubeException.class)
     public void executeFaultyGetRawIssuesStandalone() throws SonarQubeException, BadSonarQubeRequestException {
         IssuesProvider issuesProvider = new IssuesProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
         issuesProvider.getRawIssues();
@@ -39,12 +33,6 @@ public class IssuesProviderTest extends CommonTest {
     public void executeFaultyGetIssuesPlugin() throws SonarQubeException, BadSonarQubeRequestException {
         IssuesProvider issuesProvider = new IssuesProviderPlugin(wsClient, PROJECT_KEY, BRANCH);
         issuesProvider.getIssues();
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void executeFaultyGetFacetsPlugin() throws SonarQubeException, BadSonarQubeRequestException {
-        IssuesProvider issuesProvider = new IssuesProviderPlugin(wsClient, PROJECT_KEY, BRANCH);
-        issuesProvider.getFacets();
     }
 
     @Test(expected = IllegalStateException.class)

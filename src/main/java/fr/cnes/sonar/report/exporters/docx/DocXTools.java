@@ -18,7 +18,9 @@
 package fr.cnes.sonar.report.exporters.docx;
 
 import fr.cnes.sonar.report.model.Facet;
+import fr.cnes.sonar.report.model.TimeFacets;
 import fr.cnes.sonar.report.model.Value;
+import fr.cnes.sonar.report.model.TimeValue;
 import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
@@ -111,14 +113,14 @@ public final class DocXTools {
      * @throws IOException ...
      * @throws XmlException ...
      */
-    public static void fillCharts(XWPFDocument document, List<Facet> facets)
+    public static void fillCharts(XWPFDocument document, List<Facet> facets, TimeFacets timeFacets)
             throws IOException, XmlException {
 
         final List<XWPFChartSpace> chartSpaces = XWPFChartSpace.getChartSpaces(document);
         final List<Value> dataPerType = DataAdapter.getFacetValues(facets, TYPES);
         final List<Value> dataPerSeverity = DataAdapter.getFacetValues(facets, SEVERITIES);
-        final List<Value> issuesHistory = DataAdapter.getFacetValues(facets, VIOLATIONS);
-        final List<Value> technicalDebtRatioHistory = DataAdapter.getFacetValues(facets, TECHNICAL_DEBT_RATIO);
+        final List<TimeValue> issuesHistory = timeFacets.getFacetValues(VIOLATIONS);
+        final List<TimeValue> technicalDebtRatioHistory = timeFacets.getFacetValues(TECHNICAL_DEBT_RATIO);
 
         // browse chart list to find placeholders (based on locale) in title
         // and provide them adapted resources
@@ -135,11 +137,11 @@ public final class DocXTools {
                 chartSpace.setTitle(StringManager.string(CHART_TYPE_TITLE));
             // fill the scatter chart with the evolution of the number of issues
             } else if(currentChartTitle.contains(VIOLATIONS_CHART_PLACEHOLDER)) {
-                chartSpace.setValues(issuesHistory);
+                chartSpace.setTimeValues(issuesHistory);
                 chartSpace.setTitle(StringManager.string(CHART_VIOLATIONS_TITLE));
             // fill the scatter chart with the evolution of the technical debt ratio
             } else if(currentChartTitle.contains(TECHNICAL_DEBT_RATIO_CHART_PLACEHOLDER)) {
-                chartSpace.setValues(technicalDebtRatioHistory);
+                chartSpace.setTimeValues(technicalDebtRatioHistory);
                 chartSpace.setTitle(StringManager.string(CHART_TECHNICAL_DEBT_RATIO_TITLE));
             }
 

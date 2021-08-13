@@ -18,6 +18,7 @@
 package fr.cnes.sonar.report.factory;
 
 import fr.cnes.sonar.report.providers.component.ComponentProvider;
+import fr.cnes.sonar.report.providers.facets.FacetsProvider;
 import fr.cnes.sonar.report.providers.issues.IssuesProvider;
 import fr.cnes.sonar.report.providers.language.LanguageProvider;
 import fr.cnes.sonar.report.providers.measure.MeasureProvider;
@@ -36,6 +37,11 @@ public interface ProviderFactory {
      * @return A new instance of a ComponentProvider.
      */
     ComponentProvider createComponentProvider();
+    /**
+     * Creates a new instance of a FacetsProvider
+     * @return A new instance of a FacetsProvider.
+     */
+    FacetsProvider createFacetsProvider();
     /**
      * Creates a new instance of a IssuesProvider
      * @return A new instance of a IssuesProvider.

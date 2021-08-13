@@ -23,6 +23,7 @@ import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
 import fr.cnes.sonar.report.model.Components;
 import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.providers.component.ComponentProvider;
+import fr.cnes.sonar.report.providers.facets.FacetsProvider;
 import fr.cnes.sonar.report.providers.issues.IssuesProvider;
 import fr.cnes.sonar.report.providers.measure.MeasureProvider;
 import fr.cnes.sonar.report.providers.project.ProjectProvider;
@@ -84,6 +85,7 @@ public class ReportModelFactory {
         final Report report = new Report();
 
         final IssuesProvider issuesProvider = this.providerFactory.createIssuesProvider();
+        final FacetsProvider facetsProvider = this.providerFactory.createFacetsProvider();
         final SecurityHotspotsProvider securityHotspotsProvider = this.providerFactory.createSecurityHotspotsProvider();
         final MeasureProvider measureProvider = this.providerFactory.createMeasureProvider();
         final ProjectProvider projectProvider = this.providerFactory.createProjectProvider();
@@ -115,7 +117,8 @@ public class ReportModelFactory {
         report.setUnconfirmed(issuesProvider.getUnconfirmedIssues());
         report.setRawIssues(issuesProvider.getRawIssues());
         // facets's setting
-        report.setFacets(issuesProvider.getFacets());
+        report.setFacets(facetsProvider.getFacets());
+        report.setTimeFacets(facetsProvider.getTimeFacets());
         // security hotspots to review
         report.setToReviewSecurityHotspots(securityHotspotsProvider.getToReviewSecurityHotspots());
         // reviewed security hotspots

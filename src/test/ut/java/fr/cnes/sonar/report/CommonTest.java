@@ -221,6 +221,25 @@ public abstract class CommonTest {
         facets.add(technicalDebtRatio);
         report.setFacets(facets);
 
+        // Adding TimeFacets
+        List<TimeValue> values1 = new ArrayList<>();
+        values1.add(new TimeValue(1.0, "1.0"));
+        values1.add(new TimeValue(2.3, "4.5"));
+
+        List<TimeValue> values2 = new ArrayList<>();
+        values2.add(new TimeValue(1.0, "1"));
+        values2.add(new TimeValue(2.3, "4"));
+        values2.add(new TimeValue(5.6, "7"));
+
+        List<TimeFacet> facetList = new ArrayList<>();
+        facetList.add(new TimeFacet("existent", values1));
+        facetList.add(new TimeFacet("other", values2));
+        
+        TimeFacets timeFacets = new TimeFacets();
+        timeFacets.setTimeFacets(facetList);
+        report.setTimeFacets(timeFacets);
+
+
         final List<SecurityHotspot> securityHotspots = new ArrayList<>();
         final SecurityHotspot sh1 = new SecurityHotspot();
         final SecurityHotspot sh2 = new SecurityHotspot();

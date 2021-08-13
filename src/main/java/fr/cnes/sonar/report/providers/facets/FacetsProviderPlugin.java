@@ -15,26 +15,28 @@
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.cnes.sonar.report.providers.issues;
+package fr.cnes.sonar.report.providers.facets;
 
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.model.Issue;
+import fr.cnes.sonar.report.model.Facet;
+import fr.cnes.sonar.report.model.TimeFacets;
 import org.sonarqube.ws.client.WsClient;
 import org.sonarqube.ws.client.issues.SearchRequest;
+import org.sonarqube.ws.client.measures.SearchHistoryRequest;
 import org.sonarqube.ws.Issues.SearchWsResponse;
+import org.sonarqube.ws.Measures.SearchHistoryResponse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import com.google.gson.JsonObject;
 
 /**
  * Provides issue items in plugin mode
  */
-public class IssuesProviderPlugin extends AbstractIssuesProvider implements IssuesProvider {
+public class FacetsProviderPlugin extends AbstractFacetsProvider implements FacetsProvider {
 
     /**
      * Field to get the types facet in a response
@@ -44,6 +46,10 @@ public class IssuesProviderPlugin extends AbstractIssuesProvider implements Issu
      * Field to get the severities facet in a response
      */
     private static final String SEVERITIES = "severities";
+    /**
+     * List of desired time facets
+     */
+    private static final List<String> TIME_FACETS = new ArrayList<>(Arrays.asList("violations", "sqale_debt_ratio"));
 
     /**
      * Complete constructor.
@@ -51,55 +57,54 @@ public class IssuesProviderPlugin extends AbstractIssuesProvider implements Issu
      * @param project The id of the project to report.
      * @param branch The branch of the project to report.
      */
-    public IssuesProviderPlugin(final WsClient wsClient, final String project, final String branch) {
+    public FacetsProviderPlugin(final WsClient wsClient, final String project, final String branch) {
         super(wsClient, project, branch);
     }
 
     @Override
-    public List<Issue> getIssues() throws BadSonarQubeRequestException, SonarQubeException {
-        return getIssuesByStatus(CONFIRMED);
+    public List<Facet> getFacets() throws BadSonarQubeRequestException, SonarQubeException {
+        return getFacetsAbstract();
     }
 
     @Override
-    public List<Issue> getUnconfirmedIssues() throws BadSonarQubeRequestException, SonarQubeException {
-        return getIssuesByStatus(UNCONFIRMED);
-    }
-
-    /**
-     * Get issues depending on their resolved status
-     * @param confirmed equals "true" if Unconfirmed and "false" if confirmed
-     * @return List containing all the issues
-     * @throws BadSonarQubeRequestException A request is not recognized by the server
-     * @throws SonarQubeException When SonarQube server is not callable.
-     */
-    private List<Issue> getIssuesByStatus(String confirmed) throws BadSonarQubeRequestException, SonarQubeException {
-        return getIssuesByStatusAbstract(confirmed);
+    public TimeFacets getTimeFacets() throws BadSonarQubeRequestException, SonarQubeException {
+        return getTimeFacetsAbstract();
     }
 
     @Override
-    public List<Map<String,String>> getRawIssues() throws BadSonarQubeRequestException, SonarQubeException {
-        return getRawIssuesAbstract();
-    }
-
-    @Override
-    protected JsonObject getIssuesAsJsonObject(final int page, final int maxPerPage, final String confirmed) {
-        // prepare the server to get all the issues
+    protected JsonObject getFacetsAsJsonObject() {
+        // prepare the request
         final List<String> projects = new ArrayList<>(Arrays.asList(getProjectKey()));
-        final List<String> facets = new ArrayList<>(Arrays.asList(TYPES, RULES, SEVERITIES, "directories", "files", "tags"));
-        final String ps = String.valueOf(maxPerPage);
-        final String p = String.valueOf(page);
-        final List<String> additionalFields = new ArrayList<>(Arrays.asList(RULES, "comments"));
+        final List<String> facets = new ArrayList<>(Arrays.asList(TYPES, RULES, SEVERITIES));
+        final String ps = String.valueOf(1);
+        final String p = String.valueOf(1);
         final SearchRequest searchRequest = new SearchRequest()
                                                 .setProjects(projects)
+                                                .setResolved(CONFIRMED)
                                                 .setFacets(facets)
                                                 .setPs(ps)
                                                 .setP(p)
-                                                .setAdditionalFields(additionalFields)
-                                                .setResolved(confirmed)
                                                 .setBranch(getBranch());
         // perform the request to the server
         final SearchWsResponse searchWsResponse = getWsClient().issues().search(searchRequest);
         // transform response to JsonObject
         return responseToJsonObject(searchWsResponse);
-    }    
+    }
+
+    @Override
+    protected JsonObject getTimeFacetsAsJsonObject(int page, int maxPerPage) {
+        // prepare the request
+        final String ps = String.valueOf(maxPerPage);
+        final String p = String.valueOf(page);
+        final SearchHistoryRequest searchHistoryRequest = new SearchHistoryRequest()
+                                                                .setComponent(getProjectKey())
+                                                                .setMetrics(TIME_FACETS)
+                                                                .setPs(ps)
+                                                                .setP(p)
+                                                                .setBranch(getBranch());
+        // perform the request to the server
+        final SearchHistoryResponse searchHistoryResponse = getWsClient().measures().searchHistory(searchHistoryRequest);
+        // transform response to JsonObject
+        return responseToJsonObject(searchHistoryResponse);
+    }
 }

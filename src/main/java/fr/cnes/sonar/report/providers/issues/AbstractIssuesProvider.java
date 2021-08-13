@@ -21,18 +21,14 @@ import fr.cnes.sonar.report.providers.AbstractDataProvider;
 import fr.cnes.sonar.report.utils.StringManager;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.model.Facet;
 import fr.cnes.sonar.report.model.Issue;
 import fr.cnes.sonar.report.model.Rule;
-import fr.cnes.sonar.report.model.Value;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.sonarqube.ws.client.WsClient;
@@ -59,18 +55,6 @@ public abstract class AbstractIssuesProvider extends AbstractDataProvider {
      * Parameter "issues" of the JSON response
      */
     private static final String ISSUES = "issues";
-    /**
-     * Parameter "facets" of the JSON response
-     */
-    private static final String FACETS = "facets";
-    /**
-     * Parameter "measures" of the JSON response
-     */
-    private static final String MEASURES = "measures";
-    /**
-     * Parameter "history" of the JSON response
-     */
-    private static final String HISTORY = "history";
 
     /**
      * Complete constructor.
@@ -201,58 +185,6 @@ public abstract class AbstractIssuesProvider extends AbstractDataProvider {
     }
 
     /**
-     * Generic getter for all the stats on a project
-     * @return A list of facets
-     * @throws BadSonarQubeRequestException A request is not recognized by the server
-     * @throws SonarQubeException When SonarQube server is not callable.
-     */
-    protected List<Facet> getFacetsAbstract() throws BadSonarQubeRequestException, SonarQubeException {
-        JsonObject jo = getFacetsAsJsonObject();
-        // put wanted resources in facets array and list
-        final Facet [] tmp = (getGson().fromJson(jo.get(FACETS), Facet[].class));
-        // add additionnal facets
-        final List<Value> technicalDebtRatioValues = new ArrayList<>();
-        final List<Value> issuesValues = new ArrayList<>();
-        boolean goOn = true;
-        int page = 1;
-        final int maxPerPage = Integer.parseInt(getRequest(MAX_PER_PAGE_SONARQUBE));
-        while(goOn) {
-            jo = getMeasuresHistoryAsJsonObject(page, maxPerPage);
-            final JsonArray technicalDebtRatioHistoryJA = jo.get(MEASURES).getAsJsonArray().get(0).getAsJsonObject().get(HISTORY).getAsJsonArray();
-            for (JsonElement je : technicalDebtRatioHistoryJA) {
-                final JsonObject measure = je.getAsJsonObject();
-                final String date = measure.get("date").getAsString();
-                final String value = measure.get("value").getAsString();
-                final Value v = new Value(date, Double.parseDouble(value));
-                technicalDebtRatioValues.add(v);
-            }
-            final JsonArray issuesHistoryJA = jo.get(MEASURES).getAsJsonArray().get(1).getAsJsonObject().get(HISTORY).getAsJsonArray();
-            for (JsonElement je : issuesHistoryJA) {
-                final JsonObject measure = je.getAsJsonObject();
-                final String date = measure.get("date").getAsString();
-                final String value = measure.get("value").getAsString();
-                final Value v = new Value(date, Integer.parseInt(value));
-                issuesValues.add(v);
-            }
-            final JsonObject paging = jo.get(PAGING).getAsJsonObject();
-            final int number = paging.get(TOTAL).getAsInt();
-            goOn = page*maxPerPage < number;
-            page++;
-        }
-        final Facet f1 = new Facet();
-        f1.setProperty("sqale_debt_ratio");
-        f1.setValues(technicalDebtRatioValues);
-        final Facet f2 = new Facet();
-        f2.setProperty("violations");
-        f2.setValues(issuesValues);
-        final List<Facet> res = new ArrayList<>(Arrays.asList(tmp));
-        res.add(f1);
-        res.add(f2);
-        // return list of facets
-        return res;
-    }
-
-    /**
      * Find the display name of the programming language corresponding
      * to a rule with its key
      * @param ruleKey key of the rule to find
@@ -310,23 +242,5 @@ public abstract class AbstractIssuesProvider extends AbstractDataProvider {
      * @throws SonarQubeException When SonarQube server is not callable.
      */
     protected abstract JsonObject getIssuesAsJsonObject(final int page, final int maxPerPage, final String confirmed)
-            throws BadSonarQubeRequestException, SonarQubeException;
-
-    /**
-     * Get a JsonObject from the response of a search issues request.
-     * @return The response as a JsonObject.
-     * @throws BadSonarQubeRequestException A request is not recognized by the server.
-     * @throws SonarQubeException When SonarQube server is not callable.
-     */
-    protected abstract JsonObject getFacetsAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException;
-
-    /**
-     * Get a JsonObject from the response of a search history request.
-     * @param page The current page.
-     * @return The response as a JsonObject.
-     * @throws BadSonarQubeRequestException A request is not recognized by the server.
-     * @throws SonarQubeException When SonarQube server is not callable.
-     */
-    protected abstract JsonObject getMeasuresHistoryAsJsonObject(final int page, final int maxPerPage)
             throws BadSonarQubeRequestException, SonarQubeException;
 }
