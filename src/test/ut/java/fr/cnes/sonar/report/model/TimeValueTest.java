@@ -26,24 +26,8 @@ public class TimeValueTest extends CommonTest {
 
     @Test
     public void getFacetValuesNormalTest() {
-        // Test data
-        List<TimeValue> values1 = new ArrayList<>();
-        values1.add(new TimeValue(1.0, "1.0"));
-        values1.add(new TimeValue(2.3, "4.5"));
-        List<TimeValue> values2 = new ArrayList<>();
-        values2.add(new TimeValue(1.0, "1"));
-        values2.add(new TimeValue(2.3, "4"));
-        values2.add(new TimeValue(5.6, "7"));
-
-        List<TimeFacet> facetList = new ArrayList<>();
-        facetList.add(new TimeFacet("existent", values1));
-        facetList.add(new TimeFacet("other", values2));
-        
-        TimeFacets timeFacets = new TimeFacets();
-        timeFacets.setTimeFacets(facetList);
-
         // Values should be found
-        assertEquals(2, report.getTimeFacets().getFacetValues("existent").size());
+        assertEquals(2, report.getTimeFacets().getFacetValues("sqale_debt_ratio").size());
     }
     
 }
