@@ -184,7 +184,7 @@ public abstract class CommonTest {
 
         report.setRawIssues(rawIssues);
 
-        final List<Facet> facets = new ArrayList<>();
+        final List<Facet> facetsList = new ArrayList<>();
         final Facet rules = new Facet();
         final Facet severities = new Facet();
         final Facet types = new Facet();
@@ -202,9 +202,11 @@ public abstract class CommonTest {
         valuesType.add(new Value("CODE_SMELL", 15));
         severities.setValues(valuesSeverity);
         types.setValues(valuesType);
-        facets.add(rules);
-        facets.add(severities);
-        facets.add(types);
+        facetsList.add(rules);
+        facetsList.add(severities);
+        facetsList.add(types);
+        final Facets facets = new Facets();
+        facets.setFacets(facetsList);
         report.setFacets(facets);
 
         // Adding TimeFacets

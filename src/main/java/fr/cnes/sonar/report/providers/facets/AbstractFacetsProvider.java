@@ -22,6 +22,7 @@ import fr.cnes.sonar.report.utils.DateConverter;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Facet;
+import fr.cnes.sonar.report.model.Facets;
 import fr.cnes.sonar.report.model.TimeFacet;
 import fr.cnes.sonar.report.model.TimeFacets;
 import fr.cnes.sonar.report.model.TimeValue;
@@ -91,11 +92,15 @@ public abstract class AbstractFacetsProvider extends AbstractDataProvider {
      * @throws BadSonarQubeRequestException A request is not recognized by the server
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    protected List<Facet> getFacetsAbstract() throws BadSonarQubeRequestException, SonarQubeException {
+    protected Facets getFacetsAbstract() throws BadSonarQubeRequestException, SonarQubeException {
         JsonObject jo = getFacetsAsJsonObject();
-        // put wanted resources in facets array and list
-        final Facet [] tmp = (getGson().fromJson(jo.get(FACETS), Facet[].class));        
-        return new ArrayList<>(Arrays.asList(tmp));
+        // put wanted resources in facets array
+        Facet[] tmp = (getGson().fromJson(jo.get(FACETS), Facet[].class));        
+
+        Facets facets = new Facets();
+        facets.setFacets(Arrays.asList(tmp));
+
+        return facets;
     }
 
     protected TimeFacets getTimeFacetsAbstract() throws BadSonarQubeRequestException, SonarQubeException {

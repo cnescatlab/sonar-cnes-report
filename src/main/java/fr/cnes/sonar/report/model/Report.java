@@ -52,7 +52,7 @@ public class Report {
     /**
      * List of facets of the project
      */
-    private List<Facet> facets;
+    private Facets facets;
     /**
      * List of facets of the project
      */
@@ -104,7 +104,7 @@ public class Report {
         this.qualityGate = new QualityGate();
         this.issues = new ArrayList<>();
         this.unconfirmed = new ArrayList<>();
-        this.facets = new ArrayList<>();
+        this.facets = new Facets();
         this.timeFacets = new TimeFacets();
         this.toReviewSecurityHotspots = new ArrayList<>();
         this.reviewedSecurityHotspots = new ArrayList<>();
@@ -315,16 +315,16 @@ public class Report {
      * Getter for facets
      * @return facets
      */
-    public List<Facet> getFacets() {
-        return new ArrayList<>(facets);
+    public Facets getFacets() {
+        return facets;
     }
 
     /**
      * Setter for facets
      * @param pFacets value
      */
-    public void setFacets(List<Facet> pFacets) {
-        this.facets = new ArrayList<>(pFacets);
+    public void setFacets(Facets pFacets) {
+        this.facets = pFacets;
     }
 
     /**

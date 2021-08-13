@@ -17,7 +17,7 @@
 
 package fr.cnes.sonar.report.exporters.docx;
 
-import fr.cnes.sonar.report.model.Facet;
+import fr.cnes.sonar.report.model.Facets;
 import fr.cnes.sonar.report.model.TimeFacets;
 import fr.cnes.sonar.report.model.Value;
 import fr.cnes.sonar.report.model.TimeValue;
@@ -113,12 +113,12 @@ public final class DocXTools {
      * @throws IOException ...
      * @throws XmlException ...
      */
-    public static void fillCharts(XWPFDocument document, List<Facet> facets, TimeFacets timeFacets)
+    public static void fillCharts(XWPFDocument document, Facets facets, TimeFacets timeFacets)
             throws IOException, XmlException {
 
         final List<XWPFChartSpace> chartSpaces = XWPFChartSpace.getChartSpaces(document);
-        final List<Value> dataPerType = DataAdapter.getFacetValues(facets, TYPES);
-        final List<Value> dataPerSeverity = DataAdapter.getFacetValues(facets, SEVERITIES);
+        final List<Value> dataPerType = facets.getFacetValues(TYPES);
+        final List<Value> dataPerSeverity = facets.getFacetValues(SEVERITIES);
         final List<TimeValue> issuesHistory = timeFacets.getFacetValues(VIOLATIONS);
         final List<TimeValue> technicalDebtRatioHistory = timeFacets.getFacetValues(TECHNICAL_DEBT_RATIO);
 

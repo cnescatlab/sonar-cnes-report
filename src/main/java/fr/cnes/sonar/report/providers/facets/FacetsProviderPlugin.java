@@ -19,7 +19,7 @@ package fr.cnes.sonar.report.providers.facets;
 
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.model.Facet;
+import fr.cnes.sonar.report.model.Facets;
 import fr.cnes.sonar.report.model.TimeFacets;
 import org.sonarqube.ws.client.WsClient;
 import org.sonarqube.ws.client.issues.SearchRequest;
@@ -62,7 +62,7 @@ public class FacetsProviderPlugin extends AbstractFacetsProvider implements Face
     }
 
     @Override
-    public List<Facet> getFacets() throws BadSonarQubeRequestException, SonarQubeException {
+    public Facets getFacets() throws BadSonarQubeRequestException, SonarQubeException {
         return getFacetsAbstract();
     }
 

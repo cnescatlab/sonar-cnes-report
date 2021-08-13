@@ -19,10 +19,8 @@ package fr.cnes.sonar.report.providers.facets;
 
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.model.Facet;
+import fr.cnes.sonar.report.model.Facets;
 import fr.cnes.sonar.report.model.TimeFacets;
-
-import java.util.List;
 
 /**
  * Generic interface for facets providers
@@ -34,7 +32,7 @@ public interface FacetsProvider {
      * @throws BadSonarQubeRequestException A request is not recognized by the server
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    List<Facet> getFacets() throws BadSonarQubeRequestException, SonarQubeException;
+    Facets getFacets() throws BadSonarQubeRequestException, SonarQubeException;
     /**
      * Get all time values on a project
      * @return A list of facets

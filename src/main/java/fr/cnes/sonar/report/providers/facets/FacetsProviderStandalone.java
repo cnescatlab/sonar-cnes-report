@@ -19,10 +19,8 @@ package fr.cnes.sonar.report.providers.facets;
 
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.model.Facet;
+import fr.cnes.sonar.report.model.Facets;
 import fr.cnes.sonar.report.model.TimeFacets;
-
-import java.util.List;
 
 import com.google.gson.JsonObject;
 
@@ -53,7 +51,7 @@ public class FacetsProviderStandalone extends AbstractFacetsProvider implements 
     }
 
     @Override
-    public List<Facet> getFacets() throws BadSonarQubeRequestException, SonarQubeException {
+    public Facets getFacets() throws BadSonarQubeRequestException, SonarQubeException {
         return getFacetsAbstract();
     }
 
