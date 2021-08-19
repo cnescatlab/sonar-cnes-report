@@ -26,7 +26,6 @@ import fr.cnes.sonar.report.model.Facets;
 import fr.cnes.sonar.report.model.TimeFacet;
 import fr.cnes.sonar.report.model.TimeFacets;
 import fr.cnes.sonar.report.model.TimeValue;
-import fr.cnes.sonar.report.model.Value;
 
 import java.util.ArrayList;
 import java.util.Arrays;
