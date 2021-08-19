@@ -1,6 +1,7 @@
 package fr.cnes.sonar.report.factory;
 
 import fr.cnes.sonar.report.CommonTest;
+import fr.cnes.sonar.report.providers.facets.*;
 import fr.cnes.sonar.report.providers.issues.*;
 import fr.cnes.sonar.report.providers.measure.*;
 import fr.cnes.sonar.report.providers.project.*;
@@ -17,6 +18,9 @@ public class ProviderFactoryTest extends CommonTest {
 
     @Test
     public void createStandaloneTest() {
+
+        FacetsProvider facetsProvider = standaloneProviderFactory.createFacetsProvider();
+        Assert.assertTrue(facetsProvider instanceof FacetsProviderStandalone);
 
         IssuesProvider issuesProvider = standaloneProviderFactory.createIssuesProvider();
         Assert.assertTrue(issuesProvider instanceof IssuesProviderStandalone);
@@ -48,6 +52,9 @@ public class ProviderFactoryTest extends CommonTest {
 
     @Test
     public void createPluginTest() {
+
+        FacetsProvider facetsProvider = pluginProviderFactory.createFacetsProvider();
+        Assert.assertTrue(facetsProvider instanceof FacetsProviderPlugin);
 
         IssuesProvider issuesProvider = pluginProviderFactory.createIssuesProvider();
         Assert.assertTrue(issuesProvider instanceof IssuesProviderPlugin);

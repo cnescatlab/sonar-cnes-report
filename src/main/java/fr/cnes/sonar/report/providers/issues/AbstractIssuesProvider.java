@@ -21,7 +21,6 @@ import fr.cnes.sonar.report.providers.AbstractDataProvider;
 import fr.cnes.sonar.report.utils.StringManager;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.model.Facet;
 import fr.cnes.sonar.report.model.Issue;
 import fr.cnes.sonar.report.model.Rule;
 
@@ -56,10 +55,6 @@ public abstract class AbstractIssuesProvider extends AbstractDataProvider {
      * Parameter "issues" of the JSON response
      */
     private static final String ISSUES = "issues";
-    /**
-     * Parameter "facets" of the JSON response
-     */
-    private static final String FACETS = "facets";
 
     /**
      * Complete constructor.
@@ -190,20 +185,6 @@ public abstract class AbstractIssuesProvider extends AbstractDataProvider {
     }
 
     /**
-     * Generic getter for all the stats on a project
-     * @return A list of facets
-     * @throws BadSonarQubeRequestException A request is not recognized by the server
-     * @throws SonarQubeException When SonarQube server is not callable.
-     */
-    protected List<Facet> getFacetsAbstract() throws BadSonarQubeRequestException, SonarQubeException {
-        final JsonObject jo = getFacetsAsJsonObject();
-        // put wanted resources in facets array and list
-        final Facet [] tmp = (getGson().fromJson(jo.get(FACETS), Facet[].class));
-        // return list of facets
-        return new ArrayList<>(Arrays.asList(tmp));
-    }
-
-    /**
      * Find the display name of the programming language corresponding
      * to a rule with its key
      * @param ruleKey key of the rule to find
@@ -262,12 +243,4 @@ public abstract class AbstractIssuesProvider extends AbstractDataProvider {
      */
     protected abstract JsonObject getIssuesAsJsonObject(final int page, final int maxPerPage, final String confirmed)
             throws BadSonarQubeRequestException, SonarQubeException;
-
-    /**
-     * Get a JsonObject from the response of a search issues request.
-     * @return The response as a JsonObject.
-     * @throws BadSonarQubeRequestException A request is not recognized by the server.
-     * @throws SonarQubeException When SonarQube server is not callable.
-     */
-    protected abstract JsonObject getFacetsAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException;
 }

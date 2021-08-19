@@ -184,7 +184,7 @@ public abstract class CommonTest {
 
         report.setRawIssues(rawIssues);
 
-        final List<Facet> facets = new ArrayList<>();
+        final List<Facet> facetsList = new ArrayList<>();
         final Facet rules = new Facet();
         final Facet severities = new Facet();
         final Facet types = new Facet();
@@ -202,10 +202,31 @@ public abstract class CommonTest {
         valuesType.add(new Value("CODE_SMELL", 15));
         severities.setValues(valuesSeverity);
         types.setValues(valuesType);
-        facets.add(rules);
-        facets.add(severities);
-        facets.add(types);
+        facetsList.add(rules);
+        facetsList.add(severities);
+        facetsList.add(types);
+        final Facets facets = new Facets();
+        facets.setFacets(facetsList);
         report.setFacets(facets);
+
+        // Adding TimeFacets
+        List<TimeValue> values1 = new ArrayList<>();
+        values1.add(new TimeValue(1.0, "1.0"));
+        values1.add(new TimeValue(2.3, "4.5"));
+
+        List<TimeValue> values2 = new ArrayList<>();
+        values2.add(new TimeValue(1.0, "1"));
+        values2.add(new TimeValue(2.3, "4"));
+        values2.add(new TimeValue(5.6, "7"));
+
+        List<TimeFacet> facetList = new ArrayList<>();
+        facetList.add(new TimeFacet("sqale_debt_ratio", values1));
+        facetList.add(new TimeFacet("violations", values2));
+        
+        TimeFacets timeFacets = new TimeFacets();
+        timeFacets.setTimeFacets(facetList);
+        report.setTimeFacets(timeFacets);
+
 
         final List<SecurityHotspot> securityHotspots = new ArrayList<>();
         final SecurityHotspot sh1 = new SecurityHotspot();

@@ -269,15 +269,13 @@ public final class DataAdapter {
      */
     private static final String SECURITY_REVIEW_RATING = "security_review_rating";
     /**
-     * List of possible issue types
+     * Property to get the list of issues severities
      */
-    private static final String[] ISSUE_TYPES = {"BUG", "VULNERABILITY", "CODE_SMELL"};
+    private static final String ISSUES_SEVERITIES = "issues.severities";
     /**
-     * List of possible issue severities
+     * Property to get the list of issues types
      */
-    private static final String[] ISSUE_SEVERITIES = {
-        "BLOCKER", "CRITICAL", "MAJOR", "MINOR", "INFO"
-    };
+    private static final String ISSUES_TYPES = "issues.types";
     /**
      * List of possible security hotspot review priorities
      */
@@ -355,7 +353,7 @@ public final class DataAdapter {
         // result to return
         final List<List<String>> results = new ArrayList<>();
 
-        final String[] types = ISSUE_TYPES;
+        final List<String> types = new ArrayList<>(Arrays.asList(StringManager.getProperty(ISSUES_TYPES).split(",")));
         final List<String> severities = getReversedIssuesSeverities();
 
         // accumulator for the number of occurrences for each severity
@@ -388,11 +386,11 @@ public final class DataAdapter {
     }
 
     /**
-     * Getter for reversed ISSUE_SEVERITIES
-     * @return reversed ISSUE_SEVERITIES
+     * Getter for reversed ISSUES_SEVERITIES
+     * @return reversed ISSUES_SEVERITIES
      */
     public static List<String> getReversedIssuesSeverities() {
-        List<String> issuesSeverities = new ArrayList<>(Arrays.asList(ISSUE_SEVERITIES));
+        List<String> issuesSeverities = new ArrayList<>(Arrays.asList(StringManager.getProperty(ISSUES_SEVERITIES).split(",")));
         Collections.reverse(issuesSeverities);
         return issuesSeverities;
     }
@@ -512,50 +510,6 @@ public final class DataAdapter {
         }
 
         return issues;
-    }
-
-    /**
-     * Return values of a given facet
-     * @param facets list of facets from which to extract values
-     * @param facetName name of the facet to get
-     * @return a list (can be empty)
-     */
-    public static List<Value> getFacetValues(List<Facet> facets, String facetName) {
-
-        // iterate on facets' list
-        final Iterator<Facet> iterator = facets.iterator();
-        // list of results
-        List<Value> items = new ArrayList<>();
-        Facet facet;
-        while(iterator.hasNext() && items.isEmpty()) {
-            // get current facet
-            facet = iterator.next();
-            // check if current facet is the wanted one
-            if(facet.getProperty().equals(facetName)) {
-                items = facet.getValues();
-            }
-        }
-
-        // sort the result to fit docx template legends
-        Collections.sort(items, new ValueComparator(facetName));
-        
-        return items;
-    }
-
-    /**
-     * Getter for ISSUE_SEVERITIES
-     * @return ISSUE_SEVERITIES
-     */
-    public static String[] getIssueSeverities() {
-        return ISSUE_SEVERITIES;
-    }
-
-    /**
-     * Getter for ISSUE_TYPES
-     * @return ISSUE_TYPES
-     */
-    public static String[] getIssueTypes() {
-        return ISSUE_TYPES;
     }
 
     /**
@@ -1047,33 +1001,6 @@ class RuleComparator implements Comparator<String>{
             compare = report.getRule(o1).getKey().compareTo(
                     report.getRule(o2).getKey()
             );
-        }
-
-        return compare;
-    }
-}
-
-/**
- * ValueComparator is used to compare 2 values of a facet to sort them by severity or type
- */
-class ValueComparator implements Comparator<Value>{
-    String name;
-
-    ValueComparator(String name){
-        this.name = name;
-    }
-
-    public int compare(Value v1, Value v2) {
-        int compare;
-
-        if (this.name.equals("severities")) {
-            List<String> issueSeverities = Arrays.asList(DataAdapter.getIssueSeverities());
-            compare = issueSeverities.indexOf(v1.getVal()) - issueSeverities.indexOf(v2.getVal());
-        } else if(this.name.equals("types")) {
-            List<String> issueTypes = Arrays.asList(DataAdapter.getIssueTypes());
-            compare = issueTypes.indexOf(v1.getVal()) - issueTypes.indexOf(v2.getVal());
-        } else {
-            compare = 0;
         }
 
         return compare;

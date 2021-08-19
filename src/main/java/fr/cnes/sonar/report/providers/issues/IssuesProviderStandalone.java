@@ -19,7 +19,6 @@ package fr.cnes.sonar.report.providers.issues;
 
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.model.Facet;
 import fr.cnes.sonar.report.model.Issue;
 
 import java.util.List;
@@ -36,10 +35,6 @@ public class IssuesProviderStandalone extends AbstractIssuesProvider implements 
      *  Name of the request for getting issues
      */
     private static final String GET_ISSUES_REQUEST = "GET_ISSUES_REQUEST";
-    /**
-     *  Name of the request for getting facets
-     */
-    private static final String GET_FACETS_REQUEST = "GET_FACETS_REQUEST";
 
     /**
      * Complete constructor.
@@ -83,25 +78,12 @@ public class IssuesProviderStandalone extends AbstractIssuesProvider implements 
     }
 
     @Override
-    public List<Facet> getFacets() throws BadSonarQubeRequestException, SonarQubeException {
-        return getFacetsAbstract();
-    }
-
-    @Override
     protected JsonObject getIssuesAsJsonObject(final int page, final int maxPerPage, final String confirmed)
             throws BadSonarQubeRequestException, SonarQubeException {
         // prepare the server to get all the issues
         final String request = String.format(getRequest(GET_ISSUES_REQUEST), getServer(), getProjectKey(), maxPerPage,
                 page, confirmed, getBranch());
         // perform the request to the server
-        return request(request);
-    }
-
-    @Override
-    protected JsonObject getFacetsAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException {
-        // prepare the request
-        final String request = String.format(getRequest(GET_FACETS_REQUEST), getServer(), getProjectKey(), getBranch());
-        // contact the server to request the resources as json
         return request(request);
     }
 }

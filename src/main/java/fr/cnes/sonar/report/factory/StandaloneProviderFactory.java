@@ -19,6 +19,8 @@ package fr.cnes.sonar.report.factory;
 
 import fr.cnes.sonar.report.providers.component.ComponentProvider;
 import fr.cnes.sonar.report.providers.component.ComponentProviderStandalone;
+import fr.cnes.sonar.report.providers.facets.FacetsProvider;
+import fr.cnes.sonar.report.providers.facets.FacetsProviderStandalone;
 import fr.cnes.sonar.report.providers.issues.IssuesProvider;
 import fr.cnes.sonar.report.providers.issues.IssuesProviderStandalone;
 import fr.cnes.sonar.report.providers.language.LanguageProvider;
@@ -75,6 +77,11 @@ public class StandaloneProviderFactory implements ProviderFactory {
     @Override
     public ComponentProvider createComponentProvider() {
         return new ComponentProviderStandalone(this.server, this.token, this.project, this.branch);
+    }
+
+    @Override
+    public FacetsProvider createFacetsProvider() {
+        return new FacetsProviderStandalone(this.server, this.token, this.project, this.branch);
     }
 
     @Override
