@@ -57,7 +57,8 @@ Please report issues at https://github.com/cnescatlab/sonar-cnes-report/issues
 ````
 
 #### Get logs
-You can have more detailed logs in the hidden directory `.cnesreport` which should be created in your home directory at first launch.
+You can have more detailed logs in the hidden directory `.cnesreport` which should be created in your home directory at first launch.  
+In addition, you can have a lookt at your SonarQube server logs, which can be very helpful in debugging a problem.
 
 #### Examples
 
