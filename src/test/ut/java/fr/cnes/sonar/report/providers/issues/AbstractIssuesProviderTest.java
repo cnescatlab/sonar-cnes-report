@@ -17,12 +17,9 @@
 
 package fr.cnes.sonar.report.providers.issues;
 
-import fr.cnes.sonar.report.model.Issue;
-import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
-import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.utils.StringManager;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,8 +28,9 @@ import com.google.gson.JsonObject;
 
 import org.junit.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
+import fr.cnes.sonar.report.model.Issue;
 
 
 public class AbstractIssuesProviderTest {
@@ -85,7 +83,7 @@ public class AbstractIssuesProviderTest {
         rule1.addProperty("langName", "Java");
         JsonObject rule2 = new JsonObject();
         rule2.addProperty("key", "java:S100");
-        rule1.addProperty("langName", "Java");
+        rule2.addProperty("langName", "Java");
         JsonArray rules = new JsonArray();
         rules.add(rule1);
         rules.add(rule2);
@@ -102,7 +100,12 @@ public class AbstractIssuesProviderTest {
         List<Issue> issuesByStatus = provider.getIssuesByStatus();
         List<Map<String,String>> rawIssues = provider.getRawIssues();
         assertEquals(2, issuesByStatus.size());
-        // TODO : check Issue content
+        assertEquals("AXs6TiZb_DAZnba7Q_0P", issuesByStatus.get(0).getKey());
+        assertEquals("AXs6TiZb_DAZnba7Q_0Q", issuesByStatus.get(1).getKey());
+        assertEquals("java:S112", issuesByStatus.get(0).getRule());
+        assertEquals("java:S100", issuesByStatus.get(1).getRule());
+        assertEquals("Java", issuesByStatus.get(0).getLanguage());
+        assertEquals("Java", issuesByStatus.get(1).getLanguage());
         assertEquals(2, rawIssues.size());
     }
 
@@ -128,7 +131,9 @@ public class AbstractIssuesProviderTest {
         // Call methods from abstract class & check result
         List<Issue> issuesByStatus = provider.getIssuesByStatus();
         assertEquals(1, issuesByStatus.size());
-        // TODO : check Issue content
+        assertEquals("AXs6TiZb_DAZnba7Q_0P", issuesByStatus.get(0).getKey());
+        assertEquals("java:S112", issuesByStatus.get(0).getRule());
+        assertEquals("", issuesByStatus.get(0).getLanguage());
     }
 
     @Test
@@ -160,7 +165,9 @@ public class AbstractIssuesProviderTest {
         List<Issue> issuesByStatus = provider.getIssuesByStatus();
         List<Map<String,String>> rawIssues = provider.getRawIssues();
         assertEquals(2, issuesByStatus.size());
-        // TODO : check both issues are identical
+        assertEquals(issuesByStatus.get(0).getKey(), issuesByStatus.get(1).getKey());
+        assertEquals(issuesByStatus.get(0).getRule(), issuesByStatus.get(1).getRule());
+        assertEquals(issuesByStatus.get(0).getLanguage(), issuesByStatus.get(1).getLanguage());
         assertEquals(2, rawIssues.size());
     }
 
@@ -192,7 +199,6 @@ public class AbstractIssuesProviderTest {
         List<Map<String,String>> rawIssues = provider.getRawIssues();
         assertTrue(issuesByStatus.size() <= MAXIMUM_ISSUES_LIMIT);
         assertTrue(rawIssues.size() <= MAXIMUM_ISSUES_LIMIT);
-        // TODO : check log
     }
 
 }
