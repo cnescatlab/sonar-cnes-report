@@ -20,6 +20,7 @@ package fr.cnes.sonar.report.providers.issues;
 import fr.cnes.sonar.report.model.Issue;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
+import fr.cnes.sonar.report.utils.StringManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +32,20 @@ import com.google.gson.JsonObject;
 import org.junit.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class AbstractIssuesProviderTest {
+
+    /**
+     *  Name of the property for the maximum number of results per page
+     */
+    protected static final String MAX_PER_PAGE_SONARQUBE = "MAX_PER_PAGE_SONARQUBE";
+    /**
+     * Correspond to the maximum number of issues that SonarQube allow
+     * web api's users to collect.
+     */
+    private static final int MAXIMUM_ISSUES_LIMIT = 10000;
     
     @Test
     public void testNoIssues() throws BadSonarQubeRequestException, SonarQubeException {
@@ -53,6 +65,134 @@ public class AbstractIssuesProviderTest {
         List<Map<String,String>> rawIssues = provider.getRawIssues();
         assertEquals(0, issuesByStatus.size());
         assertEquals(0, rawIssues.size());
+    }
+
+    @Test
+    public void testIssuesWithCorrespondingRules() throws BadSonarQubeRequestException, SonarQubeException {
+        // Creates a response from SonarQube with some issues matching rules
+        JsonObject issue1 = new JsonObject();
+        issue1.addProperty("key", "AXs6TiZb_DAZnba7Q_0P");
+        issue1.addProperty("rule", "java:S112");
+        JsonObject issue2 = new JsonObject();
+        issue2.addProperty("key", "AXs6TiZb_DAZnba7Q_0Q");
+        issue2.addProperty("rule", "java:S100");
+        JsonArray issues = new JsonArray();
+        issues.add(issue1);
+        issues.add(issue2);
+
+        JsonObject rule1 = new JsonObject();
+        rule1.addProperty("key", "java:S112");
+        rule1.addProperty("langName", "Java");
+        JsonObject rule2 = new JsonObject();
+        rule2.addProperty("key", "java:S100");
+        rule1.addProperty("langName", "Java");
+        JsonArray rules = new JsonArray();
+        rules.add(rule1);
+        rules.add(rule2);
+
+        JsonObject response = new JsonObject();
+        response.addProperty("total", 2);
+        response.add("issues", issues);
+        response.add("rules", rules);
+
+        FakeIssuesProvider provider = new FakeIssuesProvider();
+        provider.setFakeObject(response);
+
+        // Call methods from abstract class & check result
+        List<Issue> issuesByStatus = provider.getIssuesByStatus();
+        List<Map<String,String>> rawIssues = provider.getRawIssues();
+        assertEquals(2, issuesByStatus.size());
+        // TODO : check Issue content
+        assertEquals(2, rawIssues.size());
+    }
+
+    @Test
+    public void testIssueWithNoCorrespondingRule() throws BadSonarQubeRequestException, SonarQubeException {
+        // Creates a response from SonarQube with some issues matching rules
+        JsonObject issue = new JsonObject();
+        issue.addProperty("key", "AXs6TiZb_DAZnba7Q_0P");
+        issue.addProperty("rule", "java:S112");
+        JsonArray issues = new JsonArray();
+        issues.add(issue);
+
+        JsonArray rules = new JsonArray();
+
+        JsonObject response = new JsonObject();
+        response.addProperty("total", 1);
+        response.add("issues", issues);
+        response.add("rules", rules);
+
+        FakeIssuesProvider provider = new FakeIssuesProvider();
+        provider.setFakeObject(response);
+
+        // Call methods from abstract class & check result
+        List<Issue> issuesByStatus = provider.getIssuesByStatus();
+        assertEquals(1, issuesByStatus.size());
+        // TODO : check Issue content
+    }
+
+    @Test
+    public void testMultiplePages() throws BadSonarQubeRequestException, SonarQubeException {
+        // Creates a response from SonarQube with some issues matching rules
+        JsonObject issue = new JsonObject();
+        issue.addProperty("key", "AXs6TiZb_DAZnba7Q_0P");
+        issue.addProperty("rule", "java:S112");
+        JsonArray issues = new JsonArray();
+        issues.add(issue);
+
+        JsonObject rule = new JsonObject();
+        rule.addProperty("key", "java:S112");
+        rule.addProperty("langName", "Java");
+        JsonArray rules = new JsonArray();
+        rules.add(rule);
+
+        FakeIssuesProvider provider = new FakeIssuesProvider();
+
+        JsonObject response = new JsonObject();
+        int maxPerPage = Integer.parseInt(provider.getProperty(MAX_PER_PAGE_SONARQUBE));
+        int fakeNumberOfIssues = maxPerPage * 2;
+        response.addProperty("total", fakeNumberOfIssues);
+        response.add("issues", issues);
+        response.add("rules", rules);
+        provider.setFakeObject(response);
+
+        // Call methods from abstract class & check result
+        List<Issue> issuesByStatus = provider.getIssuesByStatus();
+        List<Map<String,String>> rawIssues = provider.getRawIssues();
+        assertEquals(2, issuesByStatus.size());
+        // TODO : check both issues are identical
+        assertEquals(2, rawIssues.size());
+    }
+
+    @Test
+    public void testTooManyIssues() throws BadSonarQubeRequestException, SonarQubeException {
+        // Creates a response from SonarQube with some issues matching rules
+        JsonObject issue = new JsonObject();
+        issue.addProperty("key", "AXs6TiZb_DAZnba7Q_0P");
+        issue.addProperty("rule", "java:S112");
+        JsonArray issues = new JsonArray();
+        issues.add(issue);
+
+        JsonObject rule = new JsonObject();
+        rule.addProperty("key", "java:S112");
+        rule.addProperty("langName", "Java");
+        JsonArray rules = new JsonArray();
+        rules.add(rule);
+
+        JsonObject response = new JsonObject();
+        response.addProperty("total", MAXIMUM_ISSUES_LIMIT + 1);
+        response.add("issues", issues);
+        response.add("rules", rules);
+
+        FakeIssuesProvider provider = new FakeIssuesProvider();
+        provider.setFakeObject(response);
+
+        // Call methods from abstract class & check result
+        List<Issue> issuesByStatus = provider.getIssuesByStatus();
+        List<Map<String,String>> rawIssues = provider.getRawIssues();
+        assertTrue(issuesByStatus.size() <= MAXIMUM_ISSUES_LIMIT);
+        assertTrue(rawIssues.size() <= MAXIMUM_ISSUES_LIMIT);
+        // TODO : check log
     }
 
 }
@@ -96,5 +236,12 @@ class FakeIssuesProvider extends AbstractIssuesProvider {
      */
     public JsonObject getIssuesAsJsonObject(final int page, final int maxPerPage, final String confirmed) throws BadSonarQubeRequestException, SonarQubeException {
         return this.fakeObject;
+    }
+
+    /**
+     * Call parent method to get properties
+     */
+    public String getProperty(String property) {
+        return getRequest(MAX_PER_PAGE_SONARQUBE);
     }
 }
