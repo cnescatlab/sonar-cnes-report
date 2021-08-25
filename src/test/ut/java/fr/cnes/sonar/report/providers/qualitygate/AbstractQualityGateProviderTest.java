@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.text.html.HTMLDocument.RunElement;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -38,7 +40,7 @@ import fr.cnes.sonar.report.model.QualityGate;
 public class AbstractQualityGateProviderTest {
 
     @Test
-    public void getQualityGatesEmpty() throws BadSonarQubeRequestException, SonarQubeException {
+    public void getQualityGatesEmptyTest() throws BadSonarQubeRequestException, SonarQubeException {
         // Empty API response
         JsonObject empty = new JsonObject();
         empty.addProperty("default", "empty");
@@ -52,7 +54,7 @@ public class AbstractQualityGateProviderTest {
     }
 
     @Test
-    public void getQualityGatesWithCorrespondingDetails() throws BadSonarQubeRequestException, SonarQubeException {
+    public void getQualityGatesWithCorrespondingDetailsTest() throws BadSonarQubeRequestException, SonarQubeException {
         // Fake API response
         JsonObject qualityGate1 = new JsonObject();
         qualityGate1.addProperty("id", "test1");
@@ -154,7 +156,7 @@ public class AbstractQualityGateProviderTest {
         JsonObject project = new JsonObject();
         project.add("qualityGate", qualityGateProperty);
 
-        // Test with an empty list of quality gates
+        // Test with a list a matching quality gate
         QualityGateProviderWrapper provider = new QualityGateProviderWrapper();
         provider.setFakeQualityGates(qualityGatesResponse);
         provider.setFakeQualityGatesDetails(new JsonObject());
@@ -162,6 +164,47 @@ public class AbstractQualityGateProviderTest {
 
         QualityGate result = provider.getProjectQualityGate();
         assertEquals("test2", result.getId());
+    }
+
+    @Test
+    public void getQualityGateStatusTest() throws BadSonarQubeRequestException, SonarQubeException {
+        // Create fake quality gate status
+        JsonObject condition1 = new JsonObject();
+        condition1.addProperty("status", "SUCCESS");
+        condition1.addProperty("metricKey", "metric_1");
+        condition1.addProperty("actualValue", "20");
+        condition1.addProperty("errorThreshold", "10");
+        condition1.addProperty("comparator", "LT");
+        JsonObject condition2 = new JsonObject();
+        condition2.addProperty("status", "ERROR");
+        condition2.addProperty("metricKey", "metric_2");
+        condition2.addProperty("actualValue", "100000");
+        condition2.addProperty("errorThreshold", "10");
+        condition2.addProperty("comparator", "GT");
+        JsonArray conditions = new JsonArray();
+        conditions.add(condition1);
+        conditions.add(condition2);
+        JsonObject status = new JsonObject();
+        status.add("conditions", conditions);
+        JsonObject qualityGateStatus = new JsonObject();
+        qualityGateStatus.add("projectStatus", status);
+
+        // Test with a successful quality gate
+        QualityGateProviderWrapper provider = new QualityGateProviderWrapper();
+        provider.setFakeQualityGateStatus(qualityGateStatus);
+
+        Map<String,String> result = provider.getQualityGateStatus();
+        assertEquals(2, result.size());
+        for(Map.Entry<String,String> entry: result.entrySet()) {
+
+            assertTrue(entry.getKey().endsWith("_TEST"));
+
+            if (entry.getValue() == "SUCCESS") {
+                assertEquals("SUCCESS", entry.getValue());
+            } else {                
+                assertEquals("ERROR (100000.0% is greater than 10%)", entry.getValue());
+            }
+        }
     }
 
     @Test
@@ -203,7 +246,6 @@ public class AbstractQualityGateProviderTest {
         private JsonObject fakeQualityGatesDetails;
         private JsonObject fakeProject;
         private JsonObject fakeQualityGateStatus;
-        private JsonObject fakeMetric;
 
         public QualityGateProviderWrapper() {
             super("server", "token", "project", "branch");
@@ -230,10 +272,6 @@ public class AbstractQualityGateProviderTest {
             this.fakeQualityGateStatus = pFake;
         }
 
-        public void setFakeMetric(JsonObject pFake) {
-            this.fakeMetric = pFake;
-        }
-
         /**
          * Wrapper methods to mock the API response
          */
@@ -257,7 +295,16 @@ public class AbstractQualityGateProviderTest {
 
         protected JsonObject getMetricAsJsonObject(final String metricKey)
                 throws BadSonarQubeRequestException, SonarQubeException {
-            return fakeMetric;
+            // Create fake metric response
+            JsonObject metric = new JsonObject();
+            metric.addProperty("name", metricKey + "_TEST");
+            metric.addProperty("type", "PERCENT");
+            JsonArray metrics = new JsonArray();
+            metrics.add(metric);
+            JsonObject responseMetric = new JsonObject();
+            responseMetric.add("metrics", metrics);
+
+            return responseMetric;
         }
 
         /**
