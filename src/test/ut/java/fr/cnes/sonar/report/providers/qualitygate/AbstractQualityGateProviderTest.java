@@ -79,6 +79,91 @@ public class AbstractQualityGateProviderTest {
         assertFalse(list.get(1).isDefault());
     }
 
+    @Test(expected = UnknownQualityGateException.class)
+    public void getProjectNoQualityGateTest() throws UnknownQualityGateException, BadSonarQubeRequestException, SonarQubeException {
+        // Empty API response
+        JsonObject empty = new JsonObject();
+        empty.addProperty("default", "empty");
+        empty.add("qualitygates", new JsonArray());
+
+        JsonObject qualityGateProperty = new JsonObject();
+        qualityGateProperty.addProperty("key", "no_matching_key");
+        JsonObject project = new JsonObject();
+        project.add("qualityGate", qualityGateProperty);
+
+        // Test with an empty list of quality gates
+        QualityGateProviderWrapper provider = new QualityGateProviderWrapper();
+        provider.setFakeQualityGates(empty);
+        provider.setFakeQualityGatesDetails(new JsonObject());
+        provider.setFakeProject(project);
+
+        provider.getProjectQualityGate();
+    }
+
+    @Test(expected = UnknownQualityGateException.class)
+    public void getProjectNoMatchingQualityGateTest() throws UnknownQualityGateException, BadSonarQubeRequestException, SonarQubeException {
+        // Fake API response
+        JsonObject qualityGate1 = new JsonObject();
+        qualityGate1.addProperty("id", "test1");
+        JsonObject qualityGate2 = new JsonObject();
+        qualityGate2.addProperty("id", "test2");
+        
+        JsonArray qualityGateList = new JsonArray();
+        qualityGateList.add(qualityGate1);
+        qualityGateList.add(qualityGate2);
+        
+        JsonObject qualityGatesResponse = new JsonObject();
+        qualityGatesResponse.addProperty("default", "test1");
+        qualityGatesResponse.add("qualitygates", qualityGateList);
+
+        JsonObject qualityGateProperty = new JsonObject();
+        qualityGateProperty.addProperty("key", "no_matching_key");
+        JsonObject project = new JsonObject();
+        project.add("qualityGate", qualityGateProperty);
+
+        // Test with an empty list of quality gates
+        QualityGateProviderWrapper provider = new QualityGateProviderWrapper();
+        provider.setFakeQualityGates(qualityGatesResponse);
+        provider.setFakeQualityGatesDetails(new JsonObject());
+        provider.setFakeProject(project);
+
+        provider.getProjectQualityGate();
+    }
+
+    @Test
+    public void getProjectWithMatchingQualityGateTest() throws UnknownQualityGateException, BadSonarQubeRequestException, SonarQubeException {
+        // Fake API response
+        JsonObject qualityGate1 = new JsonObject();
+        qualityGate1.addProperty("id", "test1");
+        JsonObject qualityGate2 = new JsonObject();
+        qualityGate2.addProperty("id", "test2");
+        JsonObject qualityGate3 = new JsonObject();
+        qualityGate3.addProperty("id", "test3");
+        
+        JsonArray qualityGateList = new JsonArray();
+        qualityGateList.add(qualityGate1);
+        qualityGateList.add(qualityGate2);
+        qualityGateList.add(qualityGate3);
+        
+        JsonObject qualityGatesResponse = new JsonObject();
+        qualityGatesResponse.addProperty("default", "test1");
+        qualityGatesResponse.add("qualitygates", qualityGateList);
+
+        JsonObject qualityGateProperty = new JsonObject();
+        qualityGateProperty.addProperty("key", "test2");
+        JsonObject project = new JsonObject();
+        project.add("qualityGate", qualityGateProperty);
+
+        // Test with an empty list of quality gates
+        QualityGateProviderWrapper provider = new QualityGateProviderWrapper();
+        provider.setFakeQualityGates(qualityGatesResponse);
+        provider.setFakeQualityGatesDetails(new JsonObject());
+        provider.setFakeProject(project);
+
+        QualityGate result = provider.getProjectQualityGate();
+        assertEquals("test2", result.getId());
+    }
+
     @Test
     public void getErrorExplanationTest() {
         QualityGateProviderWrapper qualityGateProvider = new QualityGateProviderWrapper();
