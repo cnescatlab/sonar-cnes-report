@@ -19,8 +19,6 @@ package fr.cnes.sonar.report.providers.language;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Map;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -28,7 +26,6 @@ import org.junit.Test;
 
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.model.Language;
 import fr.cnes.sonar.report.model.Languages;
 
 public class AbstractLanguageProviderTest {
