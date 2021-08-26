@@ -140,9 +140,9 @@ public class AbstractFacetsProviderTest {
         TimeFacets result = provider.getTimeFacets();
         assertEquals(0, result.getFacetValues("test").size());
         assertEquals(2, result.getFacetValues("nb_issues").size());
-        assertEquals(44419.59709490741, result.getFacetValues("nb_issues").get(0).getDate(), 0.00001);
+        assertEquals(44419.59709490741, result.getFacetValues("nb_issues").get(0).getDate(), 0.1);
         assertEquals("5", result.getFacetValues("nb_issues").get(0).getValue());
-        assertEquals(44419.59709490741, result.getFacetValues("nb_issues").get(1).getDate(), 0.00001);
+        assertEquals(44419.59709490741, result.getFacetValues("nb_issues").get(1).getDate(), 0.1);
         assertEquals("300.8", result.getFacetValues("nb_issues").get(1).getValue());
     }
 
