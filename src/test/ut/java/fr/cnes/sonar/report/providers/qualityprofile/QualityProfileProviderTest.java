@@ -1,9 +1,8 @@
-package fr.cnes.sonar.report.providers;
+package fr.cnes.sonar.report.providers.qualityprofile;
 
 import fr.cnes.sonar.report.CommonTest;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.providers.qualityprofile.*;
 
 import org.junit.Test;
 

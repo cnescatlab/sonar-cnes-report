@@ -12,7 +12,7 @@ public class DateConverterTest {
     public void validSonarQubeDateToExcelDateTest() {
         final double expected = 44419.50796296296;
         final double actual = DateConverter.sonarQubeDateToExcelDate("2021-08-11T12:11:28+0000");
-        assertEquals(expected, actual);
+        assertEquals(expected, actual, 0.1);
     }
 
     @Test(expected = DateTimeParseException.class)

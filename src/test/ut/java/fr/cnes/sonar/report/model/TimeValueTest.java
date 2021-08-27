@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.Test;
 
 
-
 public class TimeValueTest extends CommonTest {
 
     @Test
