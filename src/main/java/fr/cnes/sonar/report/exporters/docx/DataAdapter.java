@@ -17,12 +17,32 @@
 
 package fr.cnes.sonar.report.exporters.docx;
 
-import fr.cnes.sonar.report.model.*;
-import fr.cnes.sonar.report.utils.StringManager;
+import static fr.cnes.sonar.report.utils.MeasureConverter.getIntMeasureFromString;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.logging.Logger;
+
 import org.apache.commons.math3.util.Precision;
 
-import java.util.*;
-import java.util.logging.Logger;
+import fr.cnes.sonar.report.model.Issue;
+import fr.cnes.sonar.report.model.Language;
+import fr.cnes.sonar.report.model.Measure;
+import fr.cnes.sonar.report.model.QualityProfile;
+import fr.cnes.sonar.report.model.Report;
+import fr.cnes.sonar.report.model.Rule;
+import fr.cnes.sonar.report.model.SecurityHotspot;
+import fr.cnes.sonar.report.utils.StringManager;
 
 /**
  * Format resources in different structure to have an easier use
@@ -863,9 +883,9 @@ public final class DataAdapter {
 
         // get metrics values needed
         List<Measure> measures = report.getMeasures();
-        int reliabilityDebt = Integer.parseInt(findMeasure(measures, RELIABILITY_REMEDIATION_EFFORT));
-        int securityDebt = Integer.parseInt(findMeasure(measures, SECURITY_REMEDIATION_EFFORT));
-        int maintainabilityDebt = Integer.parseInt(findMeasure(measures, SQALE_INDEX));
+        int reliabilityDebt = getIntMeasureFromString(findMeasure(measures, RELIABILITY_REMEDIATION_EFFORT));
+        int securityDebt = getIntMeasureFromString(findMeasure(measures, SECURITY_REMEDIATION_EFFORT));
+        int maintainabilityDebt = getIntMeasureFromString(findMeasure(measures, SQALE_INDEX));
         int totalTechnicalDebt = reliabilityDebt + securityDebt + maintainabilityDebt;
 
         String reliabilityDebtFormatted;
