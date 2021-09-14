@@ -101,21 +101,21 @@ public class ReportSonarPluginProperties {
 					.category(CNES_REPORT_NAME)
 					.name(DOCX_PATH_NAME)
 					.description(DOCX_PATH_DESC)
-					.onQualifiers(Qualifiers.PROJECT)
+					.onQualifiers(Qualifiers.APP)
 					.build()
             ,
             PropertyDefinition.builder(MD_PATH_KEY)
 					.category(CNES_REPORT_NAME)
 					.name(MD_PATH_NAME)
 					.description(MD_PATH_DESC)
-					.onQualifiers(Qualifiers.PROJECT)
+					.onQualifiers(Qualifiers.APP)
 					.build()
             ,
             PropertyDefinition.builder(XLSX_PATH_KEY)
 					.category(CNES_REPORT_NAME)
 					.name(XLSX_PATH_NAME)
 					.description(XLSX_PATH_DESC)
-					.onQualifiers(Qualifiers.PROJECT)
+					.onQualifiers(Qualifiers.APP)
 					.build());
     }
 }
