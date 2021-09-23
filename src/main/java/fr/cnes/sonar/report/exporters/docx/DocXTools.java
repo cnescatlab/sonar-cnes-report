@@ -17,24 +17,27 @@
 
 package fr.cnes.sonar.report.exporters.docx;
 
-import fr.cnes.sonar.report.model.Facet;
+import fr.cnes.sonar.report.model.Facets;
+import fr.cnes.sonar.report.model.TimeFacets;
 import fr.cnes.sonar.report.model.Value;
+import fr.cnes.sonar.report.model.TimeValue;
 import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
-import org.apache.poi.ss.util.ImageUtils;
 import org.apache.poi.xwpf.usermodel.*;
+import org.apache.poi.util.Units;
 import org.apache.xmlbeans.XmlException;
 
-
-import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
+import javax.imageio.ImageIO;
 
 /**
  * Different tools to manipulate docx
@@ -58,6 +61,14 @@ public final class DocXTools {
      */
     private static final String CHART_TYPE_TITLE = "chart.type.title";
     /**
+     * title for chart displaying the evolution of the number of issues
+     */
+    private static final String CHART_VIOLATIONS_TITLE = "chart.violations.title";
+    /**
+     * title for chart displaying the evolution of the technical debt ratio
+     */
+    private static final String CHART_TECHNICAL_DEBT_RATIO_TITLE = "chart.technicalDebtRatio.title";
+    /**
      * placeholder for chart displaying number of issues by severity
      */
     private static final String TYPE_TABLE_PLACEHOLDER = "$TYPE";
@@ -65,7 +76,14 @@ public final class DocXTools {
      * placeholder for chart displaying number of issues by severity
      */
     private static final String SEVERITY_TABLE_PLACEHOLDER = "$SEVERITY";
-
+    /**
+     * placeholder for chart displaying issues history
+     */
+    private static final String VIOLATIONS_CHART_PLACEHOLDER = "$VIOLATIONS";
+    /**
+     * placeholder for chart displaying technical debt ratio history
+     */
+    private static final String TECHNICAL_DEBT_RATIO_CHART_PLACEHOLDER = "$TECHNICAL_DEBT_RATIO";
     /**
      * facet's name for number of issues by severity
      */
@@ -74,6 +92,14 @@ public final class DocXTools {
      * facet's name for number of issues by type
      */
     private static final String TYPES = "types";
+    /**
+     * facet's name for issues history
+     */
+    private static final String VIOLATIONS = "violations";
+    /**
+     * facet's name for technical debt ratio history
+     */
+    private static final String TECHNICAL_DEBT_RATIO = "sqale_debt_ratio";
 
     /**
      * Private constructor to hide the public one
@@ -87,12 +113,14 @@ public final class DocXTools {
      * @throws IOException ...
      * @throws XmlException ...
      */
-    public static void fillCharts(XWPFDocument document, List<Facet> facets)
+    public static void fillCharts(XWPFDocument document, Facets facets, TimeFacets timeFacets)
             throws IOException, XmlException {
 
         final List<XWPFChartSpace> chartSpaces = XWPFChartSpace.getChartSpaces(document);
-        final List<Value> dataPerType = DataAdapter.getFacetValues(facets, TYPES);
-        final List<Value> dataPerSeverity = DataAdapter.getFacetValues(facets, SEVERITIES);
+        final List<Value> dataPerType = facets.getFacetValues(TYPES);
+        final List<Value> dataPerSeverity = facets.getFacetValues(SEVERITIES);
+        final List<TimeValue> issuesHistory = timeFacets.getFacetValues(VIOLATIONS);
+        final List<TimeValue> technicalDebtRatioHistory = timeFacets.getFacetValues(TECHNICAL_DEBT_RATIO);
 
         // browse chart list to find placeholders (based on locale) in title
         // and provide them adapted resources
@@ -107,7 +135,15 @@ public final class DocXTools {
             } else if(currentChartTitle.contains(TYPE_TABLE_PLACEHOLDER)) {
                 chartSpace.setValues(dataPerType);
                 chartSpace.setTitle(StringManager.string(CHART_TYPE_TITLE));
-            }            
+            // fill the scatter chart with the evolution of the number of issues
+            } else if(currentChartTitle.contains(VIOLATIONS_CHART_PLACEHOLDER)) {
+                chartSpace.setTimeValues(issuesHistory);
+                chartSpace.setTitle(StringManager.string(CHART_VIOLATIONS_TITLE));
+            // fill the scatter chart with the evolution of the technical debt ratio
+            } else if(currentChartTitle.contains(TECHNICAL_DEBT_RATIO_CHART_PLACEHOLDER)) {
+                chartSpace.setTimeValues(technicalDebtRatioHistory);
+                chartSpace.setTitle(StringManager.string(CHART_TECHNICAL_DEBT_RATIO_TITLE));
+            }
 
         }
         
@@ -229,7 +265,9 @@ public final class DocXTools {
         String value;
         ClassLoader classloader;
         InputStream is;
-        Dimension dim;
+        BufferedImage image;
+        ByteArrayOutputStream baos;
+        ByteArrayInputStream bais;
         // For all Run
         for (XWPFRun currentRun : runs){
             // if there are matter to work on
@@ -258,16 +296,27 @@ public final class DocXTools {
                 // add images if we have something to add
                 if(!pictures.isEmpty()) {
                     // browse picture list previously filled out
-
                     for(String filename : pictures) {
-                        classloader = Thread.currentThread().getContextClassLoader();
-                        is = classloader.getResourceAsStream(IMG_FOLDER +filename);
-                        // height and width are retrieve from here
-                        dim = ImageUtils.getImageDimension(is, Document.PICTURE_TYPE_PNG);
-                        currentRun.addPicture(is, Document.PICTURE_TYPE_PNG,
-                                filename, dim.width, dim.height);
-                        // close picture
+                        // get the image from resources as an input stream
+                        classloader = DocXTools.class.getClassLoader();
+                        is = classloader.getResourceAsStream(IMG_FOLDER + filename);
+                        // convert the input stream to a buffered image
+                        image = ImageIO.read(is);
+                        // close the input stream
                         is.close();
+                        // retrieve image dimensions
+                        int width = image.getWidth();
+                        int height = image.getHeight();
+                        // ratio for dimensions shrinking
+                        double ratio = 0.25;
+                        // write the buffered image on a byte array output stream
+                        baos = new ByteArrayOutputStream();
+                        ImageIO.write(image, "png", baos);
+                        // create a byte array input stream from the previous stream
+                        bais = new ByteArrayInputStream(baos.toByteArray());
+                        // add the image to the run
+                        currentRun.addPicture(bais, Document.PICTURE_TYPE_PNG,
+                                filename, Units.toEMU(width*ratio), Units.toEMU(height*ratio));
                     }
                 }
             }
@@ -290,7 +339,7 @@ public final class DocXTools {
                                  List<List<String>> data, String name) {
 
         // if there are no resources, there a
-        if(data!=null && !data.isEmpty()) {
+        if(data!=null) {
             // table to fill out
             XWPFTable table = null;
 
@@ -314,29 +363,31 @@ public final class DocXTools {
                 
                 }
 	            
-	            // create the top line (header) and fill it
-	            XWPFTableRow row = table.createRow();
-	            for(String field : header) {
-	                row.createCell().setText(field);
-	            }
-	
-	            // create resources rows
-	            for(int i = 0 ; i < data.size() ; i++) {
-	                table.createRow();
-	            }
-	
-	            // fill resources rows
-	            for(int iLine = 0 ; iLine < data.size() ; iLine++) {
-	                row = table.getRow(iLine+1);
-	                final List<String> line = data.get(iLine);
-	
-	                for (int iCell = 0; iCell < line.size(); iCell++) {
-	                    if(iCell>=row.getTableCells().size()) {
-	                        row.createCell();
-	                    }
-	                    row.getCell(iCell).setText(line.get(iCell));
+                if (!data.isEmpty()) {
+                    // create the top line (header) and fill it
+                    XWPFTableRow row = table.createRow();
+                    for(String field : header) {
+                        row.createCell().setText(field);
 	                }
-	            }
+	
+                    // create resources rows
+                    for(int i = 0 ; i < data.size() ; i++) {
+                        table.createRow();
+                    }
+        
+                    // fill resources rows
+                    for(int iLine = 0 ; iLine < data.size() ; iLine++) {
+                        row = table.getRow(iLine+1);
+                        final List<String> line = data.get(iLine);
+        
+                        for (int iCell = 0; iCell < line.size(); iCell++) {
+                            if(iCell>=row.getTableCells().size()) {
+                                row.createCell();
+                            }
+                            row.getCell(iCell).setText(line.get(iCell));
+                        }
+                    }
+                }
             }
         }
     }

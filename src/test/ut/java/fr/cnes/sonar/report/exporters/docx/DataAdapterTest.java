@@ -40,12 +40,13 @@ public class DataAdapterTest extends CommonTest{
         // Fill manually the placeHolders depending on what we initialized in "CommonTest"
         expected.put("XX-PROJECTNAME-XX", "CNES Report");
         expected.put("XX-DUPLICATION-XX", "1.0");
+        expected.put("XX-COMMENTDENSITY-XX", "1.0");
         expected.put("XX-MAXNCLOC-XX", "unknown");
         expected.put("XX-QUALITYGATEFILE-XX", "CNES.xml");
         expected.put("XX-MAXCOGNITIVECOMPLEXITY-XX", "unknown");
         expected.put("XX-QUALITYPROFILENAME-XX", "");
         expected.put("XX-MINCOMMENTDENSITY-XX", "unknown");
-        expected.put("XX-QUALITYGATE-XX", "1.0");
+        expected.put("XX-QUALITYGATE-XX", "OK.png");
         expected.put("XX-MAXDUPLICATION-XX", "unknown");
         expected.put("XX-QUALITYGATENAME-XX", "CNES");
         expected.put("XX-QUALITYPROFILEFILE-XX", "");
@@ -53,18 +54,22 @@ public class DataAdapterTest extends CommonTest{
         expected.put("XX-AUTHOR-XX", "Lequal");
         expected.put("XX-MINCOMPLEXITY-XX", "unknown");
         expected.put("XX-MAXCOMPLEXITY-XX", "unknown");
-        expected.put("XX-SECURITY-XX", "C");
+        expected.put("XX-SECURITY-XX", "C.png");
+        expected.put("XX-SECURITYREVIEW-XX", "D.png");
         expected.put("XX-MINCOGNITIVECOMPLEXITY-XX", "unknown");
         expected.put("XX-DATE-XX", new Date().toString().substring(0,16));
-        expected.put("XX-RELIABILITY-XX", "A");
+        expected.put("XX-RELIABILITY-XX", "A.png");
         expected.put("XX-COVERAGE-XX", "1.0");
         expected.put("XX-VERSION-XX", "Version");
         expected.put("XX-LINES-XX", "1.0");
-        expected.put("XX-MAINTAINABILITY-XX", "B");
+        expected.put("XX-MAINTAINABILITY-XX", "B.png");
         expected.put("XX-MINCOVERAGE-XX", "0.0");
         expected.put("XX-DESCRIPTION-XX", "Short description");
+        expected.put("XX-XXXXXXXXXXXXXXX-XX", "3224");
         expected.put("XX-MINNCLOC-XX", "unknown");
         expected.put("XX-MAXCOMMENTDENSITY-XX", "unknown");
+        expected.put("XX-MEDIANNCLOC-XX", "unknown");
+        expected.put("XX-COMPLIANCE-XX", "-66.7");
         Assert.assertEquals(expected, placeHolders);
 
         // Add the maxcoverage to cancel the unknown error
@@ -83,6 +88,7 @@ public class DataAdapterTest extends CommonTest{
         expected.replace("XX-MINCOGNITIVECOMPLEXITY-XX", "0.0");
         expected.replace("XX-MINNCLOC-XX", "0.0");
         expected.replace("XX-MAXCOMMENTDENSITY-XX", "1.0");
+        expected.replace("XX-MEDIANNCLOC-XX", "1.0");
         expected.put("XX-MAXCOVERAGE-XX", "1.0");
         Map<String,String> newPlaceHolders = DataAdapter.loadPlaceholdersMap(report);
         Assert.assertEquals(expected, newPlaceHolders);

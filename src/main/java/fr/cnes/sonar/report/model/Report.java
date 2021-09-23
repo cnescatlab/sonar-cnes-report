@@ -52,7 +52,19 @@ public class Report {
     /**
      * List of facets of the project
      */
-    private List<Facet> facets;
+    private Facets facets;
+    /**
+     * List of facets of the project
+     */
+    private TimeFacets timeFacets;
+    /**
+     * List of security hotspots detected in the project
+     */
+    private List<SecurityHotspot> toReviewSecurityHotspots;
+    /**
+     * List of reviewed security hotspots issues in the project
+     */
+    private List<SecurityHotspot> reviewedSecurityHotspots;
     /**
      * List of measures on the project
      */
@@ -77,7 +89,10 @@ public class Report {
      * Maps of metrics stats
      */
     private Map<String, Double> metricsStats;
-
+    /**
+     * Map of quality gate conditions statuses
+     */
+    private Map<String, String> qualityGateStatus;
     /**
      * Default constructor
      */
@@ -89,10 +104,15 @@ public class Report {
         this.qualityGate = new QualityGate();
         this.issues = new ArrayList<>();
         this.unconfirmed = new ArrayList<>();
-        this.facets = new ArrayList<>();
+        this.facets = new Facets();
+        this.timeFacets = new TimeFacets();
+        this.toReviewSecurityHotspots = new ArrayList<>();
+        this.reviewedSecurityHotspots = new ArrayList<>();
         this.measures = new ArrayList<>();
         this.rawIssues = new ArrayList<>();
         this.components = new ArrayList<>();
+        this.metricsStats = new HashMap<>();
+        this.qualityGateStatus = new HashMap<>();
         this.project = new Project(StringManager.EMPTY, StringManager.EMPTY,
                 StringManager.EMPTY,StringManager.EMPTY,StringManager.EMPTY, StringManager.EMPTY);
     }
@@ -161,6 +181,38 @@ public class Report {
      */
     public void setIssues(List<Issue> pIssues) {
         this.issues = new ArrayList<>(pIssues);
+    }
+
+    /**
+     * Get security hotspots with TO_REVIEW status
+     * @return security hotspots
+     */
+    public List<SecurityHotspot> getToReviewSecurityHotspots() {
+        return toReviewSecurityHotspots;
+    }
+
+    /**
+     * Setter for toReviewSecurityHotspots
+     * @param pToReviewSecurityHotspots value
+     */
+    public void setToReviewSecurityHotspots(List<SecurityHotspot> pToReviewSecurityHotspots) {
+        this.toReviewSecurityHotspots = pToReviewSecurityHotspots;
+    }
+
+    /**
+     * Get security hotspots with REVIEWED status
+     * @return security hotspots
+     */
+    public List<SecurityHotspot> getReviewedSecurityHotspots() {
+        return reviewedSecurityHotspots;
+    }
+
+    /**
+     * Setter for reviewedSecurityHotspots
+     * @param pReviewedSecurityHotspots value
+     */
+    public void setReviewedSecurityHotspots(List<SecurityHotspot> pReviewedSecurityHotspots) {
+        this.reviewedSecurityHotspots = pReviewedSecurityHotspots;
     }
 
     /**
@@ -263,16 +315,32 @@ public class Report {
      * Getter for facets
      * @return facets
      */
-    public List<Facet> getFacets() {
-        return new ArrayList<>(facets);
+    public Facets getFacets() {
+        return facets;
     }
 
     /**
      * Setter for facets
      * @param pFacets value
      */
-    public void setFacets(List<Facet> pFacets) {
-        this.facets = new ArrayList<>(pFacets);
+    public void setFacets(Facets pFacets) {
+        this.facets = pFacets;
+    }
+
+    /**
+     * Getter for time facets
+     * @return timeFacets
+     */
+    public TimeFacets getTimeFacets() {
+        return timeFacets;
+    }
+
+    /**
+     * Setter for time facets
+     * @param pTimeFacets value
+     */
+    public void setTimeFacets(TimeFacets pTimeFacets) {
+        this.timeFacets = pTimeFacets;
     }
 
     /**
@@ -284,10 +352,8 @@ public class Report {
         final StringBuilder sb = new StringBuilder();
 
         // append each quality profile name
-        Language language;
         for(ProfileMetaData q : project.getQualityProfiles()) {
-            language = project.getLanguage(q.getLanguage());
-            sb.append(q.getName()).append(" [").append(language.getName()).append("]; ");
+            sb.append(q.getName()).append(" [").append(q.getLanguageName()).append("]; ");
         }
 
         return sb.toString();
@@ -397,5 +463,21 @@ public class Report {
      */
     public void setUnconfirmed(List<Issue> pIssues) {
         this.unconfirmed = new ArrayList<>(pIssues);
+    }
+
+    /**
+     * Getter for qualityGateStatus
+     * @return qualityGateStatus
+     */
+    public Map<String, String> getQualityGateStatus() {
+        return qualityGateStatus;
+    }
+
+    /**
+     * Setter for unconfirmed
+     * @param pQualityGateStatus value
+     */
+    public void setQualityGateStatus(Map<String, String> pQualityGateStatus) {
+        this.qualityGateStatus = pQualityGateStatus;
     }
 }

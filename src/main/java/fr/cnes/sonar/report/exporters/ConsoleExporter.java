@@ -63,7 +63,7 @@ public class ConsoleExporter implements IExporter {
         }
 
         // log number of issues
-        message = String.format("Nombre total de violations : %s", issues.size());
+        message = String.format("Total number of violations : %s", issues.size());
         LOGGER.info(message);
 
         return null;

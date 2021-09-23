@@ -20,7 +20,7 @@ package fr.cnes.sonar.report.factory;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.SonarQubeServer;
-import fr.cnes.sonar.report.providers.SonarQubeInfoProvider;
+import fr.cnes.sonar.report.providers.sonarqubeinfo.SonarQubeInfoProvider;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,22 +32,22 @@ public class ServerFactory {
 
     /** List of SonarQube versions which are supported by cnesreport. */
     private static final List<String> SUPPORTED_VERSIONS = Arrays.asList(
-            "6.6", "6.6.*", "6.7", "6.7.*", "7.*", "8.*");
+            "8.9", "8.9.*");
 
     /** Url of the SonarQube server. */
     private String url;
 
-    /** Token of the SonarQube user. */
-    private String token;
+    /** Factory used to create providers. */
+    private ProviderFactory providerFactory;
 
     /**
      * Complete constructor.
      * @param pUrl Value for server.
-     * @param pToken Value for token.
+     * @param providerFactory The provider factory.
      */
-    public ServerFactory(final String pUrl, final String pToken) {
+    public ServerFactory(final String pUrl, final ProviderFactory providerFactory) {
         this.url = pUrl;
-        this.token = pToken;
+        this.providerFactory = providerFactory;
     }
 
     /**
@@ -64,7 +64,7 @@ public class ServerFactory {
         server.setUrl(this.url);
 
         // instantiation of providers
-        final SonarQubeInfoProvider infoProvider = new SonarQubeInfoProvider(server, this.token);
+        final SonarQubeInfoProvider infoProvider = this.providerFactory.createSonarQubeInfoProvider();
 
         // Set if the server is up or not.
         server.setStatus(infoProvider.getSonarQubeStatus());

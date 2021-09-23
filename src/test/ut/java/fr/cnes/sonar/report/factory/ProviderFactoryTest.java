@@ -1,70 +1,86 @@
 package fr.cnes.sonar.report.factory;
 
 import fr.cnes.sonar.report.CommonTest;
-import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
-import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.model.Language;
-import fr.cnes.sonar.report.providers.*;
+import fr.cnes.sonar.report.providers.facets.*;
+import fr.cnes.sonar.report.providers.issues.*;
+import fr.cnes.sonar.report.providers.measure.*;
+import fr.cnes.sonar.report.providers.project.*;
+import fr.cnes.sonar.report.providers.qualityprofile.*;
+import fr.cnes.sonar.report.providers.qualitygate.*;
+import fr.cnes.sonar.report.providers.language.*;
+import fr.cnes.sonar.report.providers.component.*;
+import fr.cnes.sonar.report.providers.securityhotspots.*;
+import fr.cnes.sonar.report.providers.sonarqubeinfo.*;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
-
 public class ProviderFactoryTest extends CommonTest {
 
-    private static final String TOKEN = "token";
-    private static final String PROJECT = "project";
-    private static final String BRANCH = "branch";
-
     @Test
-    public void createTest() {
-        final ProviderFactory providerFactory = new ProviderFactory(sonarQubeServer, TOKEN, PROJECT, BRANCH);
-        Assert.assertNotNull(providerFactory);
+    public void createStandaloneTest() {
 
-        AbstractDataProvider provider = providerFactory.create(IssuesProvider.class);
-        Assert.assertTrue(provider instanceof IssuesProvider);
+        FacetsProvider facetsProvider = standaloneProviderFactory.createFacetsProvider();
+        Assert.assertTrue(facetsProvider instanceof FacetsProviderStandalone);
 
-        provider = providerFactory.create(MeasureProvider.class);
-        Assert.assertTrue(provider instanceof MeasureProvider);
+        IssuesProvider issuesProvider = standaloneProviderFactory.createIssuesProvider();
+        Assert.assertTrue(issuesProvider instanceof IssuesProviderStandalone);
 
-        provider = providerFactory.create(ProjectProvider.class);
-        Assert.assertTrue(provider instanceof ProjectProvider);
+        MeasureProvider measureProvider = standaloneProviderFactory.createMeasureProvider();
+        Assert.assertTrue(measureProvider instanceof MeasureProviderStandalone);
 
-        provider = providerFactory.create(QualityProfileProvider.class);
-        Assert.assertTrue(provider instanceof QualityProfileProvider);
+        ProjectProvider projectProvider = standaloneProviderFactory.createProjectProvider();
+        Assert.assertTrue(projectProvider instanceof ProjectProviderStandalone);
 
-        provider = providerFactory.create(QualityGateProvider.class);
-        Assert.assertTrue(provider instanceof QualityGateProvider);
+        QualityProfileProvider qualityProfileProvider = standaloneProviderFactory.createQualityProfileProvider();
+        Assert.assertTrue(qualityProfileProvider instanceof QualityProfileProviderStandalone);
 
-        provider = providerFactory.create(LanguageProvider.class);
-        Assert.assertTrue(provider instanceof LanguageProvider);
+        QualityGateProvider qualityGateProvider = standaloneProviderFactory.createQualityGateProvider();
+        Assert.assertTrue(qualityGateProvider instanceof QualityGateProviderStandalone);
+
+        LanguageProvider languageProvider = standaloneProviderFactory.createLanguageProvider();
+        Assert.assertTrue(languageProvider instanceof LanguageProviderStandalone);
+
+        ComponentProvider componentProvider = standaloneProviderFactory.createComponentProvider();
+        Assert.assertTrue(componentProvider instanceof ComponentProviderStandalone);
+
+        SecurityHotspotsProvider securityHotspotsProvider = standaloneProviderFactory.createSecurityHotspotsProvider();
+        Assert.assertTrue(securityHotspotsProvider instanceof SecurityHotspotsProviderStandalone);
+
+        SonarQubeInfoProvider sonarQubeInfoProvider = standaloneProviderFactory.createSonarQubeInfoProvider();
+        Assert.assertTrue(sonarQubeInfoProvider instanceof SonarQubeInfoProviderStandalone);
     }
 
-
-
     @Test
-    public void languageProviderTest() throws NoSuchFieldException, BadSonarQubeRequestException, SonarQubeException, IllegalAccessException {
+    public void createPluginTest() {
 
-        // Use introspection to inject language and avoid network call
-        LanguageProvider languageProvider = new LanguageProvider(sonarQubeServer, TOKEN, PROJECT);
-        Field field = LanguageProvider.class.getDeclaredField("languages");
-        field.setAccessible(true);
-        HashMap hashMap = new HashMap();
-        Language cpp = new Language();
-        cpp.setKey("cpp");
-        cpp.setName("C++");
-        hashMap.put("cpp", cpp);
-        field.set(languageProvider, hashMap);
+        FacetsProvider facetsProvider = pluginProviderFactory.createFacetsProvider();
+        Assert.assertTrue(facetsProvider instanceof FacetsProviderPlugin);
 
-        // Test
-        String language = languageProvider.getLanguage("notalanguage");
-        Assert.assertEquals("?", language);
+        IssuesProvider issuesProvider = pluginProviderFactory.createIssuesProvider();
+        Assert.assertTrue(issuesProvider instanceof IssuesProviderPlugin);
 
-        String language2 = languageProvider.getLanguage("cpp");
-        Assert.assertEquals("C++", language2);
+        MeasureProvider measureProvider = pluginProviderFactory.createMeasureProvider();
+        Assert.assertTrue(measureProvider instanceof MeasureProviderPlugin);
 
+        ProjectProvider projectProvider = pluginProviderFactory.createProjectProvider();
+        Assert.assertTrue(projectProvider instanceof ProjectProviderPlugin);
 
+        QualityProfileProvider qualityProfileProvider = pluginProviderFactory.createQualityProfileProvider();
+        Assert.assertTrue(qualityProfileProvider instanceof QualityProfileProviderPlugin);
+
+        QualityGateProvider qualityGateProvider = pluginProviderFactory.createQualityGateProvider();
+        Assert.assertTrue(qualityGateProvider instanceof QualityGateProviderPlugin);
+
+        LanguageProvider languageProvider = pluginProviderFactory.createLanguageProvider();
+        Assert.assertTrue(languageProvider instanceof LanguageProviderPlugin);
+
+        ComponentProvider componentProvider = pluginProviderFactory.createComponentProvider();
+        Assert.assertTrue(componentProvider instanceof ComponentProviderPlugin);
+
+        SecurityHotspotsProvider securityHotspotsProvider = pluginProviderFactory.createSecurityHotspotsProvider();
+        Assert.assertTrue(securityHotspotsProvider instanceof SecurityHotspotsProviderPlugin);
+
+        SonarQubeInfoProvider sonarQubeInfoProvider = pluginProviderFactory.createSonarQubeInfoProvider();
+        Assert.assertTrue(sonarQubeInfoProvider instanceof SonarQubeInfoProviderPlugin);
     }
-
 }

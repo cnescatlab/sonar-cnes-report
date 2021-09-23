@@ -1,0 +1,39 @@
+# Description
+# ===========
+# This workflow is triggered each time the Java CI workflow succeeds
+# on master.
+# It looks for a milestone that is completed and close it.
+---
+name: Close Milestone
+
+on:
+  workflow_run:
+    workflows: ["Java CI"]
+    branches: [master]
+    types: 
+      - completed
+
+jobs:
+  close:
+    name: Close completed milestone
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Close a milestone if completed
+        run: |
+          milestones=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              https://api.github.com/repos/${{ github.repository }}/milestones \
+            | jq -r '. | map(select(.open_issues == 0 and .closed_issues > 0 and .state == "open"))')
+          if [ "$milestones" != "[]" ]
+          then
+            milestone_number=$(echo "$milestones" | jq -r '.[0].number')
+            curl -s \
+              -X PATCH \
+              -H "Authorization: token ${GITHUB_TOKEN}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              https://api.github.com/repos/${{ github.repository }}/milestones/${milestone_number} \
+              -d '{"state":"closed"}'
+          fi
+        env:
+          # Personal access tokens should be generated from https://github.com/settings/tokens with repository scope
+          GITHUB_TOKEN: ${{ secrets.REPO_SCOPED_TOKEN }}

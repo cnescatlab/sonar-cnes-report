@@ -19,10 +19,14 @@ package fr.cnes.sonar.report.exporters.docx;
 
 import com.google.common.collect.Lists;
 import fr.cnes.sonar.report.model.Value;
+import fr.cnes.sonar.report.model.TimeValue;
+
 import org.apache.poi.POIXMLDocumentPart;
 import org.apache.poi.openxml4j.opc.PackagePart;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.xmlbeans.XmlException;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTNumData;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTNumFmt;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTNumVal;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTPlotArea;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTStrVal;
@@ -151,7 +155,7 @@ public class XWPFChartSpace {
      * @param values values to set as a list of label/value
      * @throws IOException when writing the file
      */
-    public void setValues(final List<Value> values) throws IOException {
+    public void setValues(List<Value> values) throws IOException {
         final CTPlotArea ctPlotArea = chartSpace.getChartSpace().getChart().getPlotArea();
 
         // if the chart is a pie chart we continue
@@ -184,7 +188,60 @@ public class XWPFChartSpace {
                 ptListCat.add(cat);
                 ptListVal.add(val);
             }
+        }
+        // otherwise we do not support other type for now
 
+        // finally we save modifications
+        this.save();
+    }
+
+    /**
+     * Set time values inside the dedicated chart 
+     * @param values values to set as a list of date/value
+     * @throws IOException when writing the file
+     */
+    public void setTimeValues(List<TimeValue> values) throws IOException {
+        final CTPlotArea ctPlotArea = chartSpace.getChartSpace().getChart().getPlotArea();
+
+        // if the chart is a scatter chart we continue
+        if(!ctPlotArea.getScatterChartList().isEmpty()) {
+            //get lists of x values and y values
+            final List<CTNumVal> ptListXVal = ctPlotArea.getScatterChartList().get(0)
+                    .getSerList().get(0).getXVal().getNumRef().getNumCache().getPtList();
+            final List<CTNumVal> ptListYVal = ctPlotArea.getScatterChartList().get(0)
+                    .getSerList().get(0).getYVal().getNumRef().getNumCache().getPtList();
+
+            // clear what could be present before
+            ptListXVal.clear();
+            ptListYVal.clear();
+
+            // format date values
+            final CTNumData xNumCache = ctPlotArea.getScatterChartList().get(0)
+                    .getSerList().get(0).getXVal().getNumRef().getNumCache();
+            xNumCache.setFormatCode("m/d/yyyy\\ h:mm");
+
+            // format date axis
+            final CTNumFmt dateAxisFormat = ctPlotArea.getValAxList().get(1).getNumFmt();
+            dateAxisFormat.setFormatCode("m/d/yyyy\\ h:mm");
+
+            // write resources in the scatter chart
+            for (int i = 0 ; i < values.size() ; i++) {
+                // instantiate new x and y values
+                final CTNumVal xVal = CTNumVal.Factory.newInstance();
+                final CTNumVal yVal = CTNumVal.Factory.newInstance();
+
+                // set ids
+                xVal.setIdx(i);
+                yVal.setIdx(i);
+
+                // set values
+                xVal.setV(String.valueOf(values.get(i).getDate()));
+                yVal.setV(String.valueOf(values.get(i).getValue()));
+
+                // add new resources to lists
+                ptListXVal.add(xVal);
+                ptListYVal.add(yVal);
+            }
         }
         // otherwise we do not support other type for now
 

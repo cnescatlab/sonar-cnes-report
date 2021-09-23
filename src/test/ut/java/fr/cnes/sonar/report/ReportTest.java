@@ -66,14 +66,13 @@ public class ReportTest {
         assertEquals("", report.getQualityProfilesFilename());
         assert(report.getRawIssues().isEmpty());
         assert(report.getQualityProfiles().isEmpty());
-        assert(report.getFacets().isEmpty());
         assert(report.getIssues().isEmpty());
         assert(report.getMeasures().isEmpty());
     }
 
     @Test (expected = IllegalStateException.class)
     public void emptyExecuteTest() throws Exception{
-        ReportCommandLine.execute(new String[0]);
+        ReportCommandLine.execute(new String[0], null);
     }
 
     @Test

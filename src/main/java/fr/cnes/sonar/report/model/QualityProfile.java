@@ -18,6 +18,7 @@
 package fr.cnes.sonar.report.model;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Contain all Quality Profile's details
@@ -76,6 +77,14 @@ public class QualityProfile {
      */
     public String getConf() {
         return data.getConf();
+    }
+
+    /**
+     * Getter for rules
+     * @return rules
+     */
+    public List<Rule> getRules() {
+        return data.getRules();
     }
 
     /**

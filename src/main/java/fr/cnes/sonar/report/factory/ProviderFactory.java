@@ -17,81 +17,69 @@
 
 package fr.cnes.sonar.report.factory;
 
-import fr.cnes.sonar.report.model.SonarQubeServer;
-import fr.cnes.sonar.report.providers.AbstractDataProvider;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Logger;
+import fr.cnes.sonar.report.providers.component.ComponentProvider;
+import fr.cnes.sonar.report.providers.facets.FacetsProvider;
+import fr.cnes.sonar.report.providers.issues.IssuesProvider;
+import fr.cnes.sonar.report.providers.language.LanguageProvider;
+import fr.cnes.sonar.report.providers.measure.MeasureProvider;
+import fr.cnes.sonar.report.providers.project.ProjectProvider;
+import fr.cnes.sonar.report.providers.qualitygate.QualityGateProvider;
+import fr.cnes.sonar.report.providers.qualityprofile.QualityProfileProvider;
+import fr.cnes.sonar.report.providers.securityhotspots.SecurityHotspotsProvider;
+import fr.cnes.sonar.report.providers.sonarqubeinfo.SonarQubeInfoProvider;
 
 /**
- * Construct the correct providers based on SonarQube version.
+ * Generic interface for providers factories
  */
-public class ProviderFactory {
-
-    /** Logger of this class. */
-    private static final Logger LOGGER = Logger.getLogger(ProviderFactory.class.getName());
-
-    /** SonarQube server. */
-    private SonarQubeServer server;
-
-    /** Token to authenticate the user on the SonarQube server. */
-    private String token;
-
-    /** Key of the project to report. */
-    private String projectKey;
-
-    /** Branch of the project to report. */
-    private String branch;
-
+public interface ProviderFactory {
     /**
-     * Constructor.
-     * @param server Represents the server.
-     * @param token String representing the user token.
-     * @param project The id of the project to report.
-     * @param branch The branch of the project to report.
+     * Creates a new instance of a ComponentProvider
+     * @return A new instance of a ComponentProvider.
      */
-    public ProviderFactory(final SonarQubeServer server, final String token, final String project,
-            final String branch) {
-        // get sonar server
-        this.server = server;
-        // get user token
-        this.token = token;
-        // get project key
-        this.projectKey = project;
-        // get branch
-        this.branch = branch;
-    }
-
+    ComponentProvider createComponentProvider();
     /**
-     * Create a data provider from its class. The DataProvider must have one of the following constructors:
-     * - Constructor(final String server, final String token)
-     * - Constructor(final String server, final String token, final String project)
-     *
-     * @param providerClass Class of DataProvider to instantiate.
-     * @param <T> Class of the DataProvider.
-     * @return An operational DataProvider.
+     * Creates a new instance of a FacetsProvider
+     * @return A new instance of a FacetsProvider.
      */
-    public <T extends AbstractDataProvider> T create(final Class<T> providerClass) {
-        // Get all available constructors.
-        final Constructor<T>[] constructors = (Constructor<T>[]) providerClass.getConstructors();
-        // Final result.
-        T provider = null;
-
-        try {
-            if (null != constructors && 0 != constructors.length) {
-                if (2 == constructors[0].getParameterCount()) {
-                    provider = constructors[0].newInstance(server, token);
-                } else if (3 == constructors[0].getParameterCount()) {
-                    provider = constructors[0].newInstance(server, token, projectKey);
-                } else if (4 == constructors[0].getParameterCount()) {
-                    provider = constructors[0].newInstance(server, token, projectKey, branch);
-                }
-            }
-        } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
-            LOGGER.severe(e.getLocalizedMessage());
-        }
-        return provider;
-    }
-
+    FacetsProvider createFacetsProvider();
+    /**
+     * Creates a new instance of a IssuesProvider
+     * @return A new instance of a IssuesProvider.
+     */
+    IssuesProvider createIssuesProvider();
+    /**
+     * Creates a new instance of a LanguageProvider
+     * @return A new instance of a LanguageProvider.
+     */
+    LanguageProvider createLanguageProvider();
+    /**
+     * Creates a new instance of a MeasureProvider
+     * @return A new instance of a MeasureProvider.
+     */
+    MeasureProvider createMeasureProvider();
+    /**
+     * Creates a new instance of a ProjectProvider
+     * @return A new instance of a ProjectProvider.
+     */
+    ProjectProvider createProjectProvider();
+    /**
+     * Creates a new instance of a QualityGateProvider
+     * @return A new instance of a QualityGateProvider.
+     */
+    QualityGateProvider createQualityGateProvider();
+    /**
+     * Creates a new instance of a QualityProfileProvider
+     * @return A new instance of a QualityProfileProvider.
+     */
+    QualityProfileProvider createQualityProfileProvider();
+    /**
+     * Creates a new instance of a SecurityHotspotsProvider
+     * @return A new instance of a SecurityHotspotsProvider.
+     */
+    SecurityHotspotsProvider createSecurityHotspotsProvider();
+    /**
+     * Creates a new instance of a SonarQubeInfoProvider
+     * @return A new instance of a SonarQubeInfoProvider.
+     */
+    SonarQubeInfoProvider createSonarQubeInfoProvider();
 }

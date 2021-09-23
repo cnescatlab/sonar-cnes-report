@@ -50,34 +50,29 @@ public class DocXExporter implements IExporter {
      */
     private static final String COUNT_TABLE_PLACEHOLDER = "$ISSUES_COUNT";
     /**
+     * Placeholder for the table containing detailed security hotspots
+     */
+    private static final String SECURITY_HOTSPOTS_DETAILS_PLACEHOLDER = "$SECURITY_HOTSPOTS_DETAILS";
+    /**
+     * Placeholder for the table containing counts of security hotspots by review priority and security category
+     */
+    private static final String SECURITY_HOTSPOTS_COUNT_TABLE_PLACEHOLDER = "$SECURITY_HOTSPOTS_COUNT";
+    /**
      * Placeholder for the table containing counts of issues by type and severity
      */
     private static final String VOLUME_TABLE_PLACEHOLDER = "$VOLUME";
     /**
+     * Placeholder for the table containing values of each metric of the quality gate
+     */
+    private static final String QUALITY_GATE_STATUS_TABLE_PLACEHOLDER = "$QUALITY_GATE_STATUS";
+    /**
+     * Placeholder for the table containing the detailed technical debt
+     */
+    private static final String DETAILED_TECHNICAL_DEBT_TABLE_PLACEHOLDER = "$DETAILED_TECHNICAL_DEBT";
+    /**
      * Name of the property giving the path header's number
      */
     private static final String HEADER_NUMBER = "header.number";
-    /**
-     * Name of the columns in issues table
-     */
-    private static final String[] HEADER_FIELDS = {StringManager.string("header.name"),
-            StringManager.string("header.description"),
-            StringManager.string("header.type"),
-            StringManager.string("header.severity"),
-            StringManager.string(HEADER_NUMBER)};
-    /**
-     * Name of the columns in volumes table
-     */
-    private static final String[] VOLUMES_HEADER = {StringManager.string("header.language"),
-            StringManager.string(HEADER_NUMBER)};
-    /**
-     * Start index of the sub array in the headers array for the the second table
-     */
-    private static final int HEADER_START_INDEX = 2;
-    /**
-     * End index of the sub array in the headers array for the the second table
-     */
-    private static final int HEADER_END_INDEX = 5;
 
     /**
      * Overridden export for docX
@@ -116,24 +111,62 @@ public class DocXExporter implements IExporter {
         ) {
 
             // Fill charts
-            DocXTools.fillCharts(document, report.getFacets());
+            DocXTools.fillCharts(document, report.getFacets(), report.getTimeFacets());
 
             // Add issues
             final List<List<String>> issues = DataAdapter.getIssues(report);
-            final String[] issuesArrayFr = HEADER_FIELDS;
+            final String[] issuesArrayFr = {StringManager.string("header.name"),
+                StringManager.string("header.description"),
+                StringManager.string("header.type"),
+                StringManager.string("header.severity"),
+                StringManager.string(HEADER_NUMBER)};
             final List<String> headerIssues = new ArrayList<>(Arrays.asList(issuesArrayFr));
             DocXTools.fillTable(document, headerIssues, issues, DETAILS_TABLE_PLACEHOLDER);
 
             // Add issues count by type and severity
             final List<List<String>> types = DataAdapter.getTypes(report);
-            DocXTools.fillTable(document,
-                    headerIssues.subList(HEADER_START_INDEX, HEADER_END_INDEX),
-                    types, COUNT_TABLE_PLACEHOLDER);
+            final List<String> headerIssuesCount = DataAdapter.getReversedIssuesSeverities();
+            headerIssuesCount.add(0, StringManager.string("header.typeSlashSeverity"));
+            DocXTools.fillTable(document, headerIssuesCount, types, COUNT_TABLE_PLACEHOLDER);
+
+            // Add security hotspots
+            final List<List<String>> securityHotspots = DataAdapter.getSecurityHotspots(report);
+            final String[] securityHotspotsHeader = {StringManager.string("header.category"),
+                StringManager.string("header.name"),
+                StringManager.string("header.priority"),
+                StringManager.string("header.severity"),
+                StringManager.string("header.count")};
+            final List<String> headerSecurityHotspots = new ArrayList<>(Arrays.asList(securityHotspotsHeader));
+            DocXTools.fillTable(document, headerSecurityHotspots, securityHotspots, SECURITY_HOTSPOTS_DETAILS_PLACEHOLDER);
+
+            // Add security hotspots by security category and review priority
+            final List<List<String>> securityHotspotsByCategoryAndPriority = DataAdapter.getSecurityHotspotsByCategoryAndPriority(report);
+            final List<String> headerSecurityHotspotsCount = new ArrayList<>(Arrays.asList(DataAdapter.getSecurityHotspotPriorities()));
+            headerSecurityHotspotsCount.add(0, StringManager.string("header.categorySlashPriority"));
+            DocXTools.fillTable(document, headerSecurityHotspotsCount, securityHotspotsByCategoryAndPriority,
+                    SECURITY_HOTSPOTS_COUNT_TABLE_PLACEHOLDER);
 
             // Add volumes by language
-            final List<String> volumesHeader = new ArrayList<>(Arrays.asList(VOLUMES_HEADER));
+            final String[] volumesHeader = {StringManager.string("header.language"),
+                StringManager.string(HEADER_NUMBER)};
+            final List<String> headerVolumes = new ArrayList<>(Arrays.asList(volumesHeader));
             final List<List<String>> volumes = DataAdapter.getVolumes(report);
-            DocXTools.fillTable(document, volumesHeader, volumes, VOLUME_TABLE_PLACEHOLDER);
+            DocXTools.fillTable(document, headerVolumes, volumes, VOLUME_TABLE_PLACEHOLDER);
+
+            // Add quality gate status
+            final String[] qualityGateStatusHeader = {StringManager.string("header.metric"),
+                StringManager.string("header.value")};
+            final List<String> headerQualityGateStatus = new ArrayList<>(Arrays.asList(qualityGateStatusHeader));
+            final List<List<String>> qualityGateStatus = DataAdapter.getQualityGateStatus(report);
+            DocXTools.fillTable(document, headerQualityGateStatus, qualityGateStatus, QUALITY_GATE_STATUS_TABLE_PLACEHOLDER);
+
+            // Add detailed technical debt
+            final String[] detailedTechnicalDebtHeader = {StringManager.string("header.reliability"),
+                StringManager.string("header.security"), StringManager.string("header.maintainability"),
+                StringManager.string("header.total")};
+            final List<String> headerDetailedTechnicalDebt = new ArrayList<>(Arrays.asList(detailedTechnicalDebtHeader));
+            final List<List<String>> detailedTechnicalDebt = DataAdapter.getDetailedTechnicalDebt(report);
+            DocXTools.fillTable(document, headerDetailedTechnicalDebt, detailedTechnicalDebt, DETAILED_TECHNICAL_DEBT_TABLE_PLACEHOLDER);
 
             // Map which contains all values to replace
             // the key is the placeholder and the value is the value to write over
