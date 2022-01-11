@@ -18,6 +18,7 @@
 package fr.cnes.sonar.plugin.ws;
 
 import fr.cnes.sonar.plugin.tools.PluginStringManager;
+import fr.cnes.sonar.plugin.tools.DefaultBranch;
 import fr.cnes.sonar.plugin.tools.FileTools;
 import fr.cnes.sonar.plugin.tools.ZipFolder;
 import fr.cnes.sonar.report.ReportCommandLine;
@@ -126,13 +127,16 @@ public class ExportTask implements RequestHandler {
             String mdPath = config.get("sonar.cnesreport.md.path").orElse(null);
             String xlsxPath = config.get("sonar.cnesreport.xlsx.path").orElse(null);
 
+            // create a new client to talk with sonarqube's services
+            WsClient wsClient = WsClientFactories.getLocal().newClient(request.localConnector());
+
             // prepare params for the report generation
             List<String> reportParams = new ArrayList<>(Arrays.asList(
                     "report",
                     "-o", outputDirectory.getAbsolutePath(),
                     "-s", sonarUrl,
                     "-p", projectKey,
-                    "-b", pBranch.isPresent()?pBranch.getValue(): StringManager.NO_BRANCH,
+                    "-b", pBranch.isPresent()?pBranch.getValue(): DefaultBranch.getDefaultBranchFromProject(wsClient, projectKey),
                     "-a", request.getParam(PluginStringManager.getProperty("api.report.args.author")).getValue(),
                     "-t", request.getParam(PluginStringManager.getProperty("api.report.args.token")).getValue(),
                     "-l", pLanguage.isPresent()?pLanguage.getValue(): StringManager.getProperty(StringManager.DEFAULT_LANGUAGE)
@@ -175,9 +179,7 @@ public class ExportTask implements RequestHandler {
                 reportParams.add("-c");
             }
 
-            // create a new client to talk with sonarqube's services
-            WsClient wsClient = WsClientFactories.getLocal().newClient(request.localConnector());
-
+            // Execute report generation
             ReportCommandLine.execute(reportParams.toArray(new String[reportParams.size()]), wsClient);
 
             stream.setMediaType("application/zip");
