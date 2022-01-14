@@ -73,6 +73,10 @@ public class DocXExporter implements IExporter {
      * Name of the property giving the path header's number
      */
     private static final String HEADER_NUMBER = "header.number";
+    /**
+     * Name of the property giving the default docx template
+     */
+    private static final String DEFAULT_TEMPLATE = "docx.template";
 
     /**
      * Overridden export for docX
@@ -105,7 +109,7 @@ public class DocXExporter implements IExporter {
 
         try (
             InputStream fileInputStream = file.exists() ?
-                    new FileInputStream(file) : getClass().getResourceAsStream("/template/code-analysis-template.docx");
+                    new FileInputStream(file) : getClass().getResourceAsStream(StringManager.getProperty(DEFAULT_TEMPLATE));
             OPCPackage opcPackage = OPCPackage.open(fileInputStream);
             XWPFDocument document = new XWPFDocument(opcPackage)
         ) {

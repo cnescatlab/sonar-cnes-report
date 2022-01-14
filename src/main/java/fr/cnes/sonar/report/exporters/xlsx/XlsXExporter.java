@@ -62,6 +62,10 @@ public class XlsXExporter implements IExporter {
      * Name for the table containing metrics
      */
     private static final String METRICS_TABLE_NAME = "metrics";
+    /**
+     * Name of the property giving the default xlsx template
+     */
+    private static final String DEFAULT_TEMPLATE = "xlsx.template";
 
     /**
      * Overridden export for XlsX
@@ -96,7 +100,7 @@ public class XlsXExporter implements IExporter {
         // open the template
         try(
             InputStream excelFile = file.exists() ?
-                    new FileInputStream(file) : getClass().getResourceAsStream("/template/issues-template.xlsx");
+                    new FileInputStream(file) : getClass().getResourceAsStream(StringManager.getProperty(DEFAULT_TEMPLATE));
             Workbook workbook = new XSSFWorkbook(excelFile);
             FileOutputStream fileOut = new FileOutputStream(outputFilePath)
         ) {

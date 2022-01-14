@@ -72,6 +72,10 @@ public class MarkdownExporter implements IExporter {
      * PNG extension
      */
     private static final String PNG_EXTENSION = ".png";
+    /**
+     * Name of the property giving the default markdown template
+     */
+    private static final String DEFAULT_TEMPLATE = "md.template";
 
     @Override
     public File export(Object data, String path, String filename) throws IOException, BadExportationDataTypeException {
@@ -83,7 +87,7 @@ public class MarkdownExporter implements IExporter {
 
         try (
                 InputStream fileInputStream = file.exists() ?
-                        new FileInputStream(file) : getClass().getResourceAsStream("/template/code-analysis-template.md");
+                        new FileInputStream(file) : getClass().getResourceAsStream(StringManager.getProperty(DEFAULT_TEMPLATE));
         ) {
             // Getting MD template
             StringWriter writer = new StringWriter();
