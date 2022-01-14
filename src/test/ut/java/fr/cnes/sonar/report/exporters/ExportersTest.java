@@ -21,6 +21,7 @@ import fr.cnes.sonar.plugin.tools.FileTools;
 import fr.cnes.sonar.report.CommonTest;
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exporters.docx.DocXExporter;
+import fr.cnes.sonar.report.exporters.md.MarkdownExporter;
 import fr.cnes.sonar.report.exporters.xlsx.XlsXExporter;
 import org.junit.Assert;
 import org.junit.Before;
