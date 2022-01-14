@@ -30,20 +30,21 @@ import com.google.gson.JsonObject;
 public class FacetsProviderStandalone extends AbstractFacetsProvider implements FacetsProvider {
 
     /**
-     *  Name of the request for getting facets
+     * Name of the request for getting facets
      */
     private static final String GET_FACETS_REQUEST = "GET_FACETS_REQUEST";
     /**
-     *  Name of the request for getting the measures history
+     * Name of the request for getting the measures history
      */
     private static final String GET_MEASURES_HISTORY_REQUEST = "GET_MEASURES_HISTORY_REQUEST";
 
     /**
      * Complete constructor.
-     * @param pServer SonarQube server.
-     * @param pToken String representing the user token.
+     * 
+     * @param pServer  SonarQube server.
+     * @param pToken   String representing the user token.
      * @param pProject The id of the project to report.
-     * @param pBranch The branch of the project to report.
+     * @param pBranch  The branch of the project to report.
      */
     public FacetsProviderStandalone(final String pServer, final String pToken, final String pProject,
             final String pBranch) {
@@ -73,7 +74,7 @@ public class FacetsProviderStandalone extends AbstractFacetsProvider implements 
             throws BadSonarQubeRequestException, SonarQubeException {
         // prepare the request
         final String request = String.format(getRequest(GET_MEASURES_HISTORY_REQUEST), getServer(), getProjectKey(),
-                maxPerPage, page, getBranch());
+                getMetrics(CHARTS_METRICS), maxPerPage, page, getBranch());
         // perform the request to the server
         return request(request);
     }

@@ -40,6 +40,10 @@ public abstract class AbstractComponentProvider extends AbstractDataProvider {
      * Field to search in json to get components
      */
     private static final String COMPONENTS = "components";
+    /**
+     * Name of the SonarQube metrics to retrieve
+     */
+    protected static final String SHEETS_METRICS = "SHEETS_METRICS";
 
     /**
      * Complete constructor.

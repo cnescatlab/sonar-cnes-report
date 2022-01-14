@@ -53,15 +53,14 @@ public class ComponentProviderPlugin extends AbstractComponentProvider implement
 
     @Override
     protected JsonObject getComponentsAsJsonObject(final int page) {
-        final List<String> metricKeys = new ArrayList<>(Arrays.asList("ncloc", "comment_lines_density", "coverage",
-                "complexity", "cognitive_complexity", "duplicated_lines_density"));
-        final String p = String.valueOf(page);
-        final String ps = getRequest(MAX_PER_PAGE_SONARQUBE);
+        final List<String> metricKeys = new ArrayList<>(Arrays.asList(getMetrics(SHEETS_METRICS)));
+        final String pageIndex = String.valueOf(page);
+        final String maxPerPage = getRequest(MAX_PER_PAGE_SONARQUBE);
         final ComponentTreeRequest componentTreeRequest = new ComponentTreeRequest()
                                                                 .setComponent(getProjectKey())
                                                                 .setMetricKeys(metricKeys)
-                                                                .setP(p)
-                                                                .setPs(ps)
+                                                                .setP(pageIndex)
+                                                                .setPs(maxPerPage)
                                                                 .setBranch(getBranch());
         final ComponentTreeWsResponse componentTreeWsResponse = getWsClient().measures().componentTree(componentTreeRequest);
         return responseToJsonObject(componentTreeWsResponse);

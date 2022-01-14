@@ -55,6 +55,14 @@ public abstract class AbstractIssuesProvider extends AbstractDataProvider {
      * Parameter "issues" of the JSON response
      */
     private static final String ISSUES = "issues";
+    /**
+     *  Name of the SonarQube facets to retrieve from issues 
+     */
+    protected static final String ISSUES_FACETS = "ISSUES_FACETS";
+    /**
+     *  Name of the SonarQube additional fields to retrieve from issues
+     */
+    protected static final String ISSUES_ADDITIONAL_FIELDS = "ISSUES_ADDITIONAL_FIELDS";
 
     /**
      * Complete constructor.

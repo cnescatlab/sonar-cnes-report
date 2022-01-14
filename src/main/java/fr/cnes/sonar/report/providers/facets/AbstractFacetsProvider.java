@@ -62,6 +62,10 @@ public abstract class AbstractFacetsProvider extends AbstractDataProvider {
      * Parameter "metric" of the JSON response
      */
     private static final String METRIC = "metric";
+    /**
+     *  Name of the SonarQube metrics to retrieve 
+     */
+    protected static final String CHARTS_METRICS = "CHARTS_METRICS";
 
     /**
      * Complete constructor.

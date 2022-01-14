@@ -43,6 +43,10 @@ public abstract class AbstractDataProvider {
      */
     protected static final String REQUESTS_PROPERTIES = "requests.properties";
     /**
+     * Name for properties' file about metrics to retrieve
+     */
+    protected static final String METRICS_PROPERTIES = "metrics.properties";
+    /**
      *  Name of the property for the maximum number of results per page
      */
     protected static final String MAX_PER_PAGE_SONARQUBE = "MAX_PER_PAGE_SONARQUBE";
@@ -75,7 +79,12 @@ public abstract class AbstractDataProvider {
     /**
      * Contain all the properties related to requests
      */
-    protected static Properties requests = new Properties();
+    protected static Properties requestsProperties = new Properties();
+
+    /**
+     * Contain all the properties related to metrics to retrieve
+     */
+    protected static Properties metricsProperties = new Properties();
 
     /**
      * Tool for parsing json
@@ -117,11 +126,22 @@ public abstract class AbstractDataProvider {
         // Need of the local classloader to read inner properties file.
         final ClassLoader classLoader = AbstractDataProvider.class.getClassLoader();
 
-        // load properties file as a stream
+        // load requests properties file as a stream
         try (InputStream input = classLoader.getResourceAsStream(REQUESTS_PROPERTIES)){
             if(input!=null) {
                 // load properties from the stream in an adapted structure
-                requests.load(input);
+                requestsProperties.load(input);
+            }
+        } catch (IOException e) {
+            // it logs all the stack trace
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+        }
+
+        // load metrics properties file as a stream
+        try (InputStream input = classLoader.getResourceAsStream(METRICS_PROPERTIES)){
+            if(input!=null) {
+                // load properties from the stream in an adapted structure
+                metricsProperties.load(input);
             }
         } catch (IOException e) {
             // it logs all the stack trace
@@ -215,7 +235,17 @@ public abstract class AbstractDataProvider {
      * @return The value of the property you want as a String.
      */
     protected String getRequest(final String property) {
-        return requests.getProperty(property);
+        return requestsProperties.getProperty(property);
+    }
+
+    /**
+     * Give the value of the property corresponding to the key passed as parameter.
+     * It gives only properties related to metrics.
+     * @param property Key of the property you want.
+     * @return The value of the property you want as a String.
+     */
+    protected String getMetrics(final String property) {
+        return metricsProperties.getProperty(property);
     }
 
     /**
