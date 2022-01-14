@@ -32,11 +32,15 @@ public class FacetsProviderStandalone extends AbstractFacetsProvider implements 
     /**
      * Name of the request for getting facets
      */
-    private static final String GET_FACETS_REQUEST = "GET_FACETS_REQUEST";
+    private static final String GET_ISSUES_REQUEST = "GET_ISSUES_REQUEST";
     /**
      * Name of the request for getting the measures history
      */
     private static final String GET_MEASURES_HISTORY_REQUEST = "GET_MEASURES_HISTORY_REQUEST";
+    /**
+     * Name of the SonarQube "additionalFields" of the project facets request (no additional fields needed)
+     */
+    private static final String PROJECT_ADDITIONAL_FIELDS = "PROJECT_ADDITIONAL_FIELDS";
 
     /**
      * Complete constructor.
@@ -62,9 +66,11 @@ public class FacetsProviderStandalone extends AbstractFacetsProvider implements 
     }
 
     @Override
-    protected JsonObject getFacetsAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException {
+    protected JsonObject getFacetsAsJsonObject(final int page) throws BadSonarQubeRequestException, SonarQubeException {
         // prepare the request
-        final String request = String.format(getRequest(GET_FACETS_REQUEST), getServer(), getProjectKey(), getBranch());
+        final String request = String.format(getRequest(GET_ISSUES_REQUEST), getServer(), getProjectKey(),
+                getMetrics(PROJECT_FACETS), FACETS_MAX_PER_PAGE, page, getMetrics(PROJECT_ADDITIONAL_FIELDS),
+                FACETS_STATUS, getBranch());
         // contact the server to request the resources as json
         return request(request);
     }

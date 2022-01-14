@@ -63,9 +63,26 @@ public abstract class AbstractFacetsProvider extends AbstractDataProvider {
      */
     private static final String METRIC = "metric";
     /**
-     *  Name of the SonarQube metrics to retrieve 
+     * Parameter "page" of the facets request (only first page is needed)
+     */
+    private static final int FACETS_PAGE = 1;
+    /**
+     * Parameter "maxPerPage" of the facets request (only need first element)
+     */
+    protected static final int FACETS_MAX_PER_PAGE = 1;
+    /**
+     * Parameter "resolved" of the facets request (only unresolved elements needed)
+     */
+    protected static final String FACETS_STATUS = "false";
+    /**
+     * Name of the SonarQube metrics to retrieve 
      */
     protected static final String CHARTS_METRICS = "CHARTS_METRICS";
+    /**
+     * Name of the SonarQube project facets to retrieve 
+     */
+    protected static final String PROJECT_FACETS = "PROJECT_FACETS";
+    
 
     /**
      * Complete constructor.
@@ -96,7 +113,7 @@ public abstract class AbstractFacetsProvider extends AbstractDataProvider {
      * @throws SonarQubeException When SonarQube server is not callable.
      */
     protected Facets getFacetsAbstract() throws BadSonarQubeRequestException, SonarQubeException {
-        JsonObject jo = getFacetsAsJsonObject();
+        JsonObject jo = getFacetsAsJsonObject(FACETS_PAGE);
         // put wanted resources in facets array
         Facet[] tmp = (getGson().fromJson(jo.get(FACETS), Facet[].class));        
 
@@ -166,11 +183,12 @@ public abstract class AbstractFacetsProvider extends AbstractDataProvider {
     
    /**
      * Get a JsonObject from the response of a facets request.
+     * @param page The current page.
      * @return The response as a JsonObject.
      * @throws BadSonarQubeRequestException A request is not recognized by the server.
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    protected abstract JsonObject getFacetsAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException;
+    protected abstract JsonObject getFacetsAsJsonObject(final int page) throws BadSonarQubeRequestException, SonarQubeException;
 
     /**
      * Get a JsonObject from the response of a time facets request.

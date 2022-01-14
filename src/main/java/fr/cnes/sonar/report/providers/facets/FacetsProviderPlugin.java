@@ -39,15 +39,6 @@ import com.google.gson.JsonObject;
 public class FacetsProviderPlugin extends AbstractFacetsProvider implements FacetsProvider {
 
     /**
-     * Field to get the types facet in a response
-     */
-    private static final String TYPES = "types";
-    /**
-     * Field to get the severities facet in a response
-     */
-    private static final String SEVERITIES = "severities";
-
-    /**
      * Complete constructor.
      * @param wsClient The web client.
      * @param project The id of the project to report.
@@ -68,18 +59,18 @@ public class FacetsProviderPlugin extends AbstractFacetsProvider implements Face
     }
 
     @Override
-    protected JsonObject getFacetsAsJsonObject() {
+    protected JsonObject getFacetsAsJsonObject(final int page) {
         // prepare the request
         final List<String> projects = new ArrayList<>(Arrays.asList(getProjectKey()));
-        final List<String> facets = new ArrayList<>(Arrays.asList(TYPES, RULES, SEVERITIES));
-        final String ps = String.valueOf(1);
-        final String p = String.valueOf(1);
+        final List<String> facets = new ArrayList<>(Arrays.asList(getMetrics(PROJECT_FACETS)));
+        final String maxPerPage = String.valueOf(FACETS_MAX_PER_PAGE);
+        final String pageIndex = String.valueOf(page);
         final SearchRequest searchRequest = new SearchRequest()
                                                 .setProjects(projects)
                                                 .setResolved(CONFIRMED)
                                                 .setFacets(facets)
-                                                .setPs(ps)
-                                                .setP(p)
+                                                .setPs(maxPerPage)
+                                                .setP(pageIndex)
                                                 .setBranch(getBranch());
         // perform the request to the server
         final SearchWsResponse searchWsResponse = getWsClient().issues().search(searchRequest);
