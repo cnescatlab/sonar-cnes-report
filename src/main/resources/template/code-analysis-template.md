@@ -43,6 +43,12 @@ Coverage | Duplications | Comment density | Median number of lines of code per f
 :---:|:---:|:---:|:---:|:---:
 XX-COVERAGE-XX % | XX-DUPLICATION-XX % | XX-COMMENTDENSITY-XX % | XX-MEDIANNCLOC-XX | XX-COMPLIANCE-XX %
 
+### Tests
+
+Total | Success Rate | Skipped | Errors | Failures |
+:---:|:---:|:---:|:---:|:---:
+XX-TOTAL-TESTS-XX | XX-TEST-SUCCESS-RATE-XX % | XX-SKIPPED-TESTS-XX | XX-TEST-ERRORS-XX | XX-TEST-FAILURES-XX
+
 ### Detailed technical debt
 
 $DETAILED_TECHNICAL_DEBT

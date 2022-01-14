@@ -37,9 +37,10 @@ public class MeasureProviderPlugin extends AbstractMeasureProvider implements Me
 
     /**
      * Complete constructor.
+     * 
      * @param wsClient The web client.
-     * @param project The id of the project to report.
-     * @param branch The branch of the project to report.
+     * @param project  The id of the project to report.
+     * @param branch   The branch of the project to report.
      */
     public MeasureProviderPlugin(final WsClient wsClient, final String project, final String branch) {
         super(wsClient, project, branch);
@@ -58,11 +59,12 @@ public class MeasureProviderPlugin extends AbstractMeasureProvider implements Me
                 "complexity", "function_complexity", "file_complexity", "class_complexity", "blocker_violations",
                 "critical_violations", "major_violations", "minor_violations", "info_violations", "new_violations",
                 "bugs", "vulnerabilities", "code_smells", "reliability_remediation_effort",
-                "security_remediation_effort", "sqale_index"));
+                "security_remediation_effort", "sqale_index", "tests", "test_errors", "test_failures", "skipped_tests",
+                "test_success_density"));
         final ComponentRequest componentRequest = new ComponentRequest()
-                                                        .setComponent(getProjectKey())
-                                                        .setMetricKeys(metricKeys)
-                                                        .setBranch(getBranch());
+                .setComponent(getProjectKey())
+                .setMetricKeys(metricKeys)
+                .setBranch(getBranch());
         final ComponentWsResponse componentWsResponse = getWsClient().measures().component(componentRequest);
         return responseToJsonObject(componentWsResponse);
     }

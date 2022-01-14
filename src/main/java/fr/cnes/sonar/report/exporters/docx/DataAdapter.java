@@ -249,6 +249,26 @@ public final class DataAdapter {
      */
     private static final String DESCRIPTION_PLACEHOLDER = "XX-DESCRIPTION-XX";
     /**
+     * Placeholder for the project's description
+     */
+    private static final String TOTAL_TESTS_PLACEHOLDER = "XX-TOTAL-TESTS-XX";
+    /**
+     * Placeholder for the project's description
+     */
+    private static final String TEST_SUCCESS_RATE_PLACEHOLDER = "XX-TEST-SUCCESS-RATE-XX";
+    /**
+     * Placeholder for the project's description
+     */
+    private static final String SKIPPED_TESTS_PLACEHOLDER = "XX-SKIPPED-TESTS-XX";
+    /**
+     * Placeholder for the project's description
+     */
+    private static final String TEST_ERRORS_PLACEHOLDER = "XX-TEST-ERRORS-XX";
+    /**
+     * Placeholder for the project's description
+     */
+    private static final String TEST_FAILURES_PLACEHOLDER = "XX-TEST-FAILURES-XX";
+    /**
      * Default placeholder
      */
     private static final String DEFAULT_PLACEHOLDER = "XX-XXXXXXXXXXXXXXX-XX";
@@ -316,6 +336,26 @@ public final class DataAdapter {
      * Field in json response for sqale index
      */
     private static final String SQALE_INDEX = "sqale_index";
+    /**
+     * Field in json response for total tests
+     */
+    private static final String TOTAL_TESTS = "tests";
+    /**
+     * Field in json response for total tests
+     */
+    private static final String TEST_SUCCESS_RATE = "test_success_density";
+    /**
+     * Field in json response for total tests
+     */
+    private static final String SKIPPED_TESTS = "skipped_tests";
+    /**
+     * Field in json response for total tests
+     */
+    private static final String TEST_ERRORS = "test_errors";
+    /**
+     * Field in json response for total tests
+     */
+    private static final String TEST_FAILURES = "test_failures";
     /**
      * Just an equals sign
      */
@@ -830,6 +870,21 @@ public final class DataAdapter {
                 break;
             case SECURITY_REVIEW_RATING:
                 res = SECURITY_REVIEW_PLACEHOLDER;
+                break;
+            case TOTAL_TESTS:
+                res = TOTAL_TESTS_PLACEHOLDER;
+                break;
+            case TEST_SUCCESS_RATE:
+                res = TEST_SUCCESS_RATE_PLACEHOLDER;
+                break;
+            case SKIPPED_TESTS:
+                res = SKIPPED_TESTS_PLACEHOLDER;
+                break;
+            case TEST_ERRORS:
+                res = TEST_ERRORS_PLACEHOLDER;
+                break;
+            case TEST_FAILURES:
+                res = TEST_FAILURES_PLACEHOLDER;
                 break;
             default:
                 res = DEFAULT_PLACEHOLDER;
