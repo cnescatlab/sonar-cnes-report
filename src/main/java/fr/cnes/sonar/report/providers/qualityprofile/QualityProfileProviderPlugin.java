@@ -76,7 +76,7 @@ public class QualityProfileProviderPlugin extends AbstractQualityProfileProvider
     @Override
     protected JsonObject getQualityProfilesRulesAsJsonObject(final int page, final String profileKey) {
         // prepare the request
-        final List<String> issueFieldList = new ArrayList<>(Arrays.asList(getMetrics(QP_ISSUES_FIELDS)));
+        final List<String> issueFieldList = new ArrayList<>(Arrays.asList(getMetrics(QP_ISSUES_FIELDS).split(",")));
         final String maxPerPage = String.valueOf(Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)));
         final String pageIndex = String.valueOf(page);
         final org.sonarqube.ws.client.rules.SearchRequest searchRulesRequest =

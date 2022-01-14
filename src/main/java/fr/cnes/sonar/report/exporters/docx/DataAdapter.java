@@ -317,9 +317,9 @@ public final class DataAdapter {
      */
     private static final String ISSUES_TYPES = "issues.types";
     /**
-     * List of possible security hotspot review priorities
+     * Property to get the list of issues types
      */
-    private static final String[] SECURITY_HOTSPOT_PRIORITIES = {"LOW", "MEDIUM", "HIGH"};
+    private static final String SECURITY_HOTSPOTS_PRIORITIES = "securityhotspots.priorities";
     /**
      * Field in json response for number of code lines per language
      */
@@ -457,7 +457,9 @@ public final class DataAdapter {
 
     /**
      * Prepare list of resources to be print in a table
-     * Data are lines containing the number of security hotspots by review priority and security category
+     * Data are lines containing the number of security hotspots by review priority
+     * and security category
+     * 
      * @param report report from which to extract resources
      * @return list of lists of strings
      */
@@ -465,11 +467,12 @@ public final class DataAdapter {
         // result to return
         final List<List<String>> result = new ArrayList<>();
 
-        final Map<String,String> categories = StringManager.getSecurityHotspotsCategories();
-        final String[] priorities = SECURITY_HOTSPOT_PRIORITIES;
+        final Map<String, String> categories = StringManager.getSecurityHotspotsCategories();
+        final List<String> priorities = new ArrayList<>(
+                Arrays.asList(StringManager.getProperty(SECURITY_HOTSPOTS_PRIORITIES).split(",")));
 
         // accumulator for the number of occurrences for each priority
-        LinkedHashMap<String,Integer> countPerPriority = new LinkedHashMap<>();
+        LinkedHashMap<String, Integer> countPerPriority = new LinkedHashMap<>();
         for (String priority : priorities) {
             countPerPriority.put(priority, 0);
         }
@@ -480,7 +483,7 @@ public final class DataAdapter {
             // list of items for a line of the table
             final List<String> row = new ArrayList<>();
             for (SecurityHotspot securityHotspot : report.getToReviewSecurityHotspots()) {
-                if(securityHotspot.getSecurityCategory().equals(categoryKey)) {
+                if (securityHotspot.getSecurityCategory().equals(categoryKey)) {
                     // increment the count of the priority
                     countPerPriority.put(securityHotspot.getVulnerabilityProbability(),
                             countPerPriority.get(securityHotspot.getVulnerabilityProbability()) + 1);
@@ -497,14 +500,6 @@ public final class DataAdapter {
             result.add(row);
         }
         return result;
-    }
-
-    /**
-     * Getter for SECURITY_HOTSPOT_PRIORITIES
-     * @return SECURITY_HOTSPOT_PRIORITIES
-     */
-    public static String[] getSecurityHotspotPriorities() {
-        return SECURITY_HOTSPOT_PRIORITIES;
     }
 
     /**

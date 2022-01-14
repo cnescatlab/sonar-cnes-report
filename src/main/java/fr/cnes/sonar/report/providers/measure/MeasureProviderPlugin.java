@@ -53,7 +53,7 @@ public class MeasureProviderPlugin extends AbstractMeasureProvider implements Me
 
     @Override
     protected JsonObject getMeasuresAsJsonObject() {
-        List<String> metricKeys = new ArrayList<>(Arrays.asList(getMetrics(REPORTS_METRICS)));
+        List<String> metricKeys = new ArrayList<>(Arrays.asList(getMetrics(REPORTS_METRICS).split(",")));
 
         final ComponentRequest componentRequest = new ComponentRequest()
                 .setComponent(getProjectKey())

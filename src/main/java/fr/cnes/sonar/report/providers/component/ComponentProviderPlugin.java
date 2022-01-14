@@ -53,7 +53,7 @@ public class ComponentProviderPlugin extends AbstractComponentProvider implement
 
     @Override
     protected JsonObject getComponentsAsJsonObject(final int page) {
-        final List<String> metricKeys = new ArrayList<>(Arrays.asList(getMetrics(SHEETS_METRICS)));
+        final List<String> metricKeys = new ArrayList<>(Arrays.asList(getMetrics(SHEETS_METRICS).split(",")));
         final String pageIndex = String.valueOf(page);
         final String maxPerPage = getRequest(MAX_PER_PAGE_SONARQUBE);
         final ComponentTreeRequest componentTreeRequest = new ComponentTreeRequest()

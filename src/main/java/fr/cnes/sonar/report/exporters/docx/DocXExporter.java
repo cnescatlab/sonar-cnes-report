@@ -79,6 +79,10 @@ public class DocXExporter implements IExporter {
      * Name of the property giving the default docx template
      */
     private static final String DEFAULT_TEMPLATE = "docx.template";
+    /**
+     * Property to get the list of issues types
+     */
+    private static final String SECURITY_HOTSPOTS_PRIORITIES = "securityhotspots.priorities";
 
     /**
      * Overridden export for docX
@@ -228,7 +232,7 @@ public class DocXExporter implements IExporter {
         final List<List<String>> securityHotspotsByCategoryAndPriority = DataAdapter
                 .getSecurityHotspotsByCategoryAndPriority(report);
         final List<String> headerSecurityHotspotsCount = new ArrayList<>(
-                Arrays.asList(DataAdapter.getSecurityHotspotPriorities()));
+                Arrays.asList(StringManager.getProperty(SECURITY_HOTSPOTS_PRIORITIES).split(",")));
         headerSecurityHotspotsCount.add(0, StringManager.string("header.categorySlashPriority"));
         DocXTools.fillTable(document, headerSecurityHotspotsCount, securityHotspotsByCategoryAndPriority,
                 SECURITY_HOTSPOTS_COUNT_TABLE_PLACEHOLDER);

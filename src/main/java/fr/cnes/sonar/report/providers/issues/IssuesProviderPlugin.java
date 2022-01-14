@@ -79,7 +79,7 @@ public class IssuesProviderPlugin extends AbstractIssuesProvider implements Issu
         final List<String> facets = new ArrayList<>(Arrays.asList(getMetrics(ISSUES_FACETS)));
         final String maxPerPage = String.valueOf(pMaxPerPage);
         final String pageIndex = String.valueOf(page);
-        final List<String> additionalFields = new ArrayList<>(Arrays.asList(getMetrics(ISSUES_ADDITIONAL_FIELDS)));
+        final List<String> additionalFields = new ArrayList<>(Arrays.asList(getMetrics(ISSUES_ADDITIONAL_FIELDS).split(",")));
         final SearchRequest searchRequest = new SearchRequest()
                                                 .setProjects(projects)
                                                 .setFacets(facets)

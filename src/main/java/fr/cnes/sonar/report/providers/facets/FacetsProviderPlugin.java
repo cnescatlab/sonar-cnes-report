@@ -62,7 +62,7 @@ public class FacetsProviderPlugin extends AbstractFacetsProvider implements Face
     protected JsonObject getFacetsAsJsonObject(final int page) {
         // prepare the request
         final List<String> projects = new ArrayList<>(Arrays.asList(getProjectKey()));
-        final List<String> facets = new ArrayList<>(Arrays.asList(getMetrics(PROJECT_FACETS)));
+        final List<String> facets = new ArrayList<>(Arrays.asList(getMetrics(PROJECT_FACETS).split(",")));
         final String maxPerPage = String.valueOf(FACETS_MAX_PER_PAGE);
         final String pageIndex = String.valueOf(page);
         final SearchRequest searchRequest = new SearchRequest()
