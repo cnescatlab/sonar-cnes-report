@@ -19,6 +19,10 @@ package fr.cnes.sonar.report.exporters.docx;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exporters.IExporter;
+import fr.cnes.sonar.report.exporters.data.DataAdapter;
+import fr.cnes.sonar.report.exporters.data.IssuesAdapter;
+import fr.cnes.sonar.report.exporters.data.PlaceHolders;
+import fr.cnes.sonar.report.exporters.data.SecurityHotspotsAdapter;
 import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
@@ -168,7 +172,7 @@ public class DocXExporter implements IExporter {
     private void replaceSimplePlaceholders(XWPFDocument document, Report report) throws IOException, OpenXML4JException {
         // Map which contains all values to replace
         // the key is the placeholder and the value is the value to write over
-        final Map<String, String> replacementValues = DataAdapter.loadPlaceholdersMap(report);
+        final Map<String, String> replacementValues = PlaceHolders.loadPlaceholdersMap(report);
 
         // replace all placeholder in the document (head, body, foot) with the map
         DocXTools.replacePlaceholder(document, replacementValues);
@@ -181,7 +185,7 @@ public class DocXExporter implements IExporter {
      * @param report The report containing data
      */
     private void replaceIssuesPlaceholders(XWPFDocument document, Report report) {
-        final List<List<String>> issues = DataAdapter.getIssues(report);
+        final List<List<String>> issues = IssuesAdapter.getIssues(report);
         final String[] issuesArrayFr = { StringManager.string("header.name"),
                 StringManager.string("header.description"),
                 StringManager.string("header.type"),
@@ -198,8 +202,8 @@ public class DocXExporter implements IExporter {
      * @param report The report containing data
      */
     private void replaceIssuesCountPlaceholders(XWPFDocument document, Report report) {
-        final List<List<String>> types = DataAdapter.getTypes(report);
-        final List<String> headerIssuesCount = DataAdapter.getReversedIssuesSeverities();
+        final List<List<String>> types = IssuesAdapter.getTypes(report);
+        final List<String> headerIssuesCount = IssuesAdapter.getReversedIssuesSeverities();
         headerIssuesCount.add(0, StringManager.string("header.typeSlashSeverity"));
         DocXTools.fillTable(document, headerIssuesCount, types, COUNT_TABLE_PLACEHOLDER);
     }
@@ -211,7 +215,7 @@ public class DocXExporter implements IExporter {
      * @param report The report containing data
      */
     private void replaceSecurityHotspotsPlaceholders(XWPFDocument document, Report report) {
-        final List<List<String>> securityHotspots = DataAdapter.getSecurityHotspots(report);
+        final List<List<String>> securityHotspots = SecurityHotspotsAdapter.getSecurityHotspots(report);
         final String[] securityHotspotsHeader = { StringManager.string("header.category"),
                 StringManager.string("header.name"),
                 StringManager.string("header.priority"),
@@ -229,7 +233,7 @@ public class DocXExporter implements IExporter {
      * @param report The report containing data
      */
     private void replaceSecurityHotspotsCountPlaceholders(XWPFDocument document, Report report) {
-        final List<List<String>> securityHotspotsByCategoryAndPriority = DataAdapter
+        final List<List<String>> securityHotspotsByCategoryAndPriority = SecurityHotspotsAdapter
                 .getSecurityHotspotsByCategoryAndPriority(report);
         final List<String> headerSecurityHotspotsCount = new ArrayList<>(
                 Arrays.asList(StringManager.getProperty(SECURITY_HOTSPOTS_PRIORITIES).split(",")));

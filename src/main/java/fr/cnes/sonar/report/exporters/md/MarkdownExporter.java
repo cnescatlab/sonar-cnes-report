@@ -35,7 +35,10 @@ import org.apache.commons.io.IOUtils;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exporters.IExporter;
-import fr.cnes.sonar.report.exporters.docx.DataAdapter;
+import fr.cnes.sonar.report.exporters.data.DataAdapter;
+import fr.cnes.sonar.report.exporters.data.IssuesAdapter;
+import fr.cnes.sonar.report.exporters.data.PlaceHolders;
+import fr.cnes.sonar.report.exporters.data.SecurityHotspotsAdapter;
 import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.utils.StringManager;
 
@@ -141,7 +144,7 @@ public class MarkdownExporter implements IExporter {
      */
     private String replaceSimplePlaceHolders(String content, Report report) {
         // Getting replacement values, reusing placeholders from docx exporter
-        Map<String, String> placeholdersMap = DataAdapter.loadPlaceholdersMap(report);
+        Map<String, String> placeholdersMap = PlaceHolders.loadPlaceholdersMap(report);
 
         // Replace placeholders by values
         for (Map.Entry<String, String> entry : placeholdersMap.entrySet()) {
@@ -164,7 +167,7 @@ public class MarkdownExporter implements IExporter {
      *         placeholders
      */
     private String replaceIssueTable(String content, Report report) {
-        final List<List<String>> issues = DataAdapter.getIssues(report);
+        final List<List<String>> issues = IssuesAdapter.getIssues(report);
         final String[] headerFields = { StringManager.string("header.name"),
                 StringManager.string("header.description"),
                 StringManager.string("header.type"),
@@ -183,8 +186,8 @@ public class MarkdownExporter implements IExporter {
      *         placeholders
      */
     private String replaceIssuesCountTable(String content, Report report) {
-        final List<List<String>> types = DataAdapter.getTypes(report);
-        final List<String> headerIssuesCount = DataAdapter.getReversedIssuesSeverities();
+        final List<List<String>> types = IssuesAdapter.getTypes(report);
+        final List<String> headerIssuesCount = IssuesAdapter.getReversedIssuesSeverities();
         headerIssuesCount.add(0, StringManager.string("header.typeSlashSeverity"));
         final String tableTypes = generateMDTable(headerIssuesCount, types);
         return content.replace(ISSUES_COUNT_PLACEHOLDER, tableTypes);
@@ -201,7 +204,7 @@ public class MarkdownExporter implements IExporter {
      *         placeholders
      */
     private String replaceSecurityHotspotsTable(String content, Report report) {
-        final List<List<String>> securityHotspots = DataAdapter.getSecurityHotspots(report);
+        final List<List<String>> securityHotspots = SecurityHotspotsAdapter.getSecurityHotspots(report);
         final String[] securityHotspotsHeader = { StringManager.string("header.category"),
                 StringManager.string("header.name"),
                 StringManager.string("header.priority"),
@@ -224,7 +227,7 @@ public class MarkdownExporter implements IExporter {
      *         placeholders
      */
     private String replaceSecurityHotspotsCountTable(String content, Report report) {
-        final List<List<String>> securityHotspotsByCategoryAndPriority = DataAdapter
+        final List<List<String>> securityHotspotsByCategoryAndPriority = SecurityHotspotsAdapter
                 .getSecurityHotspotsByCategoryAndPriority(report);
         final List<String> headerSecurityHotspotsCount = new ArrayList<>(
                 Arrays.asList(StringManager.getProperty(SECURITY_HOTSPOTS_PRIORITIES).split(",")));

@@ -18,6 +18,7 @@
 package fr.cnes.sonar.report.exporters.docx;
 
 import fr.cnes.sonar.report.CommonTest;
+import fr.cnes.sonar.report.exporters.data.PlaceHolders;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -35,7 +36,7 @@ public class DataAdapterTest extends CommonTest {
      */
     @Test
     public void loadPlaceholdersMapTest(){
-        Map<String,String> placeHolders = DataAdapter.loadPlaceholdersMap(report);
+        Map<String,String> placeHolders = PlaceHolders.loadPlaceholdersMap(report);
         Map<String,String> expected = new HashMap<>();
         // Fill manually the placeHolders depending on what we initialized in "CommonTest"
         expected.put("XX-PROJECTNAME-XX", "CNES Report");
@@ -95,7 +96,7 @@ public class DataAdapterTest extends CommonTest {
         expected.replace("XX-MAXCOMMENTDENSITY-XX", "1.0");
         expected.replace("XX-MEDIANNCLOC-XX", "1.0");
         expected.put("XX-MAXCOVERAGE-XX", "1.0");
-        Map<String,String> newPlaceHolders = DataAdapter.loadPlaceholdersMap(report);
+        Map<String,String> newPlaceHolders = PlaceHolders.loadPlaceholdersMap(report);
         Assert.assertEquals(expected, newPlaceHolders);
     }
 }
