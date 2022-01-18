@@ -26,7 +26,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DataAdapterTest extends CommonTest{
+public class DataAdapterTest extends CommonTest {
 
     /**
      * Assert that the method "loadPlaceholdersMap" fills correctly the placeholders
@@ -70,6 +70,11 @@ public class DataAdapterTest extends CommonTest{
         expected.put("XX-MAXCOMMENTDENSITY-XX", "unknown");
         expected.put("XX-MEDIANNCLOC-XX", "unknown");
         expected.put("XX-COMPLIANCE-XX", "-66.7");
+        expected.put("XX-TOTAL-TESTS-XX", "42");
+        expected.put("XX-TEST-SUCCESS-RATE-XX", "90.3");
+        expected.put("XX-SKIPPED-TESTS-XX", "0");
+        expected.put("XX-TEST-ERRORS-XX", "8");
+        expected.put("XX-TEST-FAILURES-XX", "2");
         Assert.assertEquals(expected, placeHolders);
 
         // Add the maxcoverage to cancel the unknown error

@@ -362,6 +362,11 @@ public abstract class CommonTest {
         measures.add(new Measure("reliability_remediation_effort", "3474"));
         measures.add(new Measure("security_remediation_effort", "4097"));
         measures.add(new Measure("sqale_index", "3224"));
+        measures.add(new Measure("tests", "42"));
+        measures.add(new Measure("test_success_density", "90.3"));
+        measures.add(new Measure("skipped_tests", "0"));
+        measures.add(new Measure("test_failures", "2"));
+        measures.add(new Measure("test_errors", "8"));
         report.setMeasures(measures);
 
 
