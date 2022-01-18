@@ -23,12 +23,13 @@ public class SecurityHotspotsAdapter {
      * String for count
      */
     private static final String COUNT = "count";
-    /** 
+    /**
      * Logger of this class
      */
     private static final Logger LOGGER = Logger.getLogger(SecurityHotspotsAdapter.class.getName());
 
-    private SecurityHotspotsAdapter() {}
+    private SecurityHotspotsAdapter() {
+    }
 
     /**
      * Prepare list of resources to be print in a table
@@ -79,6 +80,7 @@ public class SecurityHotspotsAdapter {
 
     /**
      * Get formatted security hotspots summary
+     * 
      * @param report report from which to export resources
      * @return security hotspots list
      */
@@ -92,14 +94,16 @@ public class SecurityHotspotsAdapter {
         for (SecurityHotspot securityHotspot : report.getToReviewSecurityHotspots()) {
             // get the key of the security hotspot corresponding rule
             String key = securityHotspot.getRule();
-            if(!data.containsKey(key)) {
+            if (!data.containsKey(key)) {
                 // fill data
                 final Rule rule = report.getRule(key);
                 if (rule == null) {
-                    LOGGER.warning("A security hotspot was ignored because its corresponding rule was not found in project quality profiles.");
+                    LOGGER.warning(
+                            "A security hotspot was ignored because its corresponding rule was not found in project quality profiles.");
                 } else {
                     LinkedHashMap<String, String> fieldsValues = new LinkedHashMap<>();
-                    fieldsValues.put("category", StringManager.getSecurityHotspotsCategories().get(securityHotspot.getSecurityCategory()));
+                    fieldsValues.put("category",
+                            StringManager.getSecurityHotspotsCategories().get(securityHotspot.getSecurityCategory()));
                     fieldsValues.put("name", rule.getName());
                     fieldsValues.put("priority", securityHotspot.getVulnerabilityProbability());
                     fieldsValues.put("severity", rule.getSeverity());
@@ -119,5 +123,5 @@ public class SecurityHotspotsAdapter {
         }
         return result;
     }
-    
+
 }

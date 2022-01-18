@@ -30,7 +30,8 @@ import fr.cnes.sonar.report.model.Measure;
 import fr.cnes.sonar.report.model.Report;
 
 /**
- * Format resources in different structures to have an easier use in report Exporters
+ * Format resources in different structures to have an easier use in report
+ * Exporters
  */
 public final class DataAdapter {
 
@@ -74,14 +75,16 @@ public final class DataAdapter {
      * Technical debt display format
      */
     private static final String TECHNICAL_DEBT_FORMAT = "%sd %sh %smin";
-    
+
     /**
      * Private constructor to forbid instantiation of this class
      */
-    private DataAdapter(){}
+    private DataAdapter() {
+    }
 
     /**
      * Get formatted metrics to be printed
+     * 
      * @param report Report from which to extract resources
      * @return list of list of string (metric,measure)
      */
@@ -91,7 +94,7 @@ public final class DataAdapter {
 
         // construct each metric
         for (Measure m : report.getMeasures()) {
-            metrics.add(Arrays.asList(m.getMetric(),m.getValue()));
+            metrics.add(Arrays.asList(m.getMetric(), m.getValue()));
         }
 
         return metrics;
@@ -99,6 +102,7 @@ public final class DataAdapter {
 
     /**
      * Get formatted quality gate status summary
+     * 
      * @param report report from which to export resources
      * @return quality gate conditions statuses
      */
@@ -117,6 +121,7 @@ public final class DataAdapter {
 
     /**
      * Load in a list all the volume metrics with the corresponding value
+     * 
      * @param report Report from which resources are extracted
      * @return the volumes list
      */
@@ -135,9 +140,9 @@ public final class DataAdapter {
 
         // replace language's key by language's name
         Language language;
-        for(List<String> l : volumes) {
+        for (List<String> l : volumes) {
             language = report.getProject().getLanguage(l.get(0));
-            if(null!=language) {
+            if (null != language) {
                 l.set(0, language.getName());
             }
         }
@@ -150,6 +155,7 @@ public final class DataAdapter {
 
     /**
      * Get formatted technical debt summary
+     * 
      * @param report Report from which resources are extracted
      * @return detailed technical debt
      */
@@ -171,25 +177,29 @@ public final class DataAdapter {
 
         // convert metrics values to days/hours/minutes format
         if (reliabilityDebt != 0) {
-            reliabilityDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, reliabilityDebt/8/60, reliabilityDebt/60%8, reliabilityDebt%60);
+            reliabilityDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, reliabilityDebt / 8 / 60,
+                    reliabilityDebt / 60 % 8, reliabilityDebt % 60);
         } else {
             reliabilityDebtFormatted = "-";
         }
-        
+
         if (securityDebt != 0) {
-            securityDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, securityDebt/8/60, securityDebt/60%8, securityDebt%60);
+            securityDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, securityDebt / 8 / 60, securityDebt / 60 % 8,
+                    securityDebt % 60);
         } else {
             securityDebtFormatted = "-";
         }
-        
+
         if (maintainabilityDebt != 0) {
-            maintainabilityDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, maintainabilityDebt/8/60, maintainabilityDebt/60%8, maintainabilityDebt%60);
+            maintainabilityDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, maintainabilityDebt / 8 / 60,
+                    maintainabilityDebt / 60 % 8, maintainabilityDebt % 60);
         } else {
             maintainabilityDebtFormatted = "-";
         }
-        
+
         if (totalTechnicalDebt != 0) {
-            totalTechnicalDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, totalTechnicalDebt/8/60, totalTechnicalDebt/60%8, totalTechnicalDebt%60);
+            totalTechnicalDebtFormatted = String.format(TECHNICAL_DEBT_FORMAT, totalTechnicalDebt / 8 / 60,
+                    totalTechnicalDebt / 60 % 8, totalTechnicalDebt % 60);
         } else {
             totalTechnicalDebtFormatted = "-";
         }
@@ -209,8 +219,9 @@ public final class DataAdapter {
 
     /**
      * Return the value of a given metric
+     * 
      * @param measures List of measures to browse
-     * @param metric metric to search
+     * @param metric   metric to search
      * @return a String containing the measure
      */
     private static String findMeasure(List<Measure> measures, String metric) {
@@ -222,7 +233,7 @@ public final class DataAdapter {
         // search by name the measure corresponding to metric
         while (iterator.hasNext() && result.equals(EMPTY)) {
             current = iterator.next();
-            if(current.getMetric().equals(metric)) {
+            if (current.getMetric().equals(metric)) {
                 result = current.getValue();
             }
         }

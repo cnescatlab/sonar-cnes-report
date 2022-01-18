@@ -32,14 +32,17 @@ public class IssuesAdapter {
      */
     private static final String QUESTION_MARK = "?";
 
-    private IssuesAdapter() {}
+    private IssuesAdapter() {
+    }
 
     /**
      * Getter for reversed ISSUES_SEVERITIES
+     * 
      * @return reversed ISSUES_SEVERITIES
      */
     public static List<String> getReversedIssuesSeverities() {
-        List<String> issuesSeverities = new ArrayList<>(Arrays.asList(StringManager.getProperty(ISSUES_SEVERITIES).split(",")));
+        List<String> issuesSeverities = new ArrayList<>(
+                Arrays.asList(StringManager.getProperty(ISSUES_SEVERITIES).split(",")));
         Collections.reverse(issuesSeverities);
         return issuesSeverities;
     }
@@ -47,6 +50,7 @@ public class IssuesAdapter {
     /**
      * Prepare list of resources to be print in a table
      * Data are lines containing the number of issues by severity and type
+     * 
      * @param report report from which to extract resources
      * @return list of lists of strings
      */
@@ -58,16 +62,16 @@ public class IssuesAdapter {
         final List<String> severities = getReversedIssuesSeverities();
 
         // accumulator for the number of occurrences for each severity
-        LinkedHashMap<String,Integer> countPerSeverity = new LinkedHashMap<>();
+        LinkedHashMap<String, Integer> countPerSeverity = new LinkedHashMap<>();
         for (String severity : severities) {
             countPerSeverity.put(severity, 0);
         }
 
-        for(String type : types) {
-            //List of items for each line of the table
+        for (String type : types) {
+            // List of items for each line of the table
             final List<String> row = new ArrayList<>();
-            for(Issue issue : report.getIssues()) {
-                if(issue.getType().equals(type)) {
+            for (Issue issue : report.getIssues()) {
+                if (issue.getType().equals(type)) {
                     // increment the count of the severity
                     countPerSeverity.put(issue.getSeverity(),
                             countPerSeverity.get(issue.getSeverity()) + 1);
@@ -88,22 +92,23 @@ public class IssuesAdapter {
 
     /**
      * Get formatted issues summary
+     * 
      * @param report report from which to export resources
      * @return issues list
      */
     public static List<List<String>> getIssues(Report report) {
-        final List<List<String>> issues = new ArrayList<>();  // result to return
+        final List<List<String>> issues = new ArrayList<>(); // result to return
 
         // Get the issues' id
         final Map<String, Long> items = report.getIssuesFacets();
 
-        Map<String,Long> sortedItems =  new TreeMap<>(new RuleComparator(report));
+        Map<String, Long> sortedItems = new TreeMap<>(new RuleComparator(report));
         sortedItems.putAll(items);
 
         for (Map.Entry<String, Long> v : sortedItems.entrySet()) { // construct each issues
             final List<String> issue = new ArrayList<>();
             final Rule rule = report.getRule(v.getKey());
-            if(rule!=null) { // if the rule is found, fill information
+            if (rule != null) { // if the rule is found, fill information
                 // add name
                 issue.add(rule.getName());
                 // add description
@@ -133,5 +138,5 @@ public class IssuesAdapter {
 
         return issues;
     }
-    
+
 }

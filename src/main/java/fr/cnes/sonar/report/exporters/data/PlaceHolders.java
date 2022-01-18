@@ -366,7 +366,8 @@ public class PlaceHolders {
                 QUALITYPROFILEFILE_PLACEHOLDER,
                 report.getQualityProfilesFilename());
 
-        // In some cases, those metrics may not exist yet and those methods may throw an exception
+        // In some cases, those metrics may not exist yet and those methods may throw an
+        // exception
         try {
             // complexity metrics
             replacementValues.put(
@@ -522,11 +523,14 @@ public class PlaceHolders {
                 res = DEFAULT_PLACEHOLDER;
                 break;
         }
+
         return res;
     }
 
     /**
-     * Convert the numeric note (maintainability, security, reliability) to a letter (1.0 -> A, 2.0 -> B, ...)
+     * Convert the numeric note (maintainability, security, reliability) to a letter
+     * (1.0 -> A, 2.0 -> B, ...)
+     * 
      * @param value numeric note
      * @return a letter
      */
@@ -558,6 +562,7 @@ public class PlaceHolders {
 
     /**
      * Return Quality Gate status value dedicated PNG
+     * 
      * @param status status value
      * @return a formatted status
      */
