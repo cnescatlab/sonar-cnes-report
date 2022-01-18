@@ -13,6 +13,9 @@ import fr.cnes.sonar.report.model.Rule;
 import fr.cnes.sonar.report.model.SecurityHotspot;
 import fr.cnes.sonar.report.utils.StringManager;
 
+/**
+ * Class used to format Security Hotspots data for reports
+ */
 public class SecurityHotspotsAdapter {
 
     /**

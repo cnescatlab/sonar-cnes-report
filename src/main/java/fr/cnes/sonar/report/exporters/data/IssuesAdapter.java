@@ -13,6 +13,9 @@ import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.model.Rule;
 import fr.cnes.sonar.report.utils.StringManager;
 
+/**
+ * Class used to format Issues data for reports
+ */
 public class IssuesAdapter {
 
     /**
