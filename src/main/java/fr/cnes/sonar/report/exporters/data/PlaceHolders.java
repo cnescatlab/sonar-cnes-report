@@ -19,17 +19,10 @@ package fr.cnes.sonar.report.exporters.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
-import org.apache.commons.math3.util.Precision;
-
-import fr.cnes.sonar.report.model.Issue;
 import fr.cnes.sonar.report.model.Measure;
-import fr.cnes.sonar.report.model.QualityProfile;
 import fr.cnes.sonar.report.model.Report;
-import fr.cnes.sonar.report.model.SecurityHotspot;
 
 /**
  * Class used to link data with report templates placeholders
@@ -469,7 +462,7 @@ public class PlaceHolders {
             }
         }
 
-        replacementValues.put(COMPLIANCE_PLACEHOLDER, getCompliance(report));
+        replacementValues.put(COMPLIANCE_PLACEHOLDER, report.getCompliance());
 
         return replacementValues;
     }
@@ -582,35 +575,6 @@ public class PlaceHolders {
                 break;
         }
         return res;
-    }
-
-    /**
-     * Return the compliance to the coding standard (% of rules in all Quality Profiles that are not violated)
-     * @param report Report from which resources are extracted
-     * @return the compliance
-     */
-    private static String getCompliance(Report report) {
-        int rulesNumber = 0;
-        double compliance;
-
-        for (QualityProfile qp : report.getQualityProfiles()) {
-            rulesNumber += qp.getRules().size();
-        }
-
-        if (rulesNumber != 0) {
-            Set<String> violatedRules = new HashSet<>();
-            for (Issue issue : report.getIssues()) {
-                violatedRules.add(issue.getRule());
-            }
-            for (SecurityHotspot securityHotspot : report.getToReviewSecurityHotspots()) {
-                violatedRules.add(securityHotspot.getRule());
-            }
-            compliance = ((double)(rulesNumber - violatedRules.size()) / rulesNumber) * 100;
-        } else {
-            compliance = 0;
-        }
-
-        return String.valueOf(Precision.round(compliance, 1));
     }
 
 }

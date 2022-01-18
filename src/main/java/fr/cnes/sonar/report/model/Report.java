@@ -21,6 +21,8 @@ import fr.cnes.sonar.report.utils.StringManager;
 
 import java.util.*;
 
+import org.apache.commons.math3.util.Precision;
+
 /**
  * Model of a report containing all information
  */
@@ -143,6 +145,36 @@ public class Report {
 
         return lFacets;
     }
+
+    /**
+     * Return the compliance to the coding standard (% of rules in all Quality Profiles that are not violated)
+     * @param report Report from which resources are extracted
+     * @return the compliance
+     */
+    public String getCompliance() {
+        int rulesNumber = 0;
+        double compliance;
+
+        for (QualityProfile qp : this.getQualityProfiles()) {
+            rulesNumber += qp.getRules().size();
+        }
+
+        if (rulesNumber != 0) {
+            Set<String> violatedRules = new HashSet<>();
+            for (Issue issue : this.getIssues()) {
+                violatedRules.add(issue.getRule());
+            }
+            for (SecurityHotspot securityHotspot : this.getToReviewSecurityHotspots()) {
+                violatedRules.add(securityHotspot.getRule());
+            }
+            compliance = ((double)(rulesNumber - violatedRules.size()) / rulesNumber) * 100;
+        } else {
+            compliance = 0;
+        }
+
+        return String.valueOf(Precision.round(compliance, 1));
+    }
+
     /**
      * Getter for metrics stats
      * @param metricsStats maps with min, max, mean all numerical metric
