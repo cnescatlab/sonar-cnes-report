@@ -37,7 +37,7 @@ public class IssuesAdapterTest {
      */
     @Test
     public void getReversedIssuesSeveritiesTest() {
-        List<String> expected = Arrays.asList("INFO","MINOR","MAJOR","CRITICAL","BLOCKER");
+        List<String> expected = Arrays.asList("INFO", "MINOR", "MAJOR", "CRITICAL", "BLOCKER");
         Assert.assertEquals(expected, IssuesAdapter.getReversedIssuesSeverities());
     }
 
@@ -94,7 +94,7 @@ public class IssuesAdapterTest {
     @Test
     public void getIssuesTest() {
         Report report = Mockito.mock(Report.class);
-        Map<String,Long> mockedValue = new HashMap<>();
+        Map<String, Long> mockedValue = new HashMap<>();
 
         // No facets in reports
         List<List<String>> expected = new ArrayList<>();
