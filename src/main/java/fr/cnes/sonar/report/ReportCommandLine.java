@@ -137,7 +137,8 @@ public final class ReportCommandLine {
         LOGGER.info(message);
 
         if(!server.isSupported()) {
-            throw new SonarQubeException("SonarQube instance is not supported by cnesreport.");
+            LOGGER.warning("This SonarQube version is not supported by this cnesreport version.");
+            LOGGER.warning("For further information, please refer to the compatibility matrix on the project GitHub page.");
         }
 
         // Generate the model of the report.
