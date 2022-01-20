@@ -64,7 +64,6 @@ export default class CnesReportApp extends React.PureComponent {
         // Initialize compatibility check
         isCompatible().then(isSupported => {
             this.setState({ isSupported });
-            console.log(isSupported);
         });
 
         // Initialize data in form
