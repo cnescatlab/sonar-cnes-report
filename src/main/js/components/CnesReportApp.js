@@ -125,7 +125,7 @@ export default class CnesReportApp extends React.PureComponent {
                     { !this.state.isSupported &&
                         <div class="compatibility-warning">
                             <p>This SonarQube version is not supported by this cnesreport version.</p>
-                            <p>For further information, please refer to the compatibility matrix on the project GitHub page.</p>
+                            <p>For further information, please refer to the <a href="https://github.com/cnescatlab/sonar-cnes-report#compatibility-matrix">compatibility matrix</a> on the project GitHub page.</p>
                         </div>
                     }
                     <form id="generation-form" action="../../api/cnesreport/report" method="get">
