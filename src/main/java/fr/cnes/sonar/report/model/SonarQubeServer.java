@@ -26,13 +26,7 @@ public class SonarQubeServer {
     /** Status for server **/
     private boolean status;
     /** Number for major version **/
-    private int versionMajor;
-    /** Number for minor version **/
-    private int versionMinor;
-    /** Number for revision version **/
-    private int versionRevision;
-    /** Number for build version **/
-    private int versionBuild;
+    private String version;
     /** True if cnesreport support this SonarQube version **/
     private boolean supported;
 
@@ -43,10 +37,7 @@ public class SonarQubeServer {
         this.url = "http://localhost:9000";
         this.status = false;
         this.supported = false;
-        this.versionMajor = 0;
-        this.versionMinor = 0;
-        this.versionRevision = 0;
-        this.versionBuild = 0;
+        this.version = "";
     }
 
     /**
@@ -84,42 +75,25 @@ public class SonarQubeServer {
     /**
      * Setter for version.
      * @param pVersion Version as provided by SonarQube.
-     * @param pSupported True if this version is supported.
      */
-    public void setVersion(final String pVersion, final boolean pSupported) {
-        final String[] numbers = pVersion.split("\\.");
-        // case when version is X.Y
-        if(numbers.length >= 2) {
-            this.versionMajor = Integer.parseInt(numbers[0]);
-            this.versionMinor = Integer.parseInt(numbers[1]);
-            // case when version is X.Y.Z
-            if(numbers.length >= 3) {
-                this.versionRevision = Integer.parseInt(numbers[2]);
-                // case when version is X.Y.Z.build
-                if(numbers.length >= 4) {
-                    this.versionBuild = Integer.parseInt(numbers[3]);
-                }
-            }
-        }
-        this.supported = pSupported;
+    public void setVersion(final String pVersion) {
+        this.version = pVersion;
     }
 
     /**
-     * SonarQube server full version.
+     * SonarQube server version.
      * @return String containing version.
      */
     public String getVersion() {
-        return (new StringBuilder().append(versionMajor).append(".").append(versionMinor)
-                .append(".").append(versionRevision).append(".").append(versionBuild)).toString();
+        return version;
     }
 
     /**
-     * SonarQube server normalized version: "X.Y.Z".
-     * @return String containing version.
+     * Defines if the SonarQube server is supported
+     * @param pSupported True if this version is supported.
      */
-    public String getNormalizedVersion() {
-        return (new StringBuilder().append(versionMajor).append(".").append(versionMinor)
-                .append(".").append(versionRevision)).toString();
+    public void setSupported(final boolean pSupported) {
+        this.supported = pSupported;
     }
 
     /**

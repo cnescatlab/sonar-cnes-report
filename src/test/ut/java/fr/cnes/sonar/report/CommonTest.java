@@ -106,7 +106,8 @@ public abstract class CommonTest {
         sonarQubeServerInstance = new SonarQubeServer();
         sonarQubeServerInstance.setStatus("UP");
         sonarQubeServerInstance.setUrl("http://biiiiiiiiiiiiim");
-        sonarQubeServerInstance.setVersion("6.7.5", true);
+        sonarQubeServerInstance.setVersion("8.9.6");
+        sonarQubeServerInstance.setSupported(true);
 
         sonarQubeServer = conf.getServer();
 
