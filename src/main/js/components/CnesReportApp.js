@@ -6,7 +6,7 @@
 import React from "react";
 
 import DeferredSpinner from 'sonar-ui-common/components/ui/DeferredSpinner';
-import { getProjectsList, initiatePluginToken, getBranches } from "../common/api";
+import { getProjectsList, initiatePluginToken, getBranches, isCompatible } from "../common/api";
 
 export default class CnesReportApp extends React.PureComponent {
     state = {
@@ -20,7 +20,8 @@ export default class CnesReportApp extends React.PureComponent {
         enableMd: true,
         enableXlsx: true,
         enableCsv: true,
-        enableConf: true
+        enableConf: true,
+        isSupported: true
     };
 
     onChangeAuthor = (event) => {
@@ -60,6 +61,12 @@ export default class CnesReportApp extends React.PureComponent {
     }
 
     componentDidMount() {
+        // Initialize compatibility check
+        isCompatible().then(isSupported => {
+            this.setState({ isSupported });
+        });
+
+        // Initialize data in form
         initiatePluginToken().then(tokenInfo => {
             getProjectsList().then(projects => {
                 if (projects.length > 0) {
@@ -114,6 +121,12 @@ export default class CnesReportApp extends React.PureComponent {
             <div class="page-wrapper-simple">
                 <div class="page-simple">
                     <h1 class="maintenance-title text-center">Generate a report</h1>
+                    { !this.state.isSupported &&
+                        <div class="compatibility-warning">
+                            <p>This SonarQube version is not supported by this cnesreport version.</p>
+                            <p>For further information, please refer to the <a href="https://github.com/cnescatlab/sonar-cnes-report#compatibility-matrix">compatibility matrix</a> on the project GitHub page.</p>
+                        </div>
+                    }
                     <form id="generation-form" action="../../api/cnesreport/report" method="get">
                         <div class='forminput'>
                             <label for="key" id="keyLabel" class="login-label"><strong>Project</strong></label>
