@@ -20,6 +20,7 @@ package fr.cnes.sonar.report.factory;
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exporters.*;
 import fr.cnes.sonar.report.exporters.docx.DocXExporter;
+import fr.cnes.sonar.report.exporters.md.MarkdownExporter;
 import fr.cnes.sonar.report.exporters.xlsx.XlsXExporter;
 import fr.cnes.sonar.report.model.ProfileMetaData;
 import fr.cnes.sonar.report.model.QualityProfile;

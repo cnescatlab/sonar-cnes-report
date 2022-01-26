@@ -76,15 +76,15 @@ public class QualityProfileProviderPlugin extends AbstractQualityProfileProvider
     @Override
     protected JsonObject getQualityProfilesRulesAsJsonObject(final int page, final String profileKey) {
         // prepare the request
-        final List<String> f = new ArrayList<>(Arrays.asList("htmlDesc", "name", "repo", "severity", "defaultRemFn", ACTIVES));
-        final String ps = String.valueOf(Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)));
-        final String p = String.valueOf(page);
+        final List<String> issueFieldList = new ArrayList<>(Arrays.asList(getMetrics(QP_ISSUES_FIELDS).split(",")));
+        final String maxPerPage = String.valueOf(Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)));
+        final String pageIndex = String.valueOf(page);
         final org.sonarqube.ws.client.rules.SearchRequest searchRulesRequest =
                 new org.sonarqube.ws.client.rules.SearchRequest()
                                                     .setQprofile(profileKey)
-                                                    .setF(f)
-                                                    .setPs(ps)
-                                                    .setP(p)
+                                                    .setF(issueFieldList)
+                                                    .setPs(maxPerPage)
+                                                    .setP(pageIndex)
                                                     .setActivation("true");
         // perform the previous request to sonarqube server
         final SearchResponse searchRulesResponse = getWsClient().rules().search(searchRulesRequest);

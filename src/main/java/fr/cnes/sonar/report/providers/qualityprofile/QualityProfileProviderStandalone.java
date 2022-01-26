@@ -32,67 +32,65 @@ import com.google.gson.JsonObject;
  */
 public class QualityProfileProviderStandalone extends AbstractQualityProfileProvider implements QualityProfileProvider {
 
-    /**
-     *  Name of the request for getting quality profiles' linked projects
-     */
-    private static final String GET_QUALITY_PROFILES_PROJECTS_REQUEST =
-            "GET_QUALITY_PROFILES_PROJECTS_REQUEST";
-    /**
-     *  Name of the request for getting quality profiles' linked rules
-     */
-    private static final String GET_QUALITY_PROFILES_RULES_REQUEST =
-            "GET_QUALITY_PROFILES_RULES_REQUEST";
-    /**
-     *  Name of the request for getting quality profiles
-     */
-    private static final String GET_QUALITY_PROFILES_REQUEST = "GET_QUALITY_PROFILES_REQUEST";
-    /**
-     *  Name of the request for getting quality profiles' configuration
-     */
-    private static final String GET_QUALITY_PROFILES_CONF_REQUEST =
-            "GET_QUALITY_PROFILES_CONFIGURATION_REQUEST";
+        /**
+         * Name of the request for getting quality profiles' linked projects
+         */
+        private static final String GET_QUALITY_PROFILES_PROJECTS_REQUEST = "GET_QUALITY_PROFILES_PROJECTS_REQUEST";
+        /**
+         * Name of the request for getting quality profiles' linked rules
+         */
+        private static final String GET_QUALITY_PROFILES_RULES_REQUEST = "GET_QUALITY_PROFILES_RULES_REQUEST";
+        /**
+         * Name of the request for getting quality profiles
+         */
+        private static final String GET_QUALITY_PROFILES_REQUEST = "GET_QUALITY_PROFILES_REQUEST";
+        /**
+         * Name of the request for getting quality profiles' configuration
+         */
+        private static final String GET_QUALITY_PROFILES_CONF_REQUEST = "GET_QUALITY_PROFILES_CONFIGURATION_REQUEST";
 
-    /**
-     * Complete constructor
-     * @param pServer SonarQube server..
-     * @param pToken String representing the user token.
-     * @param pProject The id of the project to report.
-     */
-    public QualityProfileProviderStandalone(final String pServer, final String pToken, final String pProject) {
-        super(pServer, pToken, pProject);
-    }
+        /**
+         * Complete constructor
+         * 
+         * @param pServer  SonarQube server..
+         * @param pToken   String representing the user token.
+         * @param pProject The id of the project to report.
+         */
+        public QualityProfileProviderStandalone(final String pServer, final String pToken, final String pProject) {
+                super(pServer, pToken, pProject);
+        }
 
-    @Override
-    public List<QualityProfile> getQualityProfiles()
-            throws BadSonarQubeRequestException, SonarQubeException {
-        return getQualityProfilesAbstract();
-    }
+        @Override
+        public List<QualityProfile> getQualityProfiles()
+                        throws BadSonarQubeRequestException, SonarQubeException {
+                return getQualityProfilesAbstract();
+        }
 
-    @Override
-    protected JsonObject getQualityProfilesAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException {
-        return request(String.format(getRequest(GET_QUALITY_PROFILES_REQUEST), getServer(), getProjectKey()));
-    }
+        @Override
+        protected JsonObject getQualityProfilesAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException {
+                return request(String.format(getRequest(GET_QUALITY_PROFILES_REQUEST), getServer(), getProjectKey()));
+        }
 
-    @Override
-    protected String getQualityProfilesConfAsXml(final ProfileMetaData profileMetaData)
-            throws BadSonarQubeRequestException, SonarQubeException {
-        // URL Encoder is used to avoid issues with special characters
-        return stringRequest(String.format(getRequest(GET_QUALITY_PROFILES_CONF_REQUEST), getServer(),
-                UrlEncoder.urlEncodeString(profileMetaData.getLanguage()),
-                UrlEncoder.urlEncodeString(profileMetaData.getName())));
-    }
+        @Override
+        protected String getQualityProfilesConfAsXml(final ProfileMetaData profileMetaData)
+                        throws BadSonarQubeRequestException, SonarQubeException {
+                // URL Encoder is used to avoid issues with special characters
+                return stringRequest(String.format(getRequest(GET_QUALITY_PROFILES_CONF_REQUEST), getServer(),
+                                UrlEncoder.urlEncodeString(profileMetaData.getLanguage()),
+                                UrlEncoder.urlEncodeString(profileMetaData.getName())));
+        }
 
-    @Override
-    protected JsonObject getQualityProfilesRulesAsJsonObject(final int page, final String profileKey)
-            throws BadSonarQubeRequestException, SonarQubeException {
-        return request(String.format(getRequest(GET_QUALITY_PROFILES_RULES_REQUEST), getServer(), profileKey,
-                Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)), page));
-    }
+        @Override
+        protected JsonObject getQualityProfilesRulesAsJsonObject(final int page, final String profileKey)
+                        throws BadSonarQubeRequestException, SonarQubeException {
+                return request(String.format(getRequest(GET_QUALITY_PROFILES_RULES_REQUEST), getServer(), profileKey,
+                                getMetrics(QP_ISSUES_FIELDS), Integer.valueOf(getRequest(MAX_PER_PAGE_SONARQUBE)), page));
+        }
 
-    @Override
-    protected JsonObject getQualityProfilesProjectsAsJsonObject(final ProfileMetaData profileMetaData)
-            throws BadSonarQubeRequestException, SonarQubeException {
-        return request(String.format(getRequest(GET_QUALITY_PROFILES_PROJECTS_REQUEST), getServer(),
-                profileMetaData.getKey()));
-    }
+        @Override
+        protected JsonObject getQualityProfilesProjectsAsJsonObject(final ProfileMetaData profileMetaData)
+                        throws BadSonarQubeRequestException, SonarQubeException {
+                return request(String.format(getRequest(GET_QUALITY_PROFILES_PROJECTS_REQUEST), getServer(),
+                                profileMetaData.getKey()));
+        }
 }

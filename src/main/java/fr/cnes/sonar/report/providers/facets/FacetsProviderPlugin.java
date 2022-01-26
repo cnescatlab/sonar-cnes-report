@@ -39,19 +39,6 @@ import com.google.gson.JsonObject;
 public class FacetsProviderPlugin extends AbstractFacetsProvider implements FacetsProvider {
 
     /**
-     * Field to get the types facet in a response
-     */
-    private static final String TYPES = "types";
-    /**
-     * Field to get the severities facet in a response
-     */
-    private static final String SEVERITIES = "severities";
-    /**
-     * List of desired time facets
-     */
-    private static final List<String> TIME_FACETS = new ArrayList<>(Arrays.asList("violations", "sqale_debt_ratio"));
-
-    /**
      * Complete constructor.
      * @param wsClient The web client.
      * @param project The id of the project to report.
@@ -72,18 +59,18 @@ public class FacetsProviderPlugin extends AbstractFacetsProvider implements Face
     }
 
     @Override
-    protected JsonObject getFacetsAsJsonObject() {
+    protected JsonObject getFacetsAsJsonObject(final int page) {
         // prepare the request
         final List<String> projects = new ArrayList<>(Arrays.asList(getProjectKey()));
-        final List<String> facets = new ArrayList<>(Arrays.asList(TYPES, RULES, SEVERITIES));
-        final String ps = String.valueOf(1);
-        final String p = String.valueOf(1);
+        final List<String> facets = new ArrayList<>(Arrays.asList(getMetrics(PROJECT_FACETS).split(",")));
+        final String maxPerPage = String.valueOf(FACETS_MAX_PER_PAGE);
+        final String pageIndex = String.valueOf(page);
         final SearchRequest searchRequest = new SearchRequest()
                                                 .setProjects(projects)
                                                 .setResolved(CONFIRMED)
                                                 .setFacets(facets)
-                                                .setPs(ps)
-                                                .setP(p)
+                                                .setPs(maxPerPage)
+                                                .setP(pageIndex)
                                                 .setBranch(getBranch());
         // perform the request to the server
         final SearchWsResponse searchWsResponse = getWsClient().issues().search(searchRequest);
@@ -92,15 +79,17 @@ public class FacetsProviderPlugin extends AbstractFacetsProvider implements Face
     }
 
     @Override
-    protected JsonObject getTimeFacetsAsJsonObject(int page, int maxPerPage) {
+    protected JsonObject getTimeFacetsAsJsonObject(int page, int pMaxPerPage) {
+        final List<String> metricKeys = new ArrayList<>(Arrays.asList(getMetrics(CHARTS_METRICS)));
+
         // prepare the request
-        final String ps = String.valueOf(maxPerPage);
-        final String p = String.valueOf(page);
+        final String maxPerPage = String.valueOf(pMaxPerPage);
+        final String pageIndex = String.valueOf(page);
         final SearchHistoryRequest searchHistoryRequest = new SearchHistoryRequest()
                                                                 .setComponent(getProjectKey())
-                                                                .setMetrics(TIME_FACETS)
-                                                                .setPs(ps)
-                                                                .setP(p)
+                                                                .setMetrics(metricKeys)
+                                                                .setPs(maxPerPage)
+                                                                .setP(pageIndex)
                                                                 .setBranch(getBranch());
         // perform the request to the server
         final SearchHistoryResponse searchHistoryResponse = getWsClient().measures().searchHistory(searchHistoryRequest);

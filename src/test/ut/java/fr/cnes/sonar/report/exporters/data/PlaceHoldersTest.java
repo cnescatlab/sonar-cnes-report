@@ -15,18 +15,20 @@
  * along with cnesreport.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package fr.cnes.sonar.report.exporters.docx;
+package fr.cnes.sonar.report.exporters.data;
 
 import fr.cnes.sonar.report.CommonTest;
+import fr.cnes.sonar.report.model.Measure;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class DataAdapterTest extends CommonTest {
+public class PlaceHoldersTest extends CommonTest {
 
     /**
      * Assert that the method "loadPlaceholdersMap" fills correctly the placeholders
@@ -35,7 +37,7 @@ public class DataAdapterTest extends CommonTest {
      */
     @Test
     public void loadPlaceholdersMapTest(){
-        Map<String,String> placeHolders = DataAdapter.loadPlaceholdersMap(report);
+        Map<String,String> placeHolders = PlaceHolders.loadPlaceholdersMap(report);
         Map<String,String> expected = new HashMap<>();
         // Fill manually the placeHolders depending on what we initialized in "CommonTest"
         expected.put("XX-PROJECTNAME-XX", "CNES Report");
@@ -77,12 +79,29 @@ public class DataAdapterTest extends CommonTest {
         expected.put("XX-TEST-FAILURES-XX", "2");
         Assert.assertEquals(expected, placeHolders);
 
+        // Change Maintainability to E rating & Security rating to unknow
+        // And global Quality Gate Status to KO
+        List<Measure> measures = report.getMeasures();
+        for(int i = 0; i < measures.size(); i++) {
+            if (measures.get(i).getMetric() == "sqale_rating") {
+                measures.set(i, new Measure("sqale_rating", "5.0"));
+            } else if (measures.get(i).getMetric() == "security_rating") {
+                measures.set(i, new Measure("security_rating", ""));
+            } else if (measures.get(i).getMetric() == "alert_status") {
+                measures.set(i, new Measure("alert_status", "ERROR"));
+            }
+        }
+        report.setMeasures(measures);
+
         // Add the maxcoverage to cancel the unknown error
         Map<String, Double> metricsStats = report.getMetricsStats();
         metricsStats.put("maxcoverage", 1.0);
         report.setMetricsStats(metricsStats);
 
         // Change the unknown placeholders by the real value
+        expected.replace("XX-MAINTAINABILITY-XX", "E.png");
+        expected.replace("XX-SECURITY-XX", "value");
+        expected.replace("XX-QUALITYGATE-XX", "ERROR.png");
         expected.replace("XX-MAXNCLOC-XX", "1.0");
         expected.replace("XX-MAXCOGNITIVECOMPLEXITY-XX", "1.0");
         expected.replace("XX-MINCOMMENTDENSITY-XX", "0.0");
@@ -95,7 +114,19 @@ public class DataAdapterTest extends CommonTest {
         expected.replace("XX-MAXCOMMENTDENSITY-XX", "1.0");
         expected.replace("XX-MEDIANNCLOC-XX", "1.0");
         expected.put("XX-MAXCOVERAGE-XX", "1.0");
-        Map<String,String> newPlaceHolders = DataAdapter.loadPlaceholdersMap(report);
+        Map<String,String> newPlaceHolders = PlaceHolders.loadPlaceholdersMap(report);
+        Assert.assertEquals(expected, newPlaceHolders);
+
+        // Silly test for coverage on failed quality gate status
+        measures = report.getMeasures();
+        for(int i = 0; i < measures.size(); i++) {
+            if (measures.get(i).getMetric() == "alert_status") {
+                measures.set(i, new Measure("alert_status", "FAILED"));
+            }
+        }
+        report.setMeasures(measures);
+        expected.replace("XX-QUALITYGATE-XX", "FAILED");
+        newPlaceHolders = PlaceHolders.loadPlaceholdersMap(report);
         Assert.assertEquals(expected, newPlaceHolders);
     }
 }

@@ -51,7 +51,11 @@ public abstract class AbstractQualityProfileProvider extends AbstractDataProvide
     /**
      * Field to search in json to get profiles
      */
-    protected static final String ACTIVES = "actives";
+    private static final String ACTIVES = "actives";
+    /**
+     *  Name of the SonarQube issues fields to retrieve 
+     */
+    protected static final String QP_ISSUES_FIELDS = "QP_ISSUES_FIELDS";
 
     /**
      * Complete constructor.

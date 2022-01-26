@@ -172,7 +172,7 @@ public class AbstractFacetsProviderTest {
         }
 
         // Implement necessary abstract method
-        protected JsonObject getFacetsAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException {
+        protected JsonObject getFacetsAsJsonObject(final int page) throws BadSonarQubeRequestException, SonarQubeException {
             return this.facets;
         }
         protected JsonObject getTimeFacetsAsJsonObject(final int page, final int maxPerPage) throws BadSonarQubeRequestException, SonarQubeException {
