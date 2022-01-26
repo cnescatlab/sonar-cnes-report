@@ -75,8 +75,10 @@ public class ServerFactory {
             final String version = infoProvider.getSonarQubeVersion();
             // Check if version is supported.
             final boolean isSupported = SUPPORTED_VERSIONS.stream().parallel().anyMatch(version::matches);
+            // Set supported
+            server.setSupported(isSupported);
             // Set version.
-            server.setVersion(version, isSupported);
+            server.setVersion(version);
         }
 
         return server;

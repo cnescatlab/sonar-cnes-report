@@ -133,7 +133,7 @@ public final class ReportCommandLine {
             throw new SonarQubeException("Impossible to reach SonarQube instance.");
         }
 
-        message = String.format("Detected SonarQube version: %s", server.getNormalizedVersion());
+        message = String.format("Detected SonarQube version: %s", server.getVersion());
         LOGGER.info(message);
 
         if(!server.isSupported()) {
