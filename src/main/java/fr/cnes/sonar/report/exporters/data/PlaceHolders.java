@@ -264,9 +264,9 @@ public class PlaceHolders {
      */
     private static final String STATUS = "status";
     /**
-     * just a question mark
+     * Just a zero value for empty metrics
      */
-    private static final String QUESTION_MARK = "?";
+    private static final String ZERO_VALUE = "0";
     /**
      * Value "OK" of the parameter "status" of the JSON response
      */
@@ -456,11 +456,21 @@ public class PlaceHolders {
             replacementValues.put(
                     placeholder,
                     value);
+        }
 
-            // Sometimes, project do not have coverage
-            if (replacementValues.get(COVERAGE_PLACEHOLDER) == null) {
-                replacementValues.put(COVERAGE_PLACEHOLDER, QUESTION_MARK);
-            }
+        // Sometimes, project do not have coverage or tests
+        if (replacementValues.get(COVERAGE_PLACEHOLDER) == null) {
+            replacementValues.put(COVERAGE_PLACEHOLDER, ZERO_VALUE);
+            replacementValues.put(MINCOVERAGE_PLACEHOLDER, ZERO_VALUE);
+            replacementValues.put(MAXCOVERAGE_PLACEHOLDER, ZERO_VALUE);
+        }
+
+        if (replacementValues.get(TOTAL_TESTS_PLACEHOLDER) == null) {
+            replacementValues.put(TOTAL_TESTS_PLACEHOLDER, ZERO_VALUE);
+            replacementValues.put(TEST_SUCCESS_RATE_PLACEHOLDER, ZERO_VALUE);
+            replacementValues.put(SKIPPED_TESTS_PLACEHOLDER, ZERO_VALUE);
+            replacementValues.put(TEST_ERRORS_PLACEHOLDER, ZERO_VALUE);
+            replacementValues.put(TEST_FAILURES_PLACEHOLDER, ZERO_VALUE);            
         }
 
         replacementValues.put(COMPLIANCE_PLACEHOLDER, report.getCompliance());
