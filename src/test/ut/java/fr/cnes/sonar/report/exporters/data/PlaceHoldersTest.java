@@ -118,7 +118,6 @@ public class PlaceHoldersTest extends CommonTest {
         Assert.assertEquals(expected, newPlaceHolders);
 
         // Silly test for coverage on failed quality gate status
-        measures = report.getMeasures();
         for(int i = 0; i < measures.size(); i++) {
             if (measures.get(i).getMetric() == "alert_status") {
                 measures.set(i, new Measure("alert_status", "FAILED"));
@@ -126,6 +125,27 @@ public class PlaceHoldersTest extends CommonTest {
         }
         report.setMeasures(measures);
         expected.replace("XX-QUALITYGATE-XX", "FAILED");
+        newPlaceHolders = PlaceHolders.loadPlaceholdersMap(report);
+        Assert.assertEquals(expected, newPlaceHolders);
+
+        // Check behaviour if no coverage value && no tests
+        for(int i = 0; i < measures.size(); i++) {
+            if (measures.get(i).getMetric() == "coverage") {
+                measures.remove(i);
+            } else if (measures.get(i).getMetric() == "tests") {
+                measures.remove(i);
+            }
+        }
+
+        report.setMeasures(measures);
+        expected.replace("XX-COVERAGE-XX", "0");
+        expected.replace("XX-MAXCOVERAGE-XX", "0");
+        expected.replace("XX-MINCOVERAGE-XX", "0");
+        expected.replace("XX-TOTAL-TESTS-XX", "0");
+        expected.replace("XX-TEST-SUCCESS-RATE-XX", "0");
+        expected.replace("XX-SKIPPED-TESTS-XX", "0");
+        expected.replace("XX-TEST-ERRORS-XX", "0");
+        expected.replace("XX-TEST-FAILURES-XX", "0");
         newPlaceHolders = PlaceHolders.loadPlaceholdersMap(report);
         Assert.assertEquals(expected, newPlaceHolders);
     }

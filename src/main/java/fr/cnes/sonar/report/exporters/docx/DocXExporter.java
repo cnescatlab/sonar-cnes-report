@@ -129,7 +129,7 @@ public class DocXExporter implements IExporter {
                 ) {
 
                         // Fill charts
-                        DocXTools.fillCharts(document, report.getFacets(), report.getTimeFacets());
+                        DocXTools.fillCharts(document, report);
 
                         // Add issues
                         replaceIssuesPlaceholders(document, report);
