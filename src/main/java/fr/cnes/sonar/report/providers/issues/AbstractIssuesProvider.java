@@ -55,13 +55,22 @@ public abstract class AbstractIssuesProvider extends AbstractDataProvider {
      * Parameter "issues" of the JSON response
      */
     private static final String ISSUES = "issues";
+    /**
+     * Name of the SonarQube facets to retrieve from issues
+     */
+    protected static final String ISSUES_FACETS = "ISSUES_FACETS";
+    /**
+     * Name of the SonarQube additional fields to retrieve from issues
+     */
+    protected static final String ISSUES_ADDITIONAL_FIELDS = "ISSUES_ADDITIONAL_FIELDS";
 
     /**
      * Complete constructor.
-     * @param pServer SonarQube server.
-     * @param pToken String representing the user token.
+     * 
+     * @param pServer  SonarQube server.
+     * @param pToken   String representing the user token.
      * @param pProject The id of the project to report.
-     * @param pBranch The branch of the project to report.
+     * @param pBranch  The branch of the project to report.
      */
     protected AbstractIssuesProvider(final String pServer, final String pToken, final String pProject,
             final String pBranch) {
@@ -70,9 +79,10 @@ public abstract class AbstractIssuesProvider extends AbstractDataProvider {
 
     /**
      * Complete constructor.
+     * 
      * @param wsClient The web client.
-     * @param project The id of the project to report.
-     * @param branch The branch of the project to report.
+     * @param project  The id of the project to report.
+     * @param branch   The branch of the project to report.
      */
     protected AbstractIssuesProvider(final WsClient wsClient, final String project, final String branch) {
         super(wsClient, project, branch);
@@ -80,10 +90,12 @@ public abstract class AbstractIssuesProvider extends AbstractDataProvider {
 
     /**
      * Generic getter for issues depending on their resolved status
+     * 
      * @param confirmed equals "true" if Unconfirmed and "false" if confirmed
      * @return List containing all the issues
-     * @throws BadSonarQubeRequestException A request is not recognized by the server
-     * @throws SonarQubeException When SonarQube server is not callable.
+     * @throws BadSonarQubeRequestException A request is not recognized by the
+     *                                      server
+     * @throws SonarQubeException           When SonarQube server is not callable.
      */
     protected List<Issue> getIssuesByStatusAbstract(final String confirmed)
             throws BadSonarQubeRequestException, SonarQubeException {
@@ -98,11 +110,11 @@ public abstract class AbstractIssuesProvider extends AbstractDataProvider {
         int page = 1;
 
         // temporary declared variable to contain data from ws
-        Issue [] issuesTemp;
+        Issue[] issuesTemp;
         Rule[] rulesTemp;
 
         // search all issues of the project
-        while(goOn) {
+        while (goOn) {
             // get maximum number of results per page
             final int maxPerPage = Integer.parseInt(getRequest(MAX_PER_PAGE_SONARQUBE));
             final JsonObject jo = getIssuesAsJsonObject(page, maxPerPage, confirmed);
@@ -117,16 +129,16 @@ public abstract class AbstractIssuesProvider extends AbstractDataProvider {
             int number = (jo.get(TOTAL).getAsInt());
 
             // check overflow
-            if(number > MAXIMUM_ISSUES_LIMIT) {
+            if (number > MAXIMUM_ISSUES_LIMIT) {
                 number = MAXIMUM_ISSUES_LIMIT;
                 overflow = true;
             }
-            goOn = page* maxPerPage < number;
+            goOn = page * maxPerPage < number;
             page++;
         }
 
         // in case of overflow we log the problem
-        if(overflow) {
+        if (overflow) {
             String message = StringManager.string(StringManager.ISSUES_OVERFLOW_MSG);
             LOGGER.warning(message);
         }
@@ -137,13 +149,15 @@ public abstract class AbstractIssuesProvider extends AbstractDataProvider {
 
     /**
      * Generic getter for all the issues of a project in a raw format (map)
+     * 
      * @return Array containing all the issues as maps
-     * @throws BadSonarQubeRequestException A request is not recognized by the server
-     * @throws SonarQubeException When SonarQube server is not callable.
+     * @throws BadSonarQubeRequestException A request is not recognized by the
+     *                                      server
+     * @throws SonarQubeException           When SonarQube server is not callable.
      */
-    protected List<Map<String,String>> getRawIssuesAbstract() throws BadSonarQubeRequestException, SonarQubeException {
+    protected List<Map<String, String>> getRawIssuesAbstract() throws BadSonarQubeRequestException, SonarQubeException {
         // results variable
-        final List<Map<String,String>> res = new ArrayList<>();
+        final List<Map<String, String>> res = new ArrayList<>();
 
         // stop condition
         boolean goon = true;
@@ -153,29 +167,29 @@ public abstract class AbstractIssuesProvider extends AbstractDataProvider {
         int page = 1;
 
         // search all issues of the project
-        while(goon) {
+        while (goon) {
             // get maximum number of results per page
             final int maxPerPage = Integer.parseInt(getRequest(MAX_PER_PAGE_SONARQUBE));
             final JsonObject jo = getIssuesAsJsonObject(page, maxPerPage, CONFIRMED);
             // transform json to Issue objects
-            final Map<String,String> [] tmp = (getGson().fromJson(jo.get(ISSUES), Map[].class));
+            final Map<String, String>[] tmp = (getGson().fromJson(jo.get(ISSUES), Map[].class));
             // add them to the final result
             res.addAll(Arrays.asList(tmp));
             // check next results' pages
             int number = (jo.get(TOTAL).getAsInt());
 
             // check overflow
-            if(number > MAXIMUM_ISSUES_LIMIT) {
+            if (number > MAXIMUM_ISSUES_LIMIT) {
                 number = MAXIMUM_ISSUES_LIMIT;
                 overflow = true;
             }
 
-            goon = page* maxPerPage < number;
+            goon = page * maxPerPage < number;
             page++;
         }
 
         // in case of overflow we log the problem
-        if(overflow) {
+        if (overflow) {
             String message = StringManager.string(StringManager.ISSUES_OVERFLOW_MSG);
             LOGGER.warning(message);
         }
@@ -187,8 +201,9 @@ public abstract class AbstractIssuesProvider extends AbstractDataProvider {
     /**
      * Find the display name of the programming language corresponding
      * to a rule with its key
+     * 
      * @param ruleKey key of the rule to find
-     * @param rules array of the rules to browse
+     * @param rules   array of the rules to browse
      * @return a String containing the display name of the programming language
      */
     private String findLanguageOf(String ruleKey, Rule[] rules) {
@@ -201,8 +216,8 @@ public abstract class AbstractIssuesProvider extends AbstractDataProvider {
         String language = "";
 
         // we iterate on the array until we find the good key
-        while(again && inc < rules.length) {
-            if(ruleKey.equals(rules[inc].getKey())) {
+        while (again && inc < rules.length) {
+            if (ruleKey.equals(rules[inc].getKey())) {
                 again = false;
                 language = rules[inc].getLangName();
             }
@@ -214,8 +229,9 @@ public abstract class AbstractIssuesProvider extends AbstractDataProvider {
 
     /**
      * Set the language of each issues
+     * 
      * @param issues an array of issues to set
-     * @param rules an array of rules containing language information
+     * @param rules  an array of rules containing language information
      */
     private void setIssuesLanguage(Issue[] issues, Rule[] rules) {
         // rule's key of an issue
@@ -234,12 +250,14 @@ public abstract class AbstractIssuesProvider extends AbstractDataProvider {
 
     /**
      * Get a JsonObject from the response of a search issues request.
-     * @param page The current page.
+     * 
+     * @param page       The current page.
      * @param maxPerPage The maximum page size.
-     * @param confirmed Equals "true" if Unconfirmed and "false" if confirmed.
+     * @param confirmed  Equals "true" if Unconfirmed and "false" if confirmed.
      * @return The response as a JsonObject.
-     * @throws BadSonarQubeRequestException A request is not recognized by the server.
-     * @throws SonarQubeException When SonarQube server is not callable.
+     * @throws BadSonarQubeRequestException A request is not recognized by the
+     *                                      server.
+     * @throws SonarQubeException           When SonarQube server is not callable.
      */
     protected abstract JsonObject getIssuesAsJsonObject(final int page, final int maxPerPage, final String confirmed)
             throws BadSonarQubeRequestException, SonarQubeException;

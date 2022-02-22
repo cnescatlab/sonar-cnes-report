@@ -106,7 +106,8 @@ public abstract class CommonTest {
         sonarQubeServerInstance = new SonarQubeServer();
         sonarQubeServerInstance.setStatus("UP");
         sonarQubeServerInstance.setUrl("http://biiiiiiiiiiiiim");
-        sonarQubeServerInstance.setVersion("6.7.5", true);
+        sonarQubeServerInstance.setVersion("8.9.6");
+        sonarQubeServerInstance.setSupported(true);
 
         sonarQubeServer = conf.getServer();
 
@@ -168,18 +169,18 @@ public abstract class CommonTest {
         report.setIssues(issues);
 
         List<Map<String,String>> rawIssues = new ArrayList<>();
-        Map issue1 = new HashMap<>();
-        issue1.put("Comments", new ArrayList<String>());
-        issue1.put("ToReview", true);
-        issue1.put("someNumber", 1.0);
+        Map<String, String> issue1 = new HashMap<>();
+        issue1.put("Comments", new ArrayList<String>().toString());
+        issue1.put("ToReview", "true");
+        issue1.put("someNumber", "1.0");
         rawIssues.add(issue1);
 
-        Map issue2 = new HashMap<>();
+        Map<String,String> issue2 = new HashMap<>();
         List<String> list = new ArrayList<>();
         list.add("Element 1");
         list.add("Element 2");
-        issue2.put("Comments", list);
-        issue2.put("someNumber", 2.0);
+        issue2.put("Comments", list.toString());
+        issue2.put("someNumber", "2.0");
         rawIssues.add(issue2);
 
         report.setRawIssues(rawIssues);
@@ -362,6 +363,11 @@ public abstract class CommonTest {
         measures.add(new Measure("reliability_remediation_effort", "3474"));
         measures.add(new Measure("security_remediation_effort", "4097"));
         measures.add(new Measure("sqale_index", "3224"));
+        measures.add(new Measure("tests", "42"));
+        measures.add(new Measure("test_success_density", "90.3"));
+        measures.add(new Measure("skipped_tests", "0"));
+        measures.add(new Measure("test_failures", "2"));
+        measures.add(new Measure("test_errors", "8"));
         report.setMeasures(measures);
 
 

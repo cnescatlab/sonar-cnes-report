@@ -133,11 +133,12 @@ public final class ReportCommandLine {
             throw new SonarQubeException("Impossible to reach SonarQube instance.");
         }
 
-        message = String.format("Detected SonarQube version: %s", server.getNormalizedVersion());
+        message = String.format("Detected SonarQube version: %s", server.getVersion());
         LOGGER.info(message);
 
         if(!server.isSupported()) {
-            throw new SonarQubeException("SonarQube instance is not supported by cnesreport.");
+            LOGGER.warning("This SonarQube version is not supported by this cnesreport version.");
+            LOGGER.warning("For further information, please refer to the compatibility matrix on the project GitHub page.");
         }
 
         // Generate the model of the report.

@@ -5,9 +5,11 @@
 import { getJSON, postJSON, post } from "sonar-request";
 
 // Function used to get current SonarQube Server version
-function getSonarVersion() {
+export function isCompatible() {
+  const COMPATIBILITY_PATTERN = /8.9(?:\..*)?(?:-.*)?/;
+
   return getJSON("/api/system/status").then(response => {
-    return parseFloat(response.version);
+    return response.version.match(COMPATIBILITY_PATTERN) != null;
   });
 }
 

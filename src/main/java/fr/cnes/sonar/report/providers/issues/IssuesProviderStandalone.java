@@ -32,16 +32,17 @@ import com.google.gson.JsonObject;
 public class IssuesProviderStandalone extends AbstractIssuesProvider implements IssuesProvider {
 
     /**
-     *  Name of the request for getting issues
+     * Name of the request for getting issues
      */
     private static final String GET_ISSUES_REQUEST = "GET_ISSUES_REQUEST";
 
     /**
      * Complete constructor.
-     * @param pServer SonarQube server.
-     * @param pToken String representing the user token.
+     * 
+     * @param pServer  SonarQube server.
+     * @param pToken   String representing the user token.
      * @param pProject The id of the project to report.
-     * @param pBranch The branch of the project to report.
+     * @param pBranch  The branch of the project to report.
      */
     public IssuesProviderStandalone(final String pServer, final String pToken, final String pProject,
             final String pBranch) {
@@ -62,10 +63,12 @@ public class IssuesProviderStandalone extends AbstractIssuesProvider implements 
 
     /**
      * Get issues depending on their resolved status
+     * 
      * @param confirmed equals "true" if Unconfirmed and "false" if confirmed
      * @return List containing all the issues
-     * @throws BadSonarQubeRequestException A request is not recognized by the server
-     * @throws SonarQubeException When SonarQube server is not callable.
+     * @throws BadSonarQubeRequestException A request is not recognized by the
+     *                                      server
+     * @throws SonarQubeException           When SonarQube server is not callable.
      */
     private List<Issue> getIssuesByStatus(String confirmed)
             throws BadSonarQubeRequestException, SonarQubeException {
@@ -73,7 +76,7 @@ public class IssuesProviderStandalone extends AbstractIssuesProvider implements 
     }
 
     @Override
-    public List<Map<String,String>> getRawIssues() throws BadSonarQubeRequestException, SonarQubeException {
+    public List<Map<String, String>> getRawIssues() throws BadSonarQubeRequestException, SonarQubeException {
         return getRawIssuesAbstract();
     }
 
@@ -81,8 +84,9 @@ public class IssuesProviderStandalone extends AbstractIssuesProvider implements 
     protected JsonObject getIssuesAsJsonObject(final int page, final int maxPerPage, final String confirmed)
             throws BadSonarQubeRequestException, SonarQubeException {
         // prepare the server to get all the issues
-        final String request = String.format(getRequest(GET_ISSUES_REQUEST), getServer(), getProjectKey(), maxPerPage,
-                page, confirmed, getBranch());
+        final String request = String.format(getRequest(GET_ISSUES_REQUEST), getServer(), getProjectKey(),
+                getMetrics(ISSUES_FACETS), maxPerPage, page, getMetrics(ISSUES_ADDITIONAL_FIELDS), confirmed,
+                getBranch());
         // perform the request to the server
         return request(request);
     }

@@ -21,6 +21,8 @@ import fr.cnes.sonar.report.utils.StringManager;
 
 import java.util.*;
 
+import org.apache.commons.math3.util.Precision;
+
 /**
  * Model of a report containing all information
  */
@@ -72,7 +74,7 @@ public class Report {
     /**
      * List of map representing issues
      */
-    private List<Map<String,String>> rawIssues;
+    private List<Map<String, String>> rawIssues;
     /**
      * Data about the project
      */
@@ -84,7 +86,7 @@ public class Report {
     /**
      * List of components in the project and their metrics
      */
-    private List<Map<String,String>> components;
+    private List<Map<String, String>> components;
     /**
      * Maps of metrics stats
      */
@@ -93,6 +95,7 @@ public class Report {
      * Map of quality gate conditions statuses
      */
     private Map<String, String> qualityGateStatus;
+
     /**
      * Default constructor
      */
@@ -114,11 +117,12 @@ public class Report {
         this.metricsStats = new HashMap<>();
         this.qualityGateStatus = new HashMap<>();
         this.project = new Project(StringManager.EMPTY, StringManager.EMPTY,
-                StringManager.EMPTY,StringManager.EMPTY,StringManager.EMPTY, StringManager.EMPTY);
+                StringManager.EMPTY, StringManager.EMPTY, StringManager.EMPTY, StringManager.EMPTY);
     }
 
     /**
      * Get number of issues by issue
+     * 
      * @return issues
      */
     public Map<String, Long> getIssuesFacets() {
@@ -132,10 +136,10 @@ public class Report {
         // we browse all the issues and for each issue,
         // if it is known then we increment its counter
         // otherwise we add it to the map
-        for(Issue issue : getIssues()) {
+        for (Issue issue : getIssues()) {
             rule = issue.getRule();
             counter = 1;
-            if(lFacets.containsKey(rule)) {
+            if (lFacets.containsKey(rule)) {
                 counter = lFacets.get(rule) + 1;
             }
             lFacets.put(rule, counter);
@@ -143,32 +147,77 @@ public class Report {
 
         return lFacets;
     }
+
+    /**
+     * Return the compliance to the coding standard (% of rules in all Quality
+     * Profiles that are not violated)
+     * 
+     * @param report Report from which resources are extracted
+     * @return the compliance
+     */
+    public String getCompliance() {
+        int rulesNumber = 0;
+        double compliance;
+
+        for (QualityProfile qp : this.getQualityProfiles()) {
+            rulesNumber += qp.getRules().size();
+        }
+
+        if (rulesNumber != 0) {
+            Set<String> violatedRules = new HashSet<>();
+            for (Issue issue : this.getIssues()) {
+                violatedRules.add(issue.getRule());
+            }
+            for (SecurityHotspot securityHotspot : this.getToReviewSecurityHotspots()) {
+                violatedRules.add(securityHotspot.getRule());
+            }
+            compliance = ((double) (rulesNumber - violatedRules.size()) / rulesNumber) * 100;
+        } else {
+            compliance = 0;
+        }
+
+        return String.valueOf(Precision.round(compliance, 1));
+    }
+
     /**
      * Getter for metrics stats
+     * 
      * @param metricsStats maps with min, max, mean all numerical metric
      */
-    public void setMetricsStats(Map<String, Double> metricsStats){ this.metricsStats = metricsStats; }
+    public void setMetricsStats(Map<String, Double> metricsStats) {
+        this.metricsStats = metricsStats;
+    }
 
     /**
      * Setter for components
+     * 
      * @return maps with min, max, mean all numerical metric
      */
-    public Map<String, Double> getMetricsStats(){return metricsStats; }
+    public Map<String, Double> getMetricsStats() {
+        return metricsStats;
+    }
 
     /**
      * Getter for components
+     * 
      * @return components
      */
-    public List<Map<String,String>> getComponents() {return new ArrayList<>(components); }
+    public List<Map<String, String>> getComponents() {
+        return new ArrayList<>(components);
+    }
 
     /**
      * Setteer for components
+     * 
      * @param components
      */
-    public void setComponents(List<Map<String,String>> components){ this.components = new ArrayList<>(components); }
+    public void setComponents(List<Map<String, String>> components) {
+        this.components = new ArrayList<>(components);
+    }
 
     /**
      * Get issues
+     * 
      * @return issues
      */
     public List<Issue> getIssues() {
@@ -177,6 +226,7 @@ public class Report {
 
     /**
      * Setter for issues
+     * 
      * @param pIssues value
      */
     public void setIssues(List<Issue> pIssues) {
@@ -185,6 +235,7 @@ public class Report {
 
     /**
      * Get security hotspots with TO_REVIEW status
+     * 
      * @return security hotspots
      */
     public List<SecurityHotspot> getToReviewSecurityHotspots() {
@@ -193,6 +244,7 @@ public class Report {
 
     /**
      * Setter for toReviewSecurityHotspots
+     * 
      * @param pToReviewSecurityHotspots value
      */
     public void setToReviewSecurityHotspots(List<SecurityHotspot> pToReviewSecurityHotspots) {
@@ -201,6 +253,7 @@ public class Report {
 
     /**
      * Get security hotspots with REVIEWED status
+     * 
      * @return security hotspots
      */
     public List<SecurityHotspot> getReviewedSecurityHotspots() {
@@ -209,6 +262,7 @@ public class Report {
 
     /**
      * Setter for reviewedSecurityHotspots
+     * 
      * @param pReviewedSecurityHotspots value
      */
     public void setReviewedSecurityHotspots(List<SecurityHotspot> pReviewedSecurityHotspots) {
@@ -217,6 +271,7 @@ public class Report {
 
     /**
      * Getter for projectName
+     * 
      * @return projectName
      */
     public String getProjectName() {
@@ -225,6 +280,7 @@ public class Report {
 
     /**
      * Setter for projectName
+     * 
      * @param pProjectName value
      */
     public void setProjectName(String pProjectName) {
@@ -233,6 +289,7 @@ public class Report {
 
     /**
      * Getter for projectAuthor
+     * 
      * @return projectAuthor
      */
     public String getProjectAuthor() {
@@ -241,6 +298,7 @@ public class Report {
 
     /**
      * Setter for projectAuthor
+     * 
      * @param pProjectAuthor value
      */
     public void setProjectAuthor(String pProjectAuthor) {
@@ -249,6 +307,7 @@ public class Report {
 
     /**
      * Getter for projectDate
+     * 
      * @return projectDate
      */
     public String getProjectDate() {
@@ -257,6 +316,7 @@ public class Report {
 
     /**
      * Setter for projectDate
+     * 
      * @param pProjectDate value
      */
     public void setProjectDate(String pProjectDate) {
@@ -265,6 +325,7 @@ public class Report {
 
     /**
      * Getter for qualityProfiles
+     * 
      * @return qualityProfiles
      */
     public List<QualityProfile> getQualityProfiles() {
@@ -273,6 +334,7 @@ public class Report {
 
     /**
      * Setter for qualityProfiles
+     * 
      * @param pQualityProfiles value
      */
     public void setQualityProfiles(List<QualityProfile> pQualityProfiles) {
@@ -281,6 +343,7 @@ public class Report {
 
     /**
      * Getter for qualityGate
+     * 
      * @return qualityGate
      */
     public QualityGate getQualityGate() {
@@ -289,6 +352,7 @@ public class Report {
 
     /**
      * Setter for qualityGate
+     * 
      * @param pQualityGate value
      */
     public void setQualityGate(QualityGate pQualityGate) {
@@ -297,6 +361,7 @@ public class Report {
 
     /**
      * Getter for measures
+     * 
      * @return measures
      */
     public List<Measure> getMeasures() {
@@ -305,6 +370,7 @@ public class Report {
 
     /**
      * Setter for measures
+     * 
      * @param pMeasures value
      */
     public void setMeasures(List<Measure> pMeasures) {
@@ -313,6 +379,7 @@ public class Report {
 
     /**
      * Getter for facets
+     * 
      * @return facets
      */
     public Facets getFacets() {
@@ -321,6 +388,7 @@ public class Report {
 
     /**
      * Setter for facets
+     * 
      * @param pFacets value
      */
     public void setFacets(Facets pFacets) {
@@ -329,6 +397,7 @@ public class Report {
 
     /**
      * Getter for time facets
+     * 
      * @return timeFacets
      */
     public TimeFacets getTimeFacets() {
@@ -337,6 +406,7 @@ public class Report {
 
     /**
      * Setter for time facets
+     * 
      * @param pTimeFacets value
      */
     public void setTimeFacets(TimeFacets pTimeFacets) {
@@ -345,14 +415,16 @@ public class Report {
 
     /**
      * Construct a string with all quality profiles' names
-     * @return a string like profile1 [language1]; profile2 [language2]; profile3 [language3];
+     * 
+     * @return a string like profile1 [language1]; profile2 [language2]; profile3
+     *         [language3];
      */
     public String getQualityProfilesName() {
         // gather all names
         final StringBuilder sb = new StringBuilder();
 
         // append each quality profile name
-        for(ProfileMetaData q : project.getQualityProfiles()) {
+        for (ProfileMetaData q : project.getQualityProfiles()) {
             sb.append(q.getName()).append(" [").append(q.getLanguageName()).append("]; ");
         }
 
@@ -361,6 +433,7 @@ public class Report {
 
     /**
      * Construct a string with all quality profiles' filenames
+     * 
      * @return a string like profile1.json profile2.json profile3.json
      */
     public String getQualityProfilesFilename() {
@@ -368,7 +441,7 @@ public class Report {
         final StringBuilder sb = new StringBuilder();
 
         // append each quality profile filename
-        for(ProfileMetaData q : project.getQualityProfiles()) {
+        for (ProfileMetaData q : project.getQualityProfiles()) {
             sb.append(q.getKey()).append(".json").append("; ");
         }
 
@@ -377,6 +450,7 @@ public class Report {
 
     /**
      * Find a rule with its key
+     * 
      * @param pKey key of the rule
      * @return the rule or null if not found
      */
@@ -389,7 +463,7 @@ public class Report {
         QualityProfile qp;
 
         // search for the rule with the asking key
-        while(iterator.hasNext() && rule==null) {
+        while (iterator.hasNext() && rule == null) {
             // get next profile
             qp = iterator.next();
             // check if the rule is in this profile
@@ -402,22 +476,25 @@ public class Report {
 
     /**
      * Get a list of map representing issues
+     * 
      * @return return the raw issues' list
      */
-    public List<Map<String,String>> getRawIssues() {
+    public List<Map<String, String>> getRawIssues() {
         return new ArrayList<>(rawIssues);
     }
 
     /**
      * Set the list of raw issues
+     * 
      * @param pRawIssues list of map
      */
-    public void setRawIssues(List<Map<String,String>> pRawIssues) {
+    public void setRawIssues(List<Map<String, String>> pRawIssues) {
         this.rawIssues = new ArrayList<>(pRawIssues);
     }
 
     /**
      * Get the version of the project given by the user
+     * 
      * @return a string
      */
     public String getProjectVersion() {
@@ -426,6 +503,7 @@ public class Report {
 
     /**
      * Get the description of the project given by the user
+     * 
      * @return a string
      */
     public String getProjectDescription() {
@@ -434,6 +512,7 @@ public class Report {
 
     /**
      * Get the project as an object
+     * 
      * @return Project
      */
     public Project getProject() {
@@ -442,15 +521,16 @@ public class Report {
 
     /**
      * Set the project data
+     * 
      * @param pProject data to set
      */
     public void setProject(Project pProject) {
         this.project = pProject;
     }
 
-
     /**
      * Getter for unconfirmed
+     * 
      * @return issues
      */
     public List<Issue> getUnconfirmed() {
@@ -459,6 +539,7 @@ public class Report {
 
     /**
      * Setter for unconfirmed
+     * 
      * @param pIssues value
      */
     public void setUnconfirmed(List<Issue> pIssues) {
@@ -467,6 +548,7 @@ public class Report {
 
     /**
      * Getter for qualityGateStatus
+     * 
      * @return qualityGateStatus
      */
     public Map<String, String> getQualityGateStatus() {
@@ -475,6 +557,7 @@ public class Report {
 
     /**
      * Setter for unconfirmed
+     * 
      * @param pQualityGateStatus value
      */
     public void setQualityGateStatus(Map<String, String> pQualityGateStatus) {

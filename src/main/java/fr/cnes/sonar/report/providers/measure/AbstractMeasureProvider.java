@@ -44,6 +44,10 @@ public abstract class AbstractMeasureProvider extends AbstractDataProvider {
      * Field to search in json to get measures
      */
     private static final String MEASURES = "measures";
+    /**
+     *  Name of the SonarQube metrics to retrieve 
+     */
+    protected static final String REPORTS_METRICS = "REPORTS_METRICS";
 
     /**
      * Complete constructor.

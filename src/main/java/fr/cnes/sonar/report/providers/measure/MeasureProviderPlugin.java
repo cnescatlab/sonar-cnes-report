@@ -37,9 +37,10 @@ public class MeasureProviderPlugin extends AbstractMeasureProvider implements Me
 
     /**
      * Complete constructor.
+     * 
      * @param wsClient The web client.
-     * @param project The id of the project to report.
-     * @param branch The branch of the project to report.
+     * @param project  The id of the project to report.
+     * @param branch   The branch of the project to report.
      */
     public MeasureProviderPlugin(final WsClient wsClient, final String project, final String branch) {
         super(wsClient, project, branch);
@@ -52,17 +53,12 @@ public class MeasureProviderPlugin extends AbstractMeasureProvider implements Me
 
     @Override
     protected JsonObject getMeasuresAsJsonObject() {
-        final List<String> metricKeys = new ArrayList<>(Arrays.asList("ncloc", "violations",
-                "ncloc_language_distribution", "duplicated_lines_density", "comment_lines_density", "coverage",
-                "sqale_rating", "reliability_rating", "security_rating", "alert_status", "security_review_rating",
-                "complexity", "function_complexity", "file_complexity", "class_complexity", "blocker_violations",
-                "critical_violations", "major_violations", "minor_violations", "info_violations", "new_violations",
-                "bugs", "vulnerabilities", "code_smells", "reliability_remediation_effort",
-                "security_remediation_effort", "sqale_index"));
+        List<String> metricKeys = new ArrayList<>(Arrays.asList(getMetrics(REPORTS_METRICS).split(",")));
+
         final ComponentRequest componentRequest = new ComponentRequest()
-                                                        .setComponent(getProjectKey())
-                                                        .setMetricKeys(metricKeys)
-                                                        .setBranch(getBranch());
+                .setComponent(getProjectKey())
+                .setMetricKeys(metricKeys)
+                .setBranch(getBranch());
         final ComponentWsResponse componentWsResponse = getWsClient().measures().component(componentRequest);
         return responseToJsonObject(componentWsResponse);
     }

@@ -29,7 +29,7 @@ import fr.cnes.sonar.report.model.Components;
 public class ComponentProviderStandalone extends AbstractComponentProvider implements ComponentProvider {
 
     /**
-     *  Name of the request for getting componentsList
+     * Name of the request for getting componentsList
      */
     private static final String GET_COMPONENTS_REQUEST = "GET_COMPONENTS_REQUEST";
 
@@ -52,8 +52,10 @@ public class ComponentProviderStandalone extends AbstractComponentProvider imple
     }
 
     @Override
-    protected JsonObject getComponentsAsJsonObject(final int page) throws BadSonarQubeRequestException, SonarQubeException {
-        return request(String.format(getRequest(GET_COMPONENTS_REQUEST), getServer(), getProjectKey(), page,
+    protected JsonObject getComponentsAsJsonObject(final int page)
+            throws BadSonarQubeRequestException, SonarQubeException {
+        return request(String.format(getRequest(GET_COMPONENTS_REQUEST), getServer(), getProjectKey(),
+                getMetrics(SHEETS_METRICS), page,
                 getRequest(MAX_PER_PAGE_SONARQUBE), getBranch()));
     }
 }
