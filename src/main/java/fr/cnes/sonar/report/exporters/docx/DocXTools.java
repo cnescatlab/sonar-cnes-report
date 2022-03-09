@@ -27,7 +27,6 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.xwpf.usermodel.*;
 import org.apache.poi.util.Units;
-import org.apache.xmlbeans.XmlException;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -112,10 +111,9 @@ public final class DocXTools {
      * @param document word document
      * @param facets resources as facets
      * @throws IOException ...
-     * @throws XmlException ...
      */
     public static void fillCharts(XWPFDocument document, Report report)
-            throws IOException, XmlException {
+            throws IOException {
 
         final Facets facets = report.getFacets();
         final TimeFacets timeFacets = report.getTimeFacets();
@@ -127,6 +125,7 @@ public final class DocXTools {
 
         // browse chart list to find placeholders (based on locale) in title
         // and provide them adapted resources
+        
         for (XWPFChartSpace chartSpace : chartSpaces) {
         	
             final String currentChartTitle = chartSpace.getTitle();

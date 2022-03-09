@@ -22,7 +22,7 @@ import fr.cnes.sonar.report.model.Value;
 import fr.cnes.sonar.report.model.TimeValue;
 
 import org.apache.poi.ooxml.POIXMLDocumentPart;
-import org.apache.poi.openxml4j.opc.PackagePart;
+import org.apache.poi.xwpf.usermodel.XWPFChart;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.xmlbeans.XmlException;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTNumData;
@@ -30,15 +30,9 @@ import org.openxmlformats.schemas.drawingml.x2006.chart.CTNumFmt;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTNumVal;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTPlotArea;
 import org.openxmlformats.schemas.drawingml.x2006.chart.CTStrVal;
-import org.openxmlformats.schemas.drawingml.x2006.chart.ChartSpaceDocument;
-import org.openxmlformats.schemas.drawingml.x2006.chart.impl.ChartSpaceDocumentImpl;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Custom class to handle chart spaces
@@ -47,25 +41,17 @@ import java.util.logging.Logger;
 public class XWPFChartSpace {
 
     /**
-     * Encapsulated POI version of chart space
+     * Encapsulated POI version of chart
      */
-    private ChartSpaceDocument chartSpace;
-
-    /**
-     * {@link PackagePart} to save the current ChartSpaceDocument
-     */
-    private PackagePart packagePart;
-
-    private static final Logger LOGGER = Logger.getLogger(XWPFChartSpace.class.getName());
+    private XWPFChart chart;
 
     /**
      * Basic constructor based on ChartSpaceDocumentImpl
      * @param ctChartSpace a prebuilt chart space
      * @param chartPackagePart the package part corresponding to the chart
      */
-    public XWPFChartSpace(final ChartSpaceDocument ctChartSpace, final PackagePart chartPackagePart) {
-        this.chartSpace = ctChartSpace;
-        this.packagePart = chartPackagePart;
+    public XWPFChartSpace(final XWPFChart chart) {
+        this.chart = chart;
     }
 
     /**
@@ -76,48 +62,34 @@ public class XWPFChartSpace {
      * @throws IOException When reading files
      * @throws XmlException When reading files
      */
-    public static List<XWPFChartSpace> getChartSpaces(final XWPFDocument document)
-            throws IOException, XmlException {
-        // gather charts documents
-        final List<POIXMLDocumentPart> charts = Lists.newArrayList();
-        // results list to return at the end
-        final List<XWPFChartSpace> result = Lists.newArrayList();
+    public static List<XWPFChartSpace> getChartSpaces(final XWPFDocument document) {
 
-        // get parts related to charts
-        for(final POIXMLDocumentPart p : document.getRelations()) {
-            if(p.toString().contains("/word/charts/")) {
-                charts.add(p);
+        // gather charts
+        final List<XWPFChartSpace> charts = Lists.newArrayList();
+
+        for (POIXMLDocumentPart part : document.getRelations()) {
+            if (part instanceof XWPFChart) {
+                charts.add(new XWPFChartSpace((XWPFChart) part));
             }
         }
 
-        // get chart spaces inside previous parts
-        for(final POIXMLDocumentPart p : charts) {
-            try {
-                final InputStream inputStream = p.getPackagePart().getInputStream();
-                final ChartSpaceDocument c = ChartSpaceDocument.Factory.parse(inputStream);
-                result.add(new XWPFChartSpace(c, p.getPackagePart()));
-            } catch(final ClassCastException e){
-                LOGGER.log(Level.WARNING, "Error while getting charts, cannot convert XMLObject into ChartSpaceDocument", e);
-            }
-        }
-
-        return result;
+        return charts;
     }
 
     /**
-     * Getter for chartSpace
-     * @return a CTChartSpace
+     * Getter for chart
+     * @return a XWPFChart
      */
-    public ChartSpaceDocument getChartSpace() {
-        return this.chartSpace;
+    public XWPFChart getChart() {
+        return this.chart;
     }
 
     /**
-     * Setter for chartSpace
-     * @param ctChartSpace new chartSpace value
+     * Setter for chart
+     * @param XWPFChart new chart value
      */
-    public void setChartSpace(final ChartSpaceDocumentImpl ctChartSpace) {
-        this.chartSpace = ctChartSpace;
+    public void setChartSpace(final XWPFChart pChart) {
+        this.chart = pChart;
     }
 
     /**
@@ -125,8 +97,7 @@ public class XWPFChartSpace {
      * @return a string containing the raw title
      */
     public String getTitle() {
-        return chartSpace.getChartSpace().getChart().getTitle().getTx()
-                .getRich().getPList().get(0).getRList().get(0).getT();
+        return chart.getCTChart().getTitle().getTx().getRich().getPList().get(0).getRList().get(0).getT();
     }
 
     /**
@@ -135,19 +106,7 @@ public class XWPFChartSpace {
      * @throws IOException error when writing the chart's file
      */
     public void setTitle(final String newTitle) throws IOException {
-        chartSpace.getChartSpace().getChart().getTitle().getTx().getRich()
-                .getPList().get(0).getRList().get(0).setT(newTitle);
-        this.save();
-    }
-
-    /**
-     * Save modifications on Chart, must be called for each Chart
-     * @throws IOException When saving chart in the output stream
-     */
-    public void save() throws IOException {
-        final OutputStream outputStream = packagePart.getOutputStream();
-        chartSpace.save(outputStream);
-        outputStream.close();
+        chart.getCTChart().getTitle().getTx().getRich().getPList().get(0).getRList().get(0).setT(newTitle);
     }
 
     /**
@@ -156,7 +115,7 @@ public class XWPFChartSpace {
      * @throws IOException when writing the file
      */
     public void setValues(List<Value> values) throws IOException {
-        final CTPlotArea ctPlotArea = chartSpace.getChartSpace().getChart().getPlotArea();
+        final CTPlotArea ctPlotArea = chart.getCTChart().getPlotArea();
 
         // if the chart is a pie chart we continue
         if(!ctPlotArea.getPieChartList().isEmpty()) {
@@ -190,9 +149,6 @@ public class XWPFChartSpace {
             }
         }
         // otherwise we do not support other type for now
-
-        // finally we save modifications
-        this.save();
     }
 
     /**
@@ -201,7 +157,7 @@ public class XWPFChartSpace {
      * @throws IOException when writing the file
      */
     public void setTimeValues(List<TimeValue> values) throws IOException {
-        final CTPlotArea ctPlotArea = chartSpace.getChartSpace().getChart().getPlotArea();
+        final CTPlotArea ctPlotArea = chart.getCTChart().getPlotArea();
 
         // if the chart is a scatter chart we continue
         if(!ctPlotArea.getScatterChartList().isEmpty()) {
@@ -244,9 +200,6 @@ public class XWPFChartSpace {
             }
         }
         // otherwise we do not support other type for now
-
-        // finally we save modifications
-        this.save();
     }
 
 }
