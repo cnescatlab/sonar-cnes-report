@@ -159,7 +159,7 @@ during execution (bug, stopping sonar, etc.) you may check this folder to remove
 
 ### Compile from sources
 In order to compile the project, a simple `mvn clean package` command from the project's root, where the `pom.xml` is located, will do the trick.  
-Of course, Maven and Java are required to build the JAR file.
+Of course, Maven and Java JDK are required to build the JAR file.
 
 ### License
 Copyright 2021 CATLab.
