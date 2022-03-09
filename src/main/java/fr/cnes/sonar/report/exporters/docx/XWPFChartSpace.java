@@ -21,7 +21,7 @@ import com.google.common.collect.Lists;
 import fr.cnes.sonar.report.model.Value;
 import fr.cnes.sonar.report.model.TimeValue;
 
-import org.apache.poi.POIXMLDocumentPart;
+import org.apache.poi.ooxml.POIXMLDocumentPart;
 import org.apache.poi.openxml4j.opc.PackagePart;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.xmlbeans.XmlException;
