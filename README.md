@@ -120,6 +120,7 @@ For legacy versions, check the wiki page here : [Note on legacy versions](https:
   <td><b>3.2.x<br/>Standalone + Plugin</b></b></td>
   <td><b>3.3.x<br/>Standalone + Plugin</b></b></td>
   <td><b>4.0.0<br/>Standalone + Plugin</b></b></td>
+  <td><b>4.1.x<br/>Standalone + Plugin</b></b></td>
  </tr>
  <tr>
   <td><b>7.9.x (former LTS)</b></td>
@@ -128,6 +129,7 @@ For legacy versions, check the wiki page here : [Note on legacy versions](https:
   <td>X</td>
   <td>X</td>
   <td>-</td>
+  <td>-</td>
  </tr>
  <tr>
   <td><b>8.9.x (LTS)</b></td>
@@ -135,6 +137,7 @@ For legacy versions, check the wiki page here : [Note on legacy versions](https:
   <td>-</td>
   <td>-</td>
   <td>-</td>
+  <td>X</td>
   <td>X</td>
  </tr>
 </table>
