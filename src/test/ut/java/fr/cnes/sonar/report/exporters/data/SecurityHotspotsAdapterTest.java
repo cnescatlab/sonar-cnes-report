@@ -74,6 +74,9 @@ public class SecurityHotspotsAdapterTest {
         expected.add(Arrays.asList("Path Traversal Injection", "0", "0", "0"));
         expected.add(Arrays.asList("HTTP Response Splitting", "0", "0", "0"));
         expected.add(Arrays.asList("Others", "0", "0", "0"));
+        expected.add(Arrays.asList("Permission", "0", "0", "0"));
+        expected.add(Arrays.asList("Encryption of Sensitive Data", "0", "0", "0"));
+        expected.add(Arrays.asList("Traceability", "0", "0", "0"));
         Mockito.when(report.getToReviewSecurityHotspots()).thenReturn(listIssues);
         Assert.assertEquals(expected, SecurityHotspotsAdapter.getSecurityHotspotsByCategoryAndPriority(report));
     }
