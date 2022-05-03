@@ -65,7 +65,10 @@ public class SecurityHotspotsAdapterTest {
         expected.add(Arrays.asList("Log Injection", "2", "0", "0"));
         expected.add(Arrays.asList("Cross-Site Request Forgery (CSRF)", "0", "0", "0"));
         expected.add(Arrays.asList("Open Redirect", "0", "0", "0"));
+        expected.add(Arrays.asList("Permission", "0", "0", "0"));
         expected.add(Arrays.asList("SQL Injection", "0", "0", "0"));
+        expected.add(Arrays.asList("Encryption of Sensitive Data", "0", "0", "0"));
+        expected.add(Arrays.asList("Traceability", "0", "0", "0"));
         expected.add(Arrays.asList("Buffer Overflow", "0", "0", "0"));
         expected.add(Arrays.asList("File Manipulation", "0", "0", "0"));
         expected.add(Arrays.asList("Code Injection (RCE)", "0", "0", "0"));
@@ -74,9 +77,6 @@ public class SecurityHotspotsAdapterTest {
         expected.add(Arrays.asList("Path Traversal Injection", "0", "0", "0"));
         expected.add(Arrays.asList("HTTP Response Splitting", "0", "0", "0"));
         expected.add(Arrays.asList("Others", "0", "0", "0"));
-        expected.add(Arrays.asList("Permission", "0", "0", "0"));
-        expected.add(Arrays.asList("Encryption of Sensitive Data", "0", "0", "0"));
-        expected.add(Arrays.asList("Traceability", "0", "0", "0"));
         Mockito.when(report.getToReviewSecurityHotspots()).thenReturn(listIssues);
         Assert.assertEquals(expected, SecurityHotspotsAdapter.getSecurityHotspotsByCategoryAndPriority(report));
     }
