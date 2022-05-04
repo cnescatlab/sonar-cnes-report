@@ -177,7 +177,7 @@ public class XWPFChartSpace {
             xNumCache.setFormatCode("dd/mm/yyyy\\ hh:mm");
 
             // format date axis
-            final CTNumFmt dateAxisFormat = ctPlotArea.getValAxList().get(1).getNumFmt();
+            final CTNumFmt dateAxisFormat = ctPlotArea.getValAxList().get(0).getNumFmt();
             dateAxisFormat.setFormatCode("dd/mm/yyyy\\ hh:mm");
 
             // write resources in the scatter chart
