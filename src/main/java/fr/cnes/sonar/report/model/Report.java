@@ -50,7 +50,7 @@ public class Report {
     /**
      * List of issues detected in the project
      */
-    private List<Issue> issues;
+    private Issues issues;
     /**
      * List of facets of the project
      */
@@ -105,7 +105,7 @@ public class Report {
         this.projectDate = "";
         this.qualityProfiles = new ArrayList<>();
         this.qualityGate = new QualityGate();
-        this.issues = new ArrayList<>();
+        this.issues = new Issues();
         this.unconfirmed = new ArrayList<>();
         this.facets = new Facets();
         this.timeFacets = new TimeFacets();
@@ -136,7 +136,7 @@ public class Report {
         // we browse all the issues and for each issue,
         // if it is known then we increment its counter
         // otherwise we add it to the map
-        for (Issue issue : getIssues()) {
+        for (Issue issue : this.issues.getIssuesList()) {
             rule = issue.getRule();
             counter = 1;
             if (lFacets.containsKey(rule)) {
@@ -165,7 +165,7 @@ public class Report {
 
         if (rulesNumber != 0) {
             Set<String> violatedRules = new HashSet<>();
-            for (Issue issue : this.getIssues()) {
+            for (Issue issue : this.issues.getIssuesList()) {
                 violatedRules.add(issue.getRule());
             }
             for (SecurityHotspot securityHotspot : this.getToReviewSecurityHotspots()) {
@@ -220,8 +220,8 @@ public class Report {
      * 
      * @return issues
      */
-    public List<Issue> getIssues() {
-        return new ArrayList<>(issues);
+    public Issues getIssues() {
+        return issues;
     }
 
     /**
@@ -230,7 +230,7 @@ public class Report {
      * @param pIssues value
      */
     public void setIssues(List<Issue> pIssues) {
-        this.issues = new ArrayList<>(pIssues);
+        this.issues.setIssuesList(pIssues);
     }
 
     /**
