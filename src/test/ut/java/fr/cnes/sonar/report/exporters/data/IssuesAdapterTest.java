@@ -102,14 +102,15 @@ public class IssuesAdapterTest {
 
         // No facets in reports
         List<List<String>> expected = new ArrayList<>();
-        Mockito.when(report.getIssuesFacets()).thenReturn(mockedValue);
+        Mockito.when(report.getIssues()).thenReturn(issues);
+        Mockito.when(issues.getIssuesFacets()).thenReturn(mockedValue);
         Assert.assertEquals(expected, IssuesAdapter.getIssues(report));
 
         // Add some issues facets
         mockedValue.put("test", Long.valueOf(42));
         mockedValue.put("test-external", Long.valueOf(1));
         mockedValue.put("fake", Long.valueOf(234));
-        Mockito.when(report.getIssuesFacets()).thenReturn(mockedValue);
+        Mockito.when(issues.getIssuesFacets()).thenReturn(mockedValue);
 
         // Create test Rule and mock methods
         Rule rule = new Rule();

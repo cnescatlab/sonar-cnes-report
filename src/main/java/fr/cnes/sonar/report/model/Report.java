@@ -17,11 +17,17 @@
 
 package fr.cnes.sonar.report.model;
 
-import fr.cnes.sonar.report.utils.StringManager;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.math3.util.Precision;
+
+import fr.cnes.sonar.report.utils.StringManager;
 
 /**
  * Model of a report containing all information
@@ -118,34 +124,6 @@ public class Report {
         this.qualityGateStatus = new HashMap<>();
         this.project = new Project(StringManager.EMPTY, StringManager.EMPTY,
                 StringManager.EMPTY, StringManager.EMPTY, StringManager.EMPTY, StringManager.EMPTY);
-    }
-
-    /**
-     * Get number of issues by issue
-     * 
-     * @return issues
-     */
-    public Map<String, Long> getIssuesFacets() {
-        // returned map containing issues key/number of issues
-        final Map<String, Long> lFacets = new HashMap<>();
-        // collect issues' occurrences number
-        long counter;
-        // collect the rule's id for each issue
-        String rule;
-
-        // we browse all the issues and for each issue,
-        // if it is known then we increment its counter
-        // otherwise we add it to the map
-        for (Issue issue : this.issues.getIssuesList()) {
-            rule = issue.getRule();
-            counter = 1;
-            if (lFacets.containsKey(rule)) {
-                counter = lFacets.get(rule) + 1;
-            }
-            lFacets.put(rule, counter);
-        }
-
-        return lFacets;
     }
 
     /**

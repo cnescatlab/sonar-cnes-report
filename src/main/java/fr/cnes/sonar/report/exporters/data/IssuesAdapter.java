@@ -103,7 +103,7 @@ public class IssuesAdapter {
         final List<List<String>> formattedIssues = new ArrayList<>(); // result to return
 
         // Get the issues' id
-        final Map<String, Long> items = report.getIssuesFacets();
+        final Map<String, Long> items = report.getIssues().getIssuesFacets();
 
         Map<String, Long> sortedItems = new TreeMap<>(new RuleComparator(report));
         sortedItems.putAll(items);
