@@ -73,7 +73,7 @@ public class IssuesAdapter {
         for (String type : types) {
             // List of items for each line of the table
             final List<String> row = new ArrayList<>();
-            for (Issue issue : report.getIssues()) {
+            for (Issue issue : report.getIssues().getIssuesList()) {
                 if (issue.getType().equals(type)) {
                     // increment the count of the severity
                     countPerSeverity.put(issue.getSeverity(),
@@ -100,46 +100,61 @@ public class IssuesAdapter {
      * @return issues list
      */
     public static List<List<String>> getIssues(Report report) {
-        final List<List<String>> issues = new ArrayList<>(); // result to return
+        final List<List<String>> formattedIssues = new ArrayList<>(); // result to return
 
         // Get the issues' id
-        final Map<String, Long> items = report.getIssuesFacets();
+        final Map<String, Long> items = report.getIssues().getIssuesFacets();
 
         Map<String, Long> sortedItems = new TreeMap<>(new RuleComparator(report));
         sortedItems.putAll(items);
 
+        List<String> formattedIssue = null;
+        Rule rule = null;
+        Issue issue = null;
+
         for (Map.Entry<String, Long> v : sortedItems.entrySet()) { // construct each issues
-            final List<String> issue = new ArrayList<>();
-            final Rule rule = report.getRule(v.getKey());
+            formattedIssue = new ArrayList<>();
+            rule = report.getRule(v.getKey());
+            issue = report.getIssues().getFirstIssueMatchingRule(v.getKey());
+
             if (rule != null) { // if the rule is found, fill information
                 // add name
-                issue.add(rule.getName());
+                formattedIssue.add(rule.getName());
                 // add description
-                issue.add(rule.getHtmlDesc()
+                formattedIssue.add(rule.getHtmlDesc()
                         .replaceAll(DELETE_HTML_TAGS_REGEX, StringManager.EMPTY));
                 // add type
-                issue.add(rule.getType());
+                formattedIssue.add(rule.getType());
                 // add severity
-                issue.add(rule.getSeverity());
-                // add number
-                issue.add(Long.toString(v.getValue()));
-            } else { // else set just known information
+                formattedIssue.add(rule.getSeverity());
+            } else if (issue != null) { // if if comes from an external analyzer
                 // add name
-                issue.add(v.getKey());
+                formattedIssue.add(issue.getRule());
                 // add description
-                issue.add(QUESTION_MARK);
+                formattedIssue.add(issue.getMessage()
+                        .replaceAll(DELETE_HTML_TAGS_REGEX, StringManager.EMPTY));
                 // add type
-                issue.add(QUESTION_MARK);
+                formattedIssue.add(issue.getType());
                 // add severity
-                issue.add(QUESTION_MARK);
-                // add number
-                issue.add(Long.toString(v.getValue()));
+                formattedIssue.add(issue.getSeverity());
+            }else { // else set just known information
+                // add name
+                formattedIssue.add(v.getKey());
+                // add description
+                formattedIssue.add(QUESTION_MARK);
+                // add type
+                formattedIssue.add(QUESTION_MARK);
+                // add severity
+                formattedIssue.add(QUESTION_MARK);
             }
 
-            issues.add(issue);
+            // add number
+            formattedIssue.add(Long.toString(v.getValue()));
+
+            formattedIssues.add(formattedIssue);
         }
 
-        return issues;
+        return formattedIssues;
     }
 
 }
