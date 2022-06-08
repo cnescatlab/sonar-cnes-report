@@ -25,12 +25,12 @@ import fr.cnes.sonar.report.exporters.xlsx.XlsXExporter;
 import fr.cnes.sonar.report.model.ProfileMetaData;
 import fr.cnes.sonar.report.model.QualityProfile;
 import fr.cnes.sonar.report.model.Report;
+import fr.cnes.sonar.report.utils.FileNameUtils;
 import fr.cnes.sonar.report.utils.ReportConfiguration;
 import fr.cnes.sonar.report.utils.StringManager;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.xmlbeans.XmlException;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,9 +41,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
-
-import com.google.common.escape.Escaper;
-import com.google.common.escape.Escapers;
 
 public class ReportFactory {
 
@@ -65,8 +62,6 @@ public class ReportFactory {
     private static final String DATE = "DATE";
     /** Placeholder for the name of the project. */
     private static final String NAME = "NAME";
-    /** Property for fileseparators replace character. */
-    private static final String FILESEPARATORS_REPLACE_CHAR = "report.fileseparators.replace";
     /** Logger of this class. */
     private static final Logger LOGGER = Logger.getLogger(ReportFactory.class.getName());
 
@@ -235,20 +230,7 @@ public class ReportFactory {
         return StringManager.getProperty(propertyName)
                 .replaceFirst(BASEDIR, Matcher.quoteReplacement(baseDir))
                 .replace(DATE, dateStr)
-                .replace(NAME, escapeProjectName(projectName));
-    }
-
-    /**
-     * Escapes the folder seperator from the project name.
-     * @param projectName
-     * @return file seperator (/ or \) escaped project name.
-     */
-    private static CharSequence escapeProjectName(String projectName) {
-        Escaper escaper = Escapers.builder().addEscape(
-            File.separatorChar, 
-            StringManager.getProperty(FILESEPARATORS_REPLACE_CHAR)
-        ).build();
-        return escaper.escape(projectName);
+                .replace(NAME, FileNameUtils.replaceNonValidFileNameCharacter(projectName));
     }
 
 }
