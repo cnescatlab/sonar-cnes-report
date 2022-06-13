@@ -17,11 +17,17 @@
 
 package fr.cnes.sonar.report.model;
 
-import fr.cnes.sonar.report.utils.StringManager;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.math3.util.Precision;
+
+import fr.cnes.sonar.report.utils.StringManager;
 
 /**
  * Model of a report containing all information
@@ -50,7 +56,7 @@ public class Report {
     /**
      * List of issues detected in the project
      */
-    private List<Issue> issues;
+    private Issues issues;
     /**
      * List of facets of the project
      */
@@ -105,7 +111,7 @@ public class Report {
         this.projectDate = "";
         this.qualityProfiles = new ArrayList<>();
         this.qualityGate = new QualityGate();
-        this.issues = new ArrayList<>();
+        this.issues = new Issues();
         this.unconfirmed = new ArrayList<>();
         this.facets = new Facets();
         this.timeFacets = new TimeFacets();
@@ -118,34 +124,6 @@ public class Report {
         this.qualityGateStatus = new HashMap<>();
         this.project = new Project(StringManager.EMPTY, StringManager.EMPTY,
                 StringManager.EMPTY, StringManager.EMPTY, StringManager.EMPTY, StringManager.EMPTY);
-    }
-
-    /**
-     * Get number of issues by issue
-     * 
-     * @return issues
-     */
-    public Map<String, Long> getIssuesFacets() {
-        // returned map containing issues key/number of issues
-        final Map<String, Long> lFacets = new HashMap<>();
-        // collect issues' occurrences number
-        long counter;
-        // collect the rule's id for each issue
-        String rule;
-
-        // we browse all the issues and for each issue,
-        // if it is known then we increment its counter
-        // otherwise we add it to the map
-        for (Issue issue : getIssues()) {
-            rule = issue.getRule();
-            counter = 1;
-            if (lFacets.containsKey(rule)) {
-                counter = lFacets.get(rule) + 1;
-            }
-            lFacets.put(rule, counter);
-        }
-
-        return lFacets;
     }
 
     /**
@@ -165,7 +143,7 @@ public class Report {
 
         if (rulesNumber != 0) {
             Set<String> violatedRules = new HashSet<>();
-            for (Issue issue : this.getIssues()) {
+            for (Issue issue : this.issues.getIssuesList()) {
                 violatedRules.add(issue.getRule());
             }
             for (SecurityHotspot securityHotspot : this.getToReviewSecurityHotspots()) {
@@ -220,8 +198,8 @@ public class Report {
      * 
      * @return issues
      */
-    public List<Issue> getIssues() {
-        return new ArrayList<>(issues);
+    public Issues getIssues() {
+        return issues;
     }
 
     /**
@@ -230,7 +208,7 @@ public class Report {
      * @param pIssues value
      */
     public void setIssues(List<Issue> pIssues) {
-        this.issues = new ArrayList<>(pIssues);
+        this.issues.setIssuesList(pIssues);
     }
 
     /**

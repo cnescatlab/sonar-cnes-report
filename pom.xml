@@ -6,7 +6,7 @@
 
     <groupId>fr.cnes.sonar</groupId>
     <artifactId>cnesreport</artifactId>
-    <version>4.1.1</version>
+    <version>4.1.2</version>
     <packaging>sonar-plugin</packaging>
 
     <name>SonarQube CNES Report</name>
@@ -166,7 +166,7 @@
             <!-- openxml generation -->
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>3.17</version>
+            <version>4.1.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

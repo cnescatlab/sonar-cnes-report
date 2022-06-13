@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import fr.cnes.sonar.report.model.Issue;
+import fr.cnes.sonar.report.model.Issues;
 import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.model.Rule;
 
@@ -47,6 +48,7 @@ public class IssuesAdapterTest {
     @Test
     public void getTypesTest() {
         Report report = Mockito.mock(Report.class);
+        Issues issues = Mockito.mock(Issues.class);
         List<Issue> mockedValue = new ArrayList<>();
 
         // No issues in report
@@ -54,7 +56,8 @@ public class IssuesAdapterTest {
         expected.add(Arrays.asList("BUG", "0", "0", "0", "0", "0"));
         expected.add(Arrays.asList("VULNERABILITY", "0", "0", "0", "0", "0"));
         expected.add(Arrays.asList("CODE_SMELL", "0", "0", "0", "0", "0"));
-        Mockito.when(report.getIssues()).thenReturn(mockedValue);
+        Mockito.when(report.getIssues()).thenReturn(issues);
+        Mockito.when(issues.getIssuesList()).thenReturn(mockedValue);
         Assert.assertEquals(expected, IssuesAdapter.getTypes(report));
 
         // Add some issues
@@ -78,7 +81,7 @@ public class IssuesAdapterTest {
         mockedValue.add(issueSmellCritical);
         mockedValue.add(issueSmellCritical2);
         mockedValue.add(issueVulnInfo);
-        Mockito.when(report.getIssues()).thenReturn(mockedValue);
+        Mockito.when(issues.getIssuesList()).thenReturn(mockedValue);
 
         // Check if result is OK with some issues
         expected = new ArrayList<>();
@@ -94,17 +97,20 @@ public class IssuesAdapterTest {
     @Test
     public void getIssuesTest() {
         Report report = Mockito.mock(Report.class);
+        Issues issues = Mockito.mock(Issues.class);
         Map<String, Long> mockedValue = new HashMap<>();
 
         // No facets in reports
         List<List<String>> expected = new ArrayList<>();
-        Mockito.when(report.getIssuesFacets()).thenReturn(mockedValue);
+        Mockito.when(report.getIssues()).thenReturn(issues);
+        Mockito.when(issues.getIssuesFacets()).thenReturn(mockedValue);
         Assert.assertEquals(expected, IssuesAdapter.getIssues(report));
 
         // Add some issues facets
         mockedValue.put("test", Long.valueOf(42));
+        mockedValue.put("test-external", Long.valueOf(1));
         mockedValue.put("fake", Long.valueOf(234));
-        Mockito.when(report.getIssuesFacets()).thenReturn(mockedValue);
+        Mockito.when(issues.getIssuesFacets()).thenReturn(mockedValue);
 
         // Create test Rule and mock methods
         Rule rule = new Rule();
@@ -112,12 +118,21 @@ public class IssuesAdapterTest {
         rule.setHtmlDesc("<p>description</p>");
         rule.setType("CODE_SMELL");
         rule.setSeverity("MINOR");
+        Issue issue = new Issue();
+        issue.setRule("test-external");
+        issue.setMessage("<p>Test description<p>");
+        issue.setType("BUG");
+        issue.setSeverity("MAJOR");
+        Mockito.when(report.getIssues()).thenReturn(issues);
+        Mockito.when(issues.getFirstIssueMatchingRule("test-external")).thenReturn(issue);
         Mockito.when(report.getRule("test")).thenReturn(rule);
+        Mockito.when(report.getRule("test-external")).thenReturn(null);
         Mockito.when(report.getRule("fake")).thenReturn(null);
 
         // Check result
         expected.add(Arrays.asList("test-rule", "description", "CODE_SMELL", "MINOR", "42"));
         expected.add(Arrays.asList("fake", "?", "?", "?", "234"));
+        expected.add(Arrays.asList("test-external", "Test description", "BUG", "MAJOR", "1"));
         Assert.assertEquals(expected, IssuesAdapter.getIssues(report));
     }
 }

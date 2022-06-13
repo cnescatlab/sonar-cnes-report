@@ -209,6 +209,9 @@ public final class StringManager {
         SECURITY_HOTSPOT_CATEGORIES.put("insecure-conf", "Insecure Configuration");
         SECURITY_HOTSPOT_CATEGORIES.put("file-manipulation", "File Manipulation");
         SECURITY_HOTSPOT_CATEGORIES.put("others", "Others");
+        SECURITY_HOTSPOT_CATEGORIES.put("permission", "Permission");
+        SECURITY_HOTSPOT_CATEGORIES.put("encrypt-data", "Encryption of Sensitive Data");
+        SECURITY_HOTSPOT_CATEGORIES.put("traceability", "Traceability");
     }
 
     /**

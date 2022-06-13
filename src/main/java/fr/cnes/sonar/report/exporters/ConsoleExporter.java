@@ -52,7 +52,7 @@ public class ConsoleExporter implements IExporter {
         final Report report = (Report) data;
 
         // get issues
-        final List<Issue> issues = report.getIssues();
+        final List<Issue> issues = report.getIssues().getIssuesList();
         String message = "key\tproject\tcomponent\ttype\tseverity\tmessage\tline\tstatus\t";
         LOGGER.info(message);
 

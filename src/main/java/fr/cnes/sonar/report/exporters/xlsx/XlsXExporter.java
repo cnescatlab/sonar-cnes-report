@@ -121,7 +121,7 @@ public class XlsXExporter implements IExporter {
             final XSSFSheet metricsSheet = (XSSFSheet) workbook.getSheet(METRICS_SHEET_NAME);
 
             // write selected resources in the file
-            XlsXTools.addSelectedData(report.getIssues(), selectedSheet, SELECTED_TABLE_NAME);
+            XlsXTools.addSelectedData(report.getIssues().getIssuesList(), selectedSheet, SELECTED_TABLE_NAME);
 
             // write selected resources in the file
             XlsXTools.addSelectedData(report.getUnconfirmed(), unconfirmedSheet, UNCONFIRMED_TABLE_NAME);

@@ -66,7 +66,7 @@ public class ReportTest {
         assertEquals("", report.getQualityProfilesFilename());
         assert(report.getRawIssues().isEmpty());
         assert(report.getQualityProfiles().isEmpty());
-        assert(report.getIssues().isEmpty());
+        assert(report.getIssues().getIssuesList().isEmpty());
         assert(report.getMeasures().isEmpty());
     }
 
