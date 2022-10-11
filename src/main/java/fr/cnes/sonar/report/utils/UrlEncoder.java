@@ -58,5 +58,8 @@ public class UrlEncoder {
         
         return encodedString;
     }
+    public static String sanitizeUrlSafe(String filename) {
+        return filename.replaceAll("[^a-zA-Z0-9.-]", "_");
+    }
     
 }
