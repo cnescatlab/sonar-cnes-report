@@ -18,6 +18,7 @@
 package fr.cnes.sonar.report.exporters;
 
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
+import fr.cnes.sonar.report.utils.UrlEncoder;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -48,7 +49,7 @@ public class XmlExporter implements IExporter {
         final String string = (String) data;
 
         // set relevant variables
-        final String filePath = String.format("%s/%s.xml", path, filename);
+        final String filePath = String.format("%s/%s.xml", path, UrlEncoder.sanitizeUrlSafe(filename));
 
         // file to write
         final File xmlFile = new File(filePath);
