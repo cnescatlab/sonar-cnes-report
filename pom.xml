@@ -84,7 +84,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>2.0.6</version>
+            <version>1.7.31</version>
             <scope>compile</scope>
         </dependency>
         <!-- Here is a new group id -->
@@ -170,7 +170,20 @@
             <artifactId>poi-ooxml</artifactId>
             <version>5.2.3</version>
             <scope>compile</scope>
+            <exclusions>
+				<exclusion>
+  					<groupId>org.apache.logging.log4j</groupId>
+  					<artifactId>log4j-api</artifactId>
+				</exclusion>
+			</exclusions>
         </dependency>
+        <dependency>
+		 	<groupId>org.apache.logging.log4j</groupId>
+		  	<artifactId>log4j-api</artifactId>
+		  	<version>2.18.0</version>
+			<scope>provided</scope>
+		</dependency>
+        
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml-schemas</artifactId>
@@ -196,6 +209,11 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+	    <dependency>
+	      <groupId>org.junit.vintage</groupId>
+	      <artifactId>junit-vintage-engine</artifactId>
+	      <version>${junit.version}</version>
+	    </dependency>
         <dependency>
             <groupId>com.github.stefanbirkner</groupId>
             <artifactId>system-rules</artifactId>
@@ -277,20 +295,20 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <!-- UTF-8 bundles are not supported by Java, so they must be converted during build -->
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>native2ascii-maven-plugin</artifactId>
-                <version>2.0.1</version>
-                <executions>
-                    <execution>
-                        <?m2e execute onConfiguration?>
-                        <goals>
-                            <goal>native2ascii</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            
+	      	<plugin>
+	        	<!-- UTF-8 bundles are not supported by Java, so they must be converted during build -->
+	        	<groupId>org.codehaus.mojo</groupId>
+	        	<artifactId>native2ascii-maven-plugin</artifactId>
+	        	<version>2.0.1</version>
+	        	<executions>
+	          		<execution>
+	            		<goals>
+	              			<goal>resources</goal>
+	            		</goals>
+	          		</execution>
+	        	</executions>
+	      	</plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
