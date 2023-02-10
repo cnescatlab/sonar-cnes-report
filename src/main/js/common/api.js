@@ -6,7 +6,7 @@ import { getJSON, postJSON, post } from "sonar-request";
 
 // Function used to get current SonarQube Server version
 export function isCompatible() {
-  const COMPATIBILITY_PATTERN = /8.9(?:\..*)?(?:-.*)?/;
+  const COMPATIBILITY_PATTERN = /[8-9]\.9(\.[0-9])*/;
 
   return getJSON("/api/system/status").then(response => {
     return response.version.match(COMPATIBILITY_PATTERN) != null;
