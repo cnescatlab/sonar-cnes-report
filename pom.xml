@@ -34,7 +34,8 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <junit.version>4.13.2</junit.version>
         <jacoco.version>0.8.7</jacoco.version>
-        <sonar.apiVersion>8.9.0.43852</sonar.apiVersion>
+        <sonar.apiVersion>9.14.0.375</sonar.apiVersion>
+        <sonar.core.ws.version>9.9.0.65466</sonar.core.ws.version>
         <sonar-packaging-maven-plugin.version>1.20.0.405</sonar-packaging-maven-plugin.version>
         <sonar.pluginKey>cnesreport</sonar.pluginKey>
         <sonar.pluginUrl>https://github.com/cnescatlab/sonar-cnes-report</sonar.pluginUrl>
@@ -86,22 +87,23 @@
             <version>1.7.31</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.sonarsource.sonarqube</groupId>
-            <artifactId>sonar-plugin-api</artifactId>
-            <version>${sonar.apiVersion}</version>
-            <scope>provided</scope>
-        </dependency>
+        <!-- Here is a new group id -->
+		<dependency>
+		    <groupId>org.sonarsource.api.plugin</groupId>
+		    <artifactId>sonar-plugin-api</artifactId>
+		    <version>${sonar.apiVersion}</version>
+		    <scope>provided</scope>
+		</dependency>
         <dependency>
             <groupId>org.sonarsource.sonarqube</groupId>
             <artifactId>sonar-ws</artifactId>
-            <version>${sonar.apiVersion}</version>
+            <version>${sonar.core.ws.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.sonarsource.sonarqube</groupId>
             <artifactId>sonar-core</artifactId>
-            <version>${sonar.apiVersion}</version>
+            <version>${sonar.core.ws.version}</version>
         </dependency>
         <dependency>
             <!-- network use -->
@@ -185,7 +187,7 @@
         <dependency>
             <groupId>org.sonarsource.sonarqube</groupId>
             <artifactId>sonar-testing-harness</artifactId>
-            <version>${sonar.apiVersion}</version>
+            <version>${sonar.core.ws.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
