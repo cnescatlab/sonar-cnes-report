@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [ '8', '11' ]
+        java: [ '11' ]
     name: Java ${{ matrix.Java }} CI
     steps:
       - name: Check out repository code
@@ -43,7 +43,7 @@ jobs:
         run: mvn -B clean package
       - name: Test cnes-report
         env:
-          SONARQUBE_VERSION: 8.9-community
+          SONARQUBE_VERSION: 9.9-community
         run: |
           version=$(cat pom.xml | grep "<version>.*</version>" | head -1 |awk -F'[><]' '{print $3}');
           echo "Starting docker";
