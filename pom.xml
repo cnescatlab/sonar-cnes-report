@@ -6,7 +6,7 @@
 
     <groupId>fr.cnes.sonar</groupId>
     <artifactId>cnesreport</artifactId>
-    <version>4.2</version>
+    <version>4.2.0</version>
     <packaging>sonar-plugin</packaging>
 
     <name>SonarQube CNES Report</name>
@@ -34,13 +34,14 @@
         <maven.compiler.target>11</maven.compiler.target>
         <junit.version>5.9.2</junit.version>
         <jacoco.version>0.8.8</jacoco.version>
-        <sonar.apiVersion>9.15.0.435</sonar.apiVersion>
+        <sonar.apiVersion>9.8.0.203</sonar.apiVersion>
+        <sonar.testingHarnessVersion>9.5.0.56709</sonar.testingHarnessVersion>
         <sonar.Version>9.9.0.65466</sonar.Version>
         <sonar-packaging-maven-plugin.version>1.21.0.505</sonar-packaging-maven-plugin.version>
         <sonar.pluginKey>cnesreport</sonar.pluginKey>
         <sonar.pluginUrl>https://github.com/cnescatlab/sonar-cnes-report</sonar.pluginUrl>
         <sonar.pluginOrganizationName>CNES</sonar.pluginOrganizationName>
-        <sonar.sources>src/main/java</sonar.sources>
+        <sonar.sources>src/main/java, src/main/js</sonar.sources>
         <sonar.test>src/test/java</sonar.test>
         <sonar.skipDependenciesPackaging>true</sonar.skipDependenciesPackaging>
         <sonar.pluginClass>fr.cnes.sonar.plugin.ReportSonarPlugin</sonar.pluginClass>
@@ -67,6 +68,10 @@
         <developer>
             <id>louisjdmartin</id>
             <name>Louis Martin</name>
+        </developer>
+        <developer>
+            <id>rodrigd</id>
+            <name>Diego Rodriguez</name>
         </developer>
         <developer>
             <id>ErwanGauduchon</id>
@@ -186,7 +191,7 @@
         <dependency>
             <groupId>org.sonarsource.sonarqube</groupId>
             <artifactId>sonar-testing-harness</artifactId>
-            <version>${sonar.Version}</version>
+            <version>${sonar.testingHarnessVersion}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -347,7 +352,7 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.12.1</version>
+                <version>1.9.1</version>
                 <executions>
                 <execution>
                     <phase>generate-resources</phase>
@@ -356,8 +361,8 @@
                     <goal>install-node-and-yarn</goal>
                     </goals>
                     <configuration>
-                        <nodeVersion>v14.16.1</nodeVersion>
-                        <yarnVersion>v1.22.10</yarnVersion>
+                        <nodeVersion>v16.14.0</nodeVersion>
+                        <yarnVersion>v1.22.5</yarnVersion>
                     </configuration>
                 </execution>
                 <execution>

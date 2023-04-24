@@ -16,6 +16,7 @@ This tool can be used in standalone as a JAR executable (with the command line) 
 - Run an analysis with sonar-scanner, maven, gradle, msbuild, etc.
 - Execute cnesreport:
    - In standalone, thanks to command line
+   - Give your jar 777 permissions (chmod 777 `myfile.jar`)
    - In plugin mode, copy jar in `/opt/sonarqube/extensions/plugins`, restart sonarqube, then click on "More" > "CNES Report".
 
 #### Installation
@@ -23,7 +24,7 @@ This tool can be used in standalone as a JAR executable (with the command line) 
 **cnesreport** does not need any installation. It is a portable Java application you can copy and run according to following examples. The only requirement is an **up-to-date JRE (>=1.8)**.
 
 ##### Plugin mode (Since 2.2.0)
-- Copy the sonar-cnes-report.jar in the plugin folder of sonarqube (On linux path should be like `/opt/sonarqube/extensions/plugins`)
+- Copy the sonar-cnes-report.jar with 777 rights in the plugin folder of sonarqube (On linux path should be like `/opt/sonarqube/extensions/plugins`)
 - Restart sonarqube (On linux: `sudo service sonar restart`)
 
 #### Get help
@@ -115,29 +116,42 @@ For legacy versions, check the wiki page here : [Note on legacy versions](https:
 <table>
  <tr>
   <td><b>cnesreport <br>\<br> SonarQube</b></td>
-  <td><b>3.0.x<br/>Standalone + Plugin</b></b></td>
-  <td><b>3.1.0<br/>Standalone + Plugin</b></b></td>
-  <td><b>3.2.x<br/>Standalone + Plugin</b></b></td>
-  <td><b>3.3.x<br/>Standalone + Plugin</b></b></td>
-  <td><b>4.0.0<br/>Standalone + Plugin</b></b></td>
-  <td><b>4.1.x<br/>Standalone + Plugin</b></b></td>
+  <td><b>3.0.x<br/>Standalone + Plugin</td>
+  <td><b>3.1.0<br/>Standalone + Plugin</td>
+  <td><b>3.2.x<br/>Standalone + Plugin</td>
+  <td><b>3.3.x<br/>Standalone + Plugin</td>
+  <td><b>4.0.0<br/>Standalone + Plugin</td>
+  <td><b>4.1.x<br/>Standalone + Plugin</td>
+  <td><b>4.2.x<br/>Standalone + Plugin</td>
  </tr>
  <tr>
-  <td><b>7.9.x (former LTS)</b></td>
+  <td><b>7.9.x</b></td>
   <td>X</td>
   <td>X</td>
   <td>X</td>
   <td>X</td>
+  <td>-</td>
   <td>-</td>
   <td>-</td>
  </tr>
  <tr>
-  <td><b>8.9.x (LTS)</b></td>
+  <td><b>8.9.x</b></td>
   <td>-</td>
   <td>-</td>
   <td>-</td>
   <td>-</td>
   <td>X</td>
+  <td>X</td>
+  <td>-</td>
+ </tr>
+ <tr>
+  <td><b>9.9.x (LTS)</b></td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
+  <td>-</td>
   <td>X</td>
  </tr>
 </table>
