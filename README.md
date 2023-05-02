@@ -72,7 +72,7 @@ java -jar sonar-cnes-report.jar -p projectId
 If you have installed cnes-report in your sonarqube: open web interface, click on "CNES Report" then choose a project.
 
 ##### Advanced usage (standalone)
-If you are using a secured instance of SonarQube, you can provide a SonarQube authentication token thanks to `-t` option and specify the url of the SonarQube instance with `-s`. The internal template for the text report can be replaced by the one given through `-r` option.
+If you are using a secured instance of SonarQube, you can provide a SonarQube user token (https://docs.sonarqube.org/latest/user-guide/user-account/generating-and-using-tokens/) thanks to `-t` option and specify the url of the SonarQube instance with `-s`. The internal template for the text report can be replaced by the one given through `-r` option.
 ````
 java -jar sonar-cnes-report.jar -t xuixg5hub345xbefu -s https://example.org:9000 -p projectId -r ./template.docx
 ````
