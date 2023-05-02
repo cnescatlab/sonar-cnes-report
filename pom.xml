@@ -41,7 +41,7 @@
         <sonar.pluginKey>cnesreport</sonar.pluginKey>
         <sonar.pluginUrl>https://github.com/cnescatlab/sonar-cnes-report</sonar.pluginUrl>
         <sonar.pluginOrganizationName>CNES</sonar.pluginOrganizationName>
-        <sonar.sources>src/main/java, src/main/js</sonar.sources>
+        <sonar.sources>src/main/java</sonar.sources>
         <sonar.test>src/test/java</sonar.test>
         <sonar.skipDependenciesPackaging>true</sonar.skipDependenciesPackaging>
         <sonar.pluginClass>fr.cnes.sonar.plugin.ReportSonarPlugin</sonar.pluginClass>
