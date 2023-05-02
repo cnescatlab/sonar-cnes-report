@@ -47,7 +47,7 @@ public abstract class CommonTest {
     /**
      * Branch name.
      */
-    protected static final String BRANCH = "master";
+    protected static final String BRANCH = "main";
     /**
      * Quality Gate name.
      */
