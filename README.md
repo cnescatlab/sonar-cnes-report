@@ -48,7 +48,7 @@ Generate editable reports for SonarQube projects.
  -p,--project <arg>                SonarQube key of the targeted project.
  -r,--template-report <arg>        Path to the report template. Default: usage of internal template.
  -s,--server <arg>                 Complete URL of the targeted SonarQube server.
- -t,--token <arg>                  SonarQube token of the SonarQube user who has permissions on the project.
+ -t,--token <arg>                  SonarQube "User token" of the SonarQube user who has permissions on the project.
  -v,--version                      Display current version.
  -w,--disable-report               Disable report generation.
  -x,--template-spreadsheet <arg>   Path to the spreadsheet template. Default: usage of internal template.
@@ -72,7 +72,7 @@ java -jar sonar-cnes-report.jar -p projectId
 If you have installed cnes-report in your sonarqube: open web interface, click on "CNES Report" then choose a project.
 
 ##### Advanced usage (standalone)
-If you are using a secured instance of SonarQube, you can provide a SonarQube user token (https://docs.sonarqube.org/latest/user-guide/user-account/generating-and-using-tokens/) thanks to `-t` option and specify the url of the SonarQube instance with `-s`. The internal template for the text report can be replaced by the one given through `-r` option.
+If you are using a secured instance of SonarQube, you can provide a SonarQube user token (Global- or Poject Analyses Token is not sufficient!) (https://docs.sonarqube.org/latest/user-guide/user-account/generating-and-using-tokens/) thanks to `-t` option and specify the url of the SonarQube instance with `-s`. The internal template for the text report can be replaced by the one given through `-r` option.
 ````
 java -jar sonar-cnes-report.jar -t xuixg5hub345xbefu -s https://example.org:9000 -p projectId -r ./template.docx
 ````
