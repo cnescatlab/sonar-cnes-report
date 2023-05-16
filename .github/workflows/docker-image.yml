@@ -14,9 +14,9 @@ jobs:
       - uses: mr-smithers-excellent/docker-build-push@v6
         name: Build & push Docker image
         with:
-          image:  ivanmorenoj/sonar-cnes-report
-          tags: latest
-          buildArgs: SONAR_CNES_REPORT_VERSION=4.2.0
+          image:  sonar-cnes-report
+          tags: latest, ${{ env.SONAR_CNES_REPORT_VERSION }}
+          buildArgs: SONAR_CNES_REPORT_VERSION= ${{ env.SONAR_CNES_REPORT_VERSION }}
           registry: ghcr.io
           username: ${{ secrets.GHCR_USERNAME }}
           password: ${{ secrets.GHCR_TOKEN }}
