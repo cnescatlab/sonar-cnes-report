@@ -1,0 +1,22 @@
+name: Docker Image CI
+
+on:
+  push:
+    tags: [ "*" ]
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        name: Check out code
+
+      - uses: mr-smithers-excellent/docker-build-push@v6
+        name: Build & push Docker image
+        with:
+          image:  sonar-cnes-report
+          tags: v1, latest
+          buildArgs: SONAR_CNES_REPORT_VERSION=${{  github.ref_name }}
+          registry: ghcr.io
+          username: ${{ secrets.GHCR_USERNAME }}
+          password: ${{ secrets.GHCR_TOKEN }}
