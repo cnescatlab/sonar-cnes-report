@@ -15,8 +15,8 @@ jobs:
         name: Build & push Docker image
         with:
           image:  sonar-cnes-report
-          tags: latest, ${{ env.SONAR_CNES_REPORT_VERSION }}
-          buildArgs: SONAR_CNES_REPORT_VERSION= ${{ env.SONAR_CNES_REPORT_VERSION }}
+          tags: latest, ${{ env.SONAR_CNES_REPORT_VERSION_ARG }}
+          buildArgs: SONAR_CNES_REPORT_VERSION=${{ env.SONAR_CNES_REPORT_VERSION_ARG }}
           registry: ghcr.io
           username: ${{ secrets.GHCR_USERNAME }}
           password: ${{ secrets.GHCR_TOKEN }}
