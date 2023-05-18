@@ -1,5 +1,7 @@
 FROM bitnami/java:11-debian-11
 
+LABEL org.opencontainers.image.source https://github.com/ivanmorenoj/sonar-cnes-report
+
 ARG SONAR_CNES_REPORT_VERSION=4.2.0
 
 RUN apt-get update && \
