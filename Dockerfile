@@ -6,7 +6,7 @@ ARG SONAR_CNES_REPORT_VERSION=4.2.0
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    jq python3-pip python3 curl wget \
+    jq python3-pip python3 curl wget openssh-client \
     git git-lfs sqlite3 && \
     pip3 install --upgrade grip && \
     apt-get clean all -y && \
