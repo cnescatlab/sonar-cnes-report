@@ -5,9 +5,9 @@ LABEL org.opencontainers.image.source https://github.com/ivanmorenoj/sonar-cnes-
 ARG SONAR_CNES_REPORT_VERSION=4.2.0
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+    apt-get install -y \
     jq python3-pip python3 curl wget openssh-client \
-    git git-lfs sqlite3 && \
+    git git-lfs sqlite3 bc && \
     pip3 install --upgrade grip csv2md && \
     curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
       dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg && \
