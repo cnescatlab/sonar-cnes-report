@@ -16,19 +16,19 @@ export function isCompatible() {
 //Functions used to get all user projects
 //The maximum number of projects with this API (api/components/search) is 500.
 //Thus, the objective is to display an infinite number of projects
-export function getProjectsList(){
+export function getProjectsList() {
   const elementByPage = 500;
   let allPromises = [];
   //Get the number of projects and compute the number of pages required
-  return getJSON("/api/components/search", {"qualifiers": "TRK", "ps":elementByPage}).then(response => {
+  return getJSON("/api/components/search", { "qualifiers": "TRK", "ps": elementByPage }).then(response => {
     const nbProjects = response.paging.total;
-    let nbPages = Math.ceil(nbProjects/elementByPage);
+    let nbPages = Math.ceil(nbProjects / elementByPage);
     //Store the first page
     allPromises.push(response.components);
     //Fill the array of promises with next pages if there are ones
     if (nbPages >= 2) {
-      for(let i = 2; i <= nbPages; i++){
-        allPromises.push(getJSON("/api/components/search", {"qualifiers": "TRK", "ps":elementByPage, "p":i}).then(response => {
+      for (let i = 2; i <= nbPages; i++) {
+        allPromises.push(getJSON("/api/components/search", { "qualifiers": "TRK", "ps": elementByPage, "p": i }).then(response => {
           return response.components;
         }));
       }
@@ -37,23 +37,23 @@ export function getProjectsList(){
     return Promise.all(allPromises);
   }).then((results) => {
     //Concatenate an array : x * 500 (x = number of pages)
-      let projects = [];
-      results.forEach((result) => {
-        projects = projects.concat(result);
-      })
-      //Sort the projects list for a user-friendlier display
-      //The name is displayed in the user interface, so we sort the projects by name
-      projects.sort(GetSortOrder("name"));
-      return projects;
-    });
+    let projects = [];
+    results.forEach((result) => {
+      projects = projects.concat(result);
+    })
+    //Sort the projects list for a user-friendlier display
+    //The name is displayed in the user interface, so we sort the projects by name
+    projects.sort(GetSortOrder("name"));
+    return projects;
+  });
 }
 
 //Comparator function in order to compare each specific key of the json array
-function GetSortOrder(key){
-  return function(a, b){
-    if(a[key] > b[key]){
+function GetSortOrder(key) {
+  return function (a, b) {
+    if (a[key] > b[key]) {
       return 1;
-    } else if (a[key] < b[key]){
+    } else if (a[key] < b[key]) {
       return -1;
     }
     return 0;
