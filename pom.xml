@@ -6,7 +6,7 @@
 
     <groupId>fr.cnes.sonar</groupId>
     <artifactId>cnesreport</artifactId>
-    <version>4.2.0</version>
+    <version>4.2.1</version>
     <packaging>sonar-plugin</packaging>
 
     <name>SonarQube CNES Report</name>
@@ -34,10 +34,10 @@
         <maven.compiler.target>11</maven.compiler.target>
         <junit.version>5.9.2</junit.version>
         <jacoco.version>0.8.8</jacoco.version>
-        <sonar.apiVersion>9.8.0.203</sonar.apiVersion>
-        <sonar.testingHarnessVersion>9.5.0.56709</sonar.testingHarnessVersion>
-        <sonar.Version>9.9.0.65466</sonar.Version>
-        <sonar-packaging-maven-plugin.version>1.21.0.505</sonar-packaging-maven-plugin.version>
+        <sonar.apiVersion>10.0.0.695</sonar.apiVersion>
+        <sonar.testingHarnessVersion>10.0.0.68432</sonar.testingHarnessVersion>
+        <sonar.Version>10.0.0.68432</sonar.Version>
+        <sonar-packaging-maven-plugin.version>1.23.0.740</sonar-packaging-maven-plugin.version>
         <sonar.pluginKey>cnesreport</sonar.pluginKey>
         <sonar.pluginUrl>https://github.com/cnescatlab/sonar-cnes-report</sonar.pluginUrl>
         <sonar.pluginOrganizationName>CNES</sonar.pluginOrganizationName>

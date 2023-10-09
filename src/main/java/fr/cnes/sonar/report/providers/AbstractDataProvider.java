@@ -70,6 +70,10 @@ public abstract class AbstractDataProvider {
      * Field to search in json to get a key
      */
     protected static final String KEY = "key";
+    /**
+     * Field to search in json to get a name
+     */
+    protected static final String NAME = "name";
 
     /**
      * Logger for the class
