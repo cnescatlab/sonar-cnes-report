@@ -118,7 +118,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-2  # Region to access CodeGuru 
+          aws-region: us-east-1  # Region to access CodeGuru 
       
       # Step 2: Add CodeGuru Reviewer Action
       - name: CodeGuru Reviewer
