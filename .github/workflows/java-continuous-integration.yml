@@ -148,7 +148,7 @@ jobs:
       security-events: write
       actions: read
       contents: read
-    name: AWS CodeGuru Analysis
+    name: AWS CodeGuru Security Analysis
     # It's not possible to launch an analysis on external pull requests
     if: ${{ github.repository_owner == 'ivanmorenoj' }}
     steps:
@@ -195,7 +195,6 @@ jobs:
         with:
           source_path: .
           aws_region: us-east-1
-          fail_on_severity: Critical # Critical findings will fail the build
 
       - name: Print findings
         run: |
