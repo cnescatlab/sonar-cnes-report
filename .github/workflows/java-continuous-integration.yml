@@ -83,7 +83,7 @@ jobs:
           url_cnesreport="http://localhost:9000/api/cnesreport/report?key=fr.cnes.sonar%3Acnesreport&author=github-actions&token=${token_sonarqube}";
           curl -u admin:admin ${url_cnesreport} -O -J;
 
-  code-analysis:
+  code-review:
     runs-on: ubuntu-latest    
     permissions:
       security-events: write
@@ -131,15 +131,78 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1  # Region to access CodeGuru 
       
-      # Step 2: Add CodeGuru Reviewer Action
       - name: CodeGuru Reviewer
         uses: aws-actions/codeguru-reviewer@v1.1
         with:
           build_path: target/classes # build artifact(s) directory
           s3_bucket: codeguru-reviewer-github-smarcmapus-ipn # S3 Bucket with "codeguru-reviewer-*" prefix
       
-      # Step 3: Upload results into GitHub
       - name: Upload review result
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: codeguru-results.sarif.json
+
+  code-security:
+    runs-on: ubuntu-latest    
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    name: AWS CodeGuru Analysis
+    # It's not possible to launch an analysis on external pull requests
+    if: ${{ github.repository_owner == 'ivanmorenoj' }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
+      - name: Setup java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-yarn-
+
+      - name: Build 
+        run: mvn clean package -DskipTests=true
+
+      - name: Remove node modules
+        run: rm -rf node node_modules
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1  # Region to access CodeGuru 
+      
+      - name: CodeGuru Security
+        uses: aws-actions/codeguru-security@v1.2.2
+        with:
+          source_path: .
+          aws_region: us-east-1
+          fail_on_severity: Critical # Critical findings will fail the build
+
+      - name: Print findings
+        run: |
+          ls -l
+          cat codeguru-security-results.sarif.json
+
+      - name: Upload review result
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: codeguru-security-results.sarif.json
