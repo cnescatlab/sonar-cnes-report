@@ -85,6 +85,10 @@ jobs:
 
   code-analysis:
     runs-on: ubuntu-latest    
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
     name: AWS CodeGuru Analysis
     # It's not possible to launch an analysis on external pull requests
     if: ${{ github.repository_owner == 'ivanmorenoj' }}
