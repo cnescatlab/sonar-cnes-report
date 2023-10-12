@@ -134,7 +134,7 @@ jobs:
       - name: CodeGuru Reviewer
         uses: aws-actions/codeguru-reviewer@v1.1
         with:
-          build_path: target/classes # build artifact(s) directory
+          build_path: src
           s3_bucket: codeguru-reviewer-github-smarcmapus-ipn # S3 Bucket with "codeguru-reviewer-*" prefix
       
       - name: Upload review result
