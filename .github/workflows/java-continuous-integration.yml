@@ -93,25 +93,32 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
       - name: Setup java
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
           java-version: '11'
+
       - name: Cache Maven packages
         uses: actions/cache@v2
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+
       - name: Cache node_modules
         uses: actions/cache@v2
         with:
           path: node_modules
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-yarn-
-      - name: Build and analyze
+
+      - name: Build 
         run: mvn clean package -DskipTests=true
+
+      - name: Remove node modules
+        run: rm -rf node node_modules
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -129,7 +136,6 @@ jobs:
       
       # Step 3: Upload results into GitHub
       - name: Upload review result
-        if: ${{ github.event_name != 'push' }}
         uses: github/codeql-action/upload-sarif@v1
         with:
           sarif_file: codeguru-results.sarif.json
