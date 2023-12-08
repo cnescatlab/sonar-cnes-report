@@ -14,7 +14,7 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
       jq python3-pip python3 curl wget openssh-client \
       git git-lfs sqlite3 bc gh && \
     pip3 install --upgrade \
-      grip csv2md python-sonarqube-api && \
+      grip csv2md python-sonarqube-api XlsxWriter && \
     apt-get clean all -y && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
