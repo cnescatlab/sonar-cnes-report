@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [ '21' ]
+        java: [ '17' ]
     name: Java ${{ matrix.Java }} CI
     steps:
       - name: Check out repository code
@@ -97,7 +97,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
-          java-version: '21'
+          java-version: '17'
       - name: Cache Maven packages
         uses: actions/cache@v2
         with:
