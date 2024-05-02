@@ -6,7 +6,7 @@
 
     <groupId>fr.cnes.sonar</groupId>
     <artifactId>cnesreport</artifactId>
-    <version>4.3.0</version>
+    <version>4.3.1</version>
     <packaging>sonar-plugin</packaging>
 
     <name>SonarQube CNES Report</name>
@@ -29,9 +29,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.min.version>11</jdk.min.version>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <jdk.min.version>17</jdk.min.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <junit.version>5.9.2</junit.version>
         <jacoco.version>0.8.11</jacoco.version>
         <sonar.apiVersion>9.8.0.203</sonar.apiVersion>
@@ -216,7 +216,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.1.1</version>
+            <version>5.10.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -315,6 +315,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M8</version>
+                <configuration>
+                    <argLine>-Djava.security.manager=allow</argLine>
+                </configuration>		    
             </plugin>
 
             <plugin>
