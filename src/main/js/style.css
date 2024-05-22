@@ -15,3 +15,8 @@
     color: red;
     font-style: italic;
 }
+
+.page-simple {
+  width: 30%;
+  margin: auto;
+}

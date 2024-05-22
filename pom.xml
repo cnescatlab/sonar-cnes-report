@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>fr.cnes.sonar</groupId>
     <artifactId>cnesreport</artifactId>
-    <version>4.3.1</version>
+    <version>5.0.0</version>
     <packaging>sonar-plugin</packaging>
 
     <name>SonarQube CNES Report</name>
@@ -34,10 +34,10 @@
         <maven.compiler.target>17</maven.compiler.target>
         <junit.version>5.9.2</junit.version>
         <jacoco.version>0.8.11</jacoco.version>
-        <sonar.apiVersion>9.8.0.203</sonar.apiVersion>
-        <sonar.testingHarnessVersion>9.5.0.56709</sonar.testingHarnessVersion>
-        <sonar.Version>9.9.0.65466</sonar.Version>
-        <sonar-packaging-maven-plugin.version>1.21.0.505</sonar-packaging-maven-plugin.version>
+        <sonar.apiVersion>10.7.0.2191</sonar.apiVersion>
+        <sonar.testingHarnessVersion>10.0.0.68432</sonar.testingHarnessVersion>
+        <sonar.Version>10.5.1.90531</sonar.Version>
+        <sonar-packaging-maven-plugin.version>1.23.0.740</sonar-packaging-maven-plugin.version>
         <sonar.pluginKey>cnesreport</sonar.pluginKey>
         <sonar.organization>lequal</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -79,6 +79,10 @@
             <id>ErwanGauduchon</id>
             <name>Erwan Gauduchon</name>
         </developer>
+        <developer>
+            <id>Topin2001</id>
+            <name>Thomas Galpin</name>
+        </developer>
     </developers>
 
     <dependencies>
@@ -91,7 +95,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.31</version>
+            <version>1.7.36</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -164,8 +168,8 @@
             <version>2.10.1</version>
             <scope>compile</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java -->
         <dependency>
-            <!-- https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java -->
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
             <version>4.0.0-rc-2</version>
@@ -203,10 +207,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-	      <groupId>org.junit.vintage</groupId>
-	      <artifactId>junit-vintage-engine</artifactId>
-	      <version>${junit.version}</version>
-	    </dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>${junit.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.github.stefanbirkner</groupId>
             <artifactId>system-rules</artifactId>
@@ -256,7 +260,8 @@
                         </goals>
                         <configuration>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <transformer
+                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>${app.mainClass}</mainClass>
                                 </transformer>
                             </transformers>
@@ -289,18 +294,18 @@
             </plugin>
 
             <plugin>
-	        	<!-- UTF-8 bundles are not supported by Java, so they must be converted during build -->
-	        	<groupId>org.codehaus.mojo</groupId>
-	        	<artifactId>native2ascii-maven-plugin</artifactId>
-	        	<version>2.0.1</version>
-	        	<executions>
-	          		<execution>
-	            		<goals>
-	              			<goal>resources</goal>
-	            		</goals>
-	          		</execution>
-	        	</executions>
-	      	</plugin>
+                <!-- UTF-8 bundles are not supported by Java, so they must be converted during build -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>native2ascii-maven-plugin</artifactId>
+                <version>2.0.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>resources</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -317,7 +322,7 @@
                 <version>3.0.0-M8</version>
                 <configuration>
                     <argLine>-Djava.security.manager=allow</argLine>
-                </configuration>		    
+                </configuration>
             </plugin>
 
             <plugin>
@@ -359,33 +364,33 @@
                 <artifactId>frontend-maven-plugin</artifactId>
                 <version>1.9.1</version>
                 <executions>
-                <execution>
-                    <phase>generate-resources</phase>
-                    <id>install node and yarn</id>
-                    <goals>
-                    <goal>install-node-and-yarn</goal>
-                    </goals>
-                    <configuration>
-                        <nodeVersion>v16.14.0</nodeVersion>
-                        <yarnVersion>v1.22.5</yarnVersion>
-                    </configuration>
-                </execution>
-                <execution>
-                    <id>yarn install</id>
-                    <goals>
-                    <goal>yarn</goal>
-                    </goals>
-                </execution>
-                <execution>
-                    <phase>generate-resources</phase>
-                    <id>yarn run script</id>
-                    <goals>
-                    <goal>yarn</goal>
-                    </goals>
-                    <configuration>
-                    <arguments>run build</arguments>
-                    </configuration>
-                </execution>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <id>install node and yarn</id>
+                        <goals>
+                            <goal>install-node-and-yarn</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>v16.14.0</nodeVersion>
+                            <yarnVersion>v1.22.5</yarnVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn install</id>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <id>yarn run script</id>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run build</arguments>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
