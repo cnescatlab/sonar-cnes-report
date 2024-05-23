@@ -27,17 +27,5 @@ public class SonarQubeInfoProviderTest extends CommonTest {
         assertEquals(expected, actual);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void executeFaultyGetSonarQubeVersionPlugin() throws SonarQubeException, BadSonarQubeRequestException {
-        SonarQubeInfoProvider sonarQubeInfoProvider = new SonarQubeInfoProviderPlugin(wsClient);
-        sonarQubeInfoProvider.getSonarQubeVersion();
-    }
 
-    @Test
-    public void executeFaultyGetStatusPlugin() {
-        SonarQubeInfoProvider sonarQubeInfoProvider = new SonarQubeInfoProviderPlugin(wsClient);
-        final String actual = sonarQubeInfoProvider.getSonarQubeStatus();
-        final String expected = "DOWN";
-        assertEquals(expected, actual);
-    }
 }

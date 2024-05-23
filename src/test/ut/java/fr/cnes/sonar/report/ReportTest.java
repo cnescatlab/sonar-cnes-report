@@ -72,7 +72,7 @@ public class ReportTest {
 
     @Test (expected = IllegalStateException.class)
     public void emptyExecuteTest() throws Exception{
-        ReportCommandLine.execute(new String[0], null);
+        ReportCommandLine.execute(new String[0]);
     }
 
     @Test

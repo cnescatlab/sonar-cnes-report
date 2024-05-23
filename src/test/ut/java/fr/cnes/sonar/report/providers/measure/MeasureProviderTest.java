@@ -16,9 +16,4 @@ public class MeasureProviderTest extends CommonTest {
         measureProvider.getMeasures();
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void executeFaultyGetMeasuresPlugin() throws SonarQubeException, BadSonarQubeRequestException {
-        MeasureProvider measureProvider = new MeasureProviderPlugin(wsClient, PROJECT_KEY, BRANCH);
-        measureProvider.getMeasures();
-    }
 }

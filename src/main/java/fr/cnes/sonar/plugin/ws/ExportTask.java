@@ -180,7 +180,7 @@ public class ExportTask implements RequestHandler {
             }
 
             // Execute report generation
-            ReportCommandLine.execute(reportParams.toArray(new String[reportParams.size()]), null);
+            ReportCommandLine.execute(reportParams.toArray(new String[reportParams.size()]));
 
             stream.setMediaType("application/zip");
             String filename = ReportFactory.formatFilename("zip.report.output", "", "", projectKey);

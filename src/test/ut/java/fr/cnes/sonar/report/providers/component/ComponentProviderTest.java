@@ -16,9 +16,4 @@ public class ComponentProviderTest extends CommonTest {
         componentProvider.getComponents();
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void executeFaultyGetComponentsPlugin() throws SonarQubeException, BadSonarQubeRequestException {
-        ComponentProvider componentProvider = new ComponentProviderPlugin(wsClient, PROJECT_KEY, BRANCH);
-        componentProvider.getComponents();
-    }
 }
