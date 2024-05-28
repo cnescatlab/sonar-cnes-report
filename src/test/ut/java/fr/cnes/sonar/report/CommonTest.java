@@ -95,6 +95,7 @@ public abstract class CommonTest {
         });
 
         report.setProjectName("CNES Report");
+        report.setProjectBranch("main");
         report.setProjectDate(new Date().toString().substring(0,16));
         report.setProjectAuthor("Lequal");
 

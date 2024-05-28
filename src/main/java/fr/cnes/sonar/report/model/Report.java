@@ -38,6 +38,10 @@ public class Report {
      */
     private String projectName;
     /**
+     * Name of the branch
+     */
+    private String branchName;
+    /**
      * Name of the author
      */
     private String projectAuthor;
@@ -107,6 +111,7 @@ public class Report {
      */
     public Report() {
         this.projectName = "";
+        this.branchName = "";
         this.projectAuthor = "";
         this.projectDate = "";
         this.qualityProfiles = new ArrayList<>();
@@ -263,6 +268,24 @@ public class Report {
      */
     public void setProjectName(String pProjectName) {
         this.projectName = pProjectName;
+    }
+
+    /**
+     * Getter for branchName
+     *
+     * @return branchName
+     */
+    public String getProjectBranch() {
+        return branchName;
+    }
+
+    /**
+     * Setter for branchName
+     *
+     * @param pBranchName value
+     */
+    public void setProjectBranch(String pBranchName) {
+        this.branchName = pBranchName;
     }
 
     /**
@@ -541,4 +564,5 @@ public class Report {
     public void setQualityGateStatus(Map<String, String> pQualityGateStatus) {
         this.qualityGateStatus = pQualityGateStatus;
     }
+
 }

@@ -63,6 +63,7 @@ public class ReportTest {
         assertEquals("", report.getProjectAuthor());
         assertEquals("", report.getProjectDate());
         assertEquals("", report.getProjectName());
+        assertEquals("", report.getProjectBranch());
         assertEquals("", report.getQualityProfilesFilename());
         assert(report.getRawIssues().isEmpty());
         assert(report.getQualityProfiles().isEmpty());

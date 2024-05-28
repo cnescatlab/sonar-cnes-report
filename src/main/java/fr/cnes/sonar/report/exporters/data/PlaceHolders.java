@@ -45,6 +45,10 @@ public class PlaceHolders {
      */
     private static final String PROJECTNAME_PLACEHOLDER = "XX-PROJECTNAME-XX";
     /**
+     * Placeholder for the project's branch
+     */
+    private static final String PROJECTBRANCH_PLACEHOLDER = "XX-PROJECTBRANCH-XX";
+    /**
      * Placeholder for the quality gate's anme
      */
     private static final String QUALITYGATENAME_PLACEHOLDER = "XX-QUALITYGATENAME-XX";
@@ -352,6 +356,9 @@ public class PlaceHolders {
         replacementValues.put(
                 PROJECTNAME_PLACEHOLDER,
                 report.getProjectName());
+        replacementValues.put(
+                PROJECTBRANCH_PLACEHOLDER,
+                report.getProjectBranch());
         // configuration placeholders
         replacementValues.put(
                 QUALITYGATENAME_PLACEHOLDER,
