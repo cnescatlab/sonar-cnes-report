@@ -277,7 +277,7 @@ public final class DocXTools {
 
                 // construct here the new string by replacing each placeholder by its value
                 text = currentRun.getText(0);
-                
+
                 pictures.clear();
                 for (Map.Entry<String, String> nextValue : values.entrySet()) {
                     key = nextValue.getKey();

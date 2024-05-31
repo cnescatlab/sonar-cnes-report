@@ -47,7 +47,7 @@ public class PlaceHolders {
     /**
      * Placeholder for the project's branch
      */
-    private static final String PROJECTBRANCH_PLACEHOLDER = "XX-PROJECTBRANCH-XX";
+    private static final String PROJECTBRANCH_PLACEHOLDER = "XX-BRANCH-XX";
     /**
      * Placeholder for the quality gate's anme
      */
