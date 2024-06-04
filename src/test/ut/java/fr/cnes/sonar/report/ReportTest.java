@@ -79,8 +79,11 @@ public class ReportTest {
 
     @Test (expected = SonarQubeException.class)
     public void executeTest() throws Exception{
-        String[] args = new String[1];
-        args[0] = "-p test";
+        String[] args = new String[4];
+        args[0] = "-s";
+        args[1] = "http://notworking:64725"; //Random url and port to prevent test to pass
+        args[2] = "-p";
+        args[3] = "project";
         ReportCommandLine.execute(args);
     }
 

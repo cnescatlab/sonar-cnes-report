@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-
 public class ModelTest extends CommonTest {
     @Test
     public void commentTest() {
@@ -37,8 +35,8 @@ public class ModelTest extends CommonTest {
         List<Measure> measures = new ArrayList<>();
         measures.add(new Measure());
 
-        Assert.assertThat(component.toString(), instanceOf(String.class));
-        Assert.assertThat(component.toMap(), instanceOf(Map.class));
+        Assert.assertTrue(component.toString() instanceof String);
+        Assert.assertTrue(component.toMap() instanceof Map);
 
     }
 

@@ -248,6 +248,6 @@ class FakeIssuesProvider extends AbstractIssuesProvider {
      * Call parent method to get properties
      */
     public String getProperty(String property) {
-        return getRequest(MAX_PER_PAGE_SONARQUBE);
+        return getRequest(property);
     }
 }
