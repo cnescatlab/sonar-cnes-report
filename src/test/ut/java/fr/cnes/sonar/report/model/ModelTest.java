@@ -68,6 +68,6 @@ public class ModelTest extends CommonTest {
         project.setDescription("NewDescription");
         Assert.assertEquals("NewDescription", project.getDescription());
 
-        Assert.assertEquals(true, project.getLanguages().isEmpty());
+        Assert.assertTrue(project.getLanguages().isEmpty());
     }
 }
