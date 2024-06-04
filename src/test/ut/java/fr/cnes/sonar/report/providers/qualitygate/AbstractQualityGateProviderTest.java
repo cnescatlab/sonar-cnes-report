@@ -24,10 +24,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
@@ -54,18 +56,7 @@ public class AbstractQualityGateProviderTest {
     @Test
     public void getQualityGatesWithCorrespondingDetailsTest() throws BadSonarQubeRequestException, SonarQubeException {
         // Fake API response
-        JsonObject qualityGate1 = new JsonObject();
-        qualityGate1.addProperty("id", "test1");
-        JsonObject qualityGate2 = new JsonObject();
-        qualityGate2.addProperty("id", "test2");
-        
-        JsonArray qualityGateList = new JsonArray();
-        qualityGateList.add(qualityGate1);
-        qualityGateList.add(qualityGate2);
-        
-        JsonObject qualityGatesResponse = new JsonObject();
-        qualityGatesResponse.addProperty("default", "test1");
-        qualityGatesResponse.add("qualitygates", qualityGateList);
+        JsonObject qualityGatesResponse = getJsonObject();
 
         // Call the wrapper to test
         QualityGateProviderWrapper provider = new QualityGateProviderWrapper();
@@ -79,7 +70,23 @@ public class AbstractQualityGateProviderTest {
         assertFalse(list.get(1).isDefault());
     }
 
-    @Test(expected = NullPointerException.class) //To be fixed, should be UnknownQualityGateException
+    private static @NotNull JsonObject getJsonObject() {
+        JsonObject qualityGate1 = new JsonObject();
+        qualityGate1.addProperty("id", "test1");
+        JsonObject qualityGate2 = new JsonObject();
+        qualityGate2.addProperty("id", "test2");
+
+        JsonArray qualityGateList = new JsonArray();
+        qualityGateList.add(qualityGate1);
+        qualityGateList.add(qualityGate2);
+
+        JsonObject qualityGatesResponse = new JsonObject();
+        qualityGatesResponse.addProperty("default", "test1");
+        qualityGatesResponse.add("qualitygates", qualityGateList);
+        return qualityGatesResponse;
+    }
+
+    @Test(expected = UnknownQualityGateException.class)
     public void getProjectNoQualityGateTest() throws UnknownQualityGateException, BadSonarQubeRequestException, SonarQubeException {
         // Empty API response
         JsonObject empty = new JsonObject();
@@ -88,6 +95,7 @@ public class AbstractQualityGateProviderTest {
 
         JsonObject qualityGateProperty = new JsonObject();
         qualityGateProperty.addProperty("key", "no_matching_key");
+        qualityGateProperty.addProperty("name", "No matching name");
         JsonObject project = new JsonObject();
         project.add("qualityGate", qualityGateProperty);
 
@@ -100,24 +108,14 @@ public class AbstractQualityGateProviderTest {
         provider.getProjectQualityGate();
     }
 
-    @Test(expected = NullPointerException.class) //To be fixed too, should be UnknownQualityGateException
+    @Test(expected = UnknownQualityGateException.class)
     public void getProjectNoMatchingQualityGateTest() throws UnknownQualityGateException, BadSonarQubeRequestException, SonarQubeException {
         // Fake API response
-        JsonObject qualityGate1 = new JsonObject();
-        qualityGate1.addProperty("id", "test1");
-        JsonObject qualityGate2 = new JsonObject();
-        qualityGate2.addProperty("id", "test2");
-        
-        JsonArray qualityGateList = new JsonArray();
-        qualityGateList.add(qualityGate1);
-        qualityGateList.add(qualityGate2);
-        
-        JsonObject qualityGatesResponse = new JsonObject();
-        qualityGatesResponse.addProperty("default", "test1");
-        qualityGatesResponse.add("qualitygates", qualityGateList);
+        JsonObject qualityGatesResponse = getObject();
 
         JsonObject qualityGateProperty = new JsonObject();
         qualityGateProperty.addProperty("key", "no_matching_key");
+        qualityGateProperty.addProperty("name", "No matching name");
         JsonObject project = new JsonObject();
         project.add("qualityGate", qualityGateProperty);
 
@@ -130,27 +128,32 @@ public class AbstractQualityGateProviderTest {
         provider.getProjectQualityGate();
     }
 
-    @Test
-    public void getProjectWithMatchingQualityGateTest() throws UnknownQualityGateException, BadSonarQubeRequestException, SonarQubeException {
-        // Fake API response
+    private static @NotNull JsonObject getObject() {
         JsonObject qualityGate1 = new JsonObject();
         qualityGate1.addProperty("id", "test1");
+        qualityGate1.addProperty("name", "Test 1");
         JsonObject qualityGate2 = new JsonObject();
         qualityGate2.addProperty("id", "test2");
-        JsonObject qualityGate3 = new JsonObject();
-        qualityGate3.addProperty("id", "test3");
-        
+        qualityGate2.addProperty("name", "Test 2");
+
         JsonArray qualityGateList = new JsonArray();
         qualityGateList.add(qualityGate1);
         qualityGateList.add(qualityGate2);
-        qualityGateList.add(qualityGate3);
-        
+
         JsonObject qualityGatesResponse = new JsonObject();
         qualityGatesResponse.addProperty("default", "test1");
         qualityGatesResponse.add("qualitygates", qualityGateList);
+        return qualityGatesResponse;
+    }
+
+    @Test
+    public void getProjectWithMatchingQualityGateTest() throws UnknownQualityGateException, BadSonarQubeRequestException, SonarQubeException {
+        // Fake API response
+        JsonObject qualityGatesResponse = getQualityGatesResponse();
 
         JsonObject qualityGateProperty = new JsonObject();
         qualityGateProperty.addProperty("key", "test2");
+        qualityGateProperty.addProperty("name", "Test 2");
         JsonObject project = new JsonObject();
         project.add("qualityGate", qualityGateProperty);
 
@@ -160,13 +163,57 @@ public class AbstractQualityGateProviderTest {
         provider.setFakeQualityGatesDetails(new JsonObject());
         provider.setFakeProject(project);
 
-        //QualityGate result = provider.getProjectQualityGate();
-        //assertEquals("test2", result.getId());
+        QualityGate result = provider.getProjectQualityGate();
+        assertEquals("test2", result.getId());
+        assertEquals("Test 2", result.getName());
+    }
+
+    private static @NotNull JsonObject getQualityGatesResponse() {
+        JsonObject qualityGate1 = new JsonObject();
+        qualityGate1.addProperty("id", "test1");
+        qualityGate1.addProperty("name", "Test 1");
+        JsonObject qualityGate2 = new JsonObject();
+        qualityGate2.addProperty("id", "test2");
+        qualityGate2.addProperty("name", "Test 2");
+        JsonObject qualityGate3 = new JsonObject();
+        qualityGate3.addProperty("id", "test3");
+        qualityGate3.addProperty("name", "Test 3");
+
+        JsonArray qualityGateList = new JsonArray();
+        qualityGateList.add(qualityGate1);
+        qualityGateList.add(qualityGate2);
+        qualityGateList.add(qualityGate3);
+
+        JsonObject qualityGatesResponse = new JsonObject();
+        qualityGatesResponse.addProperty("default", "test1");
+        qualityGatesResponse.add("qualitygates", qualityGateList);
+        return qualityGatesResponse;
     }
 
     @Test
     public void getQualityGateStatusTest() throws BadSonarQubeRequestException, SonarQubeException {
         // Create fake quality gate status
+        JsonObject qualityGateStatus = getQualityGateStatus();
+
+        // Test with a successful quality gate
+        QualityGateProviderWrapper provider = new QualityGateProviderWrapper();
+        provider.setFakeQualityGateStatus(qualityGateStatus);
+
+        Map<String,String> result = provider.getQualityGateStatus();
+        assertEquals(2, result.size());
+        for(Map.Entry<String,String> entry: result.entrySet()) {
+
+            assertTrue(entry.getKey().endsWith("_TEST"));
+
+            if (Objects.equals(entry.getValue(), "SUCCESS")) {
+                assertEquals("SUCCESS", entry.getValue());
+            } else {                
+                assertEquals("ERROR (100000.0% is greater than 10%)", entry.getValue());
+            }
+        }
+    }
+
+    private static @NotNull JsonObject getQualityGateStatus() {
         JsonObject condition1 = new JsonObject();
         condition1.addProperty("status", "SUCCESS");
         condition1.addProperty("metricKey", "metric_1");
@@ -186,23 +233,7 @@ public class AbstractQualityGateProviderTest {
         status.add("conditions", conditions);
         JsonObject qualityGateStatus = new JsonObject();
         qualityGateStatus.add("projectStatus", status);
-
-        // Test with a successful quality gate
-        QualityGateProviderWrapper provider = new QualityGateProviderWrapper();
-        provider.setFakeQualityGateStatus(qualityGateStatus);
-
-        Map<String,String> result = provider.getQualityGateStatus();
-        assertEquals(2, result.size());
-        for(Map.Entry<String,String> entry: result.entrySet()) {
-
-            assertTrue(entry.getKey().endsWith("_TEST"));
-
-            if (entry.getValue() == "SUCCESS") {
-                assertEquals("SUCCESS", entry.getValue());
-            } else {                
-                assertEquals("ERROR (100000.0% is greater than 10%)", entry.getValue());
-            }
-        }
+        return qualityGateStatus;
     }
 
     @Test
@@ -220,6 +251,12 @@ public class AbstractQualityGateProviderTest {
         actual.add(qualityGateProvider.getErrorExplanationPublic("10000", "5000", "GT", "MILLISEC"));
         actual.add(qualityGateProvider.getErrorExplanationPublic("3", "0", "GT", "INT"));
 
+        List<String> expected = getStrings();
+
+        assertEquals(expected, actual);
+    }
+
+    private static @NotNull List<String> getStrings() {
         List<String> expected = new ArrayList<>();
         expected.add(" (8 is worse than test)");
         expected.add(" (E is worse than A)");
@@ -230,14 +267,13 @@ public class AbstractQualityGateProviderTest {
         expected.add(" (50.3% is less than 80%)");
         expected.add(" (10000ms is greater than 5000ms)");
         expected.add(" (3 is greater than 0)");
-
-        assertEquals(expected, actual);
+        return expected;
     }
 
     /**
      * Wrapper on QualityGateProvider for testing purposes
      */
-    private class QualityGateProviderWrapper extends AbstractQualityGateProvider {
+    private static class QualityGateProviderWrapper extends AbstractQualityGateProvider {
 
         // Stores the fake JsonObject responses to mock the API
         private JsonObject fakeQualityGates;
@@ -273,26 +309,23 @@ public class AbstractQualityGateProviderTest {
         /**
          * Wrapper methods to mock the API response
          */
-        protected JsonObject getQualityGatesAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException {
+        protected JsonObject getQualityGatesAsJsonObject() {
             return fakeQualityGates;
         }
 
-        protected JsonObject getQualityGatesDetailsAsJsonObject(final QualityGate qualityGate)
-                throws BadSonarQubeRequestException, SonarQubeException {
+        protected JsonObject getQualityGatesDetailsAsJsonObject(final QualityGate qualityGate) {
             return fakeQualityGatesDetails;
         }
 
-        protected JsonObject getProjectAsJsonObject() throws BadSonarQubeRequestException, SonarQubeException {
+        protected JsonObject getProjectAsJsonObject() {
             return fakeProject;
         }
 
-        protected JsonObject getQualityGateStatusAsJsonObject()
-                throws BadSonarQubeRequestException, SonarQubeException {
+        protected JsonObject getQualityGateStatusAsJsonObject() {
             return fakeQualityGateStatus;
         }
 
-        protected JsonObject getMetricAsJsonObject(final String metricKey)
-                throws BadSonarQubeRequestException, SonarQubeException {
+        protected JsonObject getMetricAsJsonObject(final String metricKey) {
             // Create fake metric response
             JsonObject metric = new JsonObject();
             metric.addProperty("name", metricKey + "_TEST");

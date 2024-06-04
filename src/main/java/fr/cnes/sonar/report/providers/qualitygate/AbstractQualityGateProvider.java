@@ -23,8 +23,6 @@ import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
 import fr.cnes.sonar.report.model.QualityGate;
 import fr.cnes.sonar.report.providers.AbstractDataProvider;
 
-import org.sonarqube.ws.client.WsClient;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -128,18 +126,8 @@ public abstract class AbstractQualityGateProvider extends AbstractDataProvider {
     }
 
     /**
-     * Complete constructor.
-     * @param wsClient The web client.
-     * @param project The id of the project to report.
-     * @param branch The branch of the project to report.
-     */
-    protected AbstractQualityGateProvider(final WsClient wsClient, final String project, final String branch) {
-        super(wsClient, project, branch);
-    }
-
-    /**
      * Generic getter for all the quality gates.
-     * @return Array containing all the issues.
+     * @return List<QualityGate> containing all the issues.
      * @throws BadSonarQubeRequestException A request is not recognized by the server.
      * @throws SonarQubeException When SonarQube server is not callable.
      */
@@ -187,15 +175,15 @@ public abstract class AbstractQualityGateProvider extends AbstractDataProvider {
         final JsonObject jsonObject = getProjectAsJsonObject();
 
         // search for the good quality gate
-        final Iterator<QualityGate> iterator = qualityGates.iterator();
+        final Iterator<QualityGate> qualityGatesIterator = qualityGates.iterator();
         
         QualityGate tmp;
         boolean find = false;
         final String key = jsonObject.getAsJsonObject(QUALITY_GATE).get(KEY).getAsString();
         final String name = jsonObject.getAsJsonObject(QUALITY_GATE).get(NAME).getAsString();
 
-        while (iterator.hasNext() && !find) {
-            tmp = iterator.next();
+        while (qualityGatesIterator.hasNext() && !find) {
+            tmp = qualityGatesIterator.next();
             if (tmp.getName().equals(name) || tmp.getId().equals(key)) {
                 res = tmp;
                 find = true;
@@ -274,7 +262,7 @@ public abstract class AbstractQualityGateProvider extends AbstractDataProvider {
                 threshold = workDurationToTime(errorThreshold);
                 break;
             case PERCENT:
-                actual = String.valueOf(Precision.round(Double.valueOf(actualValue), 1)).concat("%");
+                actual = String.valueOf(Precision.round(Double.parseDouble(actualValue), 1)).concat("%");
                 compare = comparatorToString(comparator);
                 threshold = errorThreshold.concat("%");
                 break;
@@ -299,28 +287,14 @@ public abstract class AbstractQualityGateProvider extends AbstractDataProvider {
      * @return the letter corresponding to the rating number
      */
     private String ratingToLetter(String rating) {
-        String res;
-        switch (rating) {
-            case "1":
-                res = "A";
-                break;
-            case "2":
-                res = "B";
-                break;
-            case "3":
-                res = "C";
-                break;
-            case "4":
-                res = "D";
-                break;
-            case "5":
-                res = "E";
-                break;
-            default:
-                res = rating;
-                break;
-        }
-        return res;
+        return switch (rating) {
+            case "1" -> "A";
+            case "2" -> "B";
+            case "3" -> "C";
+            case "4" -> "D";
+            case "5" -> "E";
+            default -> rating;
+        };
     }
 
     /**
