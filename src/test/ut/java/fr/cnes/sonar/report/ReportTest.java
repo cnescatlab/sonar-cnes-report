@@ -18,6 +18,7 @@
 package fr.cnes.sonar.report;
 
 import fr.cnes.sonar.plugin.tools.ZipFolder;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Report;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,6 +75,13 @@ public class ReportTest {
     @Test (expected = IllegalStateException.class)
     public void emptyExecuteTest() throws Exception{
         ReportCommandLine.execute(new String[0]);
+    }
+
+    @Test (expected = SonarQubeException.class)
+    public void executeTest() throws Exception{
+        String[] args = new String[1];
+        args[0] = "-p test";
+        ReportCommandLine.execute(args);
     }
 
     @Test
