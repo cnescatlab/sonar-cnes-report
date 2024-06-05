@@ -17,7 +17,6 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 const path = require("path");
-const autoprefixer = require("autoprefixer");
 
 module.exports = {
   // Define the entry points here. They MUST have the same name as the page_id
@@ -47,30 +46,21 @@ module.exports = {
   },
   module: {
     // Our example uses Babel to transpile our code.
-    loaders: [
-      {
-        test: /\.js$/,
-        loader: "babel",
-        exclude: /(node_modules)/
-      },
-      {
-        test: /\.css/,
-        loader: "style-loader!css-loader!postcss-loader"
-      },
-      { test: /\.json$/, loader: "json" }
-    ]
-  },
-  postcss() {
-    return [
-      autoprefixer({
-        browsers: [
-          "last 3 Chrome versions",
-          "last 3 Firefox versions",
-          "last 3 Safari versions",
-          "last 3 Edge versions",
-          "IE 11"
+    rules: [
+          {
+            test: /\.js$/,
+            exclude: /node_modules/,
+            use: {
+              loader: "babel-loader"
+            }
+          },
+          {
+            test: /\.css$/,
+            use: [
+                'style-loader',
+                'css-loader'
+            ]
+          }
         ]
-      })
-    ];
   }
 };

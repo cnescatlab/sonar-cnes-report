@@ -18,6 +18,7 @@
  */
 const webpack = require('webpack');
 const config = require('./webpack.config');
+const TerserPlugin = require('terser-webpack-plugin');
 const getClientEnvironment = require('../env');
 
 // Get environment variables to inject into our app.
@@ -41,29 +42,25 @@ config.plugins = [
   // Otherwise React will be compiled in the very slow development mode.
   new webpack.DefinePlugin(env),
 
-  // This helps ensure the builds are consistent if source hasn't changed:
-  new webpack.optimize.OccurrenceOrderPlugin(),
-
-  // Try to dedupe duplicated modules, if any:
-  new webpack.optimize.DedupePlugin()
 ];
 
 if (!noUglify) {
-  config.plugins.push(
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        screw_ie8: true, // React doesn't support IE8
-        warnings: false
-      },
-      mangle: {
-        screw_ie8: true
-      },
-      output: {
-        comments: false,
-        screw_ie8: true
-      }
-    })
-  );
+  config.optimization = {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          compress: {
+            warnings: false,
+          },
+          mangle: true,
+          output: {
+            comments: false,
+          },
+        },
+      }),
+    ],
+  };
 }
 
 module.exports = config;

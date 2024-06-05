@@ -1,22 +1,81 @@
-.forminput select, .forminput input{
-    width:100%;
+/* General Styles */
+.maintenance-title {
+    font-size: 35px;
+    color: #333;
+    margin-top: 20px;
+    text-align: center;
 }
 
-.login-label{
+#generation-form {
+    margin: 20px auto;
+    max-width: 500px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.forminput {
+    margin-bottom: 15px;
+}
+
+.login-label {
     display: block;
+    margin-bottom: 5px;
+    color: #555;
 }
 
-.info-message{
-    color:grey;
+.login-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
 }
 
-.compatibility-warning {
-    padding-bottom: inherit;
+/* Button Styles */
+#generation {
+    display: block;
+    margin: 0 auto;
+    font-size: 20px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#generation:hover {
+    background-color: #45a049;
+}
+
+#generation:active {
+    transform: translateY(2px);
+}
+
+/* Checkbox Styles */
+.checkbox-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.checkbox-input {
+    margin-right: 5px;
+}
+
+/* Optional: Styles for success/error messages */
+.success-message {
+    color: green;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.error-message {
     color: red;
-    font-style: italic;
-}
-
-.page-simple {
-  width: 30%;
-  margin: auto;
+    font-weight: bold;
+    margin-top: 10px;
 }
