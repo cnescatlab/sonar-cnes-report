@@ -24,11 +24,12 @@ module.exports = {
   entry: {
     // Using Vanilla JS:
     report: ["./src/main/js/global_page/index.js"],
+    projectreport: ["./src/main/js/project_page/index.js"],
   },
   output: {
     // The entry point files MUST be shipped inside the final JAR's static/
     // directory.
-    path: path.join(__dirname, "../../target/classes/static"),
+    path: path.join(__dirname, "../../../../../target/classes/static"),
     filename: "[name].js"
   },
   resolve: {
