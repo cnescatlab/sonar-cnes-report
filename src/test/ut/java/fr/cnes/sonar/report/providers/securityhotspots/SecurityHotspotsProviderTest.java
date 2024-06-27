@@ -22,15 +22,4 @@ public class SecurityHotspotsProviderTest extends CommonTest {
         securityHotspotsProvider.getReviewedSecurityHotspots();
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void executeFaultyGetToReviewSecurityHotspotsPlugin() throws SonarQubeException, BadSonarQubeRequestException {
-        SecurityHotspotsProvider securityHotspotsProvider = new SecurityHotspotsProviderPlugin(wsClient, PROJECT_KEY, BRANCH);
-        securityHotspotsProvider.getToReviewSecurityHotspots();
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void executeFaultyGetReviewedSecurityHotspotsPlugin() throws SonarQubeException, BadSonarQubeRequestException {
-        SecurityHotspotsProvider securityHotspotsProvider = new SecurityHotspotsProviderPlugin(wsClient, PROJECT_KEY, BRANCH);
-        securityHotspotsProvider.getReviewedSecurityHotspots();
-    }
 }

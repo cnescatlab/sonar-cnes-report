@@ -14,11 +14,4 @@ public class ReportModelFactoryTest extends CommonTest {
         ReportModelFactory reportModelFactory = new ReportModelFactory(conf.getProject(), conf.getBranch(), conf.getAuthor(), conf.getDate(), standaloneProviderFactory);
         reportModelFactory.create();
     }
-
-    @Test(expected = IllegalStateException.class)
-    public void createPluginTest()
-            throws BadSonarQubeRequestException, SonarQubeException, UnknownQualityGateException {
-        ReportModelFactory reportModelFactory = new ReportModelFactory(conf.getProject(), conf.getBranch(), conf.getAuthor(), conf.getDate(), pluginProviderFactory);
-        reportModelFactory.create();
-    }
 }

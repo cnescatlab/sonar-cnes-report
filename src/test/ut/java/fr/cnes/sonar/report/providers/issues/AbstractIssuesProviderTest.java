@@ -240,7 +240,7 @@ class FakeIssuesProvider extends AbstractIssuesProvider {
     /**
      * Implements a fake method to return the response from API
      */
-    public JsonObject getIssuesAsJsonObject(final int page, final int maxPerPage, final String confirmed) throws BadSonarQubeRequestException, SonarQubeException {
+    public JsonObject getIssuesAsJsonObject(final int page, final int maxPerPage, final String confirmed) {
         return this.fakeObject;
     }
 
@@ -248,6 +248,6 @@ class FakeIssuesProvider extends AbstractIssuesProvider {
      * Call parent method to get properties
      */
     public String getProperty(String property) {
-        return getRequest(MAX_PER_PAGE_SONARQUBE);
+        return getRequest(property);
     }
 }

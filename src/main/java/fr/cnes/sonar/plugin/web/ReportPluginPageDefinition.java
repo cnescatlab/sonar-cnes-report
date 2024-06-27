@@ -30,9 +30,13 @@ public class ReportPluginPageDefinition implements PageDefinition {
      */
     @Override
     public void define(Context context) {
-        Page.Builder page = Page.builder(PluginStringManager.getProperty("homepage.url"));
-        page.setName(PluginStringManager.getProperty("homepage.name"));
-        page.setScope(Page.Scope.GLOBAL);
-        context.addPage(page.build());
+        context.addPage(Page.builder(PluginStringManager.getProperty("homepage.url"))
+                .setName(PluginStringManager.getProperty("homepage.name"))
+                .setScope(Page.Scope.GLOBAL)
+                .build());
+        context.addPage(Page.builder(PluginStringManager.getProperty("projectpage.url"))
+                .setName(PluginStringManager.getProperty("projectpage.name"))
+                .setScope(Page.Scope.COMPONENT)
+                .build());
     }
 }

@@ -25,17 +25,5 @@ public class ProjectProviderTest extends CommonTest {
         projectProvider.hasProject(PROJECT_KEY, BRANCH);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void executeFaultyGetProjectPlugin() throws SonarQubeException, BadSonarQubeRequestException {
-        LanguageProvider languageProvider = new LanguageProviderPlugin(wsClient, PROJECT_KEY);
-        ProjectProvider projectProvider = new ProjectProviderPlugin(wsClient, PROJECT_KEY, BRANCH, languageProvider);
-        projectProvider.getProject(PROJECT_KEY, BRANCH);
-    }
 
-    @Test(expected = IllegalStateException.class)
-    public void executeFaultyHasProjectPlugin() throws SonarQubeException, BadSonarQubeRequestException {
-        LanguageProvider languageProvider = new LanguageProviderPlugin(wsClient, PROJECT_KEY);
-        ProjectProvider projectProvider = new ProjectProviderPlugin(wsClient, PROJECT_KEY, BRANCH, languageProvider);
-        projectProvider.hasProject(PROJECT_KEY, BRANCH);
-    }
 }

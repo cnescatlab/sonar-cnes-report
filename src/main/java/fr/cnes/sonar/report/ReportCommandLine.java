@@ -30,10 +30,8 @@ import fr.cnes.sonar.report.model.SonarQubeServer;
 import fr.cnes.sonar.report.utils.ReportConfiguration;
 import fr.cnes.sonar.report.utils.StringManager;
 import fr.cnes.sonar.report.factory.StandaloneProviderFactory;
-import fr.cnes.sonar.report.factory.PluginProviderFactory;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.xmlbeans.XmlException;
-import org.sonarqube.ws.client.WsClient;
 
 import java.io.File;
 import java.io.IOException;
@@ -79,7 +77,7 @@ public final class ReportCommandLine {
         // main catches all exceptions
         try {
             // We use different method because it can be called outside main (for example, in from ReportSonarPlugin)
-            execute(args, null);
+            execute(args);
 
         } catch (BadExportationDataTypeException | BadSonarQubeRequestException | IOException |
                 UnknownQualityGateException | OpenXML4JException | XmlException | SonarQubeException |
@@ -90,7 +88,7 @@ public final class ReportCommandLine {
         }
     }
 
-    public static void execute(final String[] args, final WsClient wsClient) throws BadExportationDataTypeException , BadSonarQubeRequestException , IOException,
+    public static void execute(final String[] args) throws BadExportationDataTypeException , BadSonarQubeRequestException , IOException,
     UnknownQualityGateException, OpenXML4JException, XmlException, SonarQubeException, ParseException {
         // Log message.
         String message;
@@ -117,11 +115,8 @@ public final class ReportCommandLine {
 
         // Instantiate a ProviderFactory depending on the execution mode of the application
         ProviderFactory providerFactory;
-        if (wsClient == null) {
-            providerFactory = new StandaloneProviderFactory(url, conf.getToken(), conf.getProject(), conf.getBranch());
-        } else {
-            providerFactory = new PluginProviderFactory(conf.getProject(), conf.getBranch(), wsClient);
-        }
+        providerFactory = new StandaloneProviderFactory(url, conf.getToken(), conf.getProject(), conf.getBranch());
+
 
         // Initialize connexion with SonarQube and retrieve primitive information
         final SonarQubeServer server = new ServerFactory(url, providerFactory).create();

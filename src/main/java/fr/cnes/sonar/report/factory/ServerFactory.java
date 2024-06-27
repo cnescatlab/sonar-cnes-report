@@ -32,7 +32,7 @@ public class ServerFactory {
 
     /** List of SonarQube versions which are supported by cnesreport. */
     private static final List<String> SUPPORTED_VERSIONS = Arrays.asList(
-            "8.9", "8.9.*", "9.9", "9.9.*");
+            "10.*", "10.*.*");
 
     /** Url of the SonarQube server. */
     private String url;

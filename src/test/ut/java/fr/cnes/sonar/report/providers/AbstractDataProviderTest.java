@@ -31,20 +31,5 @@ public class AbstractDataProviderTest extends CommonTest {
         assertSame("develop", componentProvider.getBranch());
     }
 
-    @Test
-    public void createAbstractDataProviderPlugin() {
-        ComponentProviderPlugin componentProvider = new ComponentProviderPlugin(wsClient, PROJECT_KEY, BRANCH);
-
-        assertSame(PROJECT_KEY, componentProvider.getProjectKey());
-        componentProvider.setProjectKey("test");
-        assertSame("test", componentProvider.getProjectKey());
-
-        componentProvider.setQualityGateName(QUALITY_GATE_NAME);
-        assertSame(QUALITY_GATE_NAME, componentProvider.getQualityGateName());
-
-        assertSame(BRANCH, componentProvider.getBranch());
-        componentProvider.setBranch("develop");
-        assertSame("develop", componentProvider.getBranch());
-    }
 
 }

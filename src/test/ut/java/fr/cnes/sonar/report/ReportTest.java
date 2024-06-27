@@ -18,6 +18,7 @@
 package fr.cnes.sonar.report;
 
 import fr.cnes.sonar.plugin.tools.ZipFolder;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Report;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,6 +64,7 @@ public class ReportTest {
         assertEquals("", report.getProjectAuthor());
         assertEquals("", report.getProjectDate());
         assertEquals("", report.getProjectName());
+        assertEquals("", report.getProjectBranch());
         assertEquals("", report.getQualityProfilesFilename());
         assert(report.getRawIssues().isEmpty());
         assert(report.getQualityProfiles().isEmpty());
@@ -72,7 +74,17 @@ public class ReportTest {
 
     @Test (expected = IllegalStateException.class)
     public void emptyExecuteTest() throws Exception{
-        ReportCommandLine.execute(new String[0], null);
+        ReportCommandLine.execute(new String[0]);
+    }
+
+    @Test (expected = SonarQubeException.class)
+    public void executeTest() throws Exception{
+        String[] args = new String[4];
+        args[0] = "-s";
+        args[1] = "http://notworking:64725"; //Random url and port to prevent test to pass
+        args[2] = "-p";
+        args[3] = "project";
+        ReportCommandLine.execute(args);
     }
 
     @Test
