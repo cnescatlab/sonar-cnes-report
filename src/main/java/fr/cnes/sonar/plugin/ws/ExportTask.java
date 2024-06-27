@@ -74,9 +74,9 @@ public class ExportTask implements RequestHandler {
     }
 
     /**
-     * handle a request, write output in response stream.
-     * @param request
-     * @param response
+     * Handles a request and writes the output in the response stream.
+     * @param request  The request object containing the details of the client's request.
+     * @param response The response object used to send the data back to the client.
      */
     @Override
     public void handle(Request request, Response response) throws BadExportationDataTypeException, IOException,
@@ -180,7 +180,7 @@ public class ExportTask implements RequestHandler {
             }
 
             // Execute report generation
-            ReportCommandLine.execute(reportParams.toArray(new String[reportParams.size()]), wsClient);
+            ReportCommandLine.execute(reportParams.toArray(new String[reportParams.size()]));
 
             stream.setMediaType("application/zip");
             String filename = ReportFactory.formatFilename("zip.report.output", "", "", projectKey);

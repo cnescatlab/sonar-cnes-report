@@ -28,21 +28,5 @@ public class IssuesProviderTest extends CommonTest {
         issuesProvider.getUnconfirmedIssues();
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void executeFaultyGetIssuesPlugin() throws SonarQubeException, BadSonarQubeRequestException {
-        IssuesProvider issuesProvider = new IssuesProviderPlugin(wsClient, PROJECT_KEY, BRANCH);
-        issuesProvider.getIssues();
-    }
 
-    @Test(expected = IllegalStateException.class)
-    public void executeFaultyGetRawIssuesPlugin() throws SonarQubeException, BadSonarQubeRequestException {
-        IssuesProvider issuesProvider = new IssuesProviderPlugin(wsClient, PROJECT_KEY, BRANCH);
-        issuesProvider.getRawIssues();
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void executeFaultyGetUnconfirmedIssuesPlugin() throws SonarQubeException, BadSonarQubeRequestException {
-        IssuesProvider issuesProvider = new IssuesProviderPlugin(wsClient, PROJECT_KEY, BRANCH);
-        issuesProvider.getUnconfirmedIssues();
-    }
 }

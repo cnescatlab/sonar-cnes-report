@@ -41,6 +41,7 @@ public class PlaceHoldersTest extends CommonTest {
         Map<String,String> expected = new HashMap<>();
         // Fill manually the placeHolders depending on what we initialized in "CommonTest"
         expected.put("XX-PROJECTNAME-XX", "CNES Report");
+        expected.put("XX-BRANCH-XX", "main");
         expected.put("XX-DUPLICATION-XX", "1.0");
         expected.put("XX-COMMENTDENSITY-XX", "1.0");
         expected.put("XX-MAXNCLOC-XX", "unknown");

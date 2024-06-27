@@ -116,13 +116,15 @@ For legacy versions, check the wiki page here : [Note on legacy versions](https:
 <table>
  <tr>
   <td><b>cnesreport <br>\<br> SonarQube</b></td>
-  <td><b>3.0.x<br/>Standalone + Plugin</td>
-  <td><b>3.1.0<br/>Standalone + Plugin</td>
-  <td><b>3.2.x<br/>Standalone + Plugin</td>
-  <td><b>3.3.x<br/>Standalone + Plugin</td>
-  <td><b>4.0.0<br/>Standalone + Plugin</td>
-  <td><b>4.1.x<br/>Standalone + Plugin</td>
-  <td><b>4.2.x<br/>Standalone + Plugin</td>
+  <td><b>3.0.x<br/>Standalone + Plugin</b></td>
+  <td><b>3.1.0<br/>Standalone + Plugin</b></td>
+  <td><b>3.2.x<br/>Standalone + Plugin</b></td>
+  <td><b>3.3.x<br/>Standalone + Plugin</b></td>
+  <td><b>4.0.0<br/>Standalone + Plugin</b></td>
+  <td><b>4.1.x<br/>Standalone + Plugin</b></td>
+  <td><b>4.2.x<br/>Standalone + Plugin</b></td>
+  <td><b>4.3.x<br/>Standalone + Plugin</b></td>
+  <td><b>5.0.x<br/>Standalone + Plugin</b></td>
  </tr>
  <tr>
   <td><b>7.9.x</b></td>
@@ -130,6 +132,8 @@ For legacy versions, check the wiki page here : [Note on legacy versions](https:
   <td>X</td>
   <td>X</td>
   <td>X</td>
+  <td>-</td>
+  <td>-</td>
   <td>-</td>
   <td>-</td>
   <td>-</td>
@@ -143,6 +147,8 @@ For legacy versions, check the wiki page here : [Note on legacy versions](https:
   <td>X</td>
   <td>X</td>
   <td>-</td>
+  <td>-</td>
+  <td>-</td>
  </tr>
  <tr>
   <td><b>9.9.x (LTS)</b></td>
@@ -153,7 +159,21 @@ For legacy versions, check the wiki page here : [Note on legacy versions](https:
   <td>-</td>
   <td>-</td>
   <td>X</td>
+  <td>X</td>
+  <td>-</td>
  </tr>
+ <tr>
+  <td><b>10.5.x</b></td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>X</td>
+  </tr>
 </table>
 
 ### How to contribute

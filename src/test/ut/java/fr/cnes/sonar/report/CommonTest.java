@@ -20,7 +20,6 @@ package fr.cnes.sonar.report;
 import fr.cnes.sonar.report.model.*;
 import fr.cnes.sonar.report.factory.ProviderFactory;
 import fr.cnes.sonar.report.factory.StandaloneProviderFactory;
-import fr.cnes.sonar.report.factory.PluginProviderFactory;
 import fr.cnes.sonar.report.utils.ReportConfiguration;
 import fr.cnes.sonar.report.utils.StringManager;
 import org.junit.Before;
@@ -73,10 +72,6 @@ public abstract class CommonTest {
      */
     protected ProviderFactory standaloneProviderFactory;
     /**
-     * Stubbed ProviderFactory for testing plugin mode.
-     */
-    protected ProviderFactory pluginProviderFactory;
-    /**
      * Stubbed sonarqube server URL for report.
      */
     protected String sonarQubeServer;
@@ -100,6 +95,7 @@ public abstract class CommonTest {
         });
 
         report.setProjectName("CNES Report");
+        report.setProjectBranch("main");
         report.setProjectDate(new Date().toString().substring(0,16));
         report.setProjectAuthor("Lequal");
 
@@ -118,7 +114,6 @@ public abstract class CommonTest {
         wsClient = WsClientFactories.getDefault().newClient(httpConnector);
 
         standaloneProviderFactory = new StandaloneProviderFactory(conf.getServer(), conf.getToken(), conf.getProject(), conf.getBranch());
-        pluginProviderFactory = new PluginProviderFactory(conf.getProject(), conf.getBranch(), wsClient);
 
         final List<Issue> issues = new ArrayList<>();
         final Issue i1 = new Issue();

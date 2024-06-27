@@ -50,37 +50,4 @@ public class ProviderFactoryTest extends CommonTest {
         Assert.assertTrue(sonarQubeInfoProvider instanceof SonarQubeInfoProviderStandalone);
     }
 
-    @Test
-    public void createPluginTest() {
-
-        FacetsProvider facetsProvider = pluginProviderFactory.createFacetsProvider();
-        Assert.assertTrue(facetsProvider instanceof FacetsProviderPlugin);
-
-        IssuesProvider issuesProvider = pluginProviderFactory.createIssuesProvider();
-        Assert.assertTrue(issuesProvider instanceof IssuesProviderPlugin);
-
-        MeasureProvider measureProvider = pluginProviderFactory.createMeasureProvider();
-        Assert.assertTrue(measureProvider instanceof MeasureProviderPlugin);
-
-        ProjectProvider projectProvider = pluginProviderFactory.createProjectProvider();
-        Assert.assertTrue(projectProvider instanceof ProjectProviderPlugin);
-
-        QualityProfileProvider qualityProfileProvider = pluginProviderFactory.createQualityProfileProvider();
-        Assert.assertTrue(qualityProfileProvider instanceof QualityProfileProviderPlugin);
-
-        QualityGateProvider qualityGateProvider = pluginProviderFactory.createQualityGateProvider();
-        Assert.assertTrue(qualityGateProvider instanceof QualityGateProviderPlugin);
-
-        LanguageProvider languageProvider = pluginProviderFactory.createLanguageProvider();
-        Assert.assertTrue(languageProvider instanceof LanguageProviderPlugin);
-
-        ComponentProvider componentProvider = pluginProviderFactory.createComponentProvider();
-        Assert.assertTrue(componentProvider instanceof ComponentProviderPlugin);
-
-        SecurityHotspotsProvider securityHotspotsProvider = pluginProviderFactory.createSecurityHotspotsProvider();
-        Assert.assertTrue(securityHotspotsProvider instanceof SecurityHotspotsProviderPlugin);
-
-        SonarQubeInfoProvider sonarQubeInfoProvider = pluginProviderFactory.createSonarQubeInfoProvider();
-        Assert.assertTrue(sonarQubeInfoProvider instanceof SonarQubeInfoProviderPlugin);
-    }
 }

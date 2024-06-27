@@ -22,15 +22,5 @@ public class QualityGateProviderTest extends CommonTest {
         qualityGateProvider.getQualityGateStatus();
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void executeFaultyGetQualityGatesPlugin() throws SonarQubeException, BadSonarQubeRequestException {
-        QualityGateProvider qualityGateProvider = new QualityGateProviderPlugin(wsClient, PROJECT_KEY, BRANCH);
-        qualityGateProvider.getQualityGates();
-    }
 
-    @Test(expected = IllegalStateException.class)
-    public void executeFaultyGetQualityGateStatusPlugin() throws SonarQubeException, BadSonarQubeRequestException {
-        QualityGateProvider qualityGateProvider = new QualityGateProviderPlugin(wsClient, PROJECT_KEY, BRANCH);
-        qualityGateProvider.getQualityGateStatus();
-    }
 }
