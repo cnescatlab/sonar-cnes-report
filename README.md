@@ -128,10 +128,10 @@ For legacy versions, check the wiki page here : [Note on legacy versions](https:
  </tr>
  <tr>
   <td><b>7.9.x</b></td>
-  <td>X</td>
-  <td>X</td>
-  <td>X</td>
-  <td>X</td>
+  <td>✅</td>
+  <td>✅</td>
+  <td>✅</td>
+  <td>✅</td>
   <td>-</td>
   <td>-</td>
   <td>-</td>
@@ -144,8 +144,8 @@ For legacy versions, check the wiki page here : [Note on legacy versions](https:
   <td>-</td>
   <td>-</td>
   <td>-</td>
-  <td>X</td>
-  <td>X</td>
+  <td>✅</td>
+  <td>✅</td>
   <td>-</td>
   <td>-</td>
   <td>-</td>
@@ -158,8 +158,8 @@ For legacy versions, check the wiki page here : [Note on legacy versions](https:
   <td>-</td>
   <td>-</td>
   <td>-</td>
-  <td>X</td>
-  <td>X</td>
+  <td>✅</td>
+  <td>✅</td>
   <td>-</td>
  </tr>
  <tr>
@@ -172,7 +172,7 @@ For legacy versions, check the wiki page here : [Note on legacy versions](https:
     <td>-</td>
     <td>-</td>
     <td>-</td>
-    <td>X</td>
+    <td>✅</td>
   </tr>
  <tr>
   <td><b>25.1.x</b></td>
