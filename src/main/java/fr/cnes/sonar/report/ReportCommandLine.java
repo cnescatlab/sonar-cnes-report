@@ -116,7 +116,7 @@ public final class ReportCommandLine {
 
         // Instantiate a ProviderFactory depending on the execution mode of the application
         ProviderFactory providerFactory;
-        providerFactory = new StandaloneProviderFactory(url, conf.getToken(), conf.getProject(), "main");
+        providerFactory = new StandaloneProviderFactory(url, conf.getToken(), conf.getProject(), conf.getBranch());
 
 
         // Initialize connexion with SonarQube and retrieve primitive information

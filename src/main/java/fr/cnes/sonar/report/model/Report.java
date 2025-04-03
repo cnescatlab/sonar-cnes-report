@@ -17,6 +17,8 @@
 
 package fr.cnes.sonar.report.model;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -340,12 +342,25 @@ public class Report {
     }
 
     /**
-     * Setter for projectDate
+     * Setter for analysisDate
      * 
      * @param pAnalysisDate value
      */
     public void setAnalysisDate(String pLastAnalysisDate) {
         this.analysisDate = pLastAnalysisDate;
+    }
+
+     /**
+     * Truncate and format analysisDate.
+     * 
+     * Returns a YYYY-MM-DD type string.
+     */
+    public void truncateAnalysisDate() {
+        this.analysisDate = OffsetDateTime.parse(
+            this.analysisDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssxxxx"))
+            .toLocalDate()
+            .toString();
+            getAnalysisDate();
     }
 
     /**

@@ -82,7 +82,7 @@ public class Project {
         this.description = pDescription;
         this.qualityProfiles = new ProfileMetaData[0];
         this.languages = new HashMap<>();
-        this.branch=pBranch;
+        this.branch = pBranch;
         this.analysisDate = analysisDate;
     }
 
