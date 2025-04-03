@@ -17,6 +17,17 @@
 
 package fr.cnes.sonar.report;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.ParseException;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+
+import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
+import org.apache.xmlbeans.XmlException;
+
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
@@ -25,21 +36,11 @@ import fr.cnes.sonar.report.factory.ProviderFactory;
 import fr.cnes.sonar.report.factory.ReportFactory;
 import fr.cnes.sonar.report.factory.ReportModelFactory;
 import fr.cnes.sonar.report.factory.ServerFactory;
+import fr.cnes.sonar.report.factory.StandaloneProviderFactory;
 import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.model.SonarQubeServer;
 import fr.cnes.sonar.report.utils.ReportConfiguration;
 import fr.cnes.sonar.report.utils.StringManager;
-import fr.cnes.sonar.report.factory.StandaloneProviderFactory;
-import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
-import org.apache.xmlbeans.XmlException;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.ParseException;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 /**
  * Main entry point
@@ -115,7 +116,7 @@ public final class ReportCommandLine {
 
         // Instantiate a ProviderFactory depending on the execution mode of the application
         ProviderFactory providerFactory;
-        providerFactory = new StandaloneProviderFactory(url, conf.getToken(), conf.getProject(), conf.getBranch());
+        providerFactory = new StandaloneProviderFactory(url, conf.getToken(), conf.getProject(), "main");
 
 
         // Initialize connexion with SonarQube and retrieve primitive information

@@ -114,6 +114,7 @@ public class ReportModelFactory {
         report.setProjectName(report.getProject().getName());
         // project's branch's setting
         report.setProjectBranch(report.getProject().getBranch());
+        report.setAnalysisDate(report.getProject().getAnalysisDate());
         // formatted issues, unconfirmed issues and raw issues' setting
         report.setIssues(issuesProvider.getIssues());
         report.setUnconfirmed(issuesProvider.getUnconfirmedIssues());

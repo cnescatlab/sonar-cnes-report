@@ -17,6 +17,13 @@
 
 package fr.cnes.sonar.report.providers.project;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.sonarqube.ws.client.WsClient;
+
+import com.google.gson.JsonObject;
+
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.model.Language;
@@ -25,13 +32,6 @@ import fr.cnes.sonar.report.model.Project;
 import fr.cnes.sonar.report.providers.AbstractDataProvider;
 import fr.cnes.sonar.report.providers.language.LanguageProvider;
 import fr.cnes.sonar.report.utils.StringManager;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import com.google.gson.JsonObject;
-
-import org.sonarqube.ws.client.WsClient;
 
 /**
  * Contains common code for project providers
@@ -100,15 +100,16 @@ public abstract class AbstractProjectProvider extends AbstractDataProvider {
             language.setName(languageName);
             languages.put(languageKey, language);
         }
+        
         project.setQualityProfiles(metaData);
         project.setLanguages(languages);
 
         // check description nullity
-        if(null==project.getDescription()) {
+        if(null == project.getDescription()) {
             project.setDescription(StringManager.EMPTY);
         }
         // check version nullity
-        if(null==project.getVersion()) {
+        if(null == project.getVersion()) {
             project.setVersion(StringManager.EMPTY);
         }
 

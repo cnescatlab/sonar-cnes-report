@@ -50,6 +50,11 @@ public class Report {
      */
     private String projectDate;
     /**
+     * Last analysis date to write in the project
+     */
+    private String analysisDate;
+
+    /**
      * List of quality profiles used in the project
      */
     private List<QualityProfile> qualityProfiles;
@@ -114,6 +119,7 @@ public class Report {
         this.branchName = "";
         this.projectAuthor = "";
         this.projectDate = "";
+        this.analysisDate = "";
         this.qualityProfiles = new ArrayList<>();
         this.qualityGate = new QualityGate();
         this.issues = new Issues();
@@ -128,7 +134,7 @@ public class Report {
         this.metricsStats = new HashMap<>();
         this.qualityGateStatus = new HashMap<>();
         this.project = new Project(StringManager.EMPTY, StringManager.EMPTY,
-                StringManager.EMPTY, StringManager.EMPTY, StringManager.EMPTY, StringManager.EMPTY);
+                StringManager.EMPTY, StringManager.EMPTY, StringManager.EMPTY, StringManager.EMPTY, StringManager.EMPTY);
     }
 
     /**
@@ -322,6 +328,24 @@ public class Report {
      */
     public void setProjectDate(String pProjectDate) {
         this.projectDate = pProjectDate;
+    }
+
+    /**
+     * Getter for analysisDate
+     * 
+     * @return analysisDate
+     */
+    public String getAnalysisDate() {
+        return analysisDate;
+    }
+
+    /**
+     * Setter for projectDate
+     * 
+     * @param pAnalysisDate value
+     */
+    public void setAnalysisDate(String pLastAnalysisDate) {
+        this.analysisDate = pLastAnalysisDate;
     }
 
     /**
