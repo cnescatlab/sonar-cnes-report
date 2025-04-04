@@ -17,6 +17,23 @@
 
 package fr.cnes.sonar.report.exporters.docx;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.xmlbeans.XmlException;
+
 import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exporters.IExporter;
 import fr.cnes.sonar.report.exporters.data.DataAdapter;
@@ -25,18 +42,6 @@ import fr.cnes.sonar.report.exporters.data.PlaceHolders;
 import fr.cnes.sonar.report.exporters.data.SecurityHotspotsAdapter;
 import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.utils.StringManager;
-import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.xmlbeans.XmlException;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Exports the report in .docx format

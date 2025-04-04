@@ -360,7 +360,6 @@ public class Report {
             this.analysisDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssxxxx"))
             .toLocalDate()
             .toString();
-            getAnalysisDate();
     }
 
     /**
