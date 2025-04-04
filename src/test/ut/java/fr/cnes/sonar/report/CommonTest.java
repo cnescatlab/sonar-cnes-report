@@ -17,18 +17,42 @@
 
 package fr.cnes.sonar.report;
 
-import fr.cnes.sonar.report.model.*;
-import fr.cnes.sonar.report.factory.ProviderFactory;
-import fr.cnes.sonar.report.factory.StandaloneProviderFactory;
-import fr.cnes.sonar.report.utils.ReportConfiguration;
-import fr.cnes.sonar.report.utils.StringManager;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Before;
 import org.sonarqube.ws.client.HttpConnector;
 import org.sonarqube.ws.client.WsClient;
 import org.sonarqube.ws.client.WsClientFactories;
 
-import java.util.*;
-import java.text.SimpleDateFormat;
+import fr.cnes.sonar.report.factory.ProviderFactory;
+import fr.cnes.sonar.report.factory.StandaloneProviderFactory;
+import fr.cnes.sonar.report.model.Comment;
+import fr.cnes.sonar.report.model.Facet;
+import fr.cnes.sonar.report.model.Facets;
+import fr.cnes.sonar.report.model.Issue;
+import fr.cnes.sonar.report.model.Language;
+import fr.cnes.sonar.report.model.Measure;
+import fr.cnes.sonar.report.model.ProfileData;
+import fr.cnes.sonar.report.model.ProfileMetaData;
+import fr.cnes.sonar.report.model.Project;
+import fr.cnes.sonar.report.model.QualityGate;
+import fr.cnes.sonar.report.model.QualityProfile;
+import fr.cnes.sonar.report.model.Report;
+import fr.cnes.sonar.report.model.Rule;
+import fr.cnes.sonar.report.model.SecurityHotspot;
+import fr.cnes.sonar.report.model.SonarQubeServer;
+import fr.cnes.sonar.report.model.TimeFacet;
+import fr.cnes.sonar.report.model.TimeFacets;
+import fr.cnes.sonar.report.model.TimeValue;
+import fr.cnes.sonar.report.model.Value;
+import fr.cnes.sonar.report.utils.ReportConfiguration;
+import fr.cnes.sonar.report.utils.StringManager;
 
 /**
  * Contains common code for report
@@ -98,6 +122,7 @@ public abstract class CommonTest {
         report.setProjectBranch("main");
         report.setProjectDate(new Date().toString().substring(0,16));
         report.setProjectAuthor("Lequal");
+        report.setAnalysisDate("2020-10-10T2020+0200");
 
         sonarQubeServerInstance = new SonarQubeServer();
         sonarQubeServerInstance.setStatus("UP");
@@ -327,7 +352,7 @@ public abstract class CommonTest {
         profileMetaData.setName("BG");
         profileMetaData.setKey("BG");
         final QualityProfile qualityProfile = new QualityProfile(profileData, profileMetaData);
-        qualityProfile.setProjects((new Project[]{new Project("sonar-cnes-plugin", "sonar-cnes-plugin", "none", "", "", "")}));
+        qualityProfile.setProjects((new Project[]{new Project("sonar-cnes-plugin", "sonar-cnes-plugin", "none", "", "", "", "")}));
         report.setQualityProfiles(Collections.singletonList(qualityProfile));
         final QualityGate qualityGate = new QualityGate();
         qualityGate.setName(QUALITY_GATE_NAME);
@@ -340,7 +365,7 @@ public abstract class CommonTest {
         final Map<String, Language> languages = new HashMap<>();
         languages.put(language.getKey(), language);
 
-        final Project project = new Project("key", "Name", "none","Version", "Short description", "");
+        final Project project = new Project("key", "Name", "none","Version", "Short description", "", "2020-10-10T2020+0200");
         project.setQualityProfiles(new ProfileMetaData[0]);
         project.setLanguages(languages);
         report.setProject(project);
