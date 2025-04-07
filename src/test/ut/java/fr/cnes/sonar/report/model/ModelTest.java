@@ -68,6 +68,11 @@ public class ModelTest extends CommonTest {
         project.setDescription("NewDescription");
         Assert.assertEquals("NewDescription", project.getDescription());
 
+        Assert.assertEquals("2020-10-10T2020+0200", project.getAnalysisDate());
+        project.setAnalysisDate(("2025-10-10T2020+0200"));
+        Assert.assertEquals("2025-10-10T2020+0200", project.getAnalysisDate());
+        
+
         Assert.assertTrue(project.getLanguages().isEmpty());
     }
 }

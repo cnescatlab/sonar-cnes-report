@@ -17,6 +17,7 @@
 
 package fr.cnes.sonar.report.model;
 
+import java.time.DateTimeException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -356,10 +357,15 @@ public class Report {
      * Returns a YYYY-MM-DD type string.
      */
     public void truncateAnalysisDate() {
-        this.analysisDate = OffsetDateTime.parse(
-            this.analysisDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssxxxx"))
-            .toLocalDate()
-            .toString();
+        try {
+            this.analysisDate = OffsetDateTime.parse(
+                this.analysisDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssxxxx"))
+                .toLocalDate()
+                .toString();  
+        } catch (DateTimeException e) {
+            this.analysisDate = "?";
+        }
+
     }
 
     /**
