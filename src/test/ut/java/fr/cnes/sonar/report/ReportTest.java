@@ -17,17 +17,17 @@
 
 package fr.cnes.sonar.report;
 
-import fr.cnes.sonar.plugin.tools.ZipFolder;
-import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.model.Report;
-import org.junit.Before;
-import org.junit.Test;
-
 import java.io.File;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
+
+import fr.cnes.sonar.plugin.tools.ZipFolder;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
+import fr.cnes.sonar.report.model.Report;
 
 /**
  * Check Report class
@@ -66,10 +66,22 @@ public class ReportTest {
         assertEquals("", report.getProjectName());
         assertEquals("", report.getProjectBranch());
         assertEquals("", report.getQualityProfilesFilename());
+        assertEquals("", report.getAnalysisDate());
         assert(report.getRawIssues().isEmpty());
         assert(report.getQualityProfiles().isEmpty());
         assert(report.getIssues().getIssuesList().isEmpty());
         assert(report.getMeasures().isEmpty());
+    }
+
+    @Test
+    public void analysisDateTest(){
+        report.setAnalysisDate("2020-10-10T14:05:22+0200");
+        assertEquals("2020-10-10T14:05:22+0200", report.getAnalysisDate());
+        report.truncateAnalysisDate();
+        assertEquals("2020-10-10", report.getAnalysisDate());
+        report.setAnalysisDate("93503259032583259832957325923");
+        report.truncateAnalysisDate();
+        assertEquals("?", report.getAnalysisDate());
     }
 
     @Test (expected = IllegalStateException.class)

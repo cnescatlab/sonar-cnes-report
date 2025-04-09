@@ -1,13 +1,13 @@
 package fr.cnes.sonar.report.model;
 
-import fr.cnes.sonar.report.CommonTest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import fr.cnes.sonar.report.CommonTest;
 
 public class ModelTest extends CommonTest {
     @Test
@@ -42,7 +42,7 @@ public class ModelTest extends CommonTest {
 
     @Test
     public void projectTest() {
-        Project project = new Project(PROJECT_KEY, "CNES Report", "Lequal", "1.0.0", "Un simple test.", BRANCH);
+        Project project = new Project(PROJECT_KEY, "CNES Report", "Lequal", "1.0.0", "Un simple test.", BRANCH, "2020-10-10T2020+0200");
 
         Assert.assertEquals(PROJECT_KEY, project.getKey());
         project.setKey("NewKey");
@@ -67,6 +67,11 @@ public class ModelTest extends CommonTest {
         Assert.assertEquals("Un simple test.", project.getDescription());
         project.setDescription("NewDescription");
         Assert.assertEquals("NewDescription", project.getDescription());
+
+        Assert.assertEquals("2020-10-10T2020+0200", project.getAnalysisDate());
+        project.setAnalysisDate(("2025-10-10T2020+0200"));
+        Assert.assertEquals("2025-10-10T2020+0200", project.getAnalysisDate());
+        
 
         Assert.assertTrue(project.getLanguages().isEmpty());
     }

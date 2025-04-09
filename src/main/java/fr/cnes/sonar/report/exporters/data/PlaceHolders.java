@@ -41,6 +41,10 @@ public class PlaceHolders {
      */
     private static final String DATE_PLACEHOLDER = "XX-DATE-XX";
     /**
+     * Placeholder for analysis date
+     */
+    private static final String ANALYSIS_DATE_PLACEHOLDER = "XX-ANALYSISDATE-XX";
+    /**
      * Placeholder for project's name
      */
     private static final String PROJECTNAME_PLACEHOLDER = "XX-PROJECTNAME-XX";
@@ -353,6 +357,9 @@ public class PlaceHolders {
         replacementValues.put(
                 DATE_PLACEHOLDER,
                 report.getProjectDate());
+        replacementValues.put(
+                ANALYSIS_DATE_PLACEHOLDER,
+                report.getAnalysisDate());
         replacementValues.put(
                 PROJECTNAME_PLACEHOLDER,
                 report.getProjectName());

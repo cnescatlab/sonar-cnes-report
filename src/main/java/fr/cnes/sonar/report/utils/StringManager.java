@@ -17,17 +17,17 @@
 
 package fr.cnes.sonar.report.utils;
 
-import fr.cnes.sonar.report.providers.AbstractDataProvider;
-
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Map;
-import java.util.HashMap;
+
+import fr.cnes.sonar.report.providers.AbstractDataProvider;
 
 /**
  * Public class which contains all public String used by internal classes

@@ -42,6 +42,11 @@ public class Project {
      * Name of the organization
      */
     private String organization;
+    
+    /**
+     * Date of last analysis
+     */
+    private String analysisDate;
     /**
      * Version of the project
      */
@@ -64,11 +69,12 @@ public class Project {
      * @param pKey SonarQube key
      * @param pName Name of the project
      * @param pOrganization Name of the organization
+     * @param pAnalysisDate Date of last analysis 
      * @param pVersion Version given by the user
      * @param pDescription Project's description
      */
     public Project(final String pKey, final String pName, final String pOrganization,
-                   final String pVersion, final String pDescription, final String pBranch) {
+                   final String pVersion, final String pDescription, final String pBranch, final String analysisDate) {
         this.key = pKey;
         this.name = pName;
         this.organization = pOrganization;
@@ -76,7 +82,8 @@ public class Project {
         this.description = pDescription;
         this.qualityProfiles = new ProfileMetaData[0];
         this.languages = new HashMap<>();
-        this.branch=pBranch;
+        this.branch = pBranch;
+        this.analysisDate = analysisDate;
     }
 
     /**
@@ -141,6 +148,22 @@ public class Project {
      */
     public void setOrganization(final String pOrganization) {
         this.organization = pOrganization;
+    }
+
+    /**
+     * Getter for last analysis date
+     * @return lastAnalysisDate
+     */
+    public String getAnalysisDate() {
+        return analysisDate;
+    }
+
+    /**
+     * Setter for last analysis date
+     * @param pAnalysisDate lastAnalysisDate
+     */
+    public void setAnalysisDate(final String pAnalysisDate) {
+        this.analysisDate = pAnalysisDate;
     }
 
     /**
