@@ -7,6 +7,8 @@
 
 *Date: XX-DATE-XX*
 
+*Analyzed the: XX-ANALYSISDATE-XX*
+
 ## Introduction
 This document contains results of the code analysis of XX-PROJECTNAME-XX
 
