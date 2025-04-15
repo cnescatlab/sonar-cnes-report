@@ -17,6 +17,9 @@
 
 package fr.cnes.sonar.report.model;
 
+import java.time.DateTimeException;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,6 +52,11 @@ public class Report {
      * Date to write in the project
      */
     private String projectDate;
+    /**
+     * Last analysis date to write in the project
+     */
+    private String analysisDate;
+
     /**
      * List of quality profiles used in the project
      */
@@ -114,6 +122,7 @@ public class Report {
         this.branchName = "";
         this.projectAuthor = "";
         this.projectDate = "";
+        this.analysisDate = "";
         this.qualityProfiles = new ArrayList<>();
         this.qualityGate = new QualityGate();
         this.issues = new Issues();
@@ -128,7 +137,7 @@ public class Report {
         this.metricsStats = new HashMap<>();
         this.qualityGateStatus = new HashMap<>();
         this.project = new Project(StringManager.EMPTY, StringManager.EMPTY,
-                StringManager.EMPTY, StringManager.EMPTY, StringManager.EMPTY, StringManager.EMPTY);
+                StringManager.EMPTY, StringManager.EMPTY, StringManager.EMPTY, StringManager.EMPTY, StringManager.EMPTY);
     }
 
     /**
@@ -322,6 +331,41 @@ public class Report {
      */
     public void setProjectDate(String pProjectDate) {
         this.projectDate = pProjectDate;
+    }
+
+    /**
+     * Getter for analysisDate
+     * 
+     * @return analysisDate
+     */
+    public String getAnalysisDate() {
+        return analysisDate;
+    }
+
+    /**
+     * Setter for analysisDate
+     * 
+     * @param pAnalysisDate value
+     */
+    public void setAnalysisDate(String pLastAnalysisDate) {
+        this.analysisDate = pLastAnalysisDate;
+    }
+
+     /**
+     * Truncate and format analysisDate.
+     * 
+     * Returns a YYYY-MM-DD type string.
+     */
+    public void truncateAnalysisDate() {
+        try {
+            this.analysisDate = OffsetDateTime.parse(
+                this.analysisDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssxxxx"))
+                .toLocalDate()
+                .toString();  
+        } catch (DateTimeException e) {
+            this.analysisDate = "?";
+        }
+
     }
 
     /**
