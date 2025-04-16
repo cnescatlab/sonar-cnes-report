@@ -56,6 +56,11 @@
     transform: translateY(2px);
 }
 
+.spinner{
+    display: flex;
+    justify-content: center;
+}
+
 /* Checkbox Styles */
 .checkbox-label {
     display: block;

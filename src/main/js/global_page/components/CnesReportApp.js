@@ -6,15 +6,19 @@
 import React from "react";
 
 import { getProjectsList, initiatePluginToken, getBranches, isCompatible } from "../../common/api";
+import { ClipLoader } from "react-spinners";
+
+
 
 export default class CnesReportApp extends React.PureComponent {
     state = {
         loading: true,
+        generating: false,
         projects: [],
         token: "",
         author: "",
         branches: [],
-        languages: [{id: 'en_US', name: 'English'}, {id: 'fr_FR', name: 'French'}],
+        languages: [{ id: 'en_US', name: 'English' }, { id: 'fr_FR', name: 'French' }],
         enableDocx: true,
         enableMd: true,
         enableXlsx: true,
@@ -33,30 +37,54 @@ export default class CnesReportApp extends React.PureComponent {
         });
     };
 
+    addFormHandling = () => {
+        const form = document.getElementById("generation-form");
+        const formData = new FormData(form);
+
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            this.setState({ generating: true });
+
+            fetch("../../api/cnesreport/report", {
+                method: "GET"
+            }).then((res) => {
+                console.log("BOUJOUR");
+                this.setState({ generating: false });
+            })
+        });
+    }
+
     onChangeCheckbox = (stateParam) => {
         switch (stateParam) {
             case 'enableDocx':
-                this.setState({enableDocx: !this.state.enableDocx});
+                this.setState({ enableDocx: !this.state.enableDocx });
                 break;
             case 'enableMd':
-                this.setState({enableMd: !this.state.enableMd});
-                break;
-            case 'enableXlsx':
-                this.setState({enableXlsx: !this.state.enableXlsx});
-                break;
+                this.setState({ enableMd: !this.state.enableMd });
+                break; myPromise
             case 'enableCsv':
-                this.setState({enableCsv: !this.state.enableCsv});
+                this.setState({ enableCsv: !this.state.enableCsv });
                 break;
             case 'enableConf':
-                this.setState({enableConf: !this.state.enableConf});
+                this.setState({ enableConf: !this.state.enableConf });
                 break;
-          }
+        }
     }
 
     // disable generate button if no checkbox is checked to prevent the generation of an empty zip
     shouldDisableGeneration = () => {
         return !(this.state.enableDocx || this.state.enableMd || this.state.enableXlsx
             || this.state.enableCsv || this.state.enableConf);
+    }
+
+    componentDidUpdate() {
+        this.addFormHandling();
+    }
+
+    boutonalacon(){
+        return(
+            <input id="generation" name="generation" type="submit" value="Generate"/>
+        );
     }
 
     componentDidMount() {
@@ -92,6 +120,8 @@ export default class CnesReportApp extends React.PureComponent {
     }
 
     render() {
+        const isGenerating = this.state.generating;
+        let generatebutton;
         if (this.state.loading) {
             return <div className="page page-limited"><p>Loading ...</p></div>;
         }
@@ -109,24 +139,31 @@ export default class CnesReportApp extends React.PureComponent {
                     <option key={i} value={item.name}>{item.name}</option>
                 )
             }, this);
-        
+
         let languagesList = this.state.languages.map((item, i) => {
             return (
                 <option key={i} value={item.id}>{item.name}</option>
             )
         })
 
+        if (isGenerating == true) {
+            generatebutton = <ClipLoader loading={true} color="#0000FF" size={60} />;
+        }
+        else {
+            generatebutton = <this.boutonalacon/>
+        }
+
         return (
             <div class="page-wrapper-simple">
                 <div class="page-simple">
                     <h1 class="maintenance-title text-center">Generate a report</h1>
-                    { !this.state.isSupported &&
+                    {!this.state.isSupported &&
                         <div class="compatibility-warning">
                             <p>This SonarQube version is not supported by this cnesreport version.</p>
                             <p>For further information, please refer to the <a href="https://github.com/cnescatlab/sonar-cnes-report#compatibility-matrix">compatibility matrix</a> on the project GitHub page.</p>
                         </div>
                     }
-                    <form id="generation-form" action="../../api/cnesreport/report" method="get">
+                    <form id="generation-form">
                         <div class='forminput'>
                             <label for="key" id="keyLabel" class="login-label"><strong>Project</strong></label>
                             <select id="key"
@@ -170,59 +207,61 @@ export default class CnesReportApp extends React.PureComponent {
                                 we want that if we don't fill in a parameter then the api uses the default value i.e. the document is
                                 generated.
                             */}
-                            <input id="enableDocxHidden" type="hidden" value="false" name="enableDocx" disabled={this.state.enableDocx}/>
+                            <input id="enableDocxHidden" type="hidden" value="false" name="enableDocx" disabled={this.state.enableDocx} />
                             <input type="checkbox"
                                 id="enableDocx"
                                 name="enableDocx"
                                 value="true"
                                 defaultChecked={this.state.enableDocx}
-                                onChange={() => this.onChangeCheckbox('enableDocx')}/>
+                                onChange={() => this.onChangeCheckbox('enableDocx')} />
                             <label for="enableDocx" id="enableDocxLabel"><strong>Enable DOCX generation</strong></label>
                         </div>
                         <div>
-                            <input id="enableMdHidden" type="hidden" value="false" name="enableMd" disabled={this.state.enableMd}/>
+                            <input id="enableMdHidden" type="hidden" value="false" name="enableMd" disabled={this.state.enableMd} />
                             <input type="checkbox"
                                 id="enableMd"
                                 name="enableMd"
                                 value="true"
                                 defaultChecked={this.state.enableMd}
-                                onChange={() => this.onChangeCheckbox('enableMd')}/>
+                                onChange={() => this.onChangeCheckbox('enableMd')} />
                             <label for="enableMd" id="enableMdLabel"><strong>Enable MD generation</strong></label>
                         </div>
                         <div>
-                            <input id="enableXlsxHidden" type="hidden" value="false" name="enableXlsx" disabled={this.state.enableXlsx}/>
+                            <input id="enableXlsxHidden" type="hidden" value="false" name="enableXlsx" disabled={this.state.enableXlsx} />
                             <input type="checkbox"
                                 id="enableXlsx"
                                 name="enableXlsx"
                                 value="true"
                                 defaultChecked={this.state.enableXlsx}
-                                onChange={() => this.onChangeCheckbox('enableXlsx')}/>
+                                onChange={() => this.onChangeCheckbox('enableXlsx')} />
                             <label for="enableXlsx" id="enableXlsxLabel"><strong>Enable XLSX generation</strong></label>
                         </div>
                         <div>
-                            <input id="enableCsvHidden" type="hidden" value="false" name="enableCsv" disabled={this.state.enableCsv}/>
+                            <input id="enableCsvHidden" type="hidden" value="false" name="enableCsv" disabled={this.state.enableCsv} />
                             <input type="checkbox"
                                 id="enableCsv"
                                 name="enableCsv"
                                 value="true"
                                 defaultChecked={this.state.enableCsv}
-                                onChange={() => this.onChangeCheckbox('enableCsv')}/>
+                                onChange={() => this.onChangeCheckbox('enableCsv')} />
                             <label for="enableCsv" id="enableCsvLabel"><strong>Enable CSV generation</strong></label>
                         </div>
                         <div>
-                            <input id="enableConfHidden" type="hidden" value="false" name="enableConf" disabled={this.state.enableConf}/>
+                            <input id="enableConfHidden" type="hidden" value="false" name="enableConf" disabled={this.state.enableConf} />
                             <input type="checkbox"
                                 id="enableConf"
                                 name="enableConf"
                                 value="true"
                                 defaultChecked={this.state.enableConf}
-                                onChange={() => this.onChangeCheckbox('enableConf')}/>
+                                onChange={() => this.onChangeCheckbox('enableConf')} />
                             <label for="enableConf" id="enableConfLabel"><strong>Enable quality configuration generation</strong></label>
                         </div>
                         <br />
-                        <input id="generation" name="generation" type="submit" value="Generate"
-                            disabled={this.shouldDisableGeneration()}/>
+                       
                         <br />
+                        <div class="spinner">
+                            {generatebutton}
+                        </div>
                         <em class="info-message">This operation may take some time, please wait while the report is being generated.</em>
                     </form>
                 </div>
