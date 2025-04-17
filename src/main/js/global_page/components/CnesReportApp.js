@@ -39,16 +39,18 @@ export default class CnesReportApp extends React.PureComponent {
 
     addFormHandling = () => {
         const form = document.getElementById("generation-form");
-        const formData = new FormData(form);
+        const url = new URLSearchParams(new FormData(form));
 
         form.addEventListener("submit", (event) => {
             event.preventDefault();
             this.setState({ generating: true });
 
-            fetch("../../api/cnesreport/report", {
-                method: "GET"
-            }).then((res) => {
-                console.log("BOUJOUR");
+            fetch("../../api/cnesreport/report" + "?" + url, {
+                method: "GET"})
+                .then(res => res.blob() )
+                .then( blob => {
+                let file = window.URL.createObjectURL(blob);
+                window.location.assign(file);
                 this.setState({ generating: false });
             })
         });
@@ -81,9 +83,9 @@ export default class CnesReportApp extends React.PureComponent {
         this.addFormHandling();
     }
 
-    boutonalacon(){
-        return(
-            <input id="generation" name="generation" type="submit" value="Generate"/>
+    generateButton() {
+        return (
+            <input id="generation" name="generation" type="submit" value="Generate" />
         );
     }
 
@@ -122,6 +124,7 @@ export default class CnesReportApp extends React.PureComponent {
     render() {
         const isGenerating = this.state.generating;
         let generatebutton;
+
         if (this.state.loading) {
             return <div className="page page-limited"><p>Loading ...</p></div>;
         }
@@ -150,7 +153,7 @@ export default class CnesReportApp extends React.PureComponent {
             generatebutton = <ClipLoader loading={true} color="#0000FF" size={60} />;
         }
         else {
-            generatebutton = <this.boutonalacon/>
+            generatebutton = <this.generateButton />
         }
 
         return (
@@ -256,13 +259,10 @@ export default class CnesReportApp extends React.PureComponent {
                                 onChange={() => this.onChangeCheckbox('enableConf')} />
                             <label for="enableConf" id="enableConfLabel"><strong>Enable quality configuration generation</strong></label>
                         </div>
-                        <br />
-                       
-                        <br />
                         <div class="spinner">
+                            <br/>
                             {generatebutton}
                         </div>
-                        <em class="info-message">This operation may take some time, please wait while the report is being generated.</em>
                     </form>
                 </div>
             </div>
