@@ -50,7 +50,7 @@ export default class CnesReportApp extends React.PureComponent {
         event.preventDefault();
         this.setState({ generating: true });
 
-        // Makes the API request in a promise, fetches the file name from the Content-Disposition header, and makes the entire response into a blob.
+        // Makes API request, fetches the filename and blobs the response, saves the blob.
         fetch("../../api/cnesreport/report" + "?" + url, {
             method: "GET"
         })
@@ -160,8 +160,8 @@ export default class CnesReportApp extends React.PureComponent {
             )
         })
 
+        
         this.shouldDisableGeneration();
-
         if (isGenerating === true) {
             generatebutton = <ClipLoader loading={true} color="#0000FF" size={60} />;
         }
