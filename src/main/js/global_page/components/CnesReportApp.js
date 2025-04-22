@@ -7,7 +7,7 @@ import React from "react";
 
 import { getProjectsList, initiatePluginToken, getBranches, isCompatible } from "../../common/api";
 import { ClipLoader } from "react-spinners";
-
+import { saveAs } from "file-saver";
 
 
 export default class CnesReportApp extends React.PureComponent {
@@ -37,23 +37,43 @@ export default class CnesReportApp extends React.PureComponent {
         });
     };
 
+    // This method catches the send form event, gets the form into an object, and handles sending it in a promise
+    // It then sets generating state, which is used in rendering, then downloads the report.
+
     addFormHandling = () => {
         const form = document.getElementById("generation-form");
+        // Initializes url object from html form contents
         const url = new URLSearchParams(new FormData(form));
+        let fileName = "";
 
-        form.addEventListener("submit", (event) => {
-            event.preventDefault();
-            this.setState({ generating: true });
+        // Substitutes regular form behavior for our logic
+        if (!form.hasAttribute("listener")) {
+            form.addEventListener("submit", (event) => {
+                event.preventDefault();
+                this.setState({ generating: true });
 
-            fetch("../../api/cnesreport/report" + "?" + url, {
-                method: "GET"})
-                .then(res => res.blob() )
-                .then( blob => {
-                let file = window.URL.createObjectURL(blob);
-                window.location.assign(file);
-                this.setState({ generating: false });
-            })
-        });
+                // Makes the API request in a promise, fetches the file name from the Content-Disposition header, and makes the entire response into a blob.
+                fetch("../../api/cnesreport/report" + "?" + url, {
+                    method: "GET"
+                })
+                    .then(res => {
+                        if (res.headers.has("Content-Disposition")) {
+                            fileName = (res.headers.get("Content-Disposition"))
+                                .match(/(?<=filename=")(?<resFileName>[\w-]*.[\w-]*)/);
+                        }
+                        else
+                            fileName = "report.zip";
+                        return res.blob();
+                    })
+                    .then(blob => {
+                        let file = window.URL.createObjectURL(blob);
+                        console.log(fileName);
+                        console.log(fileName.groups.resFileName);
+                        saveAs(file, fileName.groups.resFileName);
+                        this.setState({ generating: false });
+                    })
+            });
+        }
     }
 
     onChangeCheckbox = (stateParam) => {
@@ -63,7 +83,7 @@ export default class CnesReportApp extends React.PureComponent {
                 break;
             case 'enableMd':
                 this.setState({ enableMd: !this.state.enableMd });
-                break; myPromise
+                break;
             case 'enableCsv':
                 this.setState({ enableCsv: !this.state.enableCsv });
                 break;
@@ -155,6 +175,13 @@ export default class CnesReportApp extends React.PureComponent {
         else {
             generatebutton = <this.generateButton />
         }
+
+        if (!(this.state.enableDocx || this.state.enableMd || this.state.enableXlsx
+            || this.state.enableCsv || this.state.enableConf)) {
+            this.setState({ disableGen: true });
+        }
+        else
+            this.setState({ disableGen: false });
 
         return (
             <div class="page-wrapper-simple">
@@ -260,7 +287,7 @@ export default class CnesReportApp extends React.PureComponent {
                             <label for="enableConf" id="enableConfLabel"><strong>Enable quality configuration generation</strong></label>
                         </div>
                         <div class="spinner">
-                            <br/>
+                            <br />
                             {generatebutton}
                         </div>
                     </form>
