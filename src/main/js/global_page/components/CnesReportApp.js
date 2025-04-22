@@ -40,46 +40,45 @@ export default class CnesReportApp extends React.PureComponent {
     // This method catches the send form event, gets the form into an object, and handles sending it in a promise
     // It then sets generating state, which is used in rendering, then downloads the report.
 
-    addFormHandling = () => {
+    addFormHandling = (event) => {
         const form = document.getElementById("generation-form");
         // Initializes url object from html form contents
         const url = new URLSearchParams(new FormData(form));
         let fileName = "";
 
         // Substitutes regular form behavior for our logic
-        if (!form.hasAttribute("listener")) {
-            form.addEventListener("submit", (event) => {
-                event.preventDefault();
-                this.setState({ generating: true });
+        event.preventDefault();
+        this.setState({ generating: true });
 
-                // Makes the API request in a promise, fetches the file name from the Content-Disposition header, and makes the entire response into a blob.
-                fetch("../../api/cnesreport/report" + "?" + url, {
-                    method: "GET"
-                })
-                    .then(res => {
-                        if (res.headers.has("Content-Disposition")) {
-                            fileName = (res.headers.get("Content-Disposition"))
-                                .match(/(?<=filename=")(?<resFileName>[\w-]*.[\w-]*)/);
-                        }
-                        else
-                            fileName = "report.zip";
-                        return res.blob();
-                    })
-                    .then(blob => {
-                        let file = window.URL.createObjectURL(blob);
-                        console.log(fileName);
-                        console.log(fileName.groups.resFileName);
-                        saveAs(file, fileName.groups.resFileName);
-                        this.setState({ generating: false });
-                    })
-            });
-        }
+        // Makes the API request in a promise, fetches the file name from the Content-Disposition header, and makes the entire response into a blob.
+        fetch("../../api/cnesreport/report" + "?" + url, {
+            method: "GET"
+        })
+            .then(res => {
+                if (res.headers.has("Content-Disposition")) {
+                    fileName = (res.headers.get("Content-Disposition"))
+                        .match(/(?<=filename=")(?<resFileName>[\w-]*.[\w-]*)/);
+                }
+                else
+                    fileName = "report.zip";
+                return res.blob();
+            })
+            .then(blob => {
+                let file = window.URL.createObjectURL(blob);
+                console.log(fileName);
+                console.log(fileName.groups.resFileName);
+                saveAs(file, fileName.groups.resFileName);
+                this.setState({ generating: false });
+            })
     }
 
     onChangeCheckbox = (stateParam) => {
         switch (stateParam) {
             case 'enableDocx':
                 this.setState({ enableDocx: !this.state.enableDocx });
+                break;
+            case 'enableXlsx':
+                this.setState({ enableXlsx: !this.state.enableXlsx });
                 break;
             case 'enableMd':
                 this.setState({ enableMd: !this.state.enableMd });
@@ -95,18 +94,10 @@ export default class CnesReportApp extends React.PureComponent {
 
     // disable generate button if no checkbox is checked to prevent the generation of an empty zip
     shouldDisableGeneration = () => {
-        return !(this.state.enableDocx || this.state.enableMd || this.state.enableXlsx
-            || this.state.enableCsv || this.state.enableConf);
-    }
-
-    componentDidUpdate() {
-        this.addFormHandling();
-    }
-
-    generateButton() {
-        return (
-            <input id="generation" name="generation" type="submit" value="Generate" />
-        );
+        if (!(this.state.enableDocx || this.state.enableMd || this.state.enableXlsx || this.state.enableCsv || this.state.enableConf))
+            this.setState({ disabled: true });
+        else
+            this.setState({ disabled: false });
     }
 
     componentDidMount() {
@@ -169,19 +160,14 @@ export default class CnesReportApp extends React.PureComponent {
             )
         })
 
-        if (isGenerating == true) {
+        this.shouldDisableGeneration();
+
+        if (isGenerating === true) {
             generatebutton = <ClipLoader loading={true} color="#0000FF" size={60} />;
         }
         else {
-            generatebutton = <this.generateButton />
+            generatebutton = <input id="generation" name="generation" type="submit" value="Generate" disabled={this.state.disabled} />
         }
-
-        if (!(this.state.enableDocx || this.state.enableMd || this.state.enableXlsx
-            || this.state.enableCsv || this.state.enableConf)) {
-            this.setState({ disableGen: true });
-        }
-        else
-            this.setState({ disableGen: false });
 
         return (
             <div class="page-wrapper-simple">
@@ -193,7 +179,7 @@ export default class CnesReportApp extends React.PureComponent {
                             <p>For further information, please refer to the <a href="https://github.com/cnescatlab/sonar-cnes-report#compatibility-matrix">compatibility matrix</a> on the project GitHub page.</p>
                         </div>
                     }
-                    <form id="generation-form">
+                    <form id="generation-form" onSubmit={this.addFormHandling}>
                         <div class='forminput'>
                             <label for="key" id="keyLabel" class="login-label"><strong>Project</strong></label>
                             <select id="key"
