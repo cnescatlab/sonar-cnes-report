@@ -51,7 +51,7 @@ export default class CnesReportApp extends React.PureComponent {
         this.setState({ generating: true });
 
         // Makes API request, fetches the filename and blobs the response, saves the blob.
-        const promise = fetch("../../api/cnesreport/report" + "?" + url, {
+        fetch("../../api/cnesreport/report" + "?" + url, {
             method: "GET"
         })
             .then(res => {
@@ -70,11 +70,11 @@ export default class CnesReportApp extends React.PureComponent {
                 saveAs(file, fileName.groups.resFileName);
                 this.setState({ generating: false });
             })
-        promise.catch((error) => {
-            console.error(error);
-            alert(error)
-            this.setState({ generating: false })
-        });
+            .catch((error) => {
+                console.error(error);
+                alert(error)
+                this.setState({ generating: false })
+            });
     }
 
     onChangeCheckbox = (stateParam) => {
