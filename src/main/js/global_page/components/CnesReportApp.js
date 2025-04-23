@@ -65,8 +65,6 @@ export default class CnesReportApp extends React.PureComponent {
             })
             .then(blob => {
                 let file = window.URL.createObjectURL(blob);
-                console.log(fileName);
-                console.log(fileName.groups.resFileName);
                 saveAs(file, fileName.groups.resFileName);
                 this.setState({ generating: false });
             })
