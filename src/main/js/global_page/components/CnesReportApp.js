@@ -51,10 +51,12 @@ export default class CnesReportApp extends React.PureComponent {
         this.setState({ generating: true });
 
         // Makes API request, fetches the filename and blobs the response, saves the blob.
-        fetch("../../api/cnesreport/report" + "?" + url, {
+        const promise = fetch("../../api/cnesreport/report" + "?" + url, {
             method: "GET"
         })
             .then(res => {
+                if (!res.ok)
+                    throw new Error(`Bad API call, response status: $(response.status)`);
                 if (res.headers.has("Content-Disposition")) {
                     fileName = (res.headers.get("Content-Disposition"))
                         .match(/(?<=filename=")(?<resFileName>[\w-]*.[\w-]*)/);
@@ -68,6 +70,10 @@ export default class CnesReportApp extends React.PureComponent {
                 saveAs(file, fileName.groups.resFileName);
                 this.setState({ generating: false });
             })
+        promise.catch((error) => {
+            console.error(err);
+            this.setState({ generating: false })
+        });
     }
 
     onChangeCheckbox = (stateParam) => {
@@ -158,7 +164,7 @@ export default class CnesReportApp extends React.PureComponent {
             )
         })
 
-        
+
         this.shouldDisableGeneration();
         if (isGenerating === true) {
             generatebutton = <ClipLoader loading={true} color="#0000FF" size={60} />;
