@@ -17,18 +17,23 @@
 
 package fr.cnes.sonar.plugin.ws;
 
-import fr.cnes.sonar.plugin.tools.PluginStringManager;
-import fr.cnes.sonar.plugin.tools.DefaultBranch;
-import fr.cnes.sonar.plugin.tools.FileTools;
-import fr.cnes.sonar.plugin.tools.ZipFolder;
-import fr.cnes.sonar.report.ReportCommandLine;
-import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
-import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
-import fr.cnes.sonar.report.exceptions.SonarQubeException;
-import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
-import fr.cnes.sonar.report.factory.ReportFactory;
-import fr.cnes.sonar.report.utils.StringManager;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.xmlbeans.XmlException;
 import org.sonar.api.config.Configuration;
@@ -38,17 +43,20 @@ import org.sonar.api.server.ws.Response;
 import org.sonarqube.ws.MediaTypes;
 import org.sonarqube.ws.client.WsClient;
 import org.sonarqube.ws.client.WsClientFactories;
+
 import com.google.gson.stream.JsonWriter;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.file.Files;
-import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ArrayList;
+import fr.cnes.sonar.plugin.tools.DefaultBranch;
+import fr.cnes.sonar.plugin.tools.FileTools;
+import fr.cnes.sonar.plugin.tools.PluginStringManager;
+import fr.cnes.sonar.plugin.tools.ZipFolder;
+import fr.cnes.sonar.report.ReportCommandLine;
+import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
+import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
+import fr.cnes.sonar.report.exceptions.SonarQubeException;
+import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
+import fr.cnes.sonar.report.factory.ReportFactory;
+import fr.cnes.sonar.report.utils.StringManager;
 
 public class ExportTask implements RequestHandler {
 
@@ -89,7 +97,26 @@ public class ExportTask implements RequestHandler {
         Response.Stream stream = response.stream();
 
         // Get a temp folder
-        final File outputDirectory = File.createTempFile("cnesreport", Long.toString(System.nanoTime()));
+
+        Path tempDirectory;
+
+        if (SystemUtils.IS_OS_UNIX) {
+            FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions
+                    .asFileAttribute(PosixFilePermissions.fromString("rwx------"));
+            Files.createTempFile("cnesreport", ".tmp", attr);
+            tempDirectory = Files.createTempDirectory("cnesreport", attr);
+        } else {
+            File f = Files.createTempFile("cnesreport", ".tmp").toFile();
+            f.setReadable(false);
+            f.setWritable(false);
+            f.setExecutable(false);
+            f.setReadable(true, true);
+            f.setWritable(true, true);
+            f.setExecutable(true, true);
+            tempDirectory = f.toPath();
+        }
+        final File outputDirectory = File.createTempFile("cnesreport", Long.toString(System.nanoTime()), tempDirectory.toFile());
+        
 
         // Last line create file instead of folder, we delete file to put folder at the same place later
         Files.delete(outputDirectory.toPath());
