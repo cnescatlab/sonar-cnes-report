@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
@@ -31,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -75,20 +78,24 @@ public class ExportTask implements RequestHandler {
 
     /**
      * public constructor
+     * 
      * @param config sonarqube configuration
      */
-    ExportTask(Configuration config){
+    ExportTask(Configuration config) {
         this.config = config;
     }
 
     /**
      * Handles a request and writes the output in the response stream.
-     * @param request  The request object containing the details of the client's request.
+     * 
+     * @param request  The request object containing the details of the client's
+     *                 request.
      * @param response The response object used to send the data back to the client.
      */
     @Override
     public void handle(Request request, Response response) throws BadExportationDataTypeException, IOException,
-            UnknownQualityGateException, OpenXML4JException, XmlException, SonarQubeException, ParseException {
+            UnknownQualityGateException, OpenXML4JException, XmlException, SonarQubeException, ParseException,
+            AccessDeniedException {
 
         // Get project key
         String projectKey = request.getParam(PluginStringManager.getProperty("api.report.args.key")).getValue();
@@ -96,142 +103,156 @@ public class ExportTask implements RequestHandler {
         // Getting stream and change headers
         Response.Stream stream = response.stream();
 
-        // Get a temp folder
+        // Get a safe temporary folder for UNIX or windows.
 
         Path tempDirectory;
-
-        if (SystemUtils.IS_OS_UNIX) {
-            FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions
-                    .asFileAttribute(PosixFilePermissions.fromString("rwx------"));
-            Files.createTempFile("cnesreport", ".tmp", attr);
-            tempDirectory = Files.createTempDirectory("cnesreport", attr);
-        } else {
-            File f = Files.createTempFile("cnesreport", ".tmp").toFile();
-            f.setReadable(false);
-            f.setWritable(false);
-            f.setExecutable(false);
-            f.setReadable(true, true);
-            f.setWritable(true, true);
-            f.setExecutable(true, true);
-            tempDirectory = f.toPath();
-        }
-        final File outputDirectory = File.createTempFile("cnesreport", Long.toString(System.nanoTime()), tempDirectory.toFile());
-        
-
-        // Last line create file instead of folder, we delete file to put folder at the same place later
-        Files.delete(outputDirectory.toPath());
-
-        // Start generation, re-using standalone script
+        File outputDirectory = null;
         try {
-            final Request.StringParam pBranch =
-                    request.getParam(PluginStringManager.getProperty("api.report.args.branch"));
-            
-            final Request.StringParam pLanguage =
-                    request.getParam(PluginStringManager.getProperty("api.report.args.language"));
-
-            final Request.StringParam pEnableDocx =
-                    request.getParam(PluginStringManager.getProperty("api.report.args.enableDocx"));
-
-            final Request.StringParam pEnableMd =
-                    request.getParam(PluginStringManager.getProperty("api.report.args.enableMd"));
-
-            final Request.StringParam pEnableXlsx =
-                    request.getParam(PluginStringManager.getProperty("api.report.args.enableXlsx"));
-
-            final Request.StringParam pEnableCsv =
-                    request.getParam(PluginStringManager.getProperty("api.report.args.enableCsv"));
-
-            final Request.StringParam pEnableConf =
-                    request.getParam(PluginStringManager.getProperty("api.report.args.enableConf"));
-
-            // Build SonarQube local URL
-            String port = config.get("sonar.web.port").orElse(PluginStringManager.getProperty("plugin.defaultPort"));
-            String context = config.get("sonar.web.context").orElse(PluginStringManager.getProperty("plugin.defaultContext"));
-            String sonarUrl = String.format(PluginStringManager.getProperty("plugin.defaultHost"), port, context);
-
-            // Get files templates paths if defined in the decicated SonarQube configuration panel
-            String docxPath = config.get("sonar.cnesreport.docx.path").orElse(null);
-            String mdPath = config.get("sonar.cnesreport.md.path").orElse(null);
-            String xlsxPath = config.get("sonar.cnesreport.xlsx.path").orElse(null);
-
-            // create a new client to talk with sonarqube's services
-            WsClient wsClient = WsClientFactories.getLocal().newClient(request.localConnector());
-
-            // prepare params for the report generation
-            List<String> reportParams = new ArrayList<>(Arrays.asList(
-                    "report",
-                    "-o", outputDirectory.getAbsolutePath(),
-                    "-s", sonarUrl,
-                    "-p", projectKey,
-                    "-b", pBranch.isPresent()?pBranch.getValue(): DefaultBranch.getDefaultBranchFromProject(wsClient, projectKey),
-                    "-a", request.getParam(PluginStringManager.getProperty("api.report.args.author")).getValue(),
-                    "-t", request.getParam(PluginStringManager.getProperty("api.report.args.token")).getValue(),
-                    "-l", pLanguage.isPresent()?pLanguage.getValue(): StringManager.getProperty(StringManager.DEFAULT_LANGUAGE)
-            ));
-
-            // add files templates paths to params if defined
-            if (docxPath != null) {
-                reportParams.add("-r");
-                reportParams.add(docxPath);
+            if (SystemUtils.IS_OS_UNIX) {
+                FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions
+                        .asFileAttribute(PosixFilePermissions.fromString("rwx------"));
+                Files.createTempFile("cnesreport", ".tmp", attr);
+                tempDirectory = Files.createTempDirectory("cnesreport", attr);
+            } else {
+                File f = Files.createTempFile("cnesreport", ".tmp").toFile();
+                boolean isOk = true;
+                isOk = isOk && f.setReadable(false);
+                isOk = isOk && f.setWritable(false);
+                isOk = isOk && f.setExecutable(false);
+                isOk = isOk && f.setReadable(true, true);
+                isOk = isOk && f.setWritable(true, true);
+                isOk = isOk && f.setExecutable(true, true);
+                tempDirectory = f.toPath();
+                if (!isOk)
+                    throw new AccessDeniedException(f.toString(), "", "Could not set permissions of temporary file: ");
             }
-            if (mdPath != null) {
-                reportParams.add("-n");
-                reportParams.add(mdPath);
-            }
-            if (xlsxPath != null) {
-                reportParams.add("-x");
-                reportParams.add(xlsxPath);
-            }
-
-            String pEnableDocxValue = pEnableDocx.getValue();
-            String pEnableMdValue = pEnableMd.getValue();
-            String pEnableXlsxValue = pEnableXlsx.getValue();
-            String pEnableCsvValue = pEnableCsv.getValue();
-            String pEnableConfValue = pEnableConf.getValue();
-
-            // add disable files generation params if requested
-            if(pEnableDocxValue != null && (pEnableDocxValue.equals(FALSE) || pEnableDocxValue.equals(NO))) {
-                reportParams.add("-w");
-            }
-            if(pEnableMdValue != null && (pEnableMdValue.equals(FALSE) || pEnableMdValue.equals(NO))) {
-                reportParams.add("-m");
-            }
-            if(pEnableXlsxValue != null && (pEnableXlsxValue.equals(FALSE) || pEnableXlsxValue.equals(NO))) {
-                reportParams.add("-e");
-            }
-            if(pEnableCsvValue != null && (pEnableCsvValue.equals(FALSE) || pEnableCsvValue.equals(NO))) {
-                reportParams.add("-f");
-            }
-            if(pEnableConfValue != null && (pEnableConfValue.equals(FALSE) || pEnableConfValue.equals(NO))) {
-                reportParams.add("-c");
-            }
-
-            // Execute report generation
-            ReportCommandLine.execute(reportParams.toArray(new String[reportParams.size()]));
-
-            stream.setMediaType("application/zip");
-            String filename = ReportFactory.formatFilename("zip.report.output", "", "", projectKey);
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + '"');
-
-
-            // generate zip output and send it
-            ZipFolder.pack(outputDirectory.getAbsolutePath(), outputDirectory.getAbsolutePath() + ".zip");
-            File zip = new File(outputDirectory.getAbsolutePath() + ".zip");
-            FileUtils.copyFile(zip, stream.output());
-            Files.deleteIfExists(zip.toPath());
-        } catch (BadSonarQubeRequestException e) {          
-            response.stream().setMediaType(MediaTypes.JSON);
-            try (
-                OutputStreamWriter writer = new OutputStreamWriter(response.stream().output(), StandardCharsets.UTF_8);
-                JsonWriter jsonWriter = new JsonWriter(writer);
-            ) {
-                jsonWriter.beginObject();
-                jsonWriter.name("error").value(PluginStringManager.getProperty("api.tokenerror"));
-                jsonWriter.endObject();
-                jsonWriter.flush();
-            }
+            outputDirectory = File.createTempFile("cnesreport", Long.toString(System.nanoTime()),
+                    tempDirectory.toFile());
+        } catch (AccessDeniedException e) {
+            Logger logger = Logger.getLogger(ExportTask.class.getName());
+            logger.log(Level.SEVERE, "{0}{1}", new Object[] { e.getReason(), e.getFile() });
         }
+        // Last line create file instead of folder, we delete file to put folder at the
+        // same place later
+        if (outputDirectory != null) {
+            Files.delete(outputDirectory.toPath());
 
-        FileTools.deleteFolder(outputDirectory);
+            // Start generation, re-using standalone script
+            try {
+                final Request.StringParam pBranch = request
+                        .getParam(PluginStringManager.getProperty("api.report.args.branch"));
+
+                final Request.StringParam pLanguage = request
+                        .getParam(PluginStringManager.getProperty("api.report.args.language"));
+
+                final Request.StringParam pEnableDocx = request
+                        .getParam(PluginStringManager.getProperty("api.report.args.enableDocx"));
+
+                final Request.StringParam pEnableMd = request
+                        .getParam(PluginStringManager.getProperty("api.report.args.enableMd"));
+
+                final Request.StringParam pEnableXlsx = request
+                        .getParam(PluginStringManager.getProperty("api.report.args.enableXlsx"));
+
+                final Request.StringParam pEnableCsv = request
+                        .getParam(PluginStringManager.getProperty("api.report.args.enableCsv"));
+
+                final Request.StringParam pEnableConf = request
+                        .getParam(PluginStringManager.getProperty("api.report.args.enableConf"));
+
+                // Build SonarQube local URL
+                String port = config.get("sonar.web.port")
+                        .orElse(PluginStringManager.getProperty("plugin.defaultPort"));
+                String context = config.get("sonar.web.context")
+                        .orElse(PluginStringManager.getProperty("plugin.defaultContext"));
+                String sonarUrl = String.format(PluginStringManager.getProperty("plugin.defaultHost"), port, context);
+
+                // Get files templates paths if defined in the decicated SonarQube configuration
+                // panel
+                String docxPath = config.get("sonar.cnesreport.docx.path").orElse(null);
+                String mdPath = config.get("sonar.cnesreport.md.path").orElse(null);
+                String xlsxPath = config.get("sonar.cnesreport.xlsx.path").orElse(null);
+
+                // create a new client to talk with sonarqube's services
+                WsClient wsClient = WsClientFactories.getLocal().newClient(request.localConnector());
+
+                // prepare params for the report generation
+                List<String> reportParams = new ArrayList<>(Arrays.asList(
+                        "report",
+                        "-o", outputDirectory.getAbsolutePath(),
+                        "-s", sonarUrl,
+                        "-p", projectKey,
+                        "-b",
+                        pBranch.isPresent() ? pBranch.getValue()
+                                : DefaultBranch.getDefaultBranchFromProject(wsClient, projectKey),
+                        "-a", request.getParam(PluginStringManager.getProperty("api.report.args.author")).getValue(),
+                        "-t", request.getParam(PluginStringManager.getProperty("api.report.args.token")).getValue(),
+                        "-l", pLanguage.isPresent() ? pLanguage.getValue()
+                                : StringManager.getProperty(StringManager.DEFAULT_LANGUAGE)));
+
+                // add files templates paths to params if defined
+                if (docxPath != null) {
+                    reportParams.add("-r");
+                    reportParams.add(docxPath);
+                }
+                if (mdPath != null) {
+                    reportParams.add("-n");
+                    reportParams.add(mdPath);
+                }
+                if (xlsxPath != null) {
+                    reportParams.add("-x");
+                    reportParams.add(xlsxPath);
+                }
+
+                String pEnableDocxValue = pEnableDocx.getValue();
+                String pEnableMdValue = pEnableMd.getValue();
+                String pEnableXlsxValue = pEnableXlsx.getValue();
+                String pEnableCsvValue = pEnableCsv.getValue();
+                String pEnableConfValue = pEnableConf.getValue();
+
+                // add disable files generation params if requested
+                if (pEnableDocxValue != null && (pEnableDocxValue.equals(FALSE) || pEnableDocxValue.equals(NO))) {
+                    reportParams.add("-w");
+                }
+                if (pEnableMdValue != null && (pEnableMdValue.equals(FALSE) || pEnableMdValue.equals(NO))) {
+                    reportParams.add("-m");
+                }
+                if (pEnableXlsxValue != null && (pEnableXlsxValue.equals(FALSE) || pEnableXlsxValue.equals(NO))) {
+                    reportParams.add("-e");
+                }
+                if (pEnableCsvValue != null && (pEnableCsvValue.equals(FALSE) || pEnableCsvValue.equals(NO))) {
+                    reportParams.add("-f");
+                }
+                if (pEnableConfValue != null && (pEnableConfValue.equals(FALSE) || pEnableConfValue.equals(NO))) {
+                    reportParams.add("-c");
+                }
+
+                // Execute report generation
+                ReportCommandLine.execute(reportParams.toArray(new String[reportParams.size()]));
+
+                stream.setMediaType("application/zip");
+                String filename = ReportFactory.formatFilename("zip.report.output", "", "", projectKey);
+                response.setHeader("Content-Disposition", "attachment; filename=\"" + filename + '"');
+
+                // generate zip output and send it
+                ZipFolder.pack(outputDirectory.getAbsolutePath(), outputDirectory.getAbsolutePath() + ".zip");
+                File zip = new File(outputDirectory.getAbsolutePath() + ".zip");
+                FileUtils.copyFile(zip, stream.output());
+                Files.deleteIfExists(zip.toPath());
+            } catch (BadSonarQubeRequestException e) {
+                response.stream().setMediaType(MediaTypes.JSON);
+                try (
+                        OutputStreamWriter writer = new OutputStreamWriter(response.stream().output(),
+                                StandardCharsets.UTF_8);
+                        JsonWriter jsonWriter = new JsonWriter(writer);) {
+                    jsonWriter.beginObject();
+                    jsonWriter.name("error").value(PluginStringManager.getProperty("api.tokenerror"));
+                    jsonWriter.endObject();
+                    jsonWriter.flush();
+                }
+            }
+
+            FileTools.deleteFolder(outputDirectory);
+        }
     }
 }
