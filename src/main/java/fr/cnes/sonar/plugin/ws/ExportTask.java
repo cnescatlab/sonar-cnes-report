@@ -108,17 +108,16 @@ public class ExportTask implements RequestHandler {
         Path tempDirectory;
         File outputDirectory = null;
         try {
+            // Create a secure temporary directory for UNIX
             if (SystemUtils.IS_OS_UNIX) {
                 FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions
                         .asFileAttribute(PosixFilePermissions.fromString("rwx------"));
-                Files.createTempFile("cnesreport", ".tmp", attr);
                 tempDirectory = Files.createTempDirectory("cnesreport", attr);
-            } else {
+            } 
+            // Same for windows.
+            else {
                 File f = Files.createTempFile("cnesreport", ".tmp").toFile();
                 boolean isOk = true;
-                isOk = isOk && f.setReadable(false);
-                isOk = isOk && f.setWritable(false);
-                isOk = isOk && f.setExecutable(false);
                 isOk = isOk && f.setReadable(true, true);
                 isOk = isOk && f.setWritable(true, true);
                 isOk = isOk && f.setExecutable(true, true);
@@ -126,13 +125,14 @@ public class ExportTask implements RequestHandler {
                 if (!isOk)
                     throw new AccessDeniedException(f.toString(), "", "Could not set permissions of temporary file: ");
             }
+            // Create temporary file in our secure directory.
             outputDirectory = File.createTempFile("cnesreport", Long.toString(System.nanoTime()),
                     tempDirectory.toFile());
         } catch (AccessDeniedException e) {
             Logger logger = Logger.getLogger(ExportTask.class.getName());
             logger.log(Level.SEVERE, "{0}{1}", new Object[] { e.getReason(), e.getFile() });
         }
-        // Last line create file instead of folder, we delete file to put folder at the
+        // Last block creates file instead of folder, we delete file to put folder at the
         // same place later
         if (outputDirectory != null) {
             Files.delete(outputDirectory.toPath());
