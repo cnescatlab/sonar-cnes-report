@@ -106,6 +106,7 @@ public class ExportTask implements RequestHandler {
         // Get a safe temporary folder for UNIX or windows.
 
         Path tempDirectory;
+        File f;
         File outputDirectory = null;
         try {
             // Create a secure temporary directory for UNIX
@@ -116,7 +117,7 @@ public class ExportTask implements RequestHandler {
             } 
             // Same for windows.
             else {
-                File f = Files.createTempFile("cnesreport", ".tmp").toFile();
+                f = Files.createTempDirectory("cnesreport").toFile();
                 boolean isOk = true;
                 isOk = isOk && f.setReadable(true, true);
                 isOk = isOk && f.setWritable(true, true);
