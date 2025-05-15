@@ -123,7 +123,7 @@ public class ExportTask implements RequestHandler {
                 isOk = isOk && f.setWritable(true, true);
                 isOk = isOk && f.setExecutable(true, true);
                 tempDirectory = f.toPath();
-                if (!isOk)
+                if (isOk == false)
                     throw new AccessDeniedException(f.toString(), "", "Could not set permissions of temporary file: ");
             }
             // Create temporary file in our secure directory.
