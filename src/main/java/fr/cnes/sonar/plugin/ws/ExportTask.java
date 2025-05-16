@@ -37,6 +37,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang.ObjectUtils.Null;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.xmlbeans.XmlException;
 import org.sonar.api.config.Configuration;
@@ -118,13 +119,7 @@ public class ExportTask implements RequestHandler {
             // Same for windows.
             else {
                 f = Files.createTempDirectory("cnesreport").toFile();
-                boolean isOk = true;
-                isOk = isOk && f.setReadable(true, true);
-                isOk = isOk && f.setWritable(true, true);
-                isOk = isOk && f.setExecutable(true, true);
                 tempDirectory = f.toPath();
-                if (isOk == false)
-                    throw new AccessDeniedException(f.toString(), "", "Could not set permissions of temporary file: ");
             }
             // Create temporary file in our secure directory.
             outputDirectory = File.createTempFile("cnesreport", Long.toString(System.nanoTime()),
