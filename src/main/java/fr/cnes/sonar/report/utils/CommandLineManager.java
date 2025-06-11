@@ -16,15 +16,21 @@
  */
 package fr.cnes.sonar.report.utils;
 
-import org.apache.commons.cli.*;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Properties;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 /**
  * Manage the command line by parsing it and providing preprocessed data.
@@ -94,6 +100,7 @@ public class CommandLineManager {
      *
      * @param pArgs Arguments to parse.
      */
+
     public void parse(final String[] pArgs) {
 
         // Contains true if options are reliable
