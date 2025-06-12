@@ -4,20 +4,21 @@
  */
 
 import React from "react";
-
 import { getProjectsList, initiatePluginToken, getBranches, isCompatible } from "../../common/api";
+import { Autocomplete, FormControl, MenuItem, Select, TextField } from "@mui/material";
 import { ClipLoader } from "react-spinners";
-import { saveAs } from "file-saver";
-
+import { saveAs } from "file-saver"
 
 export default class CnesReportApp extends React.PureComponent {
     state = {
         loading: true,
         generating: false,
+        generating: false,
         projects: [],
         token: "",
         author: "",
         branches: [],
+        languages: [{ id: 'en_US', name: 'English' }, { id: 'fr_FR', name: 'French' }],
         languages: [{ id: 'en_US', name: 'English' }, { id: 'fr_FR', name: 'French' }],
         enableDocx: true,
         enableMd: true,
@@ -25,6 +26,10 @@ export default class CnesReportApp extends React.PureComponent {
         enableCsv: true,
         enableConf: true,
         isSupported: true
+    };
+    constructor(props) {
+        super(props);
+        this.handleSubmit = this.handleSubmit.bind(this);
     };
 
     onChangeAuthor = (event) => {
@@ -36,18 +41,16 @@ export default class CnesReportApp extends React.PureComponent {
             this.setState({ branches: branches });
         });
     };
-
     // This method catches the send form event, gets the form into an object, and handles sending it in a promise
     // It then sets generating state, which is used in rendering, then downloads the report.
 
-    addFormHandling = (event) => {
-        const form = document.getElementById("generation-form");
+    handleSubmit(event) {
+        event.preventDefault();
+
         // Initializes url object from html form contents
-        const url = new URLSearchParams(new FormData(form));
+        const url = new URLSearchParams(new FormData(event.target));
         let fileName = "";
 
-        // Substitutes regular form behavior for our logic
-        event.preventDefault();
         this.setState({ generating: true });
 
         // Makes API request, fetches the filename and blobs the response, saves the blob.
@@ -75,6 +78,7 @@ export default class CnesReportApp extends React.PureComponent {
                 alert(error)
                 this.setState({ generating: false })
             });
+
     }
 
     onChangeCheckbox = (stateParam) => {
@@ -82,11 +86,11 @@ export default class CnesReportApp extends React.PureComponent {
             case 'enableDocx':
                 this.setState({ enableDocx: !this.state.enableDocx });
                 break;
-            case 'enableXlsx':
-                this.setState({ enableXlsx: !this.state.enableXlsx });
-                break;
             case 'enableMd':
                 this.setState({ enableMd: !this.state.enableMd });
+                break;
+            case 'enableXlsx':
+                this.setState({ enableXlsx: !this.state.enableXlsx });
                 break;
             case 'enableCsv':
                 this.setState({ enableCsv: !this.state.enableCsv });
@@ -137,6 +141,8 @@ export default class CnesReportApp extends React.PureComponent {
         });
     }
 
+
+
     render() {
         const isGenerating = this.state.generating;
         let generatebutton;
@@ -148,24 +154,29 @@ export default class CnesReportApp extends React.PureComponent {
         let projectsList = this.state.projects.length > 0
             && this.state.projects.map((item, i) => {
                 return (
-                    <option key={i} value={item.key}>{item.name}</option>
-                )
+                    { label: item.name })
             }, this);
 
         let branchesList = this.state.branches.length > 0
             && this.state.branches.map((item, i) => {
                 return (
-                    <option key={i} value={item.name}>{item.name}</option>
+                    <MenuItem value={item.name}>{item.name}</MenuItem>
                 )
             }, this);
 
         let languagesList = this.state.languages.map((item, i) => {
             return (
-                <option key={i} value={item.id}>{item.name}</option>
+                <MenuItem value={item.id}>{item.name}</MenuItem>
             )
         })
 
-
+        this.shouldDisableGeneration();
+        if (isGenerating === true) {
+            generatebutton = <ClipLoader loading={true} color="#0000FF" size={60} />;
+        }
+        else {
+            generatebutton = <input id="generation" name="generation" type="submit" value="Generate" disabled={this.state.disabled} />
+        }
         this.shouldDisableGeneration();
         if (isGenerating === true) {
             generatebutton = <ClipLoader loading={true} color="#0000FF" size={60} />;
@@ -184,31 +195,46 @@ export default class CnesReportApp extends React.PureComponent {
                             <p>For further information, please refer to the <a href="https://github.com/cnescatlab/sonar-cnes-report#compatibility-matrix">compatibility matrix</a> on the project GitHub page.</p>
                         </div>
                     }
-                    <form id="generation-form" onSubmit={this.addFormHandling}>
+                    <form id="generation-form" onSubmit={this.handleSubmit} >
+
                         <div class='forminput'>
-                            <label for="key" id="keyLabel" class="login-label"><strong>Project</strong></label>
-                            <select id="key"
-                                name="key"
-                                class="login-input"
-                                onChange={this.onChangeProject} required>
-                                {projectsList}
-                            </select>
+                            <label for="key" id="keyLabel" class="login-label"></label>
+                            <Autocomplete
+                                disablePortal
+                                disableClearable
+                                id="key"
+                                options={projectsList}
+                                defaultValue={projectsList[0]}
+                                renderInput={(params) => <TextField {...params} label={"Project"} name={"key"} />}
+                            />
+
                         </div>
                         <div class='forminput'>
-                            <label for="branch" id="branchLabel" class="login-label"><strong>Branch key</strong></label>
-                            <select id="branch"
-                                name="branch"
-                                class="login-input" required>
+                            <label for="branch" id="branchLabel" class="login-label">Branch Key</label>
+                            <Select
+                                displayEmpty
+                                fullWidth={true}
+                                name={"branch"}
+                                defaultValue={branchesList[0].props.value}
+                                value={this.state.value}
+                                renderInput={(params) => <TextField {...params} label={"branch"} name={"branch"} value={this.state.value} />}
+                            >
                                 {branchesList}
-                            </select>
+                            </Select>
                         </div>
                         <div class='forminput'>
-                            <label for="language" id="languageLabel" class="login-label"><strong>Report language</strong></label>
-                            <select id="language"
-                                name="language"
-                                class="login-input" required>
+                            <label for="language" id="languageLabel" class="login-label">Report Language</label>
+                            <Select
+                                displayEmpty
+                                id="branch"
+                                name={"language"}
+                                fullWidth={true}
+                                value={this.state.value}
+                                defaultValue={languagesList[0].props.value}
+                                renderInput={(params) => <TextField {...params} label={"language"} value={this.state.value} />}
+                            >
                                 {languagesList}
-                            </select>
+                            </Select>
                         </div>
                         <div class='forminput'>
                             <label for="author" id="authorLabel" class="login-label"><strong>Author</strong></label>
@@ -281,6 +307,7 @@ export default class CnesReportApp extends React.PureComponent {
                             <br />
                             {generatebutton}
                         </div>
+
                     </form>
                 </div>
             </div>

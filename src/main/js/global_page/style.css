@@ -15,6 +15,12 @@
     border-radius: 5px;
 }
 
+.spinner {
+    display: flex;
+    margin-top: 20px;
+    justify-content: center;
+}
+
 .forminput {
     margin-bottom: 15px;
 }

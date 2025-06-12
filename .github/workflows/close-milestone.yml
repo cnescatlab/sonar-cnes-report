@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Close a milestone if completed
         run: |
-          milestones=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          milestones=$(curl -s -H "Authorization: token ${{ GITHUB_TOKEN }}" \
               https://api.github.com/repos/${{ github.repository }}/milestones \
             | jq -r '. | map(select(.open_issues == 0 and .closed_issues > 0 and .state == "open"))')
           if [ "$milestones" != "[]" ]
