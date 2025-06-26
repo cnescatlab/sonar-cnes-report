@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        java: [ '17' ]
+        java: [ '21' ]
     name: Java ${{ matrix.Java }} CI
     steps:
       - name: Check out repository code

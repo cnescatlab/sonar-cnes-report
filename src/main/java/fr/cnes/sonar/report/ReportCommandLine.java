@@ -102,15 +102,14 @@ public final class ReportCommandLine {
         // Parse command line arguments.
         final ReportConfiguration conf = ReportConfiguration.create(args);
 
-        if (conf.isHelp() || conf.isVersion())
-        {
+        if (conf.isHelp() || conf.isVersion()) {
             return;
         }
 
-            if (conf.getProject().isEmpty()) {
-                throw new IllegalStateException(
-                        "Please provide a project with the -p argument, you can also use -h argument to display help.");
-            }
+        if (conf.getProject().isEmpty()) {
+            throw new IllegalStateException(
+                    "Please provide a project with the -p argument, you can also use -h argument to display help.");
+        }
 
         // Set the language of the report.
         // assumes the language is set with language_country
