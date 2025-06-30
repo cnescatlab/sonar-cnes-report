@@ -89,7 +89,6 @@ public final class ReportCommandLine {
                 | IllegalStateException | IllegalArgumentException | ParseException e) {
             // it logs all the stack trace
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            System.exit(-1);
         }
     }
 
