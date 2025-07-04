@@ -119,6 +119,9 @@ public class ExportTask implements RequestHandler {
             // Same for windows.
             else {
                 f = Files.createTempDirectory("cnesreport").toFile();
+                f.setReadable(true, true);
+                f.setWritable(true,true);
+                f.setExecutable(true, true);
                 tempDirectory = f.toPath();
             }
             // Create temporary file in our secure directory.
