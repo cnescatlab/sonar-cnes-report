@@ -29,6 +29,8 @@ public class ReportConfiguration {
     private boolean help;
     /** Options for v. */
     private boolean version;
+    /** Options for i. **/
+    private String useProperties;
     /** Options for s. */
     private String server;
     /** Options for t. */
@@ -66,6 +68,7 @@ public class ReportConfiguration {
      * Private constructor, use create method instead.
      * @param help Value for h option.
      * @param version Value for v option.
+     * @param useProperties Value for i option
      * @param server Value for s option.
      * @param token Value for t option.
      * @param project Value for p option.
@@ -80,7 +83,7 @@ public class ReportConfiguration {
      * @param templateSpreadsheet Value for x option.
      * @param branch Value for b option.
      */
-    private ReportConfiguration(final boolean help, final boolean version, final String server,
+    private ReportConfiguration(final boolean help, final boolean version, final String useProperties ,final String server,
                                 final String token, final String project, final String output,
                                 final String language, final String author, final String date,
                                 final boolean enableConf, final boolean enableReport,
@@ -89,7 +92,9 @@ public class ReportConfiguration {
                                 final String templateSpreadsheet, final String templateMarkdown, final String branch) {
         this.help = help;
         this.version = version;
+        this.useProperties = useProperties;
         this.server = server;
+        this.useProperties = useProperties;
         this.token = token;
         this.project = project;
         this.output = output;
@@ -124,6 +129,7 @@ public class ReportConfiguration {
         return new ReportConfiguration(
                 commandLineManager.hasOption("h"),
                 commandLineManager.hasOption("v"),
+                commandLineManager.getOptionValue("i", StringManager.getProperty(StringManager.SONAR_PROPERTIES)),
                 commandLineManager.getOptionValue("s", StringManager.getProperty(StringManager.SONAR_URL)),
                 commandLineManager.getOptionValue("t", StringManager.getProperty(StringManager.SONAR_TOKEN)),
                 commandLineManager.getOptionValue("p", StringManager.EMPTY),
