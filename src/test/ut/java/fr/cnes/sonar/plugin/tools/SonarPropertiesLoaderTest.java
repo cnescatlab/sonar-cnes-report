@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.sonar.api.internal.apachecommons.io.IOUtils;
 
 public class SonarPropertiesLoaderTest {
@@ -66,9 +67,9 @@ public class SonarPropertiesLoaderTest {
                 "sonar.host.url=http://biiiiiiiiiiim\nsonar.token=this_is_a_token\nsonar.projectKey=this-is-a-project-key",
                 "UTF-8");
         p.loadProperties(in);
-        assert ("http://biiiiiiiiiiim".equals(p.getSonarProperty("sonar.host.url")));
-        assert ("this_is_a_token".equals(p.getSonarProperty("sonar.token")));
-        assert ("this-is-a-project-key".equals(p.getSonarProperty("sonar.projectKey")));
-        assert ("".equals(p.getSonarProperty("this-property-does-not-exist")));
+        assertEquals("http://biiiiiiiiiiim", p.getSonarProperty("sonar.host.url"));
+        assertEquals("this_is_a_token", (p.getSonarProperty("sonar.token")));
+        assertEquals("this-is-a-project-key", (p.getSonarProperty("sonar.projectKey")));
+        assertEquals("", (p.getSonarProperty("this-property-does-not-exist")));
     }
 }
