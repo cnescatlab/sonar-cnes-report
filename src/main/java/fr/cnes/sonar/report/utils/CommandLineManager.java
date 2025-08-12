@@ -53,7 +53,7 @@ public class CommandLineManager {
     private static final String[][] OPTIONS_DEFINITION = {
             { "h", "help", Boolean.FALSE.toString(), "Display this message." },
             { "v", "version", Boolean.FALSE.toString(), "Display current version." },
-            { "i", "properties", Boolean.TRUE.toString(), "Read from provided sonar.propeties" },
+            { "i", "properties", Boolean.TRUE.toString(), "Fills -s, -p, and -t options from provided sonar.propeties. Uses command line if property is absent." },
             { "s", "server", Boolean.TRUE.toString(), "Complete URL of the targeted SonarQube server." },
             { "t", "token", Boolean.TRUE.toString(),
                     "SonarQube token of the SonarQube user who has permissions on the project." },
