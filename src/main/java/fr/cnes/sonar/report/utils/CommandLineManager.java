@@ -18,7 +18,6 @@ package fr.cnes.sonar.report.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -32,9 +31,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-
-import fr.cnes.sonar.plugin.tools.SonarPropertiesLoader;
-import fr.cnes.sonar.report.exceptions.InvalidSonarPropertiesException;
 
 /**
  * Manage the command line by parsing it and providing preprocessed data.
@@ -148,16 +144,6 @@ public class CommandLineManager {
 
             } catch (IOException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            }
-        } else if (commandLine.hasOption("i")) {
-            // If we have a sonar.properties file, we read it and configure url and projectkey from it, possibly token. 
-            try {
-            SonarPropertiesLoader propLoader = new SonarPropertiesLoader();
-            Properties sonarProps = propLoader.loadSonarProperties(Paths.get(commandLine.getOptionValue("i")));
-            // If -s input does not exist, add it with the value of sonarprops.get("sonar.host.url"). If it does, no action (Command line is authoritative).
-            // Similar logic for other parameters, projectKey, token, etc. 
-            } catch (IOException|InvalidSonarPropertiesException e) {
-                LOGGER.log(Level.SEVERE, e.getMessage());
             }
         }
     }

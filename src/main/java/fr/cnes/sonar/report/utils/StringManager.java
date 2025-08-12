@@ -50,6 +50,10 @@ public final class StringManager {
     public static final String SONAR_PROPERTIES = "sonar.properties";
     /** Name of the property giving the server server. */
     public static final String SONAR_URL = "sonar.url";
+    /** Name of the property containing sonarqube instance URL. */
+    public static final String SONAR_SERVER = "sonar.host.url";
+    /** Name of the property containing project key of analyzed project */
+    public static final String SONAR_KEY = "sonar.projectKey";
     /** Name of the property giving the token to authenticate to SonarQube. */
     public static final String SONAR_TOKEN = "sonar.token";
     /** Logged message when there are too much issues to export. */

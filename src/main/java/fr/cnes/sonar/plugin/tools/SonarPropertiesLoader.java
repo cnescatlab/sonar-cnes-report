@@ -5,10 +5,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import fr.cnes.sonar.report.exceptions.InvalidSonarPropertiesException;
 
 public class SonarPropertiesLoader {
 
@@ -16,27 +13,17 @@ public class SonarPropertiesLoader {
     private static final Logger LOGGER = Logger.getLogger(FileTools.class.getName());
 
     public Properties loadSonarProperties(Path sonarPropertiesPath)
-            throws IOException, InvalidSonarPropertiesException {
+            throws IOException {
 
         Properties properties = new Properties();
         try {
             InputStream sonar = Files.newInputStream(sonarPropertiesPath);
             if (sonar != null) {
-                boolean hasCorrectProperties = false;
                 properties.load(sonar);
-                // Mandatory properties
-                if ((properties.getProperty("sonar.host.url") != null)
-                        && (properties.getProperty("sonar.projectKey") != null)) {
-                    hasCorrectProperties = true;
-                } else {
-                    throw new InvalidSonarPropertiesException("sonar.host.url or sonar.projectKey missing.");
-                }
-                // Optional properties (Generally still wanted)
-                properties.getProperty("sonar.projectName");
-                properties.getProperty("sonar.login");
             }
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            //LOGGER.log(Level.SEVERE, "-i : Could not find or open provided sonar.properties at: " + e.getMessage(), e);
+            throw e;
         }
         return properties;
     }
