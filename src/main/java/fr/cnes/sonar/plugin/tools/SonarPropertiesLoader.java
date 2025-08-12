@@ -5,33 +5,38 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 public class SonarPropertiesLoader {
 
     Properties properties;
+    InputStream sonar;
 
-    public SonarPropertiesLoader(Path path) throws IOException{
-
+    public SonarPropertiesLoader(Path path) throws IOException {
+        this.properties = new Properties();
         loadSonarProperties(path);
     }
 
-    /** Logger of this class */
-    private static final Logger LOGGER = Logger.getLogger(FileTools.class.getName());
+    public SonarPropertiesLoader() throws IOException{
+        this.properties = new Properties();
+    }
+    public void getInputStream(Path path) throws IOException {
+        this.sonar = Files.newInputStream(path);
+    }
+
+    public void loadProperties(InputStream input) throws IOException {
+        this.properties.load(input);
+    }
 
     public final Properties loadSonarProperties(Path sonarPropertiesPath)
             throws IOException {
-
-        this.properties = new Properties();
         try {
-            InputStream sonar = Files.newInputStream(sonarPropertiesPath);
-            if (sonar != null) {
-                this.properties.load(sonar);
+            getInputStream(sonarPropertiesPath);
+            if (this.sonar != null) {
+                loadProperties(this.sonar);
             }
         } catch (IOException e) {
-            // LOGGER.log(Level.SEVERE, "-i : Could not find or open provided
-            // sonar.properties at: " + e.getMessage(), e);
-            throw e;
+            // Could not read given path
+            throw new IOException("-i : Could not find or open provided sonar.properties at: " + e.getMessage());
         }
         return this.properties;
     }
