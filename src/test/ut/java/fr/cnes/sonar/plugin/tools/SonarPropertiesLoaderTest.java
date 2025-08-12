@@ -28,6 +28,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import org.sonar.api.internal.apachecommons.io.IOUtils;
 
 public class SonarPropertiesLoaderTest {
@@ -50,13 +51,14 @@ public class SonarPropertiesLoaderTest {
     @Test
     public void testValidFile() throws IOException {
         try (InputStream input = Files.newInputStream(this.testSonar)) {
-            assert (input != null);
+            assertNotEquals(null, input);
         }
     }
 
     @Test(expected = IOException.class)
     public void testInvalidFile() throws IOException {
         SonarPropertiesLoader propLoader = new SonarPropertiesLoader(Paths.get("./this/is/a/nonsense/path"));
+        propLoader.properties.getProperty("This-Code-Should-Never-Be-Reached");
     }
 
     @Test
