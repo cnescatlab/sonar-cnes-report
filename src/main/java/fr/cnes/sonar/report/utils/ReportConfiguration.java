@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Properties;
 
 import fr.cnes.sonar.plugin.tools.SonarPropertiesLoader;
 
@@ -140,30 +139,24 @@ public class ReportConfiguration {
         String token = new String();
 
         if (commandLineManager.hasOption("i")) {
-            // If we have a sonar.properties file, we read it and configure url and
-            // projectkey from it, possibly token.
+            // If we have a sonar.properties file, we read it and set server, projectKey and token from it if possible.
             try {
-                SonarPropertiesLoader propLoader = new SonarPropertiesLoader();
-                Properties sonarProps = propLoader
-                        .loadSonarProperties(Paths.get(commandLineManager.getOptionValue("i")));
+                SonarPropertiesLoader propLoader = new SonarPropertiesLoader(Paths.get(commandLineManager.getOptionValue("i")));
 
                 // If -s input does not exist, add it with the value of
-                // sonarprops.get("sonar.host.url"). If it does, no action (Command line is
-                // authoritative).
-                if (!commandLineManager.hasOption("s")) {
-                    server = sonarProps.getProperty(StringManager.SONAR_SERVER);
-                    server = server != null ? server : "";
-                }
-                if (!commandLineManager.hasOption("p")) {
-                    projectKey = sonarProps.getProperty(StringManager.SONAR_KEY);
-                    projectKey = projectKey != null ? projectKey : "";
-                }
-                if (!commandLineManager.hasOption("t")) {
-                    token = sonarProps.getProperty(StringManager.SONAR_TOKEN);
-                    token = token != null ? token : "";
-                }
+                // sonarprops.get("sonar.host.url"). If it does, no action (Command line is authoritative).
                 // Similar logic for other parameters, projectKey, token, etc.
+
+                if (!commandLineManager.hasOption("s"))
+                    server = propLoader.getSonarProperty(StringManager.SONAR_SERVER);
+                if (!commandLineManager.hasOption("p"))
+                    projectKey = propLoader.getSonarProperty(StringManager.SONAR_KEY);
+                if (!commandLineManager.hasOption("t"))
+                    token = propLoader.getSonarProperty(StringManager.SONAR_TOKEN);
+
             } catch (IOException e) {
+                // If sonar.properties was not properly opened, we raise this to main to halt
+                // execution.
                 throw e;
             }
         }
@@ -173,12 +166,8 @@ public class ReportConfiguration {
                 StringManager.NO_BRANCH);
         return new ReportConfiguration(commandLineManager.hasOption("h"), commandLineManager.hasOption("v"),
                 commandLineManager.getOptionValue("i", StringManager.getProperty(StringManager.SONAR_PROPERTIES)),
-                server.isEmpty()
-                        ? commandLineManager.getOptionValue("s", StringManager.getProperty(StringManager.SONAR_URL))
-                        : server,
-                token.isEmpty()
-                        ? commandLineManager.getOptionValue("t", StringManager.getProperty(StringManager.SONAR_TOKEN))
-                        : token,
+                server.isEmpty() ? commandLineManager.getOptionValue("s", StringManager.getProperty(StringManager.SONAR_URL)): server,
+                token.isEmpty() ? commandLineManager.getOptionValue("t", StringManager.getProperty(StringManager.SONAR_TOKEN)): token,
                 projectKey.isEmpty() ? commandLineManager.getOptionValue("p", StringManager.EMPTY) : projectKey,
                 commandLineManager.getOptionValue("o", StringManager.getProperty(StringManager.DEFAULT_OUTPUT)),
                 commandLineManager.getOptionValue("l", StringManager.getProperty(StringManager.DEFAULT_LANGUAGE)),
@@ -186,9 +175,7 @@ public class ReportConfiguration {
                 commandLineManager.getOptionValue("d",
                         new SimpleDateFormat(StringManager.DATE_PATTERN).format(new Date())),
                 !commandLineManager.hasOption("c"), !commandLineManager.hasOption("w"),
-                !commandLineManager.hasOption("e"), !commandLineManager.hasOption("f"), // Why f ? Because every "logic"
-                                                                                        // options like "c" are already
-                                                                                        // used
+                !commandLineManager.hasOption("e"), !commandLineManager.hasOption("f"), // Why f ? Because every "logic" options like "c" are already used
                 !commandLineManager.hasOption("m"), commandLineManager.getOptionValue("r", StringManager.EMPTY),
                 commandLineManager.getOptionValue("x", StringManager.EMPTY),
                 commandLineManager.getOptionValue("n", StringManager.EMPTY),
