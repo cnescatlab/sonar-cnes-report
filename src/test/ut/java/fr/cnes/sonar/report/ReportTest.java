@@ -19,6 +19,10 @@ package fr.cnes.sonar.report;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -50,8 +54,8 @@ public class ReportTest {
     public void prepare() {
         report = new Report();
 
-        File zip = new File(TARGET+".zip");
-        if(zip.exists()){
+        File zip = new File(TARGET + ".zip");
+        if (zip.exists()) {
             zip.delete();
         }
     }
@@ -67,14 +71,14 @@ public class ReportTest {
         assertEquals("", report.getProjectBranch());
         assertEquals("", report.getQualityProfilesFilename());
         assertEquals("", report.getAnalysisDate());
-        assert(report.getRawIssues().isEmpty());
-        assert(report.getQualityProfiles().isEmpty());
-        assert(report.getIssues().getIssuesList().isEmpty());
-        assert(report.getMeasures().isEmpty());
+        assert (report.getRawIssues().isEmpty());
+        assert (report.getQualityProfiles().isEmpty());
+        assert (report.getIssues().getIssuesList().isEmpty());
+        assert (report.getMeasures().isEmpty());
     }
 
     @Test
-    public void analysisDateTest(){
+    public void analysisDateTest() {
         report.setAnalysisDate("2020-10-10T14:05:22+0200");
         assertEquals("2020-10-10T14:05:22+0200", report.getAnalysisDate());
         report.truncateAnalysisDate();
@@ -84,24 +88,39 @@ public class ReportTest {
         assertEquals("?", report.getAnalysisDate());
     }
 
-    @Test (expected = IllegalStateException.class)
-    public void emptyExecuteTest() throws Exception{
+    @Test(expected = IllegalStateException.class)
+    public void emptyExecuteTest() throws Exception {
         ReportCommandLine.execute(new String[0]);
     }
 
-    @Test (expected = SonarQubeException.class)
-    public void executeTest() throws Exception{
+    @Test(expected = SonarQubeException.class)
+    public void executeTest() throws Exception {
         String[] args = new String[4];
         args[0] = "-s";
-        args[1] = "http://notworking:64725"; //Random url and port to prevent test to pass
+        args[1] = "http://notworking:64725"; // Random url and port to prevent test to pass
         args[2] = "-p";
         args[3] = "project";
         ReportCommandLine.execute(args);
     }
 
+    @Test(expected = SonarQubeException.class)
+    public void executeTestSonarProperties() throws Exception {
+        try {
+            Path testSonar = Files.createTempFile("cnesreport", "");
+            List<String> lines = List.of("sonar.host.url=http://biiiiiiiiiiim", "sonar.token=this_is_a_token",
+                    "sonar.projectKey=this-is-a-project-key");
+            Files.write(testSonar, lines, StandardCharsets.UTF_8);
+            String[] args = new String[2];
+            args[0] = "-i";
+            args[1] = testSonar.toString();
+            ReportCommandLine.execute(args);
+        } catch (IOException e) {
+            assert (false);
+        }
+    }
+
     @Test
-    public void zipFolderTest() throws IOException
-    {
+    public void zipFolderTest() throws IOException {
         File f = new File(TARGET);
         File emptyFolder = new File(TARGET + "/emptyfolder");
         File notEmptyFolder = new File(TARGET + "/notemptyfolder");
@@ -112,8 +131,8 @@ public class ReportTest {
         notEmptyFolder.mkdir();
         file.createNewFile();
 
-        ZipFolder.pack(TARGET,TARGET+".zip");
-        File zip = new File(TARGET+".zip");
+        ZipFolder.pack(TARGET, TARGET + ".zip");
+        File zip = new File(TARGET + ".zip");
         assertTrue(zip.exists());
     }
 }
