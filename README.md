@@ -39,22 +39,20 @@ Generate editable reports for SonarQube projects.
  -c,--disable-conf                 Disable export of quality configuration used during analysis.
  -d,--date <arg>                   Date for the report. Format: yyyy-MM-dd. Default: current date.
  -e,--disable-spreadsheet          Disable spreadsheet generation.
- -f,--disable-csv                  Disable csv generation.
+ -f,--disable-csv                  Disable CSV generation.
  -h,--help                         Display this message.
+ -i,--properties <arg>             Fills -s, -p, and -t options from provided sonar.propeties. Uses command line if property is absent.
  -l,--language <arg>               Language of the report. Values: en_US, fr_FR. Default: en_US.
- -m,--disable-markdown             Disable markdown generation.
+ -m,--disable-markdown             Disable Markdown generation
  -n,--template-markdown <arg>      Path to the report template in markdown. Default: usage of internal template.
  -o,--output <arg>                 Output path for exported resources.
  -p,--project <arg>                SonarQube key of the targeted project.
  -r,--template-report <arg>        Path to the report template. Default: usage of internal template.
  -s,--server <arg>                 Complete URL of the targeted SonarQube server.
- -t,--token <arg>                  SonarQube "User token" of the SonarQube user who has permissions on the project.
+ -t,--token <arg>                  SonarQube token of the SonarQube user who has permissions on the project.
  -v,--version                      Display current version.
  -w,--disable-report               Disable report generation.
  -x,--template-spreadsheet <arg>   Path to the spreadsheet template. Default: usage of internal template.
-
-
-Please report issues at https://github.com/cnescatlab/sonar-cnes-report/issues
 ````
 
 #### Get logs
