@@ -117,7 +117,7 @@ public class AbstractSecurityHotspotsProviderTest {
         JsonObject rule;
 
         public SecurityHotspotsProviderWrapper() {
-            super("server", "token", "project", "branch");
+            super("server", "token", "project", "branch", false, 1800);
         }
 
         /**

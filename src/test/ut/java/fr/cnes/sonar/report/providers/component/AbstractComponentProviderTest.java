@@ -75,7 +75,7 @@ public class AbstractComponentProviderTest {
         JsonObject components;
 
         public ComponentProviderWrapper() {
-            super("server", "token", "project", "branch");
+            super("server", "token", "project", "branch", false, 1800);
         }
 
         /**

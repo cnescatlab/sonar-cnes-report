@@ -4,13 +4,15 @@ import fr.cnes.sonar.report.CommonTest;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
+import fr.cnes.sonar.report.exceptions.UnsupportedSonarqubeResponseException;
+
 import org.junit.Test;
 
 public class ReportModelFactoryTest extends CommonTest {
 
     @Test(expected = SonarQubeException.class)
     public void createStandaloneTest()
-            throws BadSonarQubeRequestException, SonarQubeException, UnknownQualityGateException {
+            throws BadSonarQubeRequestException, SonarQubeException, UnknownQualityGateException, UnsupportedSonarqubeResponseException, Exception {
         ReportModelFactory reportModelFactory = new ReportModelFactory(conf.getProject(), conf.getBranch(), conf.getAuthor(), conf.getDate(), standaloneProviderFactory);
         reportModelFactory.create();
     }

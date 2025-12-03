@@ -79,7 +79,7 @@ public class AbstractMeasureProviderTest {
         JsonObject measures;
 
         public MeasureProviderWrapper() {
-            super("server", "token", "project", "branch");
+            super("server", "token", "project", "branch", false, 1800);
         }
 
         /**

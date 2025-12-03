@@ -12,7 +12,7 @@ public class ComponentProviderTest extends CommonTest {
 
     @Test(expected = SonarQubeException.class)
     public void executeFaultyGetComponentsStandalone() throws SonarQubeException, BadSonarQubeRequestException {
-        ComponentProvider componentProvider = new ComponentProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
+        ComponentProvider componentProvider = new ComponentProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH, ENABLE_ISSUES_MULTI_REQUESTS, MAX_URL_SIZE);
         componentProvider.getComponents();
     }
 

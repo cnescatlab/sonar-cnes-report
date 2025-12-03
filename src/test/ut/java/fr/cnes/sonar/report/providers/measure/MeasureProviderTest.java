@@ -12,7 +12,7 @@ public class MeasureProviderTest extends CommonTest {
 
     @Test(expected = SonarQubeException.class)
     public void executeFaultyGetMeasuresStandalone() throws SonarQubeException, BadSonarQubeRequestException {
-        MeasureProvider measureProvider = new MeasureProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
+        MeasureProvider measureProvider = new MeasureProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH, ENABLE_ISSUES_MULTI_REQUESTS, MAX_URL_SIZE);
         measureProvider.getMeasures();
     }
 

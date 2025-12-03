@@ -41,6 +41,7 @@ Generate editable reports for SonarQube projects.
  -e,--disable-spreadsheet          Disable spreadsheet generation.
  -f,--disable-csv                  Disable csv generation.
  -h,--help                         Display this message.
+ -i,--enableIssuesMultiRequests    Workaround SonarQube 10'000 issues limitation, by multiple requests.
  -l,--language <arg>               Language of the report. Values: en_US, fr_FR. Default: en_US.
  -m,--disable-markdown             Disable markdown generation.
  -n,--template-markdown <arg>      Path to the report template in markdown. Default: usage of internal template.
@@ -49,10 +50,10 @@ Generate editable reports for SonarQube projects.
  -r,--template-report <arg>        Path to the report template. Default: usage of internal template.
  -s,--server <arg>                 Complete URL of the targeted SonarQube server.
  -t,--token <arg>                  SonarQube "User token" of the SonarQube user who has permissions on the project.
+ -u,--maxUrlSize  <arg>            SonarQube WebAPI max URL text-size.
  -v,--version                      Display current version.
  -w,--disable-report               Disable report generation.
  -x,--template-spreadsheet <arg>   Path to the spreadsheet template. Default: usage of internal template.
-
 
 Please report issues at https://github.com/cnescatlab/sonar-cnes-report/issues
 ````

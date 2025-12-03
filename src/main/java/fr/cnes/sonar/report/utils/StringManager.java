@@ -52,6 +52,8 @@ public final class StringManager {
     public static final String SONAR_TOKEN = "sonar.token";
     /** Logged message when there are too much issues to export. */
     public static final String ISSUES_OVERFLOW_MSG = "log.overflow.msg";
+    /** Logged message when there are too much files to export. */
+    public static final String FILES_OVERFLOW_MSG = "log.fileoverflow.msg";
     /** Pattern to format the date. */
     public static final String DATE_PATTERN = "yyyy-MM-dd";
     /** Regular expression to match exactly the date format */

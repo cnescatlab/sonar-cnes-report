@@ -20,7 +20,9 @@ export default class CnesReportApp extends React.PureComponent {
         enableXlsx: true,
         enableCsv: true,
         enableConf: true,
-        isSupported: true
+        isSupported: true,
+        enableIssuesMultiRequests: false,
+        maxUrlSize: '1800'
     };
 
     onChangeAuthor = (event) => {
@@ -50,8 +52,15 @@ export default class CnesReportApp extends React.PureComponent {
             case 'enableConf':
                 this.setState({enableConf: !this.state.enableConf});
                 break;
+            case 'enableIssuesMultiRequests':
+                this.setState({enableIssuesMultiRequests: !this.state.enableIssuesMultiRequests});
+                break;
           }
     }
+
+    onChangeMaxUrlSize = (event) => {
+        this.setState({ maxUrlSize: event.target.value })
+    };
 
     // disable generate button if no checkbox is checked to prevent the generation of an empty zip
     shouldDisableGeneration = () => {
@@ -218,6 +227,27 @@ export default class CnesReportApp extends React.PureComponent {
                                 defaultChecked={this.state.enableConf}
                                 onChange={() => this.onChangeCheckbox('enableConf')}/>
                             <label for="enableConf" id="enableConfLabel"><strong>Enable quality configuration generation</strong></label>
+                        </div>
+                        <div>
+                            <input id="enableIssuesMultiRequestsHidden" type="hidden" value="false" name="enableIssuesMultiRequests" disabled={this.state.enableIssuesMultiRequests}/>
+                            <input type="checkbox"
+                                id="enableIssuesMultiRequests"
+                                name="enableIssuesMultiRequests"
+                                value="true"
+                                defaultChecked={this.state.enableIssuesMultiRequests}
+                                onChange={() => this.onChangeCheckbox('enableIssuesMultiRequests')}/>
+                            <label for="enableIssuesMultiRequests" id="enableIssuesMultiRequestsLabel"><strong>Overcome 10k issues limitation (but slower)</strong></label>
+                        </div>
+                        <div class='forminput'>
+                            <label for="maxUrlSize" id="maxUrlSize" class="login-label"><strong>MaxUrlSize</strong></label>
+                            <input type="text"
+                                id="maxUrlSize"
+                                name="maxUrlSize"
+                                class="login-input"
+                                maxlength="7"
+                                required
+                                placeholder="Max Url Size" value={this.state.maxUrlSize}
+                                onChange={this.onChangeMaxUrlSize} />
                         </div>
                         <br />
                         <input id="generation" name="generation" type="submit" value="Generate"

@@ -45,14 +45,17 @@ public class SecurityHotspotsProviderStandalone extends AbstractSecurityHotspots
 
     /**
      * Complete constructor.
-     * @param server SonarQube server.
-     * @param token String representing the user token.
-     * @param project The id of the project to report.
-     * @param branch The branch of the project to report.
+     * @param pServer  SonarQube server.
+     * @param pToken   String representing the user token.
+     * @param pProject The id of the project to report.
+     * @param pBranch  The branch of the project to report.
+     * @param pEnableIssuesMultiRequests Workaround SonarQube 10'000 issues limitation, by multiple requests.
+     * @param pMaxUrlSize                SonarQube WebAPI max URL text-size.
      */
-    public SecurityHotspotsProviderStandalone(final String server, final String token, final String project,
-            final String branch) {
-        super(server, token, project, branch);
+    public SecurityHotspotsProviderStandalone(final String pServer, final String pToken, 
+    		final String pProject, final String pBranch,
+            final boolean pEnableIssuesMultiRequests, final int pMaxUrlSize) {
+        super(pServer, pToken, pProject, pBranch, pEnableIssuesMultiRequests, pMaxUrlSize);
     }
 
     @Override

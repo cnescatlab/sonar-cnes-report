@@ -318,7 +318,7 @@ public class AbstractQualityGateProviderTest {
         private JsonObject fakeQualityGateStatus;
 
         public QualityGateProviderWrapper() {
-            super("server", "token", "project", "branch");
+            super("server", "token", "project", "branch", false, 1800);
         }
 
         /**

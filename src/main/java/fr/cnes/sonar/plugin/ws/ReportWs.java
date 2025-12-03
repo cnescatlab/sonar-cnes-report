@@ -126,6 +126,20 @@ public class ReportWs implements WebService {
         enableConfParam.setRequired(false);
         enableConfParam.setBooleanPossibleValues();
         enableConfParam.setDefaultValue(PluginStringManager.getProperty("api.report.args.defaultValue.enableConf"));
+
+        // Adding enableIssuesMultiRequests argument
+        WebService.NewParam enableIssuesMultiRequests = report.createParam(PluginStringManager.getProperty("api.report.args.enableIssuesMultiRequests"));
+        enableIssuesMultiRequests.setDescription(PluginStringManager.getProperty("api.report.args.description.enableIssuesMultiRequests"));
+        enableIssuesMultiRequests.setRequired(false);
+        enableIssuesMultiRequests.setBooleanPossibleValues();
+        enableIssuesMultiRequests.setDefaultValue(PluginStringManager.getProperty("api.report.args.defaultValue.enableIssuesMultiRequests"));
+
+        // Adding maxUrlSize argument
+        WebService.NewParam maxUrlSize = report.createParam(PluginStringManager.getProperty("api.report.args.maxUrlSize"));
+        maxUrlSize.setDescription(PluginStringManager.getProperty("api.report.args.description.maxUrlSize"));
+        maxUrlSize.setRequired(false);
+        maxUrlSize.setDefaultValue(PluginStringManager.getProperty("api.report.args.defaultValue.maxUrlSize"));
+        maxUrlSize.setExampleValue(PluginStringManager.getProperty("api.report.args.exampleValue.maxUrlSize"));
     }
 }
 

@@ -139,7 +139,7 @@ public class AbstractProjectProviderTest {
         JsonObject project;
 
         public ProjectProviderWrapper(final LanguageProvider pLanguageProvider) {
-            super("server", "token", "project", "branch", pLanguageProvider);
+            super("server", "token", "project", "branch", false, 1800, pLanguageProvider);
         }
 
         /**

@@ -76,6 +76,14 @@ public abstract class CommonTest {
      */
     protected static final String QUALITY_GATE_NAME = "CNES";
     /**
+     * Enable multiple requests to get list of Issues, as a Workaround-strategy for SonarQube 10'000 issues limitation.
+     */
+    protected static final boolean ENABLE_ISSUES_MULTI_REQUESTS = false;
+    /**
+     * SonarQube WebAPI max URL text-size.
+     */
+    protected static final int MAX_URL_SIZE = 1800;
+    /**
      * Stubbed report for report.
      */
     protected Report report;
@@ -138,7 +146,9 @@ public abstract class CommonTest {
             .build();
         wsClient = WsClientFactories.getDefault().newClient(httpConnector);
 
-        standaloneProviderFactory = new StandaloneProviderFactory(conf.getServer(), conf.getToken(), conf.getProject(), conf.getBranch());
+        standaloneProviderFactory = new StandaloneProviderFactory(conf.getServer(), conf.getToken(),
+                                                                  conf.getProject(), conf.getBranch(),
+                                                                  conf.isEnableIssuesMultiRequests(), conf.getMaxUrlSize());
 
         final List<Issue> issues = new ArrayList<>();
         final Issue i1 = new Issue();

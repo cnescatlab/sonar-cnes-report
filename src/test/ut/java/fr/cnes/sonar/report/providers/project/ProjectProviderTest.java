@@ -14,14 +14,14 @@ public class ProjectProviderTest extends CommonTest {
     @Test(expected = SonarQubeException.class)
     public void executeFaultyGetProjectStandalone() throws SonarQubeException, BadSonarQubeRequestException {
         LanguageProvider languageProvider = new LanguageProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY);
-        ProjectProvider projectProvider = new ProjectProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH, languageProvider);
+        ProjectProvider projectProvider = new ProjectProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH, ENABLE_ISSUES_MULTI_REQUESTS, MAX_URL_SIZE, languageProvider);
         projectProvider.getProject(PROJECT_KEY, BRANCH);
     }
 
     @Test(expected = SonarQubeException.class)
     public void executeFaultyHasProjectStandalone() throws SonarQubeException, BadSonarQubeRequestException {
         LanguageProvider languageProvider = new LanguageProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY);
-        ProjectProvider projectProvider = new ProjectProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH, languageProvider);
+        ProjectProvider projectProvider = new ProjectProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH, ENABLE_ISSUES_MULTI_REQUESTS, MAX_URL_SIZE, languageProvider);
         projectProvider.hasProject(PROJECT_KEY, BRANCH);
     }
 

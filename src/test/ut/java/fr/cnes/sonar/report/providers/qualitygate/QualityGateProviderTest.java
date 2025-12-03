@@ -12,13 +12,13 @@ public class QualityGateProviderTest extends CommonTest {
 
     @Test(expected = SonarQubeException.class)
     public void executeFaultyGetQualityGatesStandalone() throws SonarQubeException, BadSonarQubeRequestException {
-        QualityGateProvider qualityGateProvider = new QualityGateProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
+        QualityGateProvider qualityGateProvider = new QualityGateProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH, ENABLE_ISSUES_MULTI_REQUESTS, MAX_URL_SIZE);
         qualityGateProvider.getQualityGates();
     }
 
     @Test(expected = SonarQubeException.class)
     public void executeFaultyGetQualityGateStatusStandalone() throws SonarQubeException, BadSonarQubeRequestException {
-        QualityGateProvider qualityGateProvider = new QualityGateProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
+        QualityGateProvider qualityGateProvider = new QualityGateProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH, ENABLE_ISSUES_MULTI_REQUESTS, MAX_URL_SIZE);
         qualityGateProvider.getQualityGateStatus();
     }
 

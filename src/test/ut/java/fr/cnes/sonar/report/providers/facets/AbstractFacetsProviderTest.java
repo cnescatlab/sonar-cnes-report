@@ -155,7 +155,7 @@ public class AbstractFacetsProviderTest {
         JsonObject timeFacets;
 
         public FacetsProviderWrapper() {
-            super("server", "token", "project", "branch");
+            super("server", "token", "project", "branch", false, 1800);
         }
 
         /**

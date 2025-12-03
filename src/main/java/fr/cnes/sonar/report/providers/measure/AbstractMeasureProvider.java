@@ -55,10 +55,13 @@ public abstract class AbstractMeasureProvider extends AbstractDataProvider {
      * @param pToken String representing the user token.
      * @param pProject The id of the project to report.
      * @param pBranch The branch of the project to report.
+     * @param pEnableIssuesMultiRequests Workaround SonarQube 10'000 issues limitation, by multiple requests.
+     * @param pMaxUrlSize                SonarQube WebAPI max URL text-size.
      */
-    protected AbstractMeasureProvider(final String pServer, final String pToken, final String pProject,
-            final String pBranch) {
-        super(pServer, pToken, pProject, pBranch);
+    protected AbstractMeasureProvider(final String pServer, final String pToken, 
+    		final String pProject, final String pBranch,
+            final boolean pEnableIssuesMultiRequests, final int pMaxUrlSize) {
+        super(pServer, pToken, pProject, pBranch, pEnableIssuesMultiRequests, pMaxUrlSize);
     }
 
     /**

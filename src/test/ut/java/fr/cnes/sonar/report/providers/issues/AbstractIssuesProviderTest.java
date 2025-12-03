@@ -212,7 +212,7 @@ class FakeIssuesProvider extends AbstractIssuesProvider {
     private JsonObject fakeObject;
 
     public FakeIssuesProvider() {
-        super("server", "token", "project", "branch");
+        super("server", "token", "project", "branch", false, 1800);
     }
 
     /**
@@ -250,4 +250,18 @@ class FakeIssuesProvider extends AbstractIssuesProvider {
     public String getProperty(String property) {
         return getRequest(property);
     }
+
+	@Override
+	protected JsonObject getIssuesAsJsonObject(int page, int maxPerPage, String confirmed, String additionalParams)
+			throws BadSonarQubeRequestException, SonarQubeException {
+		// Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected JsonObject getComponentsAsJsonObject(String componentID, String strategy, String qualifiers, int page,
+			int maxPerPage) throws BadSonarQubeRequestException, SonarQubeException {
+		// Auto-generated method stub
+		return null;
+	}
 }

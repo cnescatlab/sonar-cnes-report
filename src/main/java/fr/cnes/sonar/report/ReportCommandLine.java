@@ -32,6 +32,7 @@ import fr.cnes.sonar.report.exceptions.BadExportationDataTypeException;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
+import fr.cnes.sonar.report.exceptions.UnsupportedSonarqubeResponseException;
 import fr.cnes.sonar.report.factory.ProviderFactory;
 import fr.cnes.sonar.report.factory.ReportFactory;
 import fr.cnes.sonar.report.factory.ReportModelFactory;
@@ -80,9 +81,7 @@ public final class ReportCommandLine {
             // We use different method because it can be called outside main (for example, in from ReportSonarPlugin)
             execute(args);
 
-        } catch (BadExportationDataTypeException | BadSonarQubeRequestException | IOException |
-                UnknownQualityGateException | OpenXML4JException | XmlException | SonarQubeException |
-                IllegalStateException | IllegalArgumentException | ParseException e) {
+        } catch (Exception e) {
             // it logs all the stack trace
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
             System.exit(-1);
@@ -90,7 +89,7 @@ public final class ReportCommandLine {
     }
 
     public static void execute(final String[] args) throws BadExportationDataTypeException , BadSonarQubeRequestException , IOException,
-    UnknownQualityGateException, OpenXML4JException, XmlException, SonarQubeException, ParseException {
+    UnknownQualityGateException, OpenXML4JException, XmlException, SonarQubeException, ParseException, UnsupportedSonarqubeResponseException, Exception {
         // Log message.
         String message;
 
@@ -116,8 +115,9 @@ public final class ReportCommandLine {
 
         // Instantiate a ProviderFactory depending on the execution mode of the application
         ProviderFactory providerFactory;
-        providerFactory = new StandaloneProviderFactory(url, conf.getToken(), conf.getProject(), conf.getBranch());
-
+        providerFactory = new StandaloneProviderFactory(url, conf.getToken(), 
+        		conf.getProject(), conf.getBranch(), 
+        		conf.isEnableIssuesMultiRequests(), conf.getMaxUrlSize());
 
         // Initialize connexion with SonarQube and retrieve primitive information
         final SonarQubeServer server = new ServerFactory(url, providerFactory).create();

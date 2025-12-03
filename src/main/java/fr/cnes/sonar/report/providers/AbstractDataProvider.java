@@ -55,6 +55,10 @@ public abstract class AbstractDataProvider {
      */
     protected static final String GET_PROJECT_REQUEST = "GET_PROJECT_REQUEST";
     /**
+     * Parameter corresponding to request all Files, when using WEB-API
+     */
+    protected static final String ALLFILES = "";
+    /**
      * Field to search in json to get the paging section
      */
     protected static final String PAGING = "paging";
@@ -116,6 +120,16 @@ public abstract class AbstractDataProvider {
     protected String branch;
 
     /**
+     * workaround SonarQube 10'000 issues limitation, by multiple requests
+     */
+    protected boolean enableIssuesMultiRequests;
+
+    /**
+     * SonarQube WebAPI max URL text-size
+     */
+    protected int maxUrlSize;
+
+    /**
      * Client to talk with sonarqube's services
      */
 	protected WsClient wsClient;
@@ -159,8 +173,12 @@ public abstract class AbstractDataProvider {
      * @param token String representing the user token.
      * @param project The id of the project to report.
      * @param branch The branch of the project to report.
+     * @param pEnableIssuesMultiRequests Workaround SonarQube 10'000 issues limitation, by multiple requests.
+     * @param pMaxUrlSize                SonarQube WebAPI max URL text-size.
      */
-    protected AbstractDataProvider(final String server, final String token, final String project, final String branch) {
+    protected AbstractDataProvider(final String server, final String token, 
+    		                       final String project, final String branch, 
+    		                       final boolean enableIssuesMultiRequests, final int maxUrlSize) {
         // json tool
         this.gson = new Gson();
         // get sonar server
@@ -171,6 +189,9 @@ public abstract class AbstractDataProvider {
         this.projectKey = project;
         // get branch
         this.branch = branch;
+        
+        this.enableIssuesMultiRequests = enableIssuesMultiRequests;
+        this.maxUrlSize = maxUrlSize;
     }
 
     /**
@@ -281,7 +302,8 @@ public abstract class AbstractDataProvider {
      */
     public JsonObject request(final String request)
             throws BadSonarQubeRequestException, SonarQubeException {
-        // do the request to the server and return a string answer
+
+    	// do the request to the server and return a string answer
         final String raw = stringRequest(request);
 
         // prepare json

@@ -220,4 +220,33 @@ public class ReportWsTest {
                 .possibleValues().contains("no"));
     }
 
+    public void testActionEnableIssuesMultiRequests() {
+        // Control the webservice enableIssuesMultiRequests parameter
+        assertEquals(PluginStringManager.getProperty("api.report.args.description.enableIssuesMultiRequests"),
+                this.reportAction.param(PluginStringManager.getProperty("api.report.args.enableIssuesMultiRequests")).description());
+        assertEquals(false,
+                this.reportAction.param(PluginStringManager.getProperty("api.report.args.enableIssuesMultiRequests")).isRequired());
+        assertEquals(4, this.reportAction.param(PluginStringManager.getProperty("api.report.args.enableIssuesMultiRequests"))
+                .possibleValues().size());
+        assertTrue(this.reportAction.param(PluginStringManager.getProperty("api.report.args.enableIssuesMultiRequests"))
+                .possibleValues().contains("true"));
+        assertTrue(this.reportAction.param(PluginStringManager.getProperty("api.report.args.enableIssuesMultiRequests"))
+                .possibleValues().contains("false"));
+        assertTrue(this.reportAction.param(PluginStringManager.getProperty("api.report.args.enableIssuesMultiRequests"))
+                .possibleValues().contains("yes"));
+        assertTrue(this.reportAction.param(PluginStringManager.getProperty("api.report.args.enableIssuesMultiRequests"))
+                .possibleValues().contains("no"));
+    }
+
+    public void testActionMaxUrlSize() {
+        // Control the webservice maxUrlSize parameter
+        assertEquals(PluginStringManager.getProperty("api.report.args.description.maxUrlSize"),
+                this.reportAction.param(PluginStringManager.getProperty("api.report.args.maxUrlSize")).description());
+        assertEquals(true,
+                this.reportAction.param(PluginStringManager.getProperty("api.report.args.maxUrlSize")).isRequired());
+        assertEquals(PluginStringManager.getProperty("api.report.args.exampleValue.maxUrlSize"),
+                this.reportAction.param(PluginStringManager.getProperty("api.report.args.maxUrlSize")).exampleValue());
+    }
+
+
 }

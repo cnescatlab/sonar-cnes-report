@@ -13,7 +13,7 @@ public class AbstractDataProviderTest extends CommonTest {
 
     @Test
     public void createAbstractDataProviderStandalone() {
-        ComponentProviderStandalone componentProvider = new ComponentProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
+        ComponentProviderStandalone componentProvider = new ComponentProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH, ENABLE_ISSUES_MULTI_REQUESTS, MAX_URL_SIZE);
 
         assertSame(TOKEN, componentProvider.getToken());
         componentProvider.setToken("sqerv1654dr1gsert");

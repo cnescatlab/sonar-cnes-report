@@ -17,10 +17,16 @@
 
 package fr.cnes.sonar.report.factory;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
 import fr.cnes.sonar.report.exceptions.UnknownQualityGateException;
+import fr.cnes.sonar.report.exceptions.UnsupportedSonarqubeResponseException;
 import fr.cnes.sonar.report.model.Components;
+import fr.cnes.sonar.report.model.Issue;
 import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.providers.component.ComponentProvider;
 import fr.cnes.sonar.report.providers.facets.FacetsProvider;
@@ -79,8 +85,10 @@ public class ReportModelFactory {
      * @throws BadSonarQubeRequestException when a request to the server is not well-formed
      * @throws UnknownQualityGateException a quality gate is not correct
      * @throws SonarQubeException When an error occurred from SonarQube server.
+     * @throws Exception 
+     * @throws UnsupportedSonarqubeResponseException
      */
-    public Report create() throws BadSonarQubeRequestException, UnknownQualityGateException, SonarQubeException {
+    public Report create() throws BadSonarQubeRequestException, UnknownQualityGateException, SonarQubeException, UnsupportedSonarqubeResponseException, Exception {
         // the new report to return
         final Report report = new Report();
 
@@ -118,9 +126,18 @@ public class ReportModelFactory {
         report.setAnalysisDate(report.getProject().getAnalysisDate());
         report.truncateAnalysisDate();
         // formatted issues, unconfirmed issues and raw issues' setting
-        report.setIssues(issuesProvider.getIssues());
-        report.setUnconfirmed(issuesProvider.getUnconfirmedIssues());
-        report.setRawIssues(issuesProvider.getRawIssues());
+        {
+        	final List<Issue> listOfConfirmedIssues = new ArrayList<Issue>();
+        	final List<Issue> listOfUnconfirmedIssues = new ArrayList<Issue>();
+        	final List<Map<String, String>> listOfMapOfIssues = new ArrayList<Map<String, String>>();
+        	
+        	issuesProvider.getIssuesStructures("false", listOfConfirmedIssues, null                   , listOfMapOfIssues);
+        	issuesProvider.getIssuesStructures("true",  null                 , listOfUnconfirmedIssues, null);
+        	
+        	report.setIssues(listOfConfirmedIssues);
+        	report.setUnconfirmed(listOfUnconfirmedIssues);
+        	report.setRawIssues(listOfMapOfIssues);
+        }
         // facets's setting
         report.setFacets(facetsProvider.getFacets());
         report.setTimeFacets(facetsProvider.getTimeFacets());

@@ -61,6 +61,10 @@ public class ReportConfiguration {
     private String templateSpreadsheet;
     /** Options for n. */
     private String templateMarkdown;
+    /** Options for i. */
+    private boolean enableIssuesMultiRequests;
+    /** Options for u. */
+    private int maxUrlSize;
 
     /**
      * Private constructor, use create method instead.
@@ -76,9 +80,14 @@ public class ReportConfiguration {
      * @param enableConf Value for c option.
      * @param enableReport Value for w option.
      * @param enableSpreadsheet Value for e option.
+     * @param enableCSV
+     * @param enableMarkdown
      * @param templateReport Value for r option.
      * @param templateSpreadsheet Value for x option.
+     * @param templateMarkdown
      * @param branch Value for b option.
+     * @param pEnableIssuesMultiRequests Workaround SonarQube 10'000 issues limitation, by multiple requests.
+     * @param pMaxUrlSize                SonarQube WebAPI max URL text-size.
      */
     private ReportConfiguration(final boolean help, final boolean version, final String server,
                                 final String token, final String project, final String output,
@@ -86,7 +95,8 @@ public class ReportConfiguration {
                                 final boolean enableConf, final boolean enableReport,
                                 final boolean enableSpreadsheet, final boolean enableCSV,
                                 final boolean enableMarkdown, String templateReport,
-                                final String templateSpreadsheet, final String templateMarkdown, final String branch) {
+                                final String templateSpreadsheet, final String templateMarkdown, final String branch,
+                                final boolean enableIssuesMultiRequests, final int maxUrlSize) {
         this.help = help;
         this.version = version;
         this.server = server;
@@ -105,6 +115,8 @@ public class ReportConfiguration {
         this.templateSpreadsheet = templateSpreadsheet;
         this.templateMarkdown = templateMarkdown;
         this.branch = branch;
+        this.enableIssuesMultiRequests = enableIssuesMultiRequests;
+        this.maxUrlSize = maxUrlSize;
     }
 
     /**
@@ -139,7 +151,9 @@ public class ReportConfiguration {
                 commandLineManager.getOptionValue("r", StringManager.EMPTY),
                 commandLineManager.getOptionValue("x", StringManager.EMPTY),
                 commandLineManager.getOptionValue("n", StringManager.EMPTY),
-                branch.isEmpty()?StringManager.NO_BRANCH:branch
+                branch.isEmpty()?StringManager.NO_BRANCH:branch,
+                commandLineManager.hasOption("i"),  // "i" stands for "iterate"
+                Integer.parseInt(commandLineManager.getOptionValue("u", "1800")) // "u" stands for URL
         );
     }
 
@@ -209,5 +223,13 @@ public class ReportConfiguration {
 
     public String getTemplateMarkdown(){
         return templateMarkdown;
+    }
+
+    public boolean isEnableIssuesMultiRequests() {
+        return enableIssuesMultiRequests;
+    }
+
+    public int getMaxUrlSize(){
+        return maxUrlSize;
     }
 }

@@ -58,7 +58,15 @@ public class StandaloneProviderFactory implements ProviderFactory {
     /**
      * Branch of the project
      */
-    private String branch;    
+    private String branch;
+    /**
+     * workaround SonarQube 10'000 issues limitation, by multiple requests
+     */
+    private boolean enableIssuesMultiRequests;
+    /**
+     * SonarQube WebAPI max URL text-size
+     */
+    private int maxUrlSize;
 	
     /**
      * Constructor.
@@ -66,27 +74,33 @@ public class StandaloneProviderFactory implements ProviderFactory {
      * @param token User's token.
      * @param project Project's id.
      * @param branch Project's branch.
+     * @param pEnableIssuesMultiRequests Workaround SonarQube 10'000 issues limitation, by multiple requests.
+     * @param pMaxUrlSize                SonarQube WebAPI max URL text-size.
     */
-	public StandaloneProviderFactory(String server, String token, String project, String branch){
+	public StandaloneProviderFactory(String server, String token, 
+			String project, String branch, 
+			boolean enableIssuesMultiRequests, int maxUrlSize){
 		this.server = server;
 		this.token = token;
 		this.project = project;
 		this.branch = branch;
+		this.enableIssuesMultiRequests = enableIssuesMultiRequests;
+		this.maxUrlSize = maxUrlSize;
 	}
 
     @Override
     public ComponentProvider createComponentProvider() {
-        return new ComponentProviderStandalone(this.server, this.token, this.project, this.branch);
+        return new ComponentProviderStandalone(this.server, this.token, this.project, this.branch, this.enableIssuesMultiRequests, this.maxUrlSize);
     }
 
     @Override
     public FacetsProvider createFacetsProvider() {
-        return new FacetsProviderStandalone(this.server, this.token, this.project, this.branch);
+        return new FacetsProviderStandalone(this.server, this.token, this.project, this.branch, this.enableIssuesMultiRequests, this.maxUrlSize);
     }
 
     @Override
     public IssuesProvider createIssuesProvider() {
-        return new IssuesProviderStandalone(this.server, this.token, this.project, this.branch);
+        return new IssuesProviderStandalone(this.server, this.token, this.project, this.branch, this.enableIssuesMultiRequests, this.maxUrlSize);
     }
 
     @Override
@@ -96,17 +110,17 @@ public class StandaloneProviderFactory implements ProviderFactory {
     
     @Override
     public MeasureProvider createMeasureProvider() {
-        return new MeasureProviderStandalone(this.server, this.token, this.project, this.branch);
+        return new MeasureProviderStandalone(this.server, this.token, this.project, this.branch, this.enableIssuesMultiRequests, this.maxUrlSize);
     }
 
     @Override
     public ProjectProvider createProjectProvider() {
-        return new ProjectProviderStandalone(this.server, this.token, this.project, this.branch, createLanguageProvider());
+        return new ProjectProviderStandalone(this.server, this.token, this.project, this.branch, this.enableIssuesMultiRequests, this.maxUrlSize, createLanguageProvider());
     }
 
     @Override
     public QualityGateProvider createQualityGateProvider() {
-        return new QualityGateProviderStandalone(this.server, this.token, this.project, this.branch);
+        return new QualityGateProviderStandalone(this.server, this.token, this.project, this.branch, this.enableIssuesMultiRequests, this.maxUrlSize);
     }
 
     @Override
@@ -116,7 +130,7 @@ public class StandaloneProviderFactory implements ProviderFactory {
 
     @Override
     public SecurityHotspotsProvider createSecurityHotspotsProvider() {
-        return new SecurityHotspotsProviderStandalone(this.server, this.token, this.project, this.branch);
+        return new SecurityHotspotsProviderStandalone(this.server, this.token, this.project, this.branch, this.enableIssuesMultiRequests, this.maxUrlSize);
     }
 
     @Override

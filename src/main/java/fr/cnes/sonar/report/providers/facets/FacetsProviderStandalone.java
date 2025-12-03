@@ -49,10 +49,13 @@ public class FacetsProviderStandalone extends AbstractFacetsProvider implements 
      * @param pToken   String representing the user token.
      * @param pProject The id of the project to report.
      * @param pBranch  The branch of the project to report.
+     * @param pEnableIssuesMultiRequests Workaround SonarQube 10'000 issues limitation, by multiple requests.
+     * @param pMaxUrlSize                SonarQube WebAPI max URL text-size.
      */
-    public FacetsProviderStandalone(final String pServer, final String pToken, final String pProject,
-            final String pBranch) {
-        super(pServer, pToken, pProject, pBranch);
+    public FacetsProviderStandalone(final String pServer, final String pToken, 
+    		final String pProject, final String pBranch,
+    		final boolean pEnableIssuesMultiRequests, final int pMaxUrlSize) {
+        super(pServer, pToken, pProject, pBranch, pEnableIssuesMultiRequests, pMaxUrlSize);
     }
 
     @Override
@@ -70,7 +73,7 @@ public class FacetsProviderStandalone extends AbstractFacetsProvider implements 
         // prepare the request
         final String request = String.format(getRequest(GET_ISSUES_REQUEST), getServer(), getProjectKey(),
                 getMetrics(PROJECT_FACETS), FACETS_MAX_PER_PAGE, page, getMetrics(PROJECT_ADDITIONAL_FIELDS),
-                FACETS_STATUS, getBranch());
+                FACETS_STATUS, getBranch(), ALLFILES);
         // contact the server to request the resources as json
         return request(request);
     }

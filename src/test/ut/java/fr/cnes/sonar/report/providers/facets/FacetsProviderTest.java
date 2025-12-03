@@ -12,7 +12,7 @@ public class FacetsProviderTest extends CommonTest {
 
     @Test(expected = SonarQubeException.class)
     public void executeFaultyGetFacetsStandalone() throws SonarQubeException, BadSonarQubeRequestException {
-        FacetsProvider facetsProvider = new FacetsProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
+        FacetsProvider facetsProvider = new FacetsProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH, ENABLE_ISSUES_MULTI_REQUESTS, MAX_URL_SIZE);
         facetsProvider.getFacets();
     }    
 
@@ -20,7 +20,7 @@ public class FacetsProviderTest extends CommonTest {
 
     @Test(expected = SonarQubeException.class)
     public void executeFaultyGetTimeFacetsStandalone() throws SonarQubeException, BadSonarQubeRequestException {
-        FacetsProvider facetsProvider = new FacetsProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH);
+        FacetsProvider facetsProvider = new FacetsProviderStandalone(sonarQubeServer, TOKEN, PROJECT_KEY, BRANCH, ENABLE_ISSUES_MULTI_REQUESTS, MAX_URL_SIZE);
         facetsProvider.getTimeFacets();
     }    
 

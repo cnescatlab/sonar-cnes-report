@@ -19,6 +19,7 @@ package fr.cnes.sonar.report.providers.issues;
 
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
+import fr.cnes.sonar.report.exceptions.UnsupportedSonarqubeResponseException;
 import fr.cnes.sonar.report.model.Issue;
 
 import java.util.List;
@@ -31,17 +32,18 @@ public interface IssuesProvider {
     /**
      * Get all the real issues of a project
      * @return Array containing all the issues
+     * @throws exception
      * @throws BadSonarQubeRequestException A request is not recognized by the server
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    List<Issue> getIssues() throws BadSonarQubeRequestException, SonarQubeException;
+    List<Issue> getIssues() throws Exception, BadSonarQubeRequestException, SonarQubeException;
     /**
      * Get all the unconfirmed issues of a project
      * @return Array containing all the issues
      * @throws BadSonarQubeRequestException A request is not recognized by the server
      * @throws SonarQubeException When SonarQube server is not callable.
      */
-    List<Issue> getUnconfirmedIssues() throws BadSonarQubeRequestException, SonarQubeException;
+    List<Issue> getUnconfirmedIssues() throws Exception, BadSonarQubeRequestException, SonarQubeException;
     /**
      * Get all the issues of a project in a raw format (map)
      * @return Array containing all the issues as maps
@@ -49,4 +51,24 @@ public interface IssuesProvider {
      * @throws SonarQubeException When SonarQube server is not callable.
      */
     List<Map<String,String>> getRawIssues() throws BadSonarQubeRequestException, SonarQubeException;
+    
+    /**
+     * Get Issues then fill different structures
+     * 
+     * @param confirmed               
+     * @param listOfConfirmedIssues   Input to fill with confirmed Issues
+     * @param listOfUnconfirmedIssues Input to fill with unconfirmed Issues
+     * @param listOfMapOfIssues       Input to fill with Issues, each Issue is represented as Map containing Issue parameters
+     * 
+     * @throws Exception
+     * @throws BadSonarQubeRequestException
+     * @throws SonarQubeException
+     * @throws UnsupportedSonarqubeResponseException 
+     */
+    void getIssuesStructures(
+    		final String confirmed, 
+    		final List<Issue> listOfConfirmedIssues, 
+    		final List<Issue> listOfUnconfirmedIssues, 
+    		final List<Map<String, String>> listOfMapOfIssues)
+    	throws Exception, BadSonarQubeRequestException, SonarQubeException, UnsupportedSonarqubeResponseException;
 }

@@ -36,14 +36,17 @@ public class ComponentProviderStandalone extends AbstractComponentProvider imple
     /**
      * Constructor.
      *
-     * @param server  SonarQube server.
-     * @param token   String representing the user token.
-     * @param project The id of the component to report.
-     * @param project The branch of the component to report.
+     * @param pServer  SonarQube server.
+     * @param pToken   String representing the user token.
+     * @param pProject The id of the component to report.
+     * @param pProject The branch of the component to report.
+     * @param pEnableIssuesMultiRequests Workaround SonarQube 10'000 issues limitation, by multiple requests.
+     * @param pMaxUrlSize                SonarQube WebAPI max URL text-size.
      */
-    public ComponentProviderStandalone(final String server, final String token, final String project,
-            final String branch) {
-        super(server, token, project, branch);
+    public ComponentProviderStandalone(final String pServer, final String pToken, 
+    		final String pProject, final String pBranch, 
+            final boolean pEnableIssuesMultiRequests, final int pMaxUrlSize) {
+    	super(pServer, pToken, pProject, pBranch, pEnableIssuesMultiRequests, pMaxUrlSize);
     }
 
     @Override
