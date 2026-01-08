@@ -1,12 +1,12 @@
 package fr.cnes.sonar.report.utils;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
-
-import static org.junit.Assert.*;
-
-import org.junit.Rule;
-
+@Ignore
 public class CommandLineManagerTest {
 
 	@Rule

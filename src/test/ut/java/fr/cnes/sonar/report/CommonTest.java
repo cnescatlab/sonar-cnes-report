@@ -17,6 +17,7 @@
 
 package fr.cnes.sonar.report;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -102,25 +103,32 @@ public abstract class CommonTest {
 
     /**
      * Setting of all stubbed resources before launching a test.
+     * 
+     * @throws IOException
      */
     @Before
     public void before() {
         report = new StubReport();
-        conf = ReportConfiguration.create(new String[]{
-                "-s", "http://biiiiiiiiiiiiim",
-                "-p", PROJECT_KEY,
-                "-a", "Lequal",
-                "-b", BRANCH,
-                "-d", new SimpleDateFormat(StringManager.DATE_PATTERN).format(new Date()),
-                "-o", "./target",
-                "-l", "en_US",
-                "-r", "src/main/resources/template/code-analysis-template.docx",
-                "-x", "src/main/resources/template/issues-template.xlsx"
-        });
+        try {
+            conf = ReportConfiguration.create(new String[] {
+                    "-s", "http://biiiiiiiiiiiiim",
+                    "-p", PROJECT_KEY,
+                    "-a", "Lequal",
+                    "-b", BRANCH,
+                    "-d", new SimpleDateFormat(StringManager.DATE_PATTERN).format(new Date()),
+                    "-o", "./target",
+                    "-l", "en_US",
+                    "-r", "src/main/resources/template/code-analysis-template.docx",
+                    "-x", "src/main/resources/template/issues-template.xlsx"
+            });
+        } catch (IOException e) {
+            // This is just here to catch an exception thrown when passing -i to the report configuration. 
+            // Will never happen here, but syntactically required.
+        }
 
         report.setProjectName("CNES Report");
         report.setProjectBranch("main");
-        report.setProjectDate(new Date().toString().substring(0,16));
+        report.setProjectDate(new Date().toString().substring(0, 16));
         report.setProjectAuthor("Lequal");
         report.setAnalysisDate("2020-10-10T2020+0200");
 
@@ -133,12 +141,13 @@ public abstract class CommonTest {
         sonarQubeServer = conf.getServer();
 
         HttpConnector httpConnector = HttpConnector.newBuilder()
-            .url(conf.getServer())
-            .credentials("admin", "admin")
-            .build();
+                .url(conf.getServer())
+                .credentials("admin", "admin")
+                .build();
         wsClient = WsClientFactories.getDefault().newClient(httpConnector);
 
-        standaloneProviderFactory = new StandaloneProviderFactory(conf.getServer(), conf.getToken(), conf.getProject(), conf.getBranch());
+        standaloneProviderFactory = new StandaloneProviderFactory(conf.getServer(), conf.getToken(), conf.getProject(),
+                conf.getBranch());
 
         final List<Issue> issues = new ArrayList<>();
         final Issue i1 = new Issue();
@@ -175,7 +184,7 @@ public abstract class CommonTest {
         i4.setType("BUG");
         // Adding multiple time to test comparator (DataAdapter.RuleComparator)
         Issue issue;
-        for(int i=1;i<10;i++){
+        for (int i = 1; i < 10; i++) {
             issue = new Issue();
             issue.setRule("squid:1234");
             issue.setMessage("ISSUES");
@@ -188,14 +197,14 @@ public abstract class CommonTest {
         issues.add(i4);
         report.setIssues(issues);
 
-        List<Map<String,String>> rawIssues = new ArrayList<>();
+        List<Map<String, String>> rawIssues = new ArrayList<>();
         Map<String, String> issue1 = new HashMap<>();
         issue1.put("Comments", new ArrayList<String>().toString());
         issue1.put("ToReview", "true");
         issue1.put("someNumber", "1.0");
         rawIssues.add(issue1);
 
-        Map<String,String> issue2 = new HashMap<>();
+        Map<String, String> issue2 = new HashMap<>();
         List<String> list = new ArrayList<>();
         list.add("Element 1");
         list.add("Element 2");
@@ -243,11 +252,10 @@ public abstract class CommonTest {
         List<TimeFacet> facetList = new ArrayList<>();
         facetList.add(new TimeFacet("sqale_debt_ratio", values1));
         facetList.add(new TimeFacet("violations", values2));
-        
+
         TimeFacets timeFacets = new TimeFacets();
         timeFacets.setTimeFacets(facetList);
         report.setTimeFacets(timeFacets);
-
 
         final List<SecurityHotspot> securityHotspots = new ArrayList<>();
         final SecurityHotspot sh1 = new SecurityHotspot();
@@ -352,7 +360,8 @@ public abstract class CommonTest {
         profileMetaData.setName("BG");
         profileMetaData.setKey("BG");
         final QualityProfile qualityProfile = new QualityProfile(profileData, profileMetaData);
-        qualityProfile.setProjects((new Project[]{new Project("sonar-cnes-plugin", "sonar-cnes-plugin", "none", "", "", "", "")}));
+        qualityProfile.setProjects(
+                (new Project[] { new Project("sonar-cnes-plugin", "sonar-cnes-plugin", "none", "", "", "", "") }));
         report.setQualityProfiles(Collections.singletonList(qualityProfile));
         final QualityGate qualityGate = new QualityGate();
         qualityGate.setName(QUALITY_GATE_NAME);
@@ -365,7 +374,8 @@ public abstract class CommonTest {
         final Map<String, Language> languages = new HashMap<>();
         languages.put(language.getKey(), language);
 
-        final Project project = new Project("key", "Name", "none","Version", "Short description", "", "2020-10-10T2020+0200");
+        final Project project = new Project("key", "Name", "none", "Version", "Short description", "",
+                "2020-10-10T2020+0200");
         project.setQualityProfiles(new ProfileMetaData[0]);
         project.setLanguages(languages);
         report.setProject(project);
@@ -390,7 +400,6 @@ public abstract class CommonTest {
         measures.add(new Measure("test_errors", "8"));
         report.setMeasures(measures);
 
-
         Map<String, Double> metricStats = new HashMap<>();
         // Use first component to gets all metrics names
 
@@ -408,7 +417,6 @@ public abstract class CommonTest {
         metricStats.put("mincoverage", 0.0);
         metricStats.put("medianncloc", 1.0);
         // Max coverage is not included to raise a NullPointerException
-
 
         report.setMetricsStats(metricStats);
 

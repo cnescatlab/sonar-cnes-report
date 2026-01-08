@@ -17,8 +17,12 @@
 
 package fr.cnes.sonar.report.utils;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import fr.cnes.sonar.plugin.tools.SonarPropertiesLoader;
 
 /**
  * Contains all configuration about the report to generate.
@@ -64,29 +68,32 @@ public class ReportConfiguration {
 
     /**
      * Private constructor, use create method instead.
-     * @param help Value for h option.
-     * @param version Value for v option.
-     * @param server Value for s option.
-     * @param token Value for t option.
-     * @param project Value for p option.
-     * @param output Value for o option.
-     * @param language Value for l option.
-     * @param author Value for a option.
-     * @param date Value for d option.
-     * @param enableConf Value for c option.
-     * @param enableReport Value for w option.
-     * @param enableSpreadsheet Value for e option.
-     * @param templateReport Value for r option.
+     * 
+     * @param help                Value for h option.
+     * @param version             Value for v option.
+     * @param useProperties       Value for i option
+     * @param server              Value for s option.
+     * @param token               Value for t option.
+     * @param project             Value for p option.
+     * @param output              Value for o option.
+     * @param language            Value for l option.
+     * @param author              Value for a option.
+     * @param date                Value for d option.
+     * @param enableConf          Value for c option.
+     * @param enableReport        Value for w option.
+     * @param enableSpreadsheet   Value for e option.
+     * @param templateReport      Value for r option.
      * @param templateSpreadsheet Value for x option.
-     * @param branch Value for b option.
+     * @param branch              Value for b option.
      */
-    private ReportConfiguration(final boolean help, final boolean version, final String server,
-                                final String token, final String project, final String output,
-                                final String language, final String author, final String date,
-                                final boolean enableConf, final boolean enableReport,
-                                final boolean enableSpreadsheet, final boolean enableCSV,
-                                final boolean enableMarkdown, String templateReport,
-                                final String templateSpreadsheet, final String templateMarkdown, final String branch) {
+    private ReportConfiguration(final boolean help, final boolean version, 
+            final String server,
+            final String token, final String project, final String output,
+            final String language, final String author, final String date,
+            final boolean enableConf, final boolean enableReport,
+            final boolean enableSpreadsheet, final boolean enableCSV,
+            final boolean enableMarkdown, String templateReport,
+            final String templateSpreadsheet, final String templateMarkdown, final String branch) {
         this.help = help;
         this.version = version;
         this.server = server;
@@ -107,40 +114,69 @@ public class ReportConfiguration {
         this.branch = branch;
     }
 
+    private ReportConfiguration() {
+
+    }
+
     /**
      * Create a configuration object from raw string array.
      *
      * @param pArgs Raw java string array.
      * @return Configuration object.
      */
-    public static ReportConfiguration create(final String[] pArgs) {
+    public static ReportConfiguration create(final String[] pArgs) throws IOException {
 
         // Parse arguments.
         final CommandLineManager commandLineManager = new CommandLineManager();
         commandLineManager.parse(pArgs);
 
+        String server = "";
+        String projectKey = "";
+        String token = "";
+
+        if (commandLineManager.hasOption("i")) {
+            // If we have a sonar.properties file, we read it and set server, projectKey and
+            // token from it if possible.
+            SonarPropertiesLoader propLoader = new SonarPropertiesLoader(
+                    Paths.get(commandLineManager.getOptionValue("i")));
+
+            // If -s input does not exist, add it with the value of
+            // sonarprops.get("sonar.host.url"). If it does, no action (Command line is
+            // authoritative).
+            // Similar logic for other parameters, projectKey, token, etc.
+
+            if (!commandLineManager.hasOption("s"))
+                server = propLoader.getSonarProperty(StringManager.SONAR_SERVER);
+            if (!commandLineManager.hasOption("p"))
+                projectKey = propLoader.getSonarProperty(StringManager.SONAR_KEY);
+            if (!commandLineManager.hasOption("t"))
+                token = propLoader.getSonarProperty(StringManager.SONAR_TOKEN);
+        }
+
         // Final result to return.
-        final String branch = commandLineManager.getOptionValue("b", StringManager.NO_BRANCH);
-        return new ReportConfiguration(
-                commandLineManager.hasOption("h"),
-                commandLineManager.hasOption("v"),
-                commandLineManager.getOptionValue("s", StringManager.getProperty(StringManager.SONAR_URL)),
-                commandLineManager.getOptionValue("t", StringManager.getProperty(StringManager.SONAR_TOKEN)),
-                commandLineManager.getOptionValue("p", StringManager.EMPTY),
+        final String branch = commandLineManager.getOptionValue("b",
+                StringManager.NO_BRANCH);
+        return new ReportConfiguration(commandLineManager.hasOption("h"), commandLineManager.hasOption("v"),
+                server.isEmpty()
+                        ? commandLineManager.getOptionValue("s", StringManager.getProperty(StringManager.SONAR_URL))
+                        : server,
+                token.isEmpty()
+                        ? commandLineManager.getOptionValue("t", StringManager.getProperty(StringManager.SONAR_TOKEN))
+                        : token,
+                projectKey.isEmpty() ? commandLineManager.getOptionValue("p", StringManager.EMPTY) : projectKey,
                 commandLineManager.getOptionValue("o", StringManager.getProperty(StringManager.DEFAULT_OUTPUT)),
                 commandLineManager.getOptionValue("l", StringManager.getProperty(StringManager.DEFAULT_LANGUAGE)),
                 commandLineManager.getOptionValue("a", StringManager.getProperty(StringManager.DEFAULT_AUTHOR)),
-                commandLineManager.getOptionValue("d", new SimpleDateFormat(StringManager.DATE_PATTERN).format(new Date())),
-                !commandLineManager.hasOption("c"),
-                !commandLineManager.hasOption("w"),
-                !commandLineManager.hasOption("e"),
-                !commandLineManager.hasOption("f"), // Why f? Because every "logic" options like "c" are already used
-                !commandLineManager.hasOption("m"),
-                commandLineManager.getOptionValue("r", StringManager.EMPTY),
+                commandLineManager.getOptionValue("d",
+                        new SimpleDateFormat(StringManager.DATE_PATTERN).format(new Date())),
+                !commandLineManager.hasOption("c"), !commandLineManager.hasOption("w"),
+                !commandLineManager.hasOption("e"), !commandLineManager.hasOption("f"), // Why f ? Because every "logic"
+                                                                                        // options like "c" are already
+                                                                                        // used
+                !commandLineManager.hasOption("m"), commandLineManager.getOptionValue("r", StringManager.EMPTY),
                 commandLineManager.getOptionValue("x", StringManager.EMPTY),
                 commandLineManager.getOptionValue("n", StringManager.EMPTY),
-                branch.isEmpty()?StringManager.NO_BRANCH:branch
-        );
+                branch.isEmpty() ? StringManager.NO_BRANCH : branch);
     }
 
     public boolean isHelp() {
@@ -187,9 +223,13 @@ public class ReportConfiguration {
         return enableConf;
     }
 
-    public boolean isEnableCSV(){ return enableCSV; }
+    public boolean isEnableCSV() {
+        return enableCSV;
+    }
 
-    public boolean isEnableMarkdown(){ return enableMarkdown; }
+    public boolean isEnableMarkdown() {
+        return enableMarkdown;
+    }
 
     public boolean isEnableReport() {
         return enableReport;
@@ -207,7 +247,7 @@ public class ReportConfiguration {
         return templateSpreadsheet;
     }
 
-    public String getTemplateMarkdown(){
+    public String getTemplateMarkdown() {
         return templateMarkdown;
     }
 }
