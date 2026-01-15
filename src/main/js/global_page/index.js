@@ -19,6 +19,11 @@
 import React from "react";
 import "./style.css";
 import CnesReportApp from "./components/CnesReportApp";
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+
 
 
 // This creates a page for portfolios, which generates a report for all the
