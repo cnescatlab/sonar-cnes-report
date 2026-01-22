@@ -42,7 +42,12 @@ import fr.cnes.sonar.report.exporters.data.SecurityHotspotsAdapter;
 import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.utils.StringManager;
 
+import java.util.logging.Logger;
+
 public class MarkdownExporter implements IExporter {
+
+    /** Logger for this class. */
+    private static final Logger LOGGER = Logger.getLogger(MarkdownExporter.class.getName());
 
     /**
      * Placeholder for issues count table
@@ -95,9 +100,13 @@ public class MarkdownExporter implements IExporter {
         final File file = new File(filename);
         final Report report = (Report) data;
 
+        // Check if custom template file exists and is a file (not directory)
+        // Empty filename or non-existent file will use localized template
+        final boolean useCustomTemplate = !filename.isEmpty() && file.exists() && file.isFile();
+
         try (
-                InputStream fileInputStream = file.exists() ? new FileInputStream(file)
-                        : getClass().getResourceAsStream(StringManager.getProperty(DEFAULT_TEMPLATE));) {
+                InputStream fileInputStream = useCustomTemplate ? new FileInputStream(file)
+                        : getLocalizedTemplateStream()) {
             // Getting MD template
             StringWriter writer = new StringWriter();
             IOUtils.copy(fileInputStream, writer, StandardCharsets.UTF_8);
@@ -295,5 +304,46 @@ public class MarkdownExporter implements IExporter {
         final String detailedTechnicalDebtTable = generateMDTable(headerDetailedTechnicalDebt,
                 detailedTechnicalDebt);
         return content.replace(DETAILED_TECHNICAL_DEBT_TABLE_PLACEHOLDER, detailedTechnicalDebtTable);
+    }
+
+    /**
+     * Get localized template input stream based on current locale.
+     * First tries to find a locale-specific template (e.g.,
+     * code-analysis-template_zh_CN.md),
+     * falls back to default template if not found.
+     * 
+     * @return InputStream for the template file
+     */
+    private InputStream getLocalizedTemplateStream() {
+        String defaultTemplatePath = StringManager.getProperty(DEFAULT_TEMPLATE);
+
+        // Try to get locale-specific template
+        // Template path format: /template/code-analysis-template.md
+        // Localized format: /template/code-analysis-template_zh_CN.md
+        String locale = StringManager.getCurrentLocale();
+        LOGGER.info(() -> "Current locale for template selection: " + locale);
+
+        if (locale != null && !locale.isEmpty() && !"en_US".equals(locale)) {
+            // Build localized template path
+            int dotIndex = defaultTemplatePath.lastIndexOf('.');
+            if (dotIndex > 0) {
+                String localizedPath = defaultTemplatePath.substring(0, dotIndex)
+                        + "_" + locale
+                        + defaultTemplatePath.substring(dotIndex);
+                LOGGER.info(() -> "Looking for localized template: " + localizedPath);
+                InputStream localizedStream = getClass().getResourceAsStream(localizedPath);
+                if (localizedStream != null) {
+                    LOGGER.info(() -> "Found localized template: " + localizedPath);
+                    return localizedStream;
+                } else {
+                    LOGGER.warning(
+                            () -> "Localized template not found: " + localizedPath + ", falling back to default");
+                }
+            }
+        }
+
+        // Fall back to default template
+        LOGGER.info(() -> "Using default template: " + defaultTemplatePath);
+        return getClass().getResourceAsStream(defaultTemplatePath);
     }
 }

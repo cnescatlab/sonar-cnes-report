@@ -15,7 +15,7 @@ export default class CnesReportApp extends React.PureComponent {
         token: "",
         author: "",
         branches: [],
-        languages: [{id: 'en_US', name: 'English'}, {id: 'fr_FR', name: 'French'}],
+        languages: [{id: 'en_US', name: 'English'}, {id: 'fr_FR', name: 'French'}, {id: 'zh_CN', name: '中文'}],
         enableDocx: true,
         enableMd: true,
         enableXlsx: true,

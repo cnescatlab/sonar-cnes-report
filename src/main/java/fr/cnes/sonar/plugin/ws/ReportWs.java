@@ -28,14 +28,16 @@ public class ReportWs implements WebService {
 
     /**
      * public constructor, called by sonarqube
+     * 
      * @param config
      */
-    public ReportWs(Configuration config){
+    public ReportWs(Configuration config) {
         this.config = config;
     }
 
     /**
      * Define plugin, called at sonarqube startup
+     * 
      * @param context
      */
     @Override
@@ -49,11 +51,13 @@ public class ReportWs implements WebService {
 
     /**
      * Define action executed when we called the webservice
+     * 
      * @param controller
      */
-    private void reportAction(final WebService.NewController controller){
+    private void reportAction(final WebService.NewController controller) {
         // Create API entry point
-        final WebService.NewAction report = controller.createAction(PluginStringManager.getProperty("api.report.actionKey"));
+        final WebService.NewAction report = controller
+                .createAction(PluginStringManager.getProperty("api.report.actionKey"));
         report.setDescription(PluginStringManager.getProperty("api.description"));
         report.setSince(PluginStringManager.getProperty("plugin.since"));
 
@@ -85,47 +89,56 @@ public class ReportWs implements WebService {
         branchParam.setExampleValue(PluginStringManager.getProperty("api.report.args.exampleValue.branch"));
 
         // Adding language argument
-        WebService.NewParam languageParam = report.createParam(PluginStringManager.getProperty("api.report.args.language"));
+        WebService.NewParam languageParam = report
+                .createParam(PluginStringManager.getProperty("api.report.args.language"));
         languageParam.setDescription(PluginStringManager.getProperty("api.report.args.description.language"));
         languageParam.setRequired(false);
-        languageParam.setPossibleValues(PluginStringManager.getProperty("api.report.args.defaultValue.language"),
-                PluginStringManager.getProperty("api.report.args.possibleValue.language"));
+        // Build possible values array: default value + additional values from
+        // possibleValue property
+        String defaultLang = PluginStringManager.getProperty("api.report.args.defaultValue.language");
+        String additionalLangs = PluginStringManager.getProperty("api.report.args.possibleValue.language");
+        String[] allLangs = (defaultLang + "," + additionalLangs).split(",");
+        languageParam.setPossibleValues((Object[]) allLangs);
         languageParam.setDefaultValue(PluginStringManager.getProperty("api.report.args.defaultValue.language"));
 
         // Adding enableDocx argument
-        WebService.NewParam enableDocxParam = report.createParam(PluginStringManager.getProperty("api.report.args.enableDocx"));
+        WebService.NewParam enableDocxParam = report
+                .createParam(PluginStringManager.getProperty("api.report.args.enableDocx"));
         enableDocxParam.setDescription(PluginStringManager.getProperty("api.report.args.description.enableDocx"));
         enableDocxParam.setRequired(false);
         enableDocxParam.setBooleanPossibleValues();
         enableDocxParam.setDefaultValue(PluginStringManager.getProperty("api.report.args.defaultValue.enableDocx"));
 
         // Adding enableMd argument
-        WebService.NewParam enableMdParam = report.createParam(PluginStringManager.getProperty("api.report.args.enableMd"));
+        WebService.NewParam enableMdParam = report
+                .createParam(PluginStringManager.getProperty("api.report.args.enableMd"));
         enableMdParam.setDescription(PluginStringManager.getProperty("api.report.args.description.enableMd"));
         enableMdParam.setRequired(false);
         enableMdParam.setBooleanPossibleValues();
         enableMdParam.setDefaultValue(PluginStringManager.getProperty("api.report.args.defaultValue.enableMd"));
-        
+
         // Adding enableXlsx argument
-        WebService.NewParam enableXlsxParam = report.createParam(PluginStringManager.getProperty("api.report.args.enableXlsx"));
+        WebService.NewParam enableXlsxParam = report
+                .createParam(PluginStringManager.getProperty("api.report.args.enableXlsx"));
         enableXlsxParam.setDescription(PluginStringManager.getProperty("api.report.args.description.enableXlsx"));
         enableXlsxParam.setRequired(false);
         enableXlsxParam.setBooleanPossibleValues();
         enableXlsxParam.setDefaultValue(PluginStringManager.getProperty("api.report.args.defaultValue.enableXlsx"));
 
         // Adding enableCsv argument
-        WebService.NewParam enableCsvParam = report.createParam(PluginStringManager.getProperty("api.report.args.enableCsv"));
+        WebService.NewParam enableCsvParam = report
+                .createParam(PluginStringManager.getProperty("api.report.args.enableCsv"));
         enableCsvParam.setDescription(PluginStringManager.getProperty("api.report.args.description.enableCsv"));
         enableCsvParam.setRequired(false);
         enableCsvParam.setBooleanPossibleValues();
         enableCsvParam.setDefaultValue(PluginStringManager.getProperty("api.report.args.defaultValue.enableCsv"));
 
         // Adding enableConf argument
-        WebService.NewParam enableConfParam = report.createParam(PluginStringManager.getProperty("api.report.args.enableConf"));
+        WebService.NewParam enableConfParam = report
+                .createParam(PluginStringManager.getProperty("api.report.args.enableConf"));
         enableConfParam.setDescription(PluginStringManager.getProperty("api.report.args.description.enableConf"));
         enableConfParam.setRequired(false);
         enableConfParam.setBooleanPossibleValues();
         enableConfParam.setDefaultValue(PluginStringManager.getProperty("api.report.args.defaultValue.enableConf"));
     }
 }
-

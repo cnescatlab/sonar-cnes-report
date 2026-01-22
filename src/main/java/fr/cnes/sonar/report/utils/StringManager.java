@@ -64,12 +64,12 @@ public final class StringManager {
     public static final String DEFAULT_AUTHOR = "report.author";
     /** The only severity decided by us for the hotspot security */
     public static final String HOTSPOT_SEVERITY = "CRITICAL";
-     /** Security hotspot type (different from issue type) */
+    /** Security hotspot type (different from issue type) */
     public static final String HOTSPOT_TYPE = "SECURITY_HOTSPOT";
 
     /** Logger for StringManager. */
     private static final Logger LOGGER = Logger.getLogger(StringManager.class.getCanonicalName());
-    
+
     /** Contain all the properties related to the report. */
     private static Properties properties;
 
@@ -83,6 +83,9 @@ public final class StringManager {
      * List of possible security hotspot categories
      */
     private static final Map<String, String> SECURITY_HOTSPOT_CATEGORIES = new HashMap<>();
+
+    /** Current locale string (e.g., "en_US", "zh_CN"). */
+    private static String currentLocaleString = "en_US";
 
     //
     // Static initialization block for reading .properties
@@ -98,14 +101,14 @@ public final class StringManager {
         try {
             // load properties file as a stream
             input = classLoader.getResourceAsStream(StringManager.REPORT_PROPERTIES);
-            if(input!=null) {
+            if (input != null) {
                 // load properties from the stream in an adapted structure
                 properties.load(input);
             }
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         } finally {
-            if(input!=null) {
+            if (input != null) {
                 try {
                     // close the stream if necessary (not null)
                     input.close();
@@ -125,7 +128,8 @@ public final class StringManager {
     /**
      * Private constructor to singletonize the class.
      */
-    private StringManager() {}
+    private StringManager() {
+    }
 
     /**
      * Get the singleton
@@ -142,6 +146,7 @@ public final class StringManager {
     /**
      * Give the value of the property corresponding to the key passed as parameter.
      * It gives only properties related to the report.
+     * 
      * @param property Key of the property you want.
      * @return The value of the property you want as a String.
      */
@@ -151,18 +156,33 @@ public final class StringManager {
 
     /**
      * Change the locale and reload messages
+     * 
      * @param language String in lowercase
-     * @param country String in upper case
+     * @param country  String in upper case
      */
     public static synchronized void changeLocale(final String language, final String country) {
         // change locale
-        Locale currentLocale = new Locale(language,country);
+        Locale locale = new Locale(language, country);
+        // store current locale string
+        currentLocaleString = language + "_" + country;
         // reload messages
-        messages = ResourceBundle.getBundle("messages", currentLocale);
+        messages = ResourceBundle.getBundle("messages", locale);
+        // reinitialize security hotspots categories with new locale
+        initSecurityHotspotsCategories();
+    }
+
+    /**
+     * Get current locale string
+     * 
+     * @return current locale string (e.g., "en_US", "zh_CN")
+     */
+    public static String getCurrentLocale() {
+        return currentLocaleString;
     }
 
     /**
      * Change the locale and reload messages
+     * 
      * @param language String containing both the language and country, e.g. en_US
      */
     public static void changeLocale(String language) {
@@ -171,12 +191,14 @@ public final class StringManager {
         try {
             changeLocale(locale[0], locale[1]);
         } catch (ArrayIndexOutOfBoundsException e) {
-            LOGGER.log(Level.SEVERE, e, () -> "Unable to change the locale due to malformed command line parameter : " + language);
+            LOGGER.log(Level.SEVERE, e,
+                    () -> "Unable to change the locale due to malformed command line parameter : " + language);
         }
     }
 
     /**
      * Return string corresponding to the given key according the locale
+     * 
      * @param key name of the property in the bundle messages
      * @return a String
      */
@@ -188,37 +210,63 @@ public final class StringManager {
      * Initialize security hotspots categories
      */
     public static void initSecurityHotspotsCategories() {
-        SECURITY_HOTSPOT_CATEGORIES.put("buffer-overflow", "Buffer Overflow");
-        SECURITY_HOTSPOT_CATEGORIES.put("sql-injection", "SQL Injection");
-        SECURITY_HOTSPOT_CATEGORIES.put("rce", "Code Injection (RCE)");
-        SECURITY_HOTSPOT_CATEGORIES.put("object-injection", "Object Injection");
-        SECURITY_HOTSPOT_CATEGORIES.put("command-injection", "Command Injection");
-        SECURITY_HOTSPOT_CATEGORIES.put("path-traversal-injection", "Path Traversal Injection");
-        SECURITY_HOTSPOT_CATEGORIES.put("ldap-injection", "LDAP Injection");
-        SECURITY_HOTSPOT_CATEGORIES.put("xpath-injection", "XPath Injection");
-        SECURITY_HOTSPOT_CATEGORIES.put("log-injection", "Log Injection");
-        SECURITY_HOTSPOT_CATEGORIES.put("xxe", "XML External Entity (XXE)");
-        SECURITY_HOTSPOT_CATEGORIES.put("xss", "Cross-Site Scripting (XSS)");
-        SECURITY_HOTSPOT_CATEGORIES.put("dos", "Denial of Service (DoS)");
-        SECURITY_HOTSPOT_CATEGORIES.put("ssrf", "Server-Side Request Forgery (SSRF)");
-        SECURITY_HOTSPOT_CATEGORIES.put("csrf", "Cross-Site Request Forgery (CSRF)");
-        SECURITY_HOTSPOT_CATEGORIES.put("http-response-splitting", "HTTP Response Splitting");
-        SECURITY_HOTSPOT_CATEGORIES.put("open-redirect", "Open Redirect");
-        SECURITY_HOTSPOT_CATEGORIES.put("weak-cryptography", "Weak Cryptography");
-        SECURITY_HOTSPOT_CATEGORIES.put("auth", "Authentication");
-        SECURITY_HOTSPOT_CATEGORIES.put("insecure-conf", "Insecure Configuration");
-        SECURITY_HOTSPOT_CATEGORIES.put("file-manipulation", "File Manipulation");
-        SECURITY_HOTSPOT_CATEGORIES.put("others", "Others");
-        SECURITY_HOTSPOT_CATEGORIES.put("permission", "Permission");
-        SECURITY_HOTSPOT_CATEGORIES.put("encrypt-data", "Encryption of Sensitive Data");
-        SECURITY_HOTSPOT_CATEGORIES.put("traceability", "Traceability");
+        SECURITY_HOTSPOT_CATEGORIES.clear();
+        SECURITY_HOTSPOT_CATEGORIES.put("buffer-overflow", getLocalizedCategory("buffer-overflow", "Buffer Overflow"));
+        SECURITY_HOTSPOT_CATEGORIES.put("sql-injection", getLocalizedCategory("sql-injection", "SQL Injection"));
+        SECURITY_HOTSPOT_CATEGORIES.put("rce", getLocalizedCategory("rce", "Code Injection (RCE)"));
+        SECURITY_HOTSPOT_CATEGORIES.put("object-injection",
+                getLocalizedCategory("object-injection", "Object Injection"));
+        SECURITY_HOTSPOT_CATEGORIES.put("command-injection",
+                getLocalizedCategory("command-injection", "Command Injection"));
+        SECURITY_HOTSPOT_CATEGORIES.put("path-traversal-injection",
+                getLocalizedCategory("path-traversal-injection", "Path Traversal Injection"));
+        SECURITY_HOTSPOT_CATEGORIES.put("ldap-injection", getLocalizedCategory("ldap-injection", "LDAP Injection"));
+        SECURITY_HOTSPOT_CATEGORIES.put("xpath-injection", getLocalizedCategory("xpath-injection", "XPath Injection"));
+        SECURITY_HOTSPOT_CATEGORIES.put("log-injection", getLocalizedCategory("log-injection", "Log Injection"));
+        SECURITY_HOTSPOT_CATEGORIES.put("xxe", getLocalizedCategory("xxe", "XML External Entity (XXE)"));
+        SECURITY_HOTSPOT_CATEGORIES.put("xss", getLocalizedCategory("xss", "Cross-Site Scripting (XSS)"));
+        SECURITY_HOTSPOT_CATEGORIES.put("dos", getLocalizedCategory("dos", "Denial of Service (DoS)"));
+        SECURITY_HOTSPOT_CATEGORIES.put("ssrf", getLocalizedCategory("ssrf", "Server-Side Request Forgery (SSRF)"));
+        SECURITY_HOTSPOT_CATEGORIES.put("csrf", getLocalizedCategory("csrf", "Cross-Site Request Forgery (CSRF)"));
+        SECURITY_HOTSPOT_CATEGORIES.put("http-response-splitting",
+                getLocalizedCategory("http-response-splitting", "HTTP Response Splitting"));
+        SECURITY_HOTSPOT_CATEGORIES.put("open-redirect", getLocalizedCategory("open-redirect", "Open Redirect"));
+        SECURITY_HOTSPOT_CATEGORIES.put("weak-cryptography",
+                getLocalizedCategory("weak-cryptography", "Weak Cryptography"));
+        SECURITY_HOTSPOT_CATEGORIES.put("auth", getLocalizedCategory("auth", "Authentication"));
+        SECURITY_HOTSPOT_CATEGORIES.put("insecure-conf",
+                getLocalizedCategory("insecure-conf", "Insecure Configuration"));
+        SECURITY_HOTSPOT_CATEGORIES.put("file-manipulation",
+                getLocalizedCategory("file-manipulation", "File Manipulation"));
+        SECURITY_HOTSPOT_CATEGORIES.put("others", getLocalizedCategory("others", "Others"));
+        SECURITY_HOTSPOT_CATEGORIES.put("permission", getLocalizedCategory("permission", "Permission"));
+        SECURITY_HOTSPOT_CATEGORIES.put("encrypt-data",
+                getLocalizedCategory("encrypt-data", "Encryption of Sensitive Data"));
+        SECURITY_HOTSPOT_CATEGORIES.put("traceability", getLocalizedCategory("traceability", "Traceability"));
     }
 
     /**
-     * Return a map containing the security hotspots categories names associated to their key
+     * Get localized category name from messages bundle
+     * 
+     * @param key          the category key
+     * @param defaultValue the default English value
+     * @return localized category name or default value if not found
+     */
+    private static String getLocalizedCategory(String key, String defaultValue) {
+        try {
+            return messages.getString("securityhotspot.category." + key);
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
+    /**
+     * Return a map containing the security hotspots categories names associated to
+     * their key
+     * 
      * @return the map
      */
-    public static Map<String,String> getSecurityHotspotsCategories() {
+    public static Map<String, String> getSecurityHotspotsCategories() {
         return SECURITY_HOTSPOT_CATEGORIES;
     }
 }
