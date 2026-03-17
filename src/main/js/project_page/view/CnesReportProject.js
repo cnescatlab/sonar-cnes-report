@@ -12,7 +12,7 @@ export default class CnesReportProject extends React.PureComponent {
         loading: true,
         token: "",
         author: "",
-        languages: [{id: 'en_US', name: 'English'}, {id: 'fr_FR', name: 'French'}],
+        languages: [{id: 'en_US', name: 'English'}, {id: 'fr_FR', name: 'French'}, {id: 'zh_CN', name: 'Chinese'}],
         enableDocx: true,
         enableMd: true,
         enableXlsx: true,
