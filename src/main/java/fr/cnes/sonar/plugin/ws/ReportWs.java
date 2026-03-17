@@ -88,8 +88,12 @@ public class ReportWs implements WebService {
         WebService.NewParam languageParam = report.createParam(PluginStringManager.getProperty("api.report.args.language"));
         languageParam.setDescription(PluginStringManager.getProperty("api.report.args.description.language"));
         languageParam.setRequired(false);
-        languageParam.setPossibleValues(PluginStringManager.getProperty("api.report.args.defaultValue.language"),
-                PluginStringManager.getProperty("api.report.args.possibleValue.language"));
+        String defaultLang = PluginStringManager.getProperty("api.report.args.defaultValue.language");
+        String[] otherLangs = PluginStringManager.getProperty("api.report.args.possibleValue.language").split(",");
+        String[] allLangs = new String[1 + otherLangs.length];
+        allLangs[0] = defaultLang;
+        System.arraycopy(otherLangs, 0, allLangs, 1, otherLangs.length);
+        languageParam.setPossibleValues((Object[]) allLangs);
         languageParam.setDefaultValue(PluginStringManager.getProperty("api.report.args.defaultValue.language"));
 
         // Adding enableDocx argument

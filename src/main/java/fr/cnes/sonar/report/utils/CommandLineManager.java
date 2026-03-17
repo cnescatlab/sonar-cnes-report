@@ -52,7 +52,7 @@ public class CommandLineManager {
             {"p", "project", Boolean.TRUE.toString(), "SonarQube key of the targeted project."},
             {"b", "branch", Boolean.TRUE.toString(), "Branch of the targeted project. Requires Developer Edition or sonarqube-community-branch-plugin. Default: usage of main branch."},
             {"o", "output", Boolean.TRUE.toString(), "Output path for exported resources."},
-            {"l", "language", Boolean.TRUE.toString(), "Language of the report. Values: en_US, fr_FR. Default: en_US."},
+            {"l", "language", Boolean.TRUE.toString(), "Language of the report. Values: en_US, fr_FR, zh_CN. Default: en_US."},
             {"a", "author", Boolean.TRUE.toString(), "Name of the report writer."},
             {"d", "date", Boolean.TRUE.toString(), "Date for the report. Format: " + StringManager.DATE_PATTERN + ". Default: current date."},
             {"c", "disable-conf", Boolean.FALSE.toString(), "Disable export of quality configuration used during analysis."},
