@@ -175,7 +175,19 @@ For legacy versions, check the wiki page here : [Note on legacy versions](https:
     <td>X</td>
   </tr>
  <tr>
-  <td><b>25.1.x</b></td>
+  <td><b>25.x.x</b></td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td>X</td>
+  </tr>  
+ <tr>
+  <td><b>26.x.x</b></td>
     <td>-</td>
     <td>-</td>
     <td>-</td>

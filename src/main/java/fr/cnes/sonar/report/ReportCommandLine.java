@@ -56,7 +56,8 @@ public final class ReportCommandLine {
             throw new ExceptionInInitializerError(e);
         }
 
-        // Configure temp files: creation of folder ~/.cnesreport/log to contain log files
+        // Configure temp files: creation of folder ~/.cnesreport/log to contain log
+        // files
         (new File(org.apache.commons.io.FileUtils.getUserDirectory().getPath().concat("/.cnesreport/log"))).mkdirs();
     }
 
@@ -66,38 +67,47 @@ public final class ReportCommandLine {
     /**
      * Private constructor to not be able to instantiate it.
      */
-    private ReportCommandLine(){}
+    private ReportCommandLine() {
+    }
 
     /**
      * Main method.
      * See help message for more information about using this program.
      * Entry point of the program.
+     * 
      * @param args Arguments that will be preprocessed.
      */
-    public static void main(final String[] args)  {
+    public static void main(final String[] args) {
         // main catches all exceptions
         try {
-            // We use different method because it can be called outside main (for example, in from ReportSonarPlugin)
+            // We use different method because it can be called outside main (for example,
+            // in from ReportSonarPlugin)
             execute(args);
 
-        } catch (BadExportationDataTypeException | BadSonarQubeRequestException | IOException |
-                UnknownQualityGateException | OpenXML4JException | XmlException | SonarQubeException |
-                IllegalStateException | IllegalArgumentException | ParseException e) {
+        } catch (BadExportationDataTypeException | BadSonarQubeRequestException | IOException
+                | UnknownQualityGateException | OpenXML4JException | XmlException | SonarQubeException
+                | IllegalStateException | IllegalArgumentException | ParseException e) {
             // it logs all the stack trace
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
-            System.exit(-1);
         }
     }
 
-    public static void execute(final String[] args) throws BadExportationDataTypeException , BadSonarQubeRequestException , IOException,
-    UnknownQualityGateException, OpenXML4JException, XmlException, SonarQubeException, ParseException {
+    public static void execute(final String[] args)
+            throws BadExportationDataTypeException, BadSonarQubeRequestException, IOException,
+            UnknownQualityGateException, OpenXML4JException, XmlException, SonarQubeException, ParseException {
         // Log message.
         String message;
 
         // Parse command line arguments.
         final ReportConfiguration conf = ReportConfiguration.create(args);
-        if(conf.getProject().isEmpty()){
-            throw new IllegalStateException("Please provide a project with the -p argument, you can also use -h argument to display help.");
+
+        if (conf.isHelp() || conf.isVersion()) {
+            return;
+        }
+
+        if (conf.getProject().isEmpty()) {
+            throw new IllegalStateException(
+                    "Please provide a project with the -p argument, you can also use -h argument to display help.");
         }
 
         // Set the language of the report.
@@ -106,7 +116,7 @@ public final class ReportCommandLine {
 
         // format server URL
         String url = conf.getServer();
-        if(url.endsWith("/")) {
+        if (url.endsWith("/")) {
             url = url.substring(0, url.length() - 1);
         }
 
@@ -114,10 +124,10 @@ public final class ReportCommandLine {
         message = String.format("SonarQube URL: %s", url);
         LOGGER.info(message);
 
-        // Instantiate a ProviderFactory depending on the execution mode of the application
+        // Instantiate a ProviderFactory depending on the execution mode of the
+        // application
         ProviderFactory providerFactory;
         providerFactory = new StandaloneProviderFactory(url, conf.getToken(), conf.getProject(), conf.getBranch());
-
 
         // Initialize connexion with SonarQube and retrieve primitive information
         final SonarQubeServer server = new ServerFactory(url, providerFactory).create();
@@ -125,20 +135,22 @@ public final class ReportCommandLine {
         message = String.format("SonarQube online: %s", server.isUp());
         LOGGER.info(message);
 
-        if(!server.isUp()) {
+        if (!server.isUp()) {
             throw new SonarQubeException("Impossible to reach SonarQube instance.");
         }
 
         message = String.format("Detected SonarQube version: %s", server.getVersion());
         LOGGER.info(message);
 
-        if(!server.isSupported()) {
+        if (!server.isSupported()) {
             LOGGER.warning("This SonarQube version is not supported by this cnesreport version.");
-            LOGGER.warning("For further information, please refer to the compatibility matrix on the project GitHub page.");
+            LOGGER.warning(
+                    "For further information, please refer to the compatibility matrix on the project GitHub page.");
         }
 
         // Generate the model of the report.
-        final Report model = new ReportModelFactory(conf.getProject(), conf.getBranch(), conf.getAuthor(), conf.getDate(), providerFactory).create();
+        final Report model = new ReportModelFactory(conf.getProject(), conf.getBranch(), conf.getAuthor(),
+                conf.getDate(), providerFactory).create();
         // Generate results files.
         ReportFactory.report(conf, model);
 

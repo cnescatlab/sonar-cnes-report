@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        java: [ '17' ]
+        java: [ '21' ]
     name: Java ${{ matrix.Java }} CI
     steps:
       - name: Check out repository code
@@ -43,8 +43,9 @@ jobs:
         run: mvn -B clean package
       - name: Test cnes-report
         env:
-          SONARQUBE_VERSION: 10.5-community
+          SONARQUBE_VERSION: 26.3.0.120487-community
         run: |
+        
           version=$(cat pom.xml | grep "<version>.*</version>" | head -1 |awk -F'[><]' '{print $3}');
           echo "Starting docker";
           docker run --name sonarqube_${SONARQUBE_VERSION} -d -p 9000:9000 sonarqube:${SONARQUBE_VERSION};
@@ -61,7 +62,8 @@ jobs:
               status_sonar=$(curl -s "http://localhost:9000/api/system/status" | grep "\"status\":\"UP\"" > /dev/null; echo $?);
           done;
           echo "SonarQube is $([[ 0 -eq $status_sonar ]] && echo "up" || echo "down"), after $counter tries";
-          mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=admin -Dsonar.password=admin -Dsonar.organization=default-organization;
+          token_sonarqube=$(curl -s -X POST -H "Content-Type&#58; application/x-www-form-urlencoded" -d "name=admin_token" -u admin:admin http://localhost:9000/api/user_tokens/generate | jq -r '.token');
+          mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.token=${token_sonarqube} -Dsonar.organization=default-organization;
           echo "Waiting for the SonarQube Compute Engine task to be completed...";
           ce=$(grep ceTaskUrl= target/sonar/report-task.txt);
           ceTaskUrl=${ce:10};
@@ -78,7 +80,6 @@ jobs:
                   sleep 1;
               fi
           done;
-          token_sonarqube=$(curl -s -X POST -H "Content-Type&#58; application/x-www-form-urlencoded" -d "name=admin_token" -u admin:admin http://localhost:9000/api/user_tokens/generate | jq -r '.token');
           java -jar target/sonar-cnes-report-${version}.jar -t ${token_sonarqube} -p fr.cnes.sonar:cnesreport -s http://localhost:9000;
           url_cnesreport="http://localhost:9000/api/cnesreport/report?key=fr.cnes.sonar%3Acnesreport&author=github-actions&token=${token_sonarqube}";
           curl -u admin:admin ${url_cnesreport} -O -J;
@@ -97,7 +98,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
-          java-version: '17'
+          java-version: '21'
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
