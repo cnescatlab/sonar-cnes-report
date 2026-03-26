@@ -116,7 +116,7 @@ public class Report {
      */
     private Map<String, String> qualityGateStatus;
 
-    private static final Logger LOGGER = Logger.getLogger(ReportCommandLine.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Report.class.getName());
 
     /**
      * Default constructor
