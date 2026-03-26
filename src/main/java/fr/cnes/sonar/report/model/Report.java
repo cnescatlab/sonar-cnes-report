@@ -31,7 +31,6 @@ import java.util.logging.Logger;
 
 import org.apache.commons.math3.util.Precision;
 
-import fr.cnes.sonar.report.ReportCommandLine;
 import fr.cnes.sonar.report.utils.StringManager;
 
 /**
