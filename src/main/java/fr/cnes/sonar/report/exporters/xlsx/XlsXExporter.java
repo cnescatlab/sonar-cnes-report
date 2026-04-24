@@ -99,7 +99,7 @@ public class XlsXExporter implements IExporter {
 
         // open the template
         try(
-            InputStream excelFile = file.exists() ?
+            InputStream excelFile = file.exists() && !filename.isEmpty() ?
                     new FileInputStream(file) : getClass().getResourceAsStream(StringManager.getProperty(DEFAULT_TEMPLATE));
             Workbook workbook = new XSSFWorkbook(excelFile);
             FileOutputStream fileOut = new FileOutputStream(outputFilePath)
