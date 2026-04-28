@@ -89,7 +89,7 @@ jobs:
           done;
           java -jar target/sonar-cnes-report-${version}.jar -t ${token_sonarqube} -p fr.cnes.sonar:cnesreport -s http://localhost:9000 > logs.txt;
           cat logs.txt
-          if grep -i -q "error" "logs.txt"; then
+          if grep -q -i "error" "logs.txt"; then
             echo "WARNING: Cnes report send an error in logs but exited normally"
             exit 1;
           fi
