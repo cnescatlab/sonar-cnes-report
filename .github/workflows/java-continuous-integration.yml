@@ -30,7 +30,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'adopt'
-          java-version: $JAVA_BUILD_VERSION
+          java-version: ${{ env.JAVA_BUILD_VERSION }}
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
@@ -112,7 +112,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
-          java-version: $JAVA_BUILD_VERSION
+          java-version: ${{ env.JAVA_BUILD_VERSION }}
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
