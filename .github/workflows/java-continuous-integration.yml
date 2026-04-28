@@ -2,12 +2,14 @@
 # ===========
 # This workflow is triggered each time
 # commits are pushed to GitHub or a pull request is opened.
-# It launches three jobs in parallel : a build with java 8,
-# a build with java 11 and a SonarCloud analysis.
+# It launches jobs in parallel with every Java and Sonarqube version
+# we want to support
 ---
 name: Java CI
 
 on: [push, pull_request]
+env:
+  JAVA_BUILD_VERSION: "21"
 
 jobs:
 
@@ -16,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ '17', '21', '25', '26' ]
+        java: [ '21', '22', '23', '24', '25', '26' ]
         sonarqube: ['25.6.0.109173-community', '26.3.0.120487-community', 'latest']
     name: Tests with JAVA ${{ matrix.java }} and SONARQUBE ${{ matrix.sonarqube }}
     steps:
@@ -24,11 +26,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Setup java
+      - name: Setup java for build
         uses: actions/setup-java@v4
         with:
           distribution: 'adopt'
-          java-version: 21
+          java-version: $JAVA_BUILD_VERSION
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
@@ -43,7 +45,7 @@ jobs:
           restore-keys: ${{ runner.os }}-yarn-
       - name: Build with Maven
         run: mvn -B clean package 
-      - name: Setup java
+      - name: Setup java for execution
         uses: actions/setup-java@v4
         with:
           distribution: 'adopt'
@@ -110,7 +112,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
-          java-version: '21'
+          java-version: $JAVA_BUILD_VERSION
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
