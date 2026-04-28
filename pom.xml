@@ -33,7 +33,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <junit.version>5.10.2</junit.version>
-        <jacoco.version>0.8.12</jacoco.version>
+        <jacoco.version>0.8.14</jacoco.version>
         <sonar.apiVersion>10.7.0.2191</sonar.apiVersion>
         <sonar.testingHarnessVersion>10.5.1.90531</sonar.testingHarnessVersion>
         <sonar.Version>10.5.1.90531</sonar.Version>
@@ -225,7 +225,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.12.0</version>
+            <version>5.23.0</version>
             <scope>test</scope>
         </dependency>
 
