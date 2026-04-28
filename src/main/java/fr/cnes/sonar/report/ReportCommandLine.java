@@ -76,20 +76,20 @@ public final class ReportCommandLine {
      * Entry point of the program.
      * 
      * @param args Arguments that will be preprocessed.
+     * @throws ParseException
+     * @throws SonarQubeException
+     * @throws XmlException
+     * @throws OpenXML4JException
+     * @throws UnknownQualityGateException
+     * @throws IOException
+     * @throws BadSonarQubeRequestException
+     * @throws BadExportationDataTypeException
      */
-    public static void main(final String[] args) {
+    public static void main(final String[] args)
+            throws BadExportationDataTypeException, BadSonarQubeRequestException, IOException,
+            UnknownQualityGateException, OpenXML4JException, XmlException, SonarQubeException, ParseException {
         // main catches all exceptions
-        try {
-            // We use different method because it can be called outside main (for example,
-            // in from ReportSonarPlugin)
-            execute(args);
-
-        } catch (BadExportationDataTypeException | BadSonarQubeRequestException | IOException
-                | UnknownQualityGateException | OpenXML4JException | XmlException | SonarQubeException
-                | IllegalStateException | IllegalArgumentException | ParseException e) {
-            // it logs all the stack trace
-            LOGGER.log(Level.SEVERE, e.getMessage(), e);
-        }
+        execute(args);
     }
 
     public static void execute(final String[] args)
