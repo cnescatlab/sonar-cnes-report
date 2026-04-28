@@ -14,6 +14,7 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     strategy:
+      fail-fast: false
       matrix:
         java: [ '17', '21', '25', '26' ]
         sonarqube: ['25.6.0.109173-community', '26.3.0.120487-community', 'latest']
