@@ -87,7 +87,12 @@ jobs:
                   sleep 1;
               fi
           done;
-          java -jar target/sonar-cnes-report-${version}.jar -t ${token_sonarqube} -p fr.cnes.sonar:cnesreport -s http://localhost:9000;
+          java -jar target/sonar-cnes-report-${version}.jar -t ${token_sonarqube} -p fr.cnes.sonar:cnesreport -s http://localhost:9000 > logs.txt;
+          cat logs.txt
+          if grep -i -q "error" "logs.txt"; then
+            echo "WARNING: Cnes report send an error in logs but exited normally"
+            exit 1;
+          fi
           url_cnesreport="http://localhost:9000/api/cnesreport/report?key=fr.cnes.sonar%3Acnesreport&author=github-actions&token=${token_sonarqube}";
           curl -u admin:admin ${url_cnesreport} -O -J;
 
