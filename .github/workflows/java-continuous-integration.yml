@@ -27,7 +27,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'adopt'
-          java-version: ${{ matrix.java }}
+          java-version: 21
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
@@ -41,7 +41,12 @@ jobs:
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-yarn-
       - name: Build with Maven
-        run: mvn -B clean package
+        run: mvn -B clean package 
+      - name: Setup java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'adopt'
+          java-version: ${{ matrix.java }}
       - name: Test cnes-report Sonarqube ${{ matrix.sonarqube }}
         env:
           SONARQUBE_VERSION: ${{ matrix.sonarqube }}
