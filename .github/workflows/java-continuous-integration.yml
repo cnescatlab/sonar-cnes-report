@@ -15,8 +15,9 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        java: [ '21' ]
-    name: Java ${{ matrix.Java }} CI
+        java: [ '17', '21', '25', '26' ]
+        sonarqube: ['25.6.0.109173-community', '26.3.0.120487-community', 'latest']
+    name: Tests with JAVA ${{ matrix.java }} and SONARQUBE ${{ matrix.sonarqube }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
@@ -41,9 +42,9 @@ jobs:
           restore-keys: ${{ runner.os }}-yarn-
       - name: Build with Maven
         run: mvn -B clean package
-      - name: Test cnes-report
+      - name: Test cnes-report Sonarqube ${{ matrix.sonarqube }}
         env:
-          SONARQUBE_VERSION: 26.3.0.120487-community
+          SONARQUBE_VERSION: ${{ matrix.sonarqube }}
         run: |
         
           version=$(cat pom.xml | grep "<version>.*</version>" | head -1 |awk -F'[><]' '{print $3}');
