@@ -85,6 +85,6 @@ In order to release a new version of your plugin, make sure that
 - All tests are green and Sonarcloud Quality Gate is passed
 - All issues are closed and everything is merge to `dev`
 
-Once everything is ready, go to the `Actions`, choose the `release` workflow and hit the `Run workflow` button ! The CI/CD will compile, tag and publish a draft release.
+Once everything is ready, go to the `Actions`, choose the `Draft release` workflow and hit the `Run workflow` button ! The CI/CD will compile, tag and publish a draft release.
 
 Double check the release (is changelog here ? Tags are ok ? .jar file is in the assets ?) then publish it !
