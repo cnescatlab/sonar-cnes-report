@@ -7,8 +7,8 @@
 name: Draft Release
 
 on: 
-  milestone:
-    types: [closed]
+  workflow_dispatch:
+
 
 jobs:
   release:

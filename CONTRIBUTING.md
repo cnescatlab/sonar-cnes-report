@@ -77,3 +77,14 @@ All contributions are welcome. They are made via a *pull request* on the branch 
 * pull requests with **minor** changes must be approved by at least one organization's member.
  
 All maintainers have the ability to merge *pull requests* on the `dev` branch. If several maintainers belong to the same team, their validation only counts for one organization.
+
+
+## Release process
+In order to release a new version of your plugin, make sure that
+- pom.xml is up to date with the right version, see `<project>[...]<version>UPDATE VERSION HERE</version>[...]</project>`
+- All tests are green and Sonarcloud Quality Gate is passed
+- All issues are closed and everything is merge to `dev`
+
+Once everything is ready, go to the `Actions`, choose the `release` workflow and hit the `Run workflow` button ! The CI/CD will compile, tag and publish a draft release.
+
+Double check the release (is changelog here ? Tags are ok ? .jar file is in the assets ?) then publish it !
