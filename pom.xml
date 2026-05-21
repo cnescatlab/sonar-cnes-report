@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>fr.cnes.sonar</groupId>
     <artifactId>cnesreport</artifactId>
-    <version>5.0.2</version>
+    <version>5.0.4</version>
     <packaging>sonar-plugin</packaging>
 
     <name>SonarQube CNES Report</name>
@@ -29,11 +29,11 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jdk.min.version>17</jdk.min.version>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <jdk.min.version>21</jdk.min.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <junit.version>5.10.2</junit.version>
-        <jacoco.version>0.8.12</jacoco.version>
+        <jacoco.version>0.8.14</jacoco.version>
         <sonar.apiVersion>10.7.0.2191</sonar.apiVersion>
         <sonar.testingHarnessVersion>10.5.1.90531</sonar.testingHarnessVersion>
         <sonar.Version>10.5.1.90531</sonar.Version>
@@ -225,7 +225,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.12.0</version>
+            <version>5.23.0</version>
             <scope>test</scope>
         </dependency>
 
@@ -253,7 +253,16 @@
                     <jarName>sonar-cnes-report-${project.version}</jarName>
                 </configuration>
             </plugin>
-
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.4.1</version>
@@ -346,36 +355,36 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.15.0</version>
+                <version>1.15.1</version>
                 <executions>
                     <execution>
                         <phase>generate-resources</phase>
-                        <id>install node and yarn</id>
+                        <id>install node and npm</id>
                         <goals>
-                            <goal>install-node-and-yarn</goal>
-                        </goals>
-                        <configuration>
-                            <nodeVersion>v20.14.0</nodeVersion>
-                            <yarnVersion>v1.22.22</yarnVersion>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>yarn install</id>
-                        <goals>
-                            <goal>yarn</goal>
+                            <goal>install-node-and-npm</goal>
                         </goals>
                     </execution>
                     <execution>
-                        <phase>generate-resources</phase>
-                        <id>yarn run script</id>
+                        <id>npm install</id>
                         <goals>
-                            <goal>yarn</goal>
+                            <goal>npm</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>npm run build</id>
+                        <goals>
+                            <goal>npm</goal>
                         </goals>
                         <configuration>
                             <arguments>run build</arguments>
                         </configuration>
                     </execution>
                 </executions>
+
+                <configuration>
+                    <nodeVersion>v20.14.0</nodeVersion>
+                    <npmVersion>9.2.0</npmVersion>
+                </configuration>
             </plugin>
         </plugins>
     </build>
