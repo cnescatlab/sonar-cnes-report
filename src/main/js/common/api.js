@@ -66,10 +66,9 @@ function revokeToken(name) {
 }
 
 // Function used to create the plugin token
-function createToken(name) {
-  const expireDate = formatDate(new Date(Date.now() + 24 * 60 * 60 * 1000));
-  return postJSON("/api/user_tokens/generate", { "name": name, "expirationDate": expireDate });
-}
+ function createToken(name) {
+   return postJSON("/api/user_tokens/generate", { "name": name, "type": "USER_TOKEN" });
+ }
 
 // Function used to get the current logged user name
 function getUserName(login) {
