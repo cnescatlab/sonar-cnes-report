@@ -36,4 +36,12 @@ public interface SonarQubeInfoProvider {
      * @return String containing the SonarQube status.
      */
     String getSonarQubeStatus();
+    /**
+     * Get the name of the main branch of a project.
+     * @param project The key of the project.
+     * @return String containing the name of the main branch, empty if none found.
+     * @throws BadSonarQubeRequestException when the server does not understand the request.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    String getProjectMainBranch(final String project) throws BadSonarQubeRequestException, SonarQubeException;
 }
