@@ -121,7 +121,8 @@ public class ReportConfiguration {
         commandLineManager.parse(pArgs);
 
         // Final result to return.
-        final String branch = commandLineManager.getOptionValue("b", StringManager.NO_BRANCH);
+        // When no branch is provided, keep it empty so the main branch can be auto-detected later.
+        final String branch = commandLineManager.getOptionValue("b", StringManager.EMPTY);
         return new ReportConfiguration(
                 commandLineManager.hasOption("h"),
                 commandLineManager.hasOption("v"),
@@ -140,8 +141,8 @@ public class ReportConfiguration {
                 commandLineManager.getOptionValue("r", StringManager.EMPTY),
                 commandLineManager.getOptionValue("x", StringManager.EMPTY),
                 commandLineManager.getOptionValue("n", StringManager.EMPTY),
-                branch.isEmpty()?StringManager.NO_BRANCH:branch
-                
+                branch
+
         );
     }
 

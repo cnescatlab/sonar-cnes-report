@@ -17,6 +17,8 @@
 
 package fr.cnes.sonar.report.providers.sonarqubeinfo;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fr.cnes.sonar.report.exceptions.BadSonarQubeRequestException;
 import fr.cnes.sonar.report.exceptions.SonarQubeException;
@@ -34,6 +36,12 @@ public class SonarQubeInfoProviderStandalone extends AbstractDataProvider implem
      */
     private static final String GET_SONARQUBE_INFO_REQUEST =
             "GET_SONARQUBE_INFO_REQUEST";
+
+    /**
+     *  Name of the request for getting the list of branches of a project
+     */
+    private static final String GET_PROJECT_BRANCHES_REQUEST =
+            "GET_PROJECT_BRANCHES_REQUEST";
 
     /**
      * Complete constructor.
@@ -80,5 +88,33 @@ public class SonarQubeInfoProviderStandalone extends AbstractDataProvider implem
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
         }
         return status;
+    }
+
+    /**
+     * Get the name of the main branch of a project.
+     * @param project The key of the project.
+     * @return String containing the name of the main branch, empty if none found.
+     * @throws BadSonarQubeRequestException when the server does not understand the request.
+     * @throws SonarQubeException When SonarQube server is not callable.
+     */
+    @Override
+    public String getProjectMainBranch(final String project) throws BadSonarQubeRequestException, SonarQubeException {
+        // send a request to sonarqube server and return the response as a json object
+        // if there is an error on server side this method throws an exception
+        final JsonObject jsonObject = request(
+                String.format(getRequest(GET_PROJECT_BRANCHES_REQUEST), getServer(), project));
+
+        // look for the branch flagged as main and return its name
+        String mainBranch = "";
+        final JsonArray branches = jsonObject.getAsJsonArray("branches");
+        if (branches != null) {
+            for (final JsonElement element : branches) {
+                final JsonObject branch = element.getAsJsonObject();
+                if (branch.has("isMain") && branch.get("isMain").getAsBoolean()) {
+                    mainBranch = branch.get("name").getAsString();
+                }
+            }
+        }
+        return mainBranch;
     }
 }
