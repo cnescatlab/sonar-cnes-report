@@ -4,9 +4,10 @@
 
 import { getJSON, postJSON, post } from "sonar-request";
 
-// Function used to get current SonarQube Server version
+// Function used to check that the current SonarQube Server version is supported
+// Community Build reports 25.x / 26.x, Server reports 2025.x / 2026.x
 export function isCompatible() {
-  const COMPATIBILITY_PATTERN = /(25)(\.\d)(\.\d)*/;
+  const COMPATIBILITY_PATTERN = /^(20)?2[56]\./;
 
   return getJSON("/api/system/status").then(response => {
     return response.version.match(COMPATIBILITY_PATTERN) != null;
