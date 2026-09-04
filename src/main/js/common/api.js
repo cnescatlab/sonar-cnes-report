@@ -66,8 +66,10 @@ function revokeToken(name) {
 }
 
 // Function used to create the plugin token
+// SonarQube checks expirationDate against its own UTC date, so the date is
+// computed in UTC and two days ahead to stay valid whatever the browser timezone
 function createToken(name) {
-  const expireDate = formatDate(new Date(Date.now() + 24 * 60 * 60 * 1000));
+  const expireDate = formatDate(new Date(Date.now() + 2 * 24 * 60 * 60 * 1000));
   return postJSON("/api/user_tokens/generate", { "name": name, "expirationDate": expireDate });
 }
 
@@ -78,11 +80,12 @@ function getUserName(login) {
   });
 }
 
+// Format a date as YYYY-MM-DD using its UTC fields
 function formatDate(date) {
     let d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
+        month = '' + (d.getUTCMonth() + 1),
+        day = '' + d.getUTCDate(),
+        year = d.getUTCFullYear();
 
     if (month.length < 2)
         month = '0' + month;
@@ -90,6 +93,19 @@ function formatDate(date) {
         day = '0' + day;
 
     return [year, month, day].join('-');
+}
+
+// Extract a readable message from a failed SonarQube request
+// sonar-request rejects with the raw Response, the message is in its JSON body
+function getErrorMessage(error) {
+  const fallback = "Unable to create the plugin token.";
+  if (error && typeof error.json === "function") {
+    return error.json().then(body => {
+      const messages = (body.errors || []).map(e => e.msg).filter(Boolean);
+      return messages.length > 0 ? messages.join(" ") : fallback;
+    }, () => fallback);
+  }
+  return Promise.resolve(error && error.message ? error.message : fallback);
 }
 
 // Macro function used to execute the whole plugin token process
@@ -104,6 +120,10 @@ export function initiatePluginToken() {
           author: userResponse
         }
       });
+    });
+  }).catch(error => {
+    return getErrorMessage(error).then(message => {
+      throw new Error(message);
     });
   });
 }

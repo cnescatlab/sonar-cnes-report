@@ -10,6 +10,7 @@ import { initiatePluginToken, isCompatible } from "../../common/api";
 export default class CnesReportProject extends React.PureComponent {
     state = {
         loading: true,
+        error: "",
         token: "",
         author: "",
         languages: [{id: 'en_US', name: 'English'}, {id: 'fr_FR', name: 'French'}],
@@ -60,12 +61,18 @@ export default class CnesReportProject extends React.PureComponent {
         // Initialize data in form
         initiatePluginToken().then(tokenInfo => {
             this.setState({ token: tokenInfo.token, author: tokenInfo.author, loading: false });
+        }).catch(error => {
+            this.setState({ loading: false, error: error.message });
         });
     }
 
     render() {
         if (this.state.loading) {
             return <div className="page page-limited"><p>Loading ...</p></div>;
+        }
+
+        if (this.state.error) {
+            return <div className="page page-limited"><p className="error-message">{this.state.error}</p></div>;
         }
 
         const options = this.props.options;
