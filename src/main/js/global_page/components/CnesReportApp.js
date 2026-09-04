@@ -10,6 +10,7 @@ import { getProjectsList, initiatePluginToken, getBranches, isCompatible } from 
 export default class CnesReportApp extends React.PureComponent {
     state = {
         loading: true,
+        error: "",
         projects: [],
         token: "",
         author: "",
@@ -67,9 +68,9 @@ export default class CnesReportApp extends React.PureComponent {
 
         // Initialize data in form
         initiatePluginToken().then(tokenInfo => {
-            getProjectsList().then(projects => {
+            return getProjectsList().then(projects => {
                 if (projects.length > 0) {
-                    getBranches(projects[0].key).then(branches => {
+                    return getBranches(projects[0].key).then(branches => {
                         this.setState({
                             loading: false,
                             projects: projects,
@@ -88,12 +89,18 @@ export default class CnesReportApp extends React.PureComponent {
                     });
                 }
             });
+        }).catch(error => {
+            this.setState({ loading: false, error: error.message });
         });
     }
 
     render() {
         if (this.state.loading) {
             return <div className="page page-limited"><p>Loading ...</p></div>;
+        }
+
+        if (this.state.error) {
+            return <div className="page page-limited"><p className="error-message">{this.state.error}</p></div>;
         }
 
         let projectsList = this.state.projects.length > 0
