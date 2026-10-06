@@ -1,0 +1,11 @@
+[D|d]ockerfile
+*.[D|d]ockerfile
+.dockerignore
+*.git
+*.md
+target
+*.log
+*.jar
+*.war
+*.iml
+.idea
