@@ -25,7 +25,7 @@ What types of changes does your code introduce to this software?
 - [ ] I have read the [CONTRIBUTING](https://github.com/cnescatlab/sonar-cnes-report/blob/master/CONTRIBUTING.md) doc
 - [ ] I agree with the [CODE OF CONDUCT](https://github.com/cnescatlab/sonar-cnes-report/blob/master/CONTRIBUTING.md)
 - [ ] Lint and unit tests pass locally with my changes
-- [ ] SonarCloud and Travis CI tests pass with my changes
+- [ ] SonarCloud and CI tests pass with my changes
 - [ ] I have added tests that prove my fix is effective or that my feature works
 - [ ] I have added necessary documentation (if appropriate)
 - [ ] Any dependent changes have been merged and published in downstream modules

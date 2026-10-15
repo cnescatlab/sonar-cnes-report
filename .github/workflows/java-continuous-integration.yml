@@ -2,31 +2,35 @@
 # ===========
 # This workflow is triggered each time
 # commits are pushed to GitHub or a pull request is opened.
-# It launches three jobs in parallel : a build with java 8,
-# a build with java 11 and a SonarCloud analysis.
+# It launches jobs in parallel with every Java and Sonarqube version
+# we want to support
 ---
 name: Java CI
 
 on: [push, pull_request]
+env:
+  JAVA_BUILD_VERSION: "21"
 
 jobs:
 
   build:
     runs-on: ubuntu-22.04
     strategy:
+      fail-fast: false
       matrix:
-        java: [ '17' ]
-    name: Java ${{ matrix.Java }} CI
+        java: [ '21', '22', '23', '24', '25', '26' ]
+        sonarqube: ['25.6.0.109173-community', '26.3.0.120487-community', 'community']
+    name: Tests with JAVA ${{ matrix.java }} and SONARQUBE ${{ matrix.sonarqube }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Setup java
+      - name: Setup java for build
         uses: actions/setup-java@v4
         with:
           distribution: 'adopt'
-          java-version: ${{ matrix.java }}
+          java-version: ${{ env.JAVA_BUILD_VERSION }}
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
@@ -40,11 +44,17 @@ jobs:
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-yarn-
       - name: Build with Maven
-        run: mvn -B clean package
-      - name: Test cnes-report
+        run: mvn -B clean package 
+      - name: Setup java for execution
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'adopt'
+          java-version: ${{ matrix.java }}
+      - name: Test cnes-report Sonarqube ${{ matrix.sonarqube }}
         env:
-          SONARQUBE_VERSION: 10.5-community
+          SONARQUBE_VERSION: ${{ matrix.sonarqube }}
         run: |
+        
           version=$(cat pom.xml | grep "<version>.*</version>" | head -1 |awk -F'[><]' '{print $3}');
           echo "Starting docker";
           docker run --name sonarqube_${SONARQUBE_VERSION} -d -p 9000:9000 sonarqube:${SONARQUBE_VERSION};
@@ -61,7 +71,8 @@ jobs:
               status_sonar=$(curl -s "http://localhost:9000/api/system/status" | grep "\"status\":\"UP\"" > /dev/null; echo $?);
           done;
           echo "SonarQube is $([[ 0 -eq $status_sonar ]] && echo "up" || echo "down"), after $counter tries";
-          mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.login=admin -Dsonar.password=admin -Dsonar.organization=default-organization;
+          token_sonarqube=$(curl -s -X POST -H "Content-Type&#58; application/x-www-form-urlencoded" -d "name=admin_token" -u admin:admin http://localhost:9000/api/user_tokens/generate | jq -r '.token');
+          mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.token=${token_sonarqube} -Dsonar.organization=default-organization;
           echo "Waiting for the SonarQube Compute Engine task to be completed...";
           ce=$(grep ceTaskUrl= target/sonar/report-task.txt);
           ceTaskUrl=${ce:10};
@@ -78,8 +89,12 @@ jobs:
                   sleep 1;
               fi
           done;
-          token_sonarqube=$(curl -s -X POST -H "Content-Type&#58; application/x-www-form-urlencoded" -d "name=admin_token" -u admin:admin http://localhost:9000/api/user_tokens/generate | jq -r '.token');
-          java -jar target/sonar-cnes-report-${version}.jar -t ${token_sonarqube} -p fr.cnes.sonar:cnesreport -s http://localhost:9000;
+          java -jar target/sonar-cnes-report-${version}.jar -t ${token_sonarqube} -p fr.cnes.sonar:cnesreport -s http://localhost:9000 > logs.txt 2>&1;
+          cat logs.txt
+          if grep -q -i "error" "logs.txt"; then
+            echo "WARNING: Cnes report send an error in logs but exited normally"
+            exit 1;
+          fi
           url_cnesreport="http://localhost:9000/api/cnesreport/report?key=fr.cnes.sonar%3Acnesreport&author=github-actions&token=${token_sonarqube}";
           curl -u admin:admin ${url_cnesreport} -O -J;
 
@@ -97,7 +112,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
-          java-version: '17'
+          java-version: ${{ env.JAVA_BUILD_VERSION }}
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:

@@ -17,7 +17,6 @@
 
 package fr.cnes.sonar.report.model;
 
-import java.time.DateTimeException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -27,6 +26,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.math3.util.Precision;
 
@@ -114,6 +115,8 @@ public class Report {
      */
     private Map<String, String> qualityGateStatus;
 
+    private static final Logger LOGGER = Logger.getLogger(Report.class.getName());
+
     /**
      * Default constructor
      */
@@ -137,7 +140,8 @@ public class Report {
         this.metricsStats = new HashMap<>();
         this.qualityGateStatus = new HashMap<>();
         this.project = new Project(StringManager.EMPTY, StringManager.EMPTY,
-                StringManager.EMPTY, StringManager.EMPTY, StringManager.EMPTY, StringManager.EMPTY, StringManager.EMPTY);
+                StringManager.EMPTY, StringManager.EMPTY, StringManager.EMPTY, StringManager.EMPTY,
+                StringManager.EMPTY);
     }
 
     /**
@@ -351,7 +355,7 @@ public class Report {
         this.analysisDate = pLastAnalysisDate;
     }
 
-     /**
+    /**
      * Truncate and format analysisDate.
      * 
      * Returns a YYYY-MM-DD type string.
@@ -359,11 +363,14 @@ public class Report {
     public void truncateAnalysisDate() {
         try {
             this.analysisDate = OffsetDateTime.parse(
-                this.analysisDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssxxxx"))
-                .toLocalDate()
-                .toString();  
-        } catch (DateTimeException e) {
+                    this.analysisDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssxxxx"))
+                    .toLocalDate()
+                    .toString();
+        } catch (Exception e) {
+
             this.analysisDate = "?";
+            LOGGER.log(Level.WARNING, "Formatting issue in analysis date. This can occur in some distributions according to how they format time.");
+            
         }
 
     }

@@ -96,7 +96,7 @@ public class MarkdownExporter implements IExporter {
         final Report report = (Report) data;
 
         try (
-                InputStream fileInputStream = file.exists() ? new FileInputStream(file)
+                InputStream fileInputStream = file.exists() && !filename.isEmpty() ? new FileInputStream(file)
                         : getClass().getResourceAsStream(StringManager.getProperty(DEFAULT_TEMPLATE));) {
             // Getting MD template
             StringWriter writer = new StringWriter();

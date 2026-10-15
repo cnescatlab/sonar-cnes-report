@@ -16,15 +16,21 @@
  */
 package fr.cnes.sonar.report.utils;
 
-import org.apache.commons.cli.*;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Properties;
+
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 /**
  * Manage the command line by parsing it and providing preprocessed data.
@@ -45,24 +51,32 @@ public class CommandLineManager {
 
     /** Option details for help. */
     private static final String[][] OPTIONS_DEFINITION = {
-            {"h", "help", Boolean.FALSE.toString(), "Display this message."},
-            {"v", "version", Boolean.FALSE.toString(), "Display current version."},
-            {"s", "server", Boolean.TRUE.toString(), "Complete URL of the targeted SonarQube server."},
-            {"t", "token", Boolean.TRUE.toString(), "SonarQube token of the SonarQube user who has permissions on the project."},
-            {"p", "project", Boolean.TRUE.toString(), "SonarQube key of the targeted project."},
-            {"b", "branch", Boolean.TRUE.toString(), "Branch of the targeted project. Requires Developer Edition or sonarqube-community-branch-plugin. Default: usage of main branch."},
-            {"o", "output", Boolean.TRUE.toString(), "Output path for exported resources."},
-            {"l", "language", Boolean.TRUE.toString(), "Language of the report. Values: en_US, fr_FR. Default: en_US."},
-            {"a", "author", Boolean.TRUE.toString(), "Name of the report writer."},
-            {"d", "date", Boolean.TRUE.toString(), "Date for the report. Format: " + StringManager.DATE_PATTERN + ". Default: current date."},
-            {"c", "disable-conf", Boolean.FALSE.toString(), "Disable export of quality configuration used during analysis."},
-            {"w", "disable-report", Boolean.FALSE.toString(), "Disable report generation."},
-            {"e", "disable-spreadsheet", Boolean.FALSE.toString(), "Disable spreadsheet generation."},
-            {"f", "disable-csv", Boolean.FALSE.toString(), "Disable CSV generation"},
-            {"m", "disable-markdown", Boolean.FALSE.toString(), "Disable Markdown generation"},
-            {"n", "template-markdown", Boolean.TRUE.toString(), "Path to the report template in markdown. Default: usage of internal template."},
-            {"r", "template-report", Boolean.TRUE.toString(), "Path to the report template. Default: usage of internal template."},
-            {"x", "template-spreadsheet", Boolean.TRUE.toString(), "Path to the spreadsheet template. Default: usage of internal template."}
+            { "h", "help", Boolean.FALSE.toString(), "Display this message." },
+            { "v", "version", Boolean.FALSE.toString(), "Display current version." },
+            { "s", "server", Boolean.TRUE.toString(), "Complete URL of the targeted SonarQube server." },
+            { "t", "token", Boolean.TRUE.toString(),
+                    "SonarQube token of the SonarQube user who has permissions on the project." },
+            { "p", "project", Boolean.TRUE.toString(), "SonarQube key of the targeted project." },
+            { "b", "branch", Boolean.TRUE.toString(),
+                    "Branch of the targeted project. Requires Developer Edition or sonarqube-community-branch-plugin. Default: usage of main branch." },
+            { "o", "output", Boolean.TRUE.toString(), "Output path for exported resources." },
+            { "l", "language", Boolean.TRUE.toString(),
+                    "Language of the report. Values: en_US, fr_FR. Default: en_US." },
+            { "a", "author", Boolean.TRUE.toString(), "Name of the report writer." },
+            { "d", "date", Boolean.TRUE.toString(),
+                    "Date for the report. Format: " + StringManager.DATE_PATTERN + ". Default: current date." },
+            { "c", "disable-conf", Boolean.FALSE.toString(),
+                    "Disable export of quality configuration used during analysis." },
+            { "w", "disable-report", Boolean.FALSE.toString(), "Disable report generation." },
+            { "e", "disable-spreadsheet", Boolean.FALSE.toString(), "Disable spreadsheet generation." },
+            { "f", "disable-csv", Boolean.FALSE.toString(), "Disable CSV generation" },
+            { "m", "disable-markdown", Boolean.FALSE.toString(), "Disable Markdown generation" },
+            { "n", "template-markdown", Boolean.TRUE.toString(),
+                    "Path to the report template in markdown. Default: usage of internal template." },
+            { "r", "template-report", Boolean.TRUE.toString(),
+                    "Path to the report template. Default: usage of internal template." },
+            { "x", "template-spreadsheet", Boolean.TRUE.toString(),
+                    "Path to the spreadsheet template. Default: usage of internal template." }
     };
 
     /**
@@ -83,7 +97,7 @@ public class CommandLineManager {
         commandLine = null;
 
         // Add options
-        for(final String[] option : OPTIONS_DEFINITION) {
+        for (final String[] option : OPTIONS_DEFINITION) {
             options.addOption(option[0], option[1], Boolean.valueOf(option[2]), option[3]);
         }
 
@@ -94,6 +108,7 @@ public class CommandLineManager {
      *
      * @param pArgs Arguments to parse.
      */
+
     public void parse(final String[] pArgs) {
 
         // Contains true if options are reliable
@@ -105,7 +120,7 @@ public class CommandLineManager {
             areOptionsCorrect = checkOptionsUse(commandLine);
         } catch (ParseException e) {
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
-	    areOptionsCorrect = false;
+            areOptionsCorrect = false;
         }
 
         // If help option is present we print it.
@@ -114,17 +129,15 @@ public class CommandLineManager {
             throw new IllegalArgumentException("Illegal command line arguments");
         } else if (commandLine.hasOption("h")) {
             printHelp();
-            System.exit(0);
         } else if (commandLine.hasOption("v")) {
             // Display version information and exit.
-            try(InputStream input = this.getClass().getClassLoader().getResourceAsStream("version.properties")) {
-                if(input!=null) {
+            try (InputStream input = this.getClass().getClassLoader().getResourceAsStream("version.properties")) {
+                if (input != null) {
                     final Properties properties = new Properties();
                     properties.load(input);
                     String version = properties.getProperty("version");
-                    String message = String.format("Current version: %s", version);                    
+                    String message = String.format("Current version: %s", version);
                     LOGGER.info(message);
-                    System.exit(0);
                 }
             } catch (IOException e) {
                 LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -202,7 +215,7 @@ public class CommandLineManager {
     /**
      * Return the value of the corresponding option.
      *
-     * @param pOption Name of the option.
+     * @param pOption  Name of the option.
      * @param pDefault Default value of the option.
      * @return A string containing the value or a default string.
      */
