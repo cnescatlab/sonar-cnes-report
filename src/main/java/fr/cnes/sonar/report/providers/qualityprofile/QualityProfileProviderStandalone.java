@@ -24,6 +24,8 @@ import fr.cnes.sonar.report.model.QualityProfile;
 import fr.cnes.sonar.report.utils.UrlEncoder;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.gson.JsonObject;
 
@@ -31,6 +33,8 @@ import com.google.gson.JsonObject;
  * Provides quality gates in standalone mode
  */
 public class QualityProfileProviderStandalone extends AbstractQualityProfileProvider implements QualityProfileProvider {
+
+        private static final Logger LOGGER = Logger.getLogger(QualityProfileProviderStandalone.class.getName());
 
         /**
          * Name of the request for getting quality profiles' linked projects
@@ -72,12 +76,17 @@ public class QualityProfileProviderStandalone extends AbstractQualityProfileProv
         }
 
         @Override
-        protected String getQualityProfilesConfAsXml(final ProfileMetaData profileMetaData)
-                        throws BadSonarQubeRequestException, SonarQubeException {
+        protected String getQualityProfilesConfAsXml(final ProfileMetaData profileMetaData) {
+        try {
                 // URL Encoder is used to avoid issues with special characters
                 return stringRequest(String.format(getRequest(GET_QUALITY_PROFILES_CONF_REQUEST), getServer(),
-                                UrlEncoder.urlEncodeString(profileMetaData.getLanguage()),
-                                UrlEncoder.urlEncodeString(profileMetaData.getName())));
+                        UrlEncoder.urlEncodeString(profileMetaData.getLanguage()),
+                        UrlEncoder.urlEncodeString(profileMetaData.getName())));
+        } catch (Exception e) {
+                LOGGER.log(Level.WARNING, "Skipping quality profile export for {0} ({1}): {2}",
+                        new Object[] { profileMetaData.getLanguage(), profileMetaData.getName(), e.getMessage() });
+                return "";
+        }
         }
 
         @Override
