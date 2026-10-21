@@ -190,7 +190,10 @@ public class ReportFactory {
             while(iterator.hasNext() && goOn) {
                 final QualityProfile qp = iterator.next();
                 if(qp.getKey().equals(metaData.getKey())) {
-                    exporter.export(qp.getConf(), dir, qp.getKey());
+                    // skip profiles whose configuration could not be retrieved
+                    if(!qp.getConf().isEmpty()) {
+                        exporter.export(qp.getConf(), dir, qp.getKey());
+                    }
                     goOn = false;
                 }
             }

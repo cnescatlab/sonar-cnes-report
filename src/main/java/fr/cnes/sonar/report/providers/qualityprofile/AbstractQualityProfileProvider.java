@@ -96,7 +96,15 @@ public abstract class AbstractQualityProfileProvider extends AbstractDataProvide
         for (ProfileMetaData profileMetaData : metaData) {
             final ProfileData profileData = new ProfileData();
             
-            final String xml = getQualityProfilesConfAsXml(profileMetaData);
+            // a profile whose configuration cannot be retrieved must not prevent report generation
+            String xml;
+            try {
+                xml = getQualityProfilesConfAsXml(profileMetaData);
+            } catch (BadSonarQubeRequestException e) {
+                LOGGER.warning(String.format("Unable to retrieve configuration of quality profile '%s' (%s): %s",
+                        profileMetaData.getName(), profileMetaData.getLanguage(), e.getMessage()));
+                xml = StringManager.EMPTY;
+            }
             // add configuration as string to the profile
             profileData.setConf(xml);
 
