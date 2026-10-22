@@ -21,7 +21,7 @@ This tool can be used in standalone as a JAR executable (with the command line) 
 
 #### Installation
 ##### Standalone mode
-**cnesreport** does not need any installation. It is a portable Java application you can copy and run according to following examples. The only requirement is an **up-to-date JRE (>=21)**.
+**cnesreport** does not need any installation. It is a portable Java application you can copy and run according to following examples. The only requirement is an **up-to-date JRE (>=17)**.
 
 ##### Plugin mode (Since 2.2.0)
 - Copy the sonar-cnes-report.jar with read rights for others in the plugin folder of sonarqube (On linux path should be like `/opt/sonarqube/extensions/plugins`)
@@ -115,11 +115,11 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
 |---|:---:|:---:|---|
 | Community Build 25.x, 26.x | ✅ | ✅ | Tested (CI: 25.6, 26.3, latest) |
 | Server 2025.x (incl. LTA 2025.1) | ✅ | ✅ | Expected, not tested |
-| 10.6 to 10.8 | ✅ | ✅ (server running Java 21) | Expected, not tested |
+| 10.6 to 10.8 | ✅ | ✅ | Expected, not tested |
 | 9.6 to 10.5 | ⚠️ | ❌ | Standalone not tested; plugin requires plugin API ≥ 10.7 |
 | < 9.6 | ❌ | ❌ | Not supported |
 
-- Java: 21 or later is required (tested with Java 21, 22, 23, 24, 25, 26). In plugin mode, the SonarQube server itself must run on Java 21+.
+- Java: 17 or later is required (tested with Java 17, 21, 22, 23, 24, 25, 26).
 - Quality profiles configuration is retrieved with `api/qualityprofiles/backup` instead of `api/qualityprofiles/export`, which was removed from SonarQube Community Build (see [#482](https://github.com/cnescatlab/sonar-cnes-report/issues/482)).
 - A "not supported" warning may be displayed for SonarQube Server 2025.x versions even though they are expected to work.
 
