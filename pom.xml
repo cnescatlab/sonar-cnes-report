@@ -38,6 +38,7 @@
         <sonar.testingHarnessVersion>10.5.1.90531</sonar.testingHarnessVersion>
         <sonar.Version>10.5.1.90531</sonar.Version>
         <sonar-packaging-maven-plugin.version>1.23.0.740</sonar-packaging-maven-plugin.version>
+        <sonar-maven-plugin.version>5.8.0.7211</sonar-maven-plugin.version>
         <sonar.pluginKey>cnesreport</sonar.pluginKey>
         <sonar.organization>lequal</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -242,6 +243,16 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+        <pluginManagement>
+            <plugins>
+                <!-- SonarQube scanner, called in CI with its full coordinates -->
+                <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>${sonar-maven-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
 
             <plugin>

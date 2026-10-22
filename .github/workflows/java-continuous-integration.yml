@@ -72,7 +72,7 @@ jobs:
           done;
           echo "SonarQube is $([[ 0 -eq $status_sonar ]] && echo "up" || echo "down"), after $counter tries";
           token_sonarqube=$(curl -s -X POST -H "Content-Type&#58; application/x-www-form-urlencoded" -d "name=admin_token" -u admin:admin http://localhost:9000/api/user_tokens/generate | jq -r '.token');
-          mvn sonar:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.token=${token_sonarqube} -Dsonar.organization=default-organization;
+          mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.host.url=http://localhost:9000 -Dsonar.token=${token_sonarqube} -Dsonar.organization=default-organization;
           echo "Waiting for the SonarQube Compute Engine task to be completed...";
           ce=$(grep ceTaskUrl= target/sonar/report-task.txt);
           ceTaskUrl=${ce:10};
@@ -137,4 +137,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # SonarCloud access token should be generated from https://sonarcloud.io/account/security/
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar -Dsonar.token=$SONAR_TOKEN
+        run: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.token=$SONAR_TOKEN
