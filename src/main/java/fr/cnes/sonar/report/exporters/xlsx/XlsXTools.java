@@ -1,15 +1,28 @@
 package fr.cnes.sonar.report.exporters.xlsx;
 
+import fr.cnes.sonar.report.exporters.ReportPalette;
 import fr.cnes.sonar.report.model.Issue;
 import fr.cnes.sonar.report.model.SecurityHotspot;
 import fr.cnes.sonar.report.utils.StringManager;
 
 import org.apache.poi.ss.SpreadsheetVersion;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.ComparisonOperator;
+import org.apache.poi.ss.usermodel.ConditionalFormattingRule;
+import org.apache.poi.ss.usermodel.PatternFormatting;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.SheetConditionalFormatting;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.AreaReference;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFTable;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTTable;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTTableColumn;
 import org.openxmlformats.schemas.spreadsheetml.x2006.main.CTTableColumns;
@@ -105,6 +118,22 @@ public final class XlsXTools {
      * Status for false positive / wont fix
      */
     private static final String RESOLVED = "RESOLVED";
+    /**
+     * Header of the columns colored according to the issue severity
+     */
+    private static final String SEVERITY_HEADER = "severity";
+    /**
+     * Minimum width of a column, in characters
+     */
+    private static final int MIN_COLUMN_WIDTH = 8;
+    /**
+     * Maximum width of a column, in characters; longer texts are wrapped
+     */
+    private static final int MAX_COLUMN_WIDTH = 60;
+    /**
+     * Number of rows read to compute the width of the columns
+     */
+    private static final int WIDTH_SAMPLE_ROWS = 1000;
 
     /**
      * Private constructor to hide the public one
@@ -343,6 +372,151 @@ public final class XlsXTools {
                 numRow++;
             }
         }
+    }
+
+    /**
+     * Make data sheets easier to read: header row frozen, columns sized from their
+     * content, long texts wrapped and severity cells colored.
+     * The first row of each sheet is the header and is left untouched.
+     * @param workbook workbook containing the sheets
+     * @param sheets sheets to format; null sheets are ignored
+     */
+    public static void improveReadability(final XSSFWorkbook workbook, final List<XSSFSheet> sheets) {
+        // styles are shared by all the cells: a workbook has a limited number of styles
+        final XSSFCellStyle top = workbook.createCellStyle();
+        top.setVerticalAlignment(VerticalAlignment.TOP);
+        final XSSFCellStyle wrapped = workbook.createCellStyle();
+        wrapped.setVerticalAlignment(VerticalAlignment.TOP);
+        wrapped.setWrapText(true);
+
+        for (XSSFSheet sheet : sheets) {
+            if (sheet != null) {
+                sheet.createFreezePane(0, 1);
+                final Row header = sheet.getRow(0);
+                if (header != null) {
+                    formatColumns(sheet, header, top, wrapped);
+                    colorSeverities(sheet, header);
+                }
+            }
+        }
+    }
+
+    /**
+     * Size each column from its content and wrap the columns containing long texts
+     * @param sheet sheet to format
+     * @param header header row
+     * @param top style for short values
+     * @param wrapped style for long values
+     */
+    private static void formatColumns(final XSSFSheet sheet, final Row header,
+                                      final XSSFCellStyle top, final XSSFCellStyle wrapped) {
+        final int columns = header.getLastCellNum();
+        final int lastRow = sheet.getLastRowNum();
+        for (int column = 0 ; column < columns ; column++) {
+            int width = displayWidth(cellText(header.getCell(column)));
+            for (int rowIndex = 1 ; rowIndex <= Math.min(lastRow, WIDTH_SAMPLE_ROWS) ; rowIndex++) {
+                final Row row = sheet.getRow(rowIndex);
+                if (row != null) {
+                    width = Math.max(width, displayWidth(cellText(row.getCell(column))));
+                }
+            }
+            final boolean wrap = width + 2 > MAX_COLUMN_WIDTH;
+            final int finalWidth = Math.max(MIN_COLUMN_WIDTH, Math.min(width + 2, MAX_COLUMN_WIDTH));
+            sheet.setColumnWidth(column, finalWidth * 256);
+
+            final XSSFCellStyle style = wrap ? wrapped : top;
+            for (int rowIndex = 1 ; rowIndex <= lastRow ; rowIndex++) {
+                final Row row = sheet.getRow(rowIndex);
+                final Cell cell = row == null ? null : row.getCell(column);
+                if (cell != null) {
+                    cell.setCellStyle(style);
+                }
+            }
+        }
+        // POI appends new column definitions after the template's ones:
+        // sort and merge them, Excel rejects unordered column definitions
+        sheet.getColumnHelper().cleanColumns();
+    }
+
+    /**
+     * Color the cells of the severity column with the light severity colors
+     * @param sheet sheet to format
+     * @param header header row, used to find the severity column
+     */
+    private static void colorSeverities(final XSSFSheet sheet, final Row header) {
+        final int lastRow = sheet.getLastRowNum();
+        if (lastRow < 1) {
+            return;
+        }
+        for (int column = 0 ; column < header.getLastCellNum() ; column++) {
+            if (SEVERITY_HEADER.equalsIgnoreCase(cellText(header.getCell(column)).trim())) {
+                final SheetConditionalFormatting formatting = sheet.getSheetConditionalFormatting();
+                final CellRangeAddress[] range = { new CellRangeAddress(1, lastRow, column, column) };
+                for (Map.Entry<String, String> color : ReportPalette.severityLightColors().entrySet()) {
+                    final ConditionalFormattingRule rule = formatting.createConditionalFormattingRule(
+                            ComparisonOperator.EQUAL, "\"" + color.getKey() + "\"");
+                    final PatternFormatting fill = rule.createPatternFormatting();
+                    // spreadsheetml colors are ARGB: prepend an opaque alpha channel
+                    final byte[] rgb = ReportPalette.toRgb(color.getValue());
+                    final byte[] argb = { (byte) 0xFF, rgb[0], rgb[1], rgb[2] };
+                    fill.setFillBackgroundColor(new XSSFColor(argb, null));
+                    fill.setFillPattern(PatternFormatting.SOLID_FOREGROUND);
+                    formatting.addConditionalFormatting(range, rule);
+                }
+            }
+        }
+    }
+
+    /**
+     * Text of a cell
+     * @param cell the cell, may be null
+     * @return the text, empty for null or non text cells
+     */
+    private static String cellText(final Cell cell) {
+        if (cell == null) {
+            return "";
+        }
+        if (cell.getCellType() == CellType.NUMERIC) {
+            return String.valueOf(cell.getNumericCellValue());
+        }
+        return cell.getCellType() == CellType.STRING ? cell.getStringCellValue() : "";
+    }
+
+    /**
+     * Approximate width of a text in characters, wide (CJK) characters counting for two
+     * @param text the text
+     * @return width of the longest line of the text
+     */
+    static int displayWidth(final String text) {
+        int max = 0;
+        int width = 0;
+        for (int i = 0 ; i < text.length() ; ) {
+            final int codePoint = text.codePointAt(i);
+            if (codePoint == '\n') {
+                width = 0;
+            } else {
+                width += isWide(codePoint) ? 2 : 1;
+                max = Math.max(max, width);
+            }
+            i += Character.charCount(codePoint);
+        }
+        return max;
+    }
+
+    /**
+     * Tell if a character is displayed twice as wide as a latin letter
+     * @param codePoint the character
+     * @return true for CJK and full width characters
+     */
+    private static boolean isWide(final int codePoint) {
+        return (codePoint >= 0x1100 && codePoint <= 0x115F)
+                || (codePoint >= 0x2E80 && codePoint <= 0xA4CF)
+                || (codePoint >= 0xAC00 && codePoint <= 0xD7A3)
+                || (codePoint >= 0xF900 && codePoint <= 0xFAFF)
+                || (codePoint >= 0xFE30 && codePoint <= 0xFE4F)
+                || (codePoint >= 0xFF00 && codePoint <= 0xFF60)
+                || (codePoint >= 0xFFE0 && codePoint <= 0xFFE6)
+                || (codePoint >= 0x20000 && codePoint <= 0x3FFFD);
     }
 
     /**

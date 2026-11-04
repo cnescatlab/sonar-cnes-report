@@ -12,6 +12,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.*;
 
@@ -100,7 +101,7 @@ public class XlsXExporter implements IExporter {
         // open the template
         try(
             InputStream excelFile = file.exists() && !filename.isEmpty() ?
-                    new FileInputStream(file) : getClass().getResourceAsStream(StringManager.getProperty(DEFAULT_TEMPLATE));
+                    new FileInputStream(file) : getClass().getResourceAsStream(StringManager.getLocalizedTemplate(DEFAULT_TEMPLATE));
             Workbook workbook = new XSSFWorkbook(excelFile);
             FileOutputStream fileOut = new FileOutputStream(outputFilePath)
         ) {
@@ -136,6 +137,10 @@ public class XlsXExporter implements IExporter {
 
             // write all metrics in the metric sheet
             XlsXTools.addListOfMap(metricsSheet, report.getComponents(), METRICS_TABLE_NAME);
+
+            // freeze headers, size columns, wrap long texts, color severities
+            XlsXTools.improveReadability((XSSFWorkbook) workbook, Arrays.asList(selectedSheet,
+                    unconfirmedSheet, allDataSheet, securityHotspotsSheet, metricsSheet));
 
             // write output as file
             workbook.write(fileOut);

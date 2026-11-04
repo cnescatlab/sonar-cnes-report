@@ -129,10 +129,29 @@ java -Dhttps.proxyHost=myproxy -Dhttps.proxyPort=42 \
 - 報告語系：英文、法文、正體中文
 
 #### 正體中文報告說明
-- docx 與 markdown 使用中文範本，表頭、圖表標題與安全熱點類別都已翻譯。
+- docx、markdown 與 xlsx 使用中文範本，docx 的表頭、圖表標題與安全熱點類別都已翻譯。
 - 規則名稱、指標名稱（例如「Reliability Rating on New Code」）等由 SonarQube 伺服器提供的內容維持伺服器回傳的語言。
 - xlsx 的欄位名稱與工作表名稱維持英文，因為程式與樞紐分析表需依名稱存取資料。
-- 若以 `-r`／`-n` 或 plugin 設定指定自訂範本，會優先使用自訂範本。
+- 若以 `-r`／`-n`／`-x` 或 plugin 設定指定自訂範本，會優先使用自訂範本。
+
+#### 報告字型
+| 報告 | 西文 | 中文 | 程式碼 |
+|---|---|---|---|
+| docx（en_US／fr_FR） | Calibri（內文）、Cambria（標題） | － | Consolas |
+| docx（zh_TW） | Segoe UI | Microsoft JhengHei（微軟正黑體） | Consolas |
+| xlsx（en_US／fr_FR） | Calibri | － | － |
+| xlsx（zh_TW） | Microsoft JhengHei | Microsoft JhengHei | － |
+
+- 字型不會嵌入檔案。上述字型為 Windows 與 Office 內建（Office for Mac 2016 起也附帶 Microsoft JhengHei）；在沒有這些字型的環境（例如 LibreOffice／Linux）開啟時，會由系統替換為相近字型，版面可能略有差異。
+- zh_TW docx 內文為 10.5pt、1.35 倍行距；en_US／fr_FR 內文為 10pt、1.15 倍行距。
+
+#### 自訂範本注意事項
+- 範本以 placeholder（例如 `$ISSUES_DETAILS`、`$VOLUME`）找到要填入的表格，程式會清空表格再依資料重建所有列；表格樣式、欄寬（`tblGrid`，建議搭配固定欄寬配置）與 `tblLook` 會保留。
+- 內建範本的資料表格使用「CNES Report Table」樣式（深色表頭、斑馬紋）。自訂範本可沿用此樣式，或改用自己的表格樣式。
+- 程式會替所有產生的表格設定表頭跨頁重複、單列不跨頁，並將全為數字的欄位靠右對齊。
+- 若修改 `issues.severities` 或 `securityhotspots.priorities` 的項目數量，計數矩陣表格的欄數會跟著改變，請同步調整範本中該表格的 `tblGrid` 欄數。
+- 圓餅圖會依 `issues.severities`／`issues.types` 的順序排列，並依嚴重程度與類型套用固定配色。
+- xlsx 會凍結各資料工作表的表頭列、依內容設定欄寬（超過 60 字元的欄位自動換行），並依嚴重程度替 `Severity` 欄位上底色；工作表必須保留原本的英文名稱。
 
 ### 相容性
 - SonarQube：支援 25.x 以上；已實際驗證 SonarQube Community Build 26.10。
