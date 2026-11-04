@@ -17,6 +17,7 @@
 
 package fr.cnes.sonar.report.exporters.docx;
 
+import fr.cnes.sonar.report.exporters.ReportPalette;
 import fr.cnes.sonar.report.model.Facets;
 import fr.cnes.sonar.report.model.Report;
 import fr.cnes.sonar.report.model.TimeFacets;
@@ -34,9 +35,12 @@ import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 
 /**
@@ -100,6 +104,18 @@ public final class DocXTools {
      * facet's name for technical debt ratio history
      */
     private static final String TECHNICAL_DEBT_RATIO = "sqale_debt_ratio";
+    /**
+     * property listing issues severities, in display order
+     */
+    private static final String ISSUES_SEVERITIES = "issues.severities";
+    /**
+     * property listing issues types, in display order
+     */
+    private static final String ISSUES_TYPES = "issues.types";
+    /**
+     * a numeric table cell: integer or decimal, optionally followed by a percent sign
+     */
+    private static final Pattern NUMERIC = Pattern.compile("[-+]?\\d[\\d\\s.,]*(\\s?%)?");
 
     /**
      * Private constructor to hide the public one
@@ -118,8 +134,10 @@ public final class DocXTools {
         final Facets facets = report.getFacets();
         final TimeFacets timeFacets = report.getTimeFacets();
         final List<XWPFChartSpace> chartSpaces = XWPFChartSpace.getChartSpaces(document);
-        final List<Value> dataPerType = facets.getFacetValues(TYPES);
-        final List<Value> dataPerSeverity = facets.getFacetValues(SEVERITIES);
+        final List<Value> dataPerType = sortByLabel(facets.getFacetValues(TYPES),
+                StringManager.getProperty(ISSUES_TYPES));
+        final List<Value> dataPerSeverity = sortByLabel(facets.getFacetValues(SEVERITIES),
+                StringManager.getProperty(ISSUES_SEVERITIES));
         final List<TimeValue> issuesHistory = timeFacets.getFacetValues(VIOLATIONS);
         final List<TimeValue> technicalDebtRatioHistory = timeFacets.getFacetValues(TECHNICAL_DEBT_RATIO);
 
@@ -131,11 +149,11 @@ public final class DocXTools {
             final String currentChartTitle = chartSpace.getTitle();
             // fill the pie chart with issues count by severity
             if(currentChartTitle.contains(SEVERITY_TABLE_PLACEHOLDER)) {
-                chartSpace.setValues(dataPerSeverity);
+                chartSpace.setValues(dataPerSeverity, ReportPalette.severityColors());
                 chartSpace.setTitle(StringManager.string(CHART_SEVERITY_TITLE));
             // fill the pie chart with issues count by type
             } else if(currentChartTitle.contains(TYPE_TABLE_PLACEHOLDER)) {
-                chartSpace.setValues(dataPerType);
+                chartSpace.setValues(dataPerType, ReportPalette.typeColors());
                 chartSpace.setTitle(StringManager.string(CHART_TYPE_TITLE));
             // fill the scatter chart with the evolution of the number of issues
             } else if(currentChartTitle.contains(VIOLATIONS_CHART_PLACEHOLDER)) {
@@ -149,6 +167,23 @@ public final class DocXTools {
 
         }
         
+    }
+
+    /**
+     * Sort chart values following a reference order of labels;
+     * labels missing from the reference order are put at the end.
+     * @param values values to sort
+     * @param order comma separated labels, in the wanted order
+     * @return a new sorted list
+     */
+    static List<Value> sortByLabel(final List<Value> values, final String order) {
+        final List<String> labels = Arrays.asList(order.split(","));
+        final List<Value> sorted = new ArrayList<>(values);
+        sorted.sort(Comparator.comparingInt(value -> {
+            final int index = labels.indexOf(String.valueOf(value.getVal()));
+            return index < 0 ? labels.size() : index;
+        }));
+        return sorted;
     }
 
     /**
@@ -368,6 +403,9 @@ public final class DocXTools {
                 if (!data.isEmpty()) {
                     // create the top line (header) and fill it
                     XWPFTableRow row = table.createRow();
+                    // repeat the header on each page
+                    row.setRepeatHeader(true);
+                    row.setCantSplitRow(true);
                     for(String field : header) {
                         row.createCell().setText(field);
 	                }
@@ -382,6 +420,8 @@ public final class DocXTools {
                         row = table.getRow(iLine+1);
                         final List<String> line = data.get(iLine);
         
+                        // a row is never split across two pages
+                        row.setCantSplitRow(true);
                         for (int iCell = 0; iCell < line.size(); iCell++) {
                             if(iCell>=row.getTableCells().size()) {
                                 row.createCell();
@@ -389,8 +429,54 @@ public final class DocXTools {
                             row.getCell(iCell).setText(line.get(iCell));
                         }
                     }
+
+                    alignNumericColumns(table, data);
                 }
             }
         }
+    }
+
+    /**
+     * Right align the columns (header included) whose values are all numeric
+     * @param table filled table, first row being the header
+     * @param data values of the table, without header
+     */
+    private static void alignNumericColumns(final XWPFTable table, final List<List<String>> data) {
+        int columns = 0;
+        for (List<String> line : data) {
+            columns = Math.max(columns, line.size());
+        }
+        for (int column = 0 ; column < columns ; column++) {
+            if (isNumericColumn(data, column)) {
+                for (XWPFTableRow row : table.getRows()) {
+                    final XWPFTableCell cell = row.getCell(column);
+                    if (cell != null) {
+                        for (XWPFParagraph paragraph : cell.getParagraphs()) {
+                            paragraph.setAlignment(ParagraphAlignment.RIGHT);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Tell if all the non empty values of a column are numeric
+     * @param data values of the table
+     * @param column index of the column
+     * @return true if the column contains at least one value and only numeric values
+     */
+    static boolean isNumericColumn(final List<List<String>> data, final int column) {
+        boolean found = false;
+        for (List<String> line : data) {
+            final String value = column < line.size() ? line.get(column) : null;
+            if (value != null && !value.trim().isEmpty()) {
+                if (!NUMERIC.matcher(value.trim()).matches()) {
+                    return false;
+                }
+                found = true;
+            }
+        }
+        return found;
     }
 }
