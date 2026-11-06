@@ -62,6 +62,7 @@ public class ReportConfiguration {
     /** Options for n. */
     private String templateMarkdown;
 
+
     /**
      * Private constructor, use create method instead.
      * @param help Value for h option.
@@ -140,6 +141,7 @@ public class ReportConfiguration {
                 commandLineManager.getOptionValue("x", StringManager.EMPTY),
                 commandLineManager.getOptionValue("n", StringManager.EMPTY),
                 branch.isEmpty()?StringManager.NO_BRANCH:branch
+                
         );
     }
 

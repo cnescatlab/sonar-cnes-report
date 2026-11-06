@@ -21,7 +21,7 @@ This tool can be used in standalone as a JAR executable (with the command line) 
 
 #### Installation
 ##### Standalone mode
-**cnesreport** does not need any installation. It is a portable Java application you can copy and run according to following examples. The only requirement is an **up-to-date JRE (>=1.8)**.
+**cnesreport** does not need any installation. It is a portable Java application you can copy and run according to following examples. The only requirement is an **up-to-date JRE (>=17)**.
 
 ##### Plugin mode (Since 2.2.0)
 - Copy the sonar-cnes-report.jar with read rights for others in the plugin folder of sonarqube (On linux path should be like `/opt/sonarqube/extensions/plugins`)
@@ -111,82 +111,17 @@ java -Dhttps.proxyHost=https://myproxy -Dhttps.proxyPort=42
 
 ### Compatibility matrix
 
-For legacy versions, check the wiki page here : [Note on legacy versions](https://github.com/cnescatlab/sonar-cnes-report/wiki#note-on-legacy-versions)
+| SonarQube version | Standalone mode | Plugin mode | Status |
+|---|:---:|:---:|---|
+| Community Build 25.x, 26.x | ✅ | ✅ | Tested (CI: 25.6, 26.3, latest) |
+| Server 2025.x (incl. LTA 2025.1) | ✅ | ✅ | Expected, not tested |
+| 10.6 to 10.8 | ✅ | ✅ | Expected, not tested |
+| 9.6 to 10.5 | ⚠️ | ❌ | Standalone not tested; plugin requires plugin API ≥ 10.7 |
+| < 9.6 | ❌ | ❌ | Not supported |
 
-<table>
- <tr>
-  <td><b>cnesreport <br>\<br> SonarQube</b></td>
-  <td><b>3.0.x<br/>Standalone + Plugin</b></td>
-  <td><b>3.1.0<br/>Standalone + Plugin</b></td>
-  <td><b>3.2.x<br/>Standalone + Plugin</b></td>
-  <td><b>3.3.x<br/>Standalone + Plugin</b></td>
-  <td><b>4.0.0<br/>Standalone + Plugin</b></td>
-  <td><b>4.1.x<br/>Standalone + Plugin</b></td>
-  <td><b>4.2.x<br/>Standalone + Plugin</b></td>
-  <td><b>4.3.x<br/>Standalone + Plugin</b></td>
-  <td><b>5.0.x<br/>Standalone + Plugin</b></td>
- </tr>
- <tr>
-  <td><b>7.9.x</b></td>
-  <td>X</td>
-  <td>X</td>
-  <td>X</td>
-  <td>X</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
- </tr>
- <tr>
-  <td><b>8.9.x</b></td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>X</td>
-  <td>X</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
- </tr>
- <tr>
-  <td><b>9.9.x (LTS)</b></td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>-</td>
-  <td>X</td>
-  <td>X</td>
-  <td>-</td>
- </tr>
- <tr>
-  <td><b>10.5.x</b></td>
-    <td>-</td>
-    <td>-</td>
-    <td>-</td>
-    <td>-</td>
-    <td>-</td>
-    <td>-</td>
-    <td>-</td>
-    <td>-</td>
-    <td>X</td>
-  </tr>
- <tr>
-  <td><b>25.1.x</b></td>
-    <td>-</td>
-    <td>-</td>
-    <td>-</td>
-    <td>-</td>
-    <td>-</td>
-    <td>-</td>
-    <td>-</td>
-    <td>-</td>
-    <td>X</td>
-  </tr>  
-</table>
+- Java: 17 or later is required (tested with Java 17, 21, 22, 23, 24, 25, 26).
+- Quality profiles configuration is retrieved with `api/qualityprofiles/backup` instead of `api/qualityprofiles/export`, which was removed from SonarQube Community Build (see [#482](https://github.com/cnescatlab/sonar-cnes-report/issues/482)).
+- A "not supported" warning may be displayed for SonarQube Server 2025.x versions even though they are expected to work.
 
 ### How to contribute
 If you experienced a problem with the plugin please open an issue. Inside this issue please explain us how to reproduce this issue and paste the log.

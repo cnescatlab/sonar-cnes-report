@@ -93,6 +93,44 @@ public class AbstractQualityProfileProviderTest {
         }
     }
 
+    @Test
+    public void getQualityProfilesWithUnavailableConfTest() throws BadSonarQubeRequestException, SonarQubeException {
+        // Set fake profile
+        JsonObject profile = new JsonObject();
+        profile.addProperty("key", "key 1");
+        profile.addProperty("name", "Sonar way comprehensive");
+        profile.addProperty("language", "azureresourcemanager");
+        JsonArray profiles = new JsonArray();
+        profiles.add(profile);
+        JsonObject qualityProfiles = new JsonObject();
+        qualityProfiles.add("profiles", profiles);
+
+        // Set fake rules
+        JsonObject rule = new JsonObject();
+        rule.addProperty("key", "rule_1");
+        JsonArray rulesList = new JsonArray();
+        rulesList.add(rule);
+        JsonObject rules = new JsonObject();
+        rules.add("rules", rulesList);
+        rules.add("actives", new JsonObject());
+        rules.addProperty("total", 1);
+        // set fake projet API response
+        JsonObject projects = new JsonObject();
+        projects.add("results", new JsonArray());
+
+        QualityProfileProviderWrapper provider = new QualityProfileProviderWrapper();
+        provider.setFakeQualityProfiles(qualityProfiles);
+        provider.setConfUnavailable(true);
+        provider.setFakeRules(rules);
+        provider.setFakeProjects(projects);
+
+        // The configuration error must not prevent the profile from being returned
+        List<QualityProfile> result = provider.getQualityProfiles();
+        assertEquals(1, result.size());
+        assertEquals("", result.get(0).getConf());
+        assertEquals(1, result.get(0).getRules().size());
+    }
+
     /**
      * Test class in order to test the abstract provider class
      */
@@ -101,6 +139,7 @@ public class AbstractQualityProfileProviderTest {
         // Stores the fake JsonObject that the fake API will return
         private JsonObject fakeQualityProfiles;
         private String fakeXmlConf;
+        private boolean confUnavailable;
         private JsonObject fakeRules;
         private JsonObject fakeProjects;
 
@@ -121,6 +160,10 @@ public class AbstractQualityProfileProviderTest {
             this.fakeXmlConf = pFake;
         }
 
+        public void setConfUnavailable(boolean pUnavailable) {
+            this.confUnavailable = pUnavailable;
+        }
+
         public void setFakeRules(JsonObject pFake) {
             this.fakeRules = pFake;
         }
@@ -138,6 +181,9 @@ public class AbstractQualityProfileProviderTest {
 
         protected String getQualityProfilesConfAsXml(final ProfileMetaData profileMetaData)
                 throws BadSonarQubeRequestException, SonarQubeException {
+            if (this.confUnavailable) {
+                throw new BadSonarQubeRequestException("Not found error sent by SonarQube server (code 404)");
+            }
             return this.fakeXmlConf;
         }
 
