@@ -148,8 +148,21 @@ public final class ReportCommandLine {
                     "For further information, please refer to the compatibility matrix on the project GitHub page.");
         }
 
+        // Resolve the branch: when none is provided, auto-detect the project's main branch.
+        String branch = conf.getBranch();
+        if (branch.isEmpty()) {
+            branch = providerFactory.createSonarQubeInfoProvider().getProjectMainBranch(conf.getProject());
+            if (branch.isEmpty()) {
+                branch = StringManager.NO_BRANCH;
+            }
+            message = String.format("No branch specified, using project main branch: %s", branch);
+            LOGGER.info(message);
+            // Rebuild the provider factory so all providers target the resolved branch.
+            providerFactory = new StandaloneProviderFactory(url, conf.getToken(), conf.getProject(), branch);
+        }
+
         // Generate the model of the report.
-        final Report model = new ReportModelFactory(conf.getProject(), conf.getBranch(), conf.getAuthor(),
+        final Report model = new ReportModelFactory(conf.getProject(), branch, conf.getAuthor(),
                 conf.getDate(), providerFactory).create();
         // Generate results files.
         ReportFactory.report(conf, model);
